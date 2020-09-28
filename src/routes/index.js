@@ -27,7 +27,7 @@ const routes = [
     component: Dashboard, // view rendered
   },
   {
-    path: '/forms',
+    path: '/campaign',
     component: Forms,
   },
   {
