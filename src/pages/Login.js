@@ -13,8 +13,8 @@ const backgroundImage = 'https://images.unsplash.com/flagged/photo-1569118311341
 const required = value => {
   if (!value) {
     return (
-      <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
-          <span class="block sm:inline">This field is required!</span>
+      <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+          <span className="block sm:inline">This field is required!</span>
       </div>
     );
   }
@@ -23,8 +23,8 @@ const required = value => {
 const validEmail = value => {
   if (!isEmail(value)) {
     return (
-      <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
-        <span class="block sm:inline">Please enter a valid email address.</span>
+      <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+        <span className="block sm:inline">Please enter a valid email address.</span>
       </div>
     );
   }

@@ -17,8 +17,8 @@ const backgroundImage = 'https://images.unsplash.com/flagged/photo-1569118311341
 const required = (value) => {
   if (!value) {
     return (
-      <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
-        <span class="block sm:inline"> This field is required!</span>
+      <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+        <span className="block sm:inline"> This field is required!</span>
       </div>
     );
   }
@@ -27,8 +27,8 @@ const required = (value) => {
 const validEmail = (value) => {
   if (!isEmail(value)) {
     return (
-      <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
-        <span class="block sm:inline">Please enter valid email.</span>
+      <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+        <span className="block sm:inline">Please enter valid email.</span>
       </div>
     );
   }
@@ -37,8 +37,8 @@ const validEmail = (value) => {
 const vpassword = (value) => {
   if (value.length < 6 || value.length > 40) {
     return (
-      <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
-        <span class="block sm:inline">The password must be more than 6 characters.</span>
+      <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+        <span className="block sm:inline">The password must be more than 6 characters.</span>
       </div>
     );
   }
