@@ -8,7 +8,7 @@ import { isEmail } from "validator"
 
 import AuthService from "../services/auth.service";
 
-const backgroundImage = 'https://images.unsplash.com/flagged/photo-1569118311341-145748f3f338'
+const backgroundImage = 'https://res.cloudinary.com/emmaodia/image/upload/v1601308326/NGOphotos_rfrllr.jpg'
 
 const required = value => {
   if (!value) {
@@ -85,7 +85,7 @@ const Login = (props) => {
     height: "100vh", }}>
             <header className="max-w-lg mx-auto">
                 <Link to="#">
-                    <h1 className="flex text-2xl font-bold font-family-Gilroy-Bold text-white text-center justify-center">Welcome to CHATS <p className="text-xs">for NGOs</p></h1>
+                    <h1 className="flex text-2xl font-bold font-family-Gilroy-Bold text-white text-center justify-center">Welcome to CHATS</h1>
                 </Link>
             </header>
 
