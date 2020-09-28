@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react'
 
-import CTA from '../components/CTA'
 import PageTitle from '../components/Typography/PageTitle'
-import SectionTitle from '../components/Typography/SectionTitle'
-import { Input, HelperText, Label, Select, Textarea, Modal, ModalHeader, ModalBody, ModalFooter,
+
+import {  
+  Modal, ModalHeader, ModalBody, ModalFooter,
   TableBody,
   TableContainer,
   Table,
@@ -11,15 +11,13 @@ import { Input, HelperText, Label, Select, Textarea, Modal, ModalHeader, ModalBo
   TableCell,
   TableRow,
   TableFooter,
-  Avatar,
+  // Avatar,
   Button,
   Badge,
   Pagination,
 } from '@windmill/react-ui'
 
 import response from '../utils/demo/tableData'
-
-import { MailIcon } from '../icons'
 
 function Forms() {
   const [page, setPage] = useState(1)
@@ -60,8 +58,6 @@ function Forms() {
         {/* <span class="block text-gray-700 text-center bg-gray-400 px-4 py-2 mt-2">2</span>
         <span class="block text-gray-700 text-center bg-gray-400 px-4 py-2 mt-2">3</span> */}
       </div>
-      {/* <CTA /> */}
-      {/* <SectionTitle>Elements</SectionTitle> */}
 
       <Modal isOpen={isModalOpen} onClose={closeModal}>
         <ModalHeader>New Campaign</ModalHeader>

@@ -2,18 +2,20 @@ import React, { useContext, useState } from 'react'
 import { SidebarContext } from '../context/SidebarContext'
 import {
   SearchIcon,
-  MoonIcon,
-  SunIcon,
+  // MoonIcon,
+  // SunIcon,
   BellIcon,
   MenuIcon,
   OutlinePersonIcon,
   OutlineCogIcon,
   OutlineLogoutIcon,
 } from '../icons'
-import { Avatar, Badge, Input, Dropdown, DropdownItem, WindmillContext } from '@windmill/react-ui'
+import { Avatar, Badge, Input, Dropdown, DropdownItem, 
+  // WindmillContext 
+} from '@windmill/react-ui'
 
 function Header() {
-  const { mode, toggleMode } = useContext(WindmillContext)
+  // const { mode, toggleMode } = useContext(WindmillContext)
   const { toggleSidebar } = useContext(SidebarContext)
 
   const [isNotificationsMenuOpen, setIsNotificationsMenuOpen] = useState(false)

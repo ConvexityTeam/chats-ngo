@@ -7,11 +7,6 @@ import CheckButton from "react-validation/build/button";
 import { isEmail } from "validator"
 
 import AuthService from "../services/auth.service";
-// import '../styles/app.css'
-import ImageLight from '../assets/img/login-office.jpeg'
-import ImageDark from '../assets/img/login-office-dark.jpeg'
-import { GithubIcon, TwitterIcon } from '../icons'
-// import { Label, Input, Button } from '@windmill/react-ui'
 
 const backgroundImage = 'https://images.unsplash.com/flagged/photo-1569118311341-145748f3f338'
 
