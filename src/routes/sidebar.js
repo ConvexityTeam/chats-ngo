@@ -17,7 +17,7 @@ const routes = [
     name: 'Profile',
   },
   {
-    path: '/app/forms',
+    path: '/app/campaign',
     icon: 'FormsIcon',
     name: 'Campaign',
   },
