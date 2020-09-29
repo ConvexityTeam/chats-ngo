@@ -18,7 +18,13 @@ import {
   barLegends
 } from '../utils/demo/chartsData'
 
+import AuthService from "../services/auth.service";
+
 function Dashboard() {
+  const currentNGO = AuthService.getCurrentNGO();
+  // const result = response.data
+  // console.log(result)
+  console.log(currentNGO);
   const [page, setPage] = useState(1)
   const [data, setData] = useState([])
 
@@ -65,7 +71,7 @@ function Dashboard() {
 
         <InfoCard title="Total Amount Disbursed" value="$842,000">
           <RoundIcon
-            icon={CartIcon}
+            icon={MoneyIcon}
             iconColorClass="text-blue-500 dark:text-blue-100"
             bgColorClass="bg-blue-100 dark:bg-blue-500"
             className="mr-4"
@@ -74,7 +80,7 @@ function Dashboard() {
 
         <InfoCard title="Total Balance" value="$842,000">
           <RoundIcon
-            icon={ChatIcon}
+            icon={MoneyIcon}
             iconColorClass="text-teal-500 dark:text-teal-100"
             bgColorClass="bg-teal-100 dark:bg-teal-500"
             className="mr-4"

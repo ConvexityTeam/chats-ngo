@@ -13,52 +13,52 @@ const routes = [
   },
   {
     path: '#',
-    icon: 'FormsIcon',
+    icon: 'OutlinePersonIcon',
     name: 'Profile',
   },
   {
     path: '/app/campaign',
-    icon: 'FormsIcon',
+    icon: 'MegaphoneIcon',
     name: 'Campaign',
   },
   {
     path: '#',
-    icon: 'CardsIcon',
+    icon: 'UsersIcon',
     name: 'Beneficiaries',
   },
   {
     path: '#',
-    icon: 'ChartsIcon',
+    icon: 'VendorBoothIcon',
     name: 'Vendors',
   },
   {
     path: '#',
-    icon: 'ButtonsIcon',
+    icon: 'CreditCardIcon',
     name: 'Transactions',
   },
   {
     path: '#',
-    icon: 'ModalsIcon',
+    icon: 'ShoppingIcon',
     name: 'Market',
   },
   {
     path: '#',
-    icon: 'TablesIcon',
+    icon: 'MoneyIcon',
     name: 'Cash For Work',
   },
   {
      path: '#',
-    icon: 'TablesIcon',
+    icon: 'SettingsIcon',
     name: 'Settings',
   },
   {
     path: '#',
-    icon: 'TablesIcon',
+    icon: 'SupportHeadphonesIcon',
     name: 'Support',
   },
   {
     path: '#',
-    icon: 'TablesIcon',
+    icon: 'LogOutIcon',
     name: 'Log Out',
   },
   // {
