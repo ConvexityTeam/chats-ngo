@@ -2,6 +2,7 @@ import { ReactComponent as ButtonsIcon } from './buttons.svg'
 import { ReactComponent as CardsIcon } from './cards.svg'
 import { ReactComponent as CreditCardIcon } from './credit-card.svg'
 import { ReactComponent as ChartsIcon } from './charts.svg'
+import { ReactComponent as DashboardIcon } from './dashboard.svg'
 import { ReactComponent as FormsIcon } from './forms.svg'
 import { ReactComponent as HomeIcon } from './home.svg'
 import { ReactComponent as ModalsIcon } from './modals.svg'
@@ -40,6 +41,7 @@ export {
   CardsIcon,
   ChartsIcon,
   CreditCardIcon,
+  DashboardIcon,
   FormsIcon,
   HomeIcon,
   ModalsIcon,
