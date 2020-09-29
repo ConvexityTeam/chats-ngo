@@ -11,10 +11,11 @@ const login = (email, password) => {
                     password
                 })
                 .then(response => {
-                    if (response.data.accessToken) {
+                    if (response.data) {
                         localStorage.setItem('organization', JSON.stringify(response.data));
                     }
 
+                    console.log("response")
                     console.log(response.data)
                     return response.data
                 })
