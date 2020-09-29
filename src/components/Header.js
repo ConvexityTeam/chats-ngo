@@ -13,9 +13,14 @@ import {
 import { Avatar, Badge, Input, Dropdown, DropdownItem, 
   // WindmillContext 
 } from '@windmill/react-ui'
+import AuthService from "../services/auth.service";
+import { Link } from 'react-router-dom';
 
 function Header() {
   // const { mode, toggleMode } = useContext(WindmillContext)
+  const currentNGO = AuthService.getCurrentNGO();
+
+  console.log(currentNGO);
   const { toggleSidebar } = useContext(SidebarContext)
 
   const [isNotificationsMenuOpen, setIsNotificationsMenuOpen] = useState(false)
@@ -28,6 +33,10 @@ function Header() {
   function handleProfileClick() {
     setIsProfileMenuOpen(!isProfileMenuOpen)
   }
+
+  const logOut = () => {
+    AuthService.logout();
+  };
 
   return (
     <header className="z-40 py-4 bg-white shadow-bottom dark:bg-gray-800">
@@ -69,6 +78,7 @@ function Header() {
             </button>
           </li> */}
           {/* <!-- Notifications menu --> */}
+          <div>Welcome </div>
           <li className="relative">
             <button
               className="relative align-middle rounded-md focus:outline-none focus:shadow-outline-purple"
@@ -76,6 +86,7 @@ function Header() {
               aria-label="Notifications"
               aria-haspopup="true"
             >
+              
               <BellIcon className="w-5 h-5" aria-hidden="true" />
               {/* <!-- Notification badge --> */}
               <span
@@ -130,10 +141,12 @@ function Header() {
                 <OutlineCogIcon className="w-4 h-4 mr-3" aria-hidden="true" />
                 <span>Settings</span>
               </DropdownItem>
-              <DropdownItem onClick={() => alert('Log out!')}>
+              <Link to='/login'>
+              <DropdownItem onClick={logOut}>
                 <OutlineLogoutIcon className="w-4 h-4 mr-3" aria-hidden="true" />
                 <span>Log out</span>
               </DropdownItem>
+              </Link>
             </Dropdown>
           </li>
         </ul>
