@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
-
+import CampaignDataService from "../services/campaign.service";
 import PageTitle from '../components/Typography/PageTitle'
+import NGODataService from "../services/organization.service";
 
 import {  
   Modal, ModalHeader, ModalBody, ModalFooter,
@@ -19,10 +20,58 @@ import {
 
 import response from '../utils/demo/tableData'
 
-function Forms() {
+const Forms = () => {
+
+  const initialCampaignState = {
+    title: "",
+    description: "",
+    budget: "",
+    start_date: "",
+    end_date: ""
+  };
+
   const [page, setPage] = useState(1)
   const [data, setData] = useState([])
   const [isModalOpen, setIsModalOpen] = useState(false)
+
+  const [campaign, setCampaign] = useState(initialCampaignState);
+  const [submitted, setSubmitted] = useState(false);
+
+  const handleInputChange = event => {
+    const { name, value } = event.target;
+    setCampaign({ ...campaign, [name]: value });
+  };
+
+  const saveCampaign = () => {
+    var data = {
+      title: campaign.title,
+      description: campaign.description,
+      budget: campaign.budget,
+      start_date: campaign.start_date,
+      end_date: campaign.end_date
+    };
+
+    CampaignDataService.create(data)
+      .then(response => {
+        setCampaign({
+          title: response.data.title,
+          description: response.data.description,
+          budget: response.data.budget,
+          start_date: response.data.start_date,
+          end_date: response.data.end_date
+        });
+        setSubmitted(true);
+        console.log(response.data);
+      })
+      .catch(e => {
+        console.log(e);
+      });
+  };
+
+  // const newCampaign = () => {
+  //   setCampaign(initialCampaignState);
+  //   setSubmitted(false);
+  // };
 
   // pagination setup
   const resultsPerPage = 10
@@ -32,8 +81,6 @@ function Forms() {
   function onPageChange(p) {
     setPage(p)
   }
-
- 
 
   function openModal() {
     setIsModalOpen(true)
@@ -46,8 +93,21 @@ function Forms() {
   // on page change, load new sliced data
   // here you would make another server request for new data
   useEffect(() => {
-    setData(response.slice((page - 1) * resultsPerPage, page * resultsPerPage))
-  }, [page])
+    retrieveCampaigns();
+  }, []);
+
+
+  const retrieveCampaigns = () => {
+    CampaignDataService.getAll()
+      .then(response => {
+        setData(response.data);
+        console.log(response.data);
+        console.log(response.data.data);
+      })
+      .catch(e => {
+        console.log(e);
+      });
+  };
 
   return (
     <>
@@ -60,24 +120,75 @@ function Forms() {
       </div>
 
       <Modal isOpen={isModalOpen} onClose={closeModal}>
+        
+        {submitted ? (
+          <>
+          <ModalBody>
+            <h4 className="text-4xl">Campaign Created Successfully!</h4>
+          </ModalBody>
+          <ModalFooter>
+          {/* I don't like this approach. Consider passing a prop to ModalFooter
+           * that if present, would duplicate the buttons in a way similar to this.
+           * Or, maybe find some way to pass something like size="large md:regular"
+           * to Button
+           */}
+          <div className="hidden sm:block">
+            <Button layout="outline" onClick={closeModal}>
+              Cancel
+            </Button>
+          </div>
+          <div className="hidden sm:block">
+            <Button onClick={closeModal}>Okay</Button>
+          </div>
+          {/* <div className="block w-full sm:hidden">
+            <Button block size="large" layout="outline" onClick={closeModal}>
+              Cancel
+            </Button>
+          </div> */}
+          <div className="block w-full sm:hidden">
+            <Button block size="large">
+              Create Campaign
+            </Button>
+          </div>
+        </ModalFooter>
+          </>
+        ) : (
+          <>
         <ModalHeader>New Campaign</ModalHeader>
         <ModalBody>
-        <form className="w-full max-w-lg">
+        
+          <form className="w-full max-w-lg">
             <div className="flex flex-wrap -mx-3 mb-6">
               <div className="w-full px-3">
                 <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-password">
-                  Name
+                  Title
                 </label>
-                <input className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-password" type="password" placeholder="Name of the Campaign" />
+                <input 
+                  className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" 
+                  id="title" 
+                  required
+                  value={campaign.title}
+                  onChange={handleInputChange} 
+                  name="title"
+                  placeholder="Name of the Campaign" 
+                />
                 <p className="text-gray-600 text-xs italic"></p>
               </div>
             </div>
             <div className="flex flex-wrap -mx-3 mb-6">
               <div className="w-full px-3">
                 <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-password">
-                  Number of Beneficiaries
+                  Description
                 </label>
-                <input className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-password" type="password" placeholder="" />
+                <input 
+                  className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" 
+                  id="description"
+                  required
+                  value={campaign.description}
+                  onChange={handleInputChange} 
+                  name="description" 
+                  placeholder="" 
+                />
                 <p className="text-gray-600 text-xs italic"></p>
               </div>
             </div>
@@ -86,14 +197,32 @@ function Forms() {
                 <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">
                   Total Amount
                 </label>
-                <input className="appearance-none block w-full bg-gray-200 text-gray-700 border border-grey-500 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white" id="grid-first-name" type="text" placeholder="Amount from NGO Wallet" />
+                <input 
+                  className="appearance-none block w-full bg-gray-200 text-gray-700 border border-grey-500 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white" 
+                  id="budget" 
+                  required
+                  value={campaign.budget}
+                  onChange={handleInputChange} 
+                  name="budget" 
+                  placeholder="Campaign Budget" 
+                />
                 <p className="text-red-500 text-xs italic"></p>
               </div>
               <div className="w-full md:w-1/2 px-3">
                 <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-last-name">
-                  Amount Per Recipient
+                  {/* Amount Per Recipient */}
+                  Start Date
                 </label>
-                <input className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-last-name" type="text" placeholder="Amount for each recipient" />
+                <input 
+                  className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" 
+                  id="start_date" 
+                  type="text" 
+                  required
+                  value={campaign.start_date}
+                  onChange={handleInputChange} 
+                  name="start_date"
+                  placeholder="Start Date" 
+                />
               </div>
             </div>
             
@@ -115,9 +244,18 @@ function Forms() {
               </div>
               <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0">
                 <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-city">
-                  Field Office
+                  End Date
                 </label>
-                <input className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-city" type="text" placeholder="Albuquerque" />
+                <input 
+                  className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" 
+                  id="end_date" 
+                  type="text"
+                  required
+                  value={campaign.end_date}
+                  onChange={handleInputChange} 
+                  name="end_date" 
+                  placeholder="" 
+                />
               </div>
               
               {/* <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0">
@@ -128,6 +266,8 @@ function Forms() {
               </div> */}
             </div>
           </form>
+       
+        
         </ModalBody>
         <ModalFooter>
           {/* I don't like this approach. Consider passing a prop to ModalFooter
@@ -141,7 +281,7 @@ function Forms() {
             </Button>
           </div>
           <div className="hidden sm:block">
-            <Button>Accept</Button>
+            <Button onClick={saveCampaign}>Save</Button>
           </div>
           <div className="block w-full sm:hidden">
             <Button block size="large" layout="outline" onClick={closeModal}>
@@ -154,6 +294,8 @@ function Forms() {
             </Button>
           </div>
         </ModalFooter>
+        </>
+         )}
       </Modal>
 
       <TableContainer>
@@ -161,35 +303,38 @@ function Forms() {
           <TableHeader>
             <tr>
               <TableCell>Name</TableCell>
-              <TableCell>Total Amount</TableCell>
-              <TableCell>Amount Spent</TableCell>
-              <TableCell>Date Created</TableCell>
+              <TableCell>Budget</TableCell>
+              <TableCell>Start Date</TableCell>
+              <TableCell>End Date</TableCell>
               <TableCell>Status</TableCell>
             </tr>
           </TableHeader>
           <TableBody>
-            {data.map((user, i) => (
-              <TableRow key={i}>
+            {data.data && data.data.map((data, index) => (
+              <TableRow key={index}>
                 <TableCell>
                   <div className="flex items-center text-sm">
                     {/* <Avatar className="hidden mr-3 md:block" src={user.avatar} alt="User image" /> */}
                     <div>
-                      <p className="font-semibold">{user.name}</p>
+                      <p className="font-semibold">{data.title}</p>
                       {/* <p className="text-xs text-gray-600 dark:text-gray-400">{user.job}</p> */}
                     </div>
                   </div>
                 </TableCell>
                 <TableCell>
-                  <span className="text-sm">$ {user.amount}</span>
+                  <span className="text-sm">${data.budget}</span>
                 </TableCell>
                 <TableCell>
-                  <Badge type={user.status}>{user.job}</Badge>
+                  <span className="text-sm">{new Date(data.start_date).toLocaleDateString()}</span>
                 </TableCell>
                 <TableCell>
-                  <span className="text-sm">{new Date(user.date).toLocaleDateString()}</span>
+                  <span className="text-sm">{new Date(data.end_date).toLocaleDateString()}</span>
                 </TableCell>
                 <TableCell>
-                  <Badge type={user.status}>{user.status}</Badge>
+                <TableCell>
+                  <span className="text-sm">Ongoing</span>
+                </TableCell>
+                  {/* <Badge type={user.status}>{user.status}</Badge> */}
                 </TableCell>
               </TableRow>
             ))}
