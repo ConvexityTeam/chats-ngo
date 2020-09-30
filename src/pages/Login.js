@@ -139,7 +139,10 @@ const Login = (props) => {
                         {/* <div className="form-group"> */}
                         <button className="bg-purple-600 hover:bg-purple-700 text-white text-center font-bold py-2 rounded shadow-lg hover:shadow-xl transition duration-200" disabled={loading}>
                             {loading && (
-                              <span className="spinner-border spinner-border-sm"></span>
+                              // <span className="spinner-border spinner-border-sm"></span>
+                              // <svg className="animate-spin h-5 w-5 mr-3" viewBox="0 0 24 24">
+                              // </svg>
+                              <div>Page Loading... Please wait!</div>
                             )}
                             <span >Login</span>
                           </button>
