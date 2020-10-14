@@ -15,8 +15,9 @@ module.exports = {
       },
     },
     fontFamily: {
-      display: ['Montserrat', 'sans-serif'],
-      body: ['Montserrat', 'sans-serif'],
+      // display: ['Montserrat', 'sans-serif'],
+      // body: ['Montserrat', 'sans-serif'],
+      mono: ['Menlo', 'Monaco', 'Consolas'],
     },
     borderWidth: {
       default: '1px',
