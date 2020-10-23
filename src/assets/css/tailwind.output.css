@@ -6139,12 +6139,12 @@ video {
   clear: none;
 }
 
-.font-display {
-  font-family: Montserrat, sans-serif;
+.font-body {
+  font-family: Gilroy, sans-serif;
 }
 
-.font-body {
-  font-family: Montserrat, sans-serif;
+.font-heading {
+  font-family: Gilroy-bold;
 }
 
 .font-hairline {
@@ -18510,6 +18510,26 @@ video {
   transition-delay: 1000ms;
 }
 
+/* @import '../../fonts/' */
+
+/* @font-face {
+    font-family: 'Gilroy';
+    font-weight: 400;
+    src: url('../fonts/Gilroy-Regular.ttf');
+}
+
+@font-face {
+    font-family: 'Gilroy';
+    font-weight: 700;
+    src: url('../fonts/Gilroy-Bold.ttf');
+}
+
+@font-face {
+    font-family: 'Montserrat';
+    font-weight: 900;
+    src: url('../fonts/Montserrat-Black.ttf');
+} */
+
 @media (min-width: 640px) {
   .sm\:space-y-0 > :not(template) ~ :not(template) {
     --space-y-reverse: 0;
@@ -24023,12 +24043,12 @@ video {
     clear: none;
   }
 
-  .sm\:font-display {
-    font-family: Montserrat, sans-serif;
+  .sm\:font-body {
+    font-family: Gilroy, sans-serif;
   }
 
-  .sm\:font-body {
-    font-family: Montserrat, sans-serif;
+  .sm\:font-heading {
+    font-family: Gilroy-bold;
   }
 
   .sm\:font-hairline {
@@ -41908,12 +41928,12 @@ video {
     clear: none;
   }
 
-  .md\:font-display {
-    font-family: Montserrat, sans-serif;
+  .md\:font-body {
+    font-family: Gilroy, sans-serif;
   }
 
-  .md\:font-body {
-    font-family: Montserrat, sans-serif;
+  .md\:font-heading {
+    font-family: Gilroy-bold;
   }
 
   .md\:font-hairline {
@@ -59793,12 +59813,12 @@ video {
     clear: none;
   }
 
-  .lg\:font-display {
-    font-family: Montserrat, sans-serif;
+  .lg\:font-body {
+    font-family: Gilroy, sans-serif;
   }
 
-  .lg\:font-body {
-    font-family: Montserrat, sans-serif;
+  .lg\:font-heading {
+    font-family: Gilroy-bold;
   }
 
   .lg\:font-hairline {
@@ -77678,12 +77698,12 @@ video {
     clear: none;
   }
 
-  .xl\:font-display {
-    font-family: Montserrat, sans-serif;
+  .xl\:font-body {
+    font-family: Gilroy, sans-serif;
   }
 
-  .xl\:font-body {
-    font-family: Montserrat, sans-serif;
+  .xl\:font-heading {
+    font-family: Gilroy-bold;
   }
 
   .xl\:font-hairline {

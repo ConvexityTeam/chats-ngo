@@ -16,8 +16,8 @@ module.exports = {
     },
     fontFamily: {
       // display: ['Montserrat', 'sans-serif'],
-      // body: ['Montserrat', 'sans-serif'],
-      mono: ['Menlo', 'Monaco', 'Consolas'],
+      body: ['Gilroy', 'sans-serif'],
+      heading: ['Gilroy-bold'],
     },
     borderWidth: {
       default: '1px',

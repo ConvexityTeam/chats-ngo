@@ -88,7 +88,7 @@ const Login = (props) => {
                   <img class="h-16" src={require('../assets/img/chats-transparent.png')} alt="CHATS logo" />
                 </div>
                 <div>
-                    <h1 className="flex text-2xl font-family-mono text-white text-center justify-center">Welcome to CHATS</h1>
+                    <h1 className="flex text-2xl font-bold text-white text-center justify-center">Welcome to CHATS</h1>
                 </div>
             </header>
 

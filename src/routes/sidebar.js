@@ -22,7 +22,7 @@ const routes = [
     name: 'Campaign',
   },
   {
-    path: '#',
+    path: '/app/beneficiaries',
     icon: 'UsersIcon',
     name: 'Beneficiaries',
   },
@@ -32,7 +32,7 @@ const routes = [
     name: 'Vendors',
   },
   {
-    path: '#',
+    path: '/app/transactions',
     icon: 'CreditCardIcon',
     name: 'Transactions',
   },

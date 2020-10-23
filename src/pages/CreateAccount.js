@@ -104,7 +104,7 @@ const Login = (props) => {
     <section className="body-bg min-h-screen pt-12 md:pt-20 pb-6 px-2 md:px-0" style={{ backgroundImage:`url(${backgroundImage})`, backgroundSize: "cover",
     height: "100vh", }}>
             <header className="max-w-lg mx-auto">
-                <div className="flex items-center">
+                <div className="flex items-center justify-center">
                     <img src={require('../assets/img/chats-transparent.png')} className="h-16" alt="CHATS logo" />
                 </div>
                 <div>

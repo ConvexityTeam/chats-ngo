@@ -4,6 +4,7 @@ import { ReactComponent as CreditCardIcon } from './credit-card.svg'
 import { ReactComponent as ChartsIcon } from './charts.svg'
 import { ReactComponent as DashboardIcon } from './dashboard.svg'
 import { ReactComponent as FormsIcon } from './forms.svg'
+import { ReactComponent as FilterIcon } from './filter.svg'
 import { ReactComponent as HomeIcon } from './home.svg'
 import { ReactComponent as ModalsIcon } from './modals.svg'
 import { ReactComponent as PagesIcon } from './pages.svg'
@@ -49,6 +50,7 @@ export {
   TablesIcon,
   HeartIcon,
   EditIcon,
+  FilterIcon,
   TrashIcon,
   ForbiddenIcon,
   GithubIcon,
