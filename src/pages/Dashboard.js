@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-
+import { Card, CardBody } from '@windmill/react-ui'
 import InfoCard from '../components/Cards/InfoCard'
 import ChartCard from '../components/Chart/ChartCard'
 import { Doughnut, Bar } from 'react-chartjs-2'
@@ -60,7 +60,24 @@ function Dashboard() {
       </div>
 
       <PageTitle>Charts</PageTitle>
-      <div className="grid gap-6 mb-8 md:grid-cols-3">
+      <div className="grid gap-6 mb-8 md:grid-cols-4">
+      <Card>
+        <CardBody>
+          <p className="mb-4 font-semibold text-gray-600 dark:text-gray-300">Total Count</p>
+          <p className="text-gray-600 dark:text-gray-400">
+            Beneficiaries
+          </p>
+          <p className="text-gray-600 dark:text-gray-400">
+            842,000
+          </p>
+          <p className="text-gray-600 dark:text-gray-400">
+            Vendors
+          </p>
+          <p className="text-gray-600 dark:text-gray-400">
+            142,000
+          </p>
+        </CardBody>
+      </Card>
         <ChartCard title="Beneficiary Age Group">
           <Doughnut {...doughnutOptions} />
           <ChartLegend legends={doughnutLegends} />
