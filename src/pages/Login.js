@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import Form from "react-validation/build/form";
 import Input from "react-validation/build/input";
 import CheckButton from "react-validation/build/button";
-
+import logo from "../assets/img/chats-transparent.png"
 import { isEmail } from "validator"
 
 import AuthService from "../services/auth.service";
@@ -84,8 +84,8 @@ const Login = (props) => {
     <section className="body-bg min-h-screen pt-12 md:pt-20 pb-6 px-2 md:px-0" style={{ backgroundImage:`url(${backgroundImage})`, backgroundSize: "cover",
     height: "100vh", }}>
             <header className="max-w-lg mx-auto">
-                <div class="flex items-center justify-center">
-                  <img class="h-16" src={require('../assets/img/chats-transparent.png')} alt="CHATS logo" />
+                <div className="flex items-center justify-center">
+                  <img className="h-16" src={logo} alt="CHATS logo" />
                 </div>
                 <div>
                     <h1 className="flex text-2xl font-bold text-white text-center justify-center">Welcome to CHATS</h1>
@@ -140,14 +140,30 @@ const Login = (props) => {
                         </Link> */}
                         {/* <div className="form-group"> */}
                         <button className="bg-purple-600 hover:bg-purple-700 text-white text-center font-bold py-2 rounded shadow-lg hover:shadow-xl transition duration-200" disabled={loading}>
-                            {loading && (
+                            {/* {loading && (
                               // <span className="spinner-border spinner-border-sm"></span>
                               // <svg className="animate-spin h-5 w-5 mr-3" viewBox="0 0 24 24">
                               // </svg>
-                              <div>Page Loading... Please wait!</div>
+                              // <div>Page Loading... Please wait!</div>
+                              // <div class="fixed top-0 right-0 h-screen w-screen z-50 flex justify-center items-center">
+                                <div class="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-gray-900"></div>
+                              // </div>
                             )}
-                            <span >Login</span>
-                          </button>
+                            <span >Login</span> */}
+
+                          {loading ? (
+                          
+                                    <span className="flex ml-20">
+                                    <svg className="animate-spin ease duration-300 -ml-1 mr-3 h-5 w-5 text-white" fill="none" viewBox="0 0 24 24">
+                                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                    </svg>Page Loading... Please wait!</span>
+                                  ) : (
+                                      <span >Login</span>
+                                    
+                                  )}
+                        </button>
+
                         {/* </div> */}
 
                         {message && (
