@@ -63,7 +63,7 @@ function Dashboard() {
       <div className="grid gap-6 mb-8 md:grid-cols-4">
         <Card>
           <CardBody>
-            <p className="mb-4 font-semibold text-gray-600 dark:text-gray-300">Total Count</p>
+            <p className="mb-4 font text-gray-600 dark:text-gray-300">Total Count</p>
             <p className="text-gray-600 dark:text-gray-400">
               Beneficiaries
             </p>
