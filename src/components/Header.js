@@ -2,25 +2,23 @@ import React, { useContext, useState } from 'react'
 import { SidebarContext } from '../context/SidebarContext'
 import {
   SearchIcon,
-  // MoonIcon,
-  // SunIcon,
+  MoonIcon,
+  SunIcon,
   BellIcon,
   MenuIcon,
   OutlinePersonIcon,
   OutlineCogIcon,
   OutlineLogoutIcon,
 } from '../icons'
-import { Avatar, Badge, Input, Dropdown, DropdownItem, 
-  // WindmillContext 
-} from '@windmill/react-ui'
+import { Avatar, Badge, Input, Dropdown, DropdownItem, WindmillContext } from '@windmill/react-ui'
 import AuthService from "../services/auth.service";
 import { Link } from 'react-router-dom';
 
 function Header() {
-  // const { mode, toggleMode } = useContext(WindmillContext)
-  const currentNGO = AuthService.getCurrentNGO();
+  const { mode, toggleMode } = useContext(WindmillContext)
+  //const currentNGO = AuthService.getCurrentNGO();
 
-  console.log(currentNGO);
+  // console.log(currentNGO);
   const { toggleSidebar } = useContext(SidebarContext)
 
   const [isNotificationsMenuOpen, setIsNotificationsMenuOpen] = useState(false)
@@ -64,7 +62,7 @@ function Header() {
         </div>
         <ul className="flex items-center flex-shrink-0 space-x-6">
           {/* <!-- Theme toggler --> */}
-          {/* <li className="flex">
+          <li className="flex">
             <button
               className="rounded-md focus:outline-none focus:shadow-outline-purple"
               onClick={toggleMode}
@@ -76,9 +74,9 @@ function Header() {
                 <MoonIcon className="w-5 h-5" aria-hidden="true" />
               )}
             </button>
-          </li> */}
+          </li>
           {/* <!-- Notifications menu --> */}
-          <div>Welcome </div>
+          {/* <div>Welcome </div> */}
           <li className="relative">
             <button
               className="relative align-middle rounded-md focus:outline-none focus:shadow-outline-purple"
