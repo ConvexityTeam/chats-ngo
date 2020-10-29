@@ -61,7 +61,7 @@ function Dashboard() {
 
       <PageTitle>Charts</PageTitle>
       <div className="grid gap-6 mb-8 md:grid-cols-4">
-        <Card>
+        <Card className="shadow-md">
           <CardBody>
             <p className="mb-4 font text-gray-600 dark:text-gray-300">Total Count</p>
             <p className="text-gray-600 dark:text-gray-400">
@@ -78,24 +78,25 @@ function Dashboard() {
             </p>
           </CardBody>
         </Card>
-        <ChartCard title="Beneficiary Age Group">
-          <Doughnut {...doughnutOptions} />
-          <ChartLegend legends={doughnutLegends} />
-        </ChartCard>
+         <ChartCard title="Beneficiary Age Group">
+            <Doughnut {...doughnutOptions} />
+            <ChartLegend legends={doughnutLegends} />
+          </ChartCard>
 
-        <ChartCard title="Beneficiary By Gender">
-          <Doughnut {...doughnutOptions} />
-          <ChartLegend legends={doughnutLegends} />
-        </ChartCard>
+          <ChartCard title="Beneficiary By Gender">
+            <Doughnut {...doughnutOptions} />
+            <ChartLegend legends={doughnutLegends} />
+          </ChartCard>
 
-        <ChartCard title="Vendor Transaction By Beneficiary">
-          <Bar {...barOptions} />
-          <ChartLegend legends={barLegends} />
-        </ChartCard>
+          <ChartCard title="Vendor Transaction By Beneficiary">
+            <Bar {...barOptions} />
+            <ChartLegend legends={barLegends} />
+          </ChartCard>
+      
       </div>
 
       <div className="grid gap-6 mb-8 md:grid-cols-4">
-        <Card>
+        <Card className="shadow-md">
           <CardBody>
             <p className="mb-4 font-semibold text-gray-600 dark:text-gray-300">Total Count</p>
             <p className="text-gray-600 dark:text-gray-400">
@@ -121,7 +122,7 @@ function Dashboard() {
           <Bar {...barOptions} />
           <ChartLegend legends={barLegends} />
         </ChartCard>
-        <Card>
+        <Card className="shadow-md">
           <CardBody>
             <p className="mb-4 font-semibold text-gray-600 dark:text-gray-300">Total Count</p>
             <p className="text-gray-600 dark:text-gray-400">

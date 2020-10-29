@@ -3,7 +3,7 @@ import { Card, CardBody } from '@windmill/react-ui'
 
 function InfoCard({ title, value, children: icon }) {
   return (
-    <Card>
+    <Card className="shadow-md">
       <CardBody className="flex items-center">
         {icon}
         <div>
