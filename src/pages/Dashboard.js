@@ -59,7 +59,7 @@ function Dashboard() {
         </InfoCard>
       </div>
 
-      <PageTitle>Charts</PageTitle>
+      
       <div className="grid gap-6 mb-8 md:grid-cols-4">
         <Card className="shadow-md">
           <CardBody>
