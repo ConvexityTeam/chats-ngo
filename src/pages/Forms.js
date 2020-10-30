@@ -17,6 +17,7 @@ import {
   Badge,
   Pagination,
 } from '@windmill/react-ui'
+import { FilterIcon } from "../icons";
 
 import response from '../utils/demo/tableData'
 
@@ -112,12 +113,30 @@ const Forms = () => {
   return (
     <>
       <PageTitle>Campaigns</PageTitle>
-
-      <div class="flex bg-white-200 p-4 justify-end">
+      <div>
+        <div className="flex flex-row space-x-4 align-center justify-center m-4">
+          <div className="w-1/2">
+            <input
+              class="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+              id="search"
+              type="search"
+              placeholder="Search Transactions"
+            ></input>
+          </div>
+          <div className="w-2/3">
+            <div class="flex bg-transparent w-1/6 hover:bg-blue-500 text-blue-700 font-semibold hover:text-white text-center py-2 px-4 border border-blue-500 hover:border-transparent rounded">
+            < FilterIcon className="mr-2 w-5 h-5" />
+              Filter
+            </div>
+          </div>
+        </div>
+        <div class="flex bg-white-200 p-4 justify-end">
         <span class="block text-white-700 text-center bg-white-400 px-4 py-2"><Button onClick={openModal}>Create Campaign</Button></span>
         {/* <span class="block text-gray-700 text-center bg-gray-400 px-4 py-2 mt-2">2</span>
         <span class="block text-gray-700 text-center bg-gray-400 px-4 py-2 mt-2">3</span> */}
+        </div>
       </div>
+      
 
       <Modal isOpen={isModalOpen} onClose={closeModal}>
         
