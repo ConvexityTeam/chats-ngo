@@ -42,7 +42,7 @@ function Dashboard() {
 
   return (
     <>
-      <PageTitle>Dashboard</PageTitle>
+      <PageTitle className="font-mono">Dashboard</PageTitle>
 
       {/* <!-- Cards --> */}
       <div className="grid gap-6 mb-8 md:grid-cols-2 xl:grid-cols-4">
@@ -63,17 +63,17 @@ function Dashboard() {
       <div className="grid gap-6 mb-8 md:grid-cols-4">
         <Card className="shadow-md">
           <CardBody>
-            <p className="mb-4 font text-gray-600 dark:text-gray-300">Total Count</p>
+            <p className="mb-4 font text-gray-600 dark:text-gray-300 font-semibold">Total Count</p>
             <p className="text-gray-600 dark:text-gray-400">
               Beneficiaries
             </p>
-            <p className="text-gray-600 dark:text-gray-400">
+            <p className="text-gray-600 dark:text-gray-400 font-medium text-2xl">
               842,000
             </p>
-            <p className="text-gray-600 dark:text-gray-400">
+            <p className="mt-6 text-gray-600 dark:text-gray-400">
               Vendors
             </p>
-            <p className="text-gray-600 dark:text-gray-400">
+            <p className="text-gray-600 dark:text-gray-400 font-medium text-2xl">
               142,000
             </p>
           </CardBody>
@@ -98,18 +98,30 @@ function Dashboard() {
       <div className="grid gap-6 mb-8 md:grid-cols-4">
         <Card className="shadow-md">
           <CardBody>
-            <p className="mb-4 font-semibold text-gray-600 dark:text-gray-300">Total Count</p>
-            <p className="text-gray-600 dark:text-gray-400">
-              Beneficiaries
+            <p className="mb-4 font-semibold text-gray-600 dark:text-gray-300">Metrics</p>
+            <p className="mb-2 text-gray-600 dark:text-gray-400">
+              Maximum Disbursement Date
+            </p>
+            <p className="mb-4 text-gray-600 dark:text-gray-400">
+              12/04/2020
+            </p>
+            <p className="mb-2 text-gray-600 dark:text-gray-400">
+              Minimum Disbursement Date
+            </p>
+            <p className="mb-4 text-gray-600 dark:text-gray-400">
+            12/04/2020
+            </p>
+            <p className="mb-2 text-gray-600 dark:text-gray-400">
+              Maximum Spending Date
+            </p>
+            <p className="mb-4 text-gray-600 dark:text-gray-400">
+              12/04/2020
+            </p>
+            <p className="mb-2 text-gray-600 dark:text-gray-400">
+              Minimum Spending Date
             </p>
             <p className="text-gray-600 dark:text-gray-400">
-              842,000
-            </p>
-            <p className="text-gray-600 dark:text-gray-400">
-              Vendors
-            </p>
-            <p className="text-gray-600 dark:text-gray-400">
-              142,000
+            12/04/2020
             </p>
           </CardBody>
         </Card>
@@ -124,18 +136,18 @@ function Dashboard() {
         </ChartCard>
         <Card className="shadow-md">
           <CardBody>
-            <p className="mb-4 font-semibold text-gray-600 dark:text-gray-300">Total Count</p>
-            <p className="text-gray-600 dark:text-gray-400">
-              Beneficiaries
+            <p className="mb-4 font-semibold text-gray-600 dark:text-gray-300">Vendors</p>
+            <p className="mb-4 text-gray-600 dark:text-gray-400">
+              Dangote Flour Mill
             </p>
-            <p className="text-gray-600 dark:text-gray-400">
-              842,000
+            <p className="mb-4 text-gray-600 dark:text-gray-400">
+              Cadbury Nigeria
             </p>
-            <p className="text-gray-600 dark:text-gray-400">
-              Vendors
+            <p className="mb-4 text-gray-600 dark:text-gray-400">
+              Nestle Foods
             </p>
-            <p className="text-gray-600 dark:text-gray-400">
-              142,000
+            <p className="mb-4 text-gray-600 dark:text-gray-400">
+              Kellogs Cereal
             </p>
           </CardBody>
         </Card>
