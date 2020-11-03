@@ -102,25 +102,25 @@ function Dashboard() {
             <p className="mb-2 text-gray-600 dark:text-gray-400">
               Maximum Disbursement Date
             </p>
-            <p className="mb-4 text-gray-600 dark:text-gray-400">
+            <p className="mb-4 text-gray-600 dark:text-gray-400 font-medium">
               12/04/2020
             </p>
             <p className="mb-2 text-gray-600 dark:text-gray-400">
               Minimum Disbursement Date
             </p>
-            <p className="mb-4 text-gray-600 dark:text-gray-400">
+            <p className="mb-4 text-gray-600 dark:text-gray-400 font-medium">
             12/04/2020
             </p>
             <p className="mb-2 text-gray-600 dark:text-gray-400">
               Maximum Spending Date
             </p>
-            <p className="mb-4 text-gray-600 dark:text-gray-400">
+            <p className="mb-4 text-gray-600 dark:text-gray-400 font-medium">
               12/04/2020
             </p>
             <p className="mb-2 text-gray-600 dark:text-gray-400">
               Minimum Spending Date
             </p>
-            <p className="text-gray-600 dark:text-gray-400">
+            <p className="text-gray-600 dark:text-gray-400 font-medium">
             12/04/2020
             </p>
           </CardBody>
@@ -134,6 +134,7 @@ function Dashboard() {
           <Bar {...barOptions} />
           <ChartLegend legends={barLegends} />
         </ChartCard>
+        
         <Card className="shadow-md">
           <CardBody>
             <p className="mb-4 font-semibold text-gray-600 dark:text-gray-300">Vendors</p>
@@ -149,7 +150,7 @@ function Dashboard() {
             <p className="mb-4 text-gray-600 dark:text-gray-400">
               Kellogs Cereal
             </p>
-          </CardBody>
+          </CardBody> 
         </Card>
       </div>
     </>
