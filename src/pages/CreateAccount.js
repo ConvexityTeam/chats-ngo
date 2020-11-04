@@ -4,6 +4,7 @@ import Form from "react-validation/build/form";
 import Input from "react-validation/build/input";
 import CheckButton from "react-validation/build/button";
 import { isEmail } from "validator";
+import logo from "../assets/img/chats-transparent.png"
 
 import AuthService from "../services/auth.service";
 // import '../styles/app.css'
@@ -105,7 +106,7 @@ const Login = (props) => {
     height: "100vh", }}>
             <header className="max-w-lg mx-auto">
                 <div className="flex items-center justify-center">
-                    <img src={require('../assets/img/chats-transparent.png')} className="h-16" alt="CHATS logo" />
+                  <img className="h-16" src={logo} alt="CHATS logo" />
                 </div>
                 <div>
                     <h1 className="flex text-2xl font-bold text-white text-center justify-center">Welcome to CHATS</h1>
