@@ -11,11 +11,11 @@ const routes = [
     icon: 'DashboardIcon', // the component being exported from icons/index.js
     name: 'Dashboard', // name that appear in Sidebar
   },
-  {
-    path: '#',
-    icon: 'OutlinePersonIcon',
-    name: 'Profile',
-  },
+  // {
+  //   path: '#',
+  //   icon: 'OutlinePersonIcon',
+  //   name: 'Profile',
+  // },
   {
     path: '/app/campaign',
     icon: 'MegaphoneIcon',
@@ -26,41 +26,44 @@ const routes = [
     icon: 'UsersIcon',
     name: 'Beneficiaries',
   },
-  {
-    path: '#',
-    icon: 'VendorBoothIcon',
-    name: 'Vendors',
-  },
+  // {
+  //   path: '#',
+  //   icon: 'VendorBoothIcon',
+  //   name: 'Vendors',
+  // },
   {
     path: '/app/transactions',
     icon: 'CreditCardIcon',
     name: 'Transactions',
   },
-  {
-    path: '#',
-    icon: 'ShoppingIcon',
-    name: 'Market',
-  },
-  {
-    path: '#',
-    icon: 'MoneyIcon',
-    name: 'Cash For Work',
-  },
-  {
-     path: '#',
-    icon: 'SettingsIcon',
-    name: 'Settings',
-  },
-  {
-    path: '#',
-    icon: 'SupportHeadphonesIcon',
-    name: 'Support',
-  },
-  {
-    path: '#',
-    icon: 'LogOutIcon',
-    name: 'Log Out',
-  },
+  // {
+  //   path: '#',
+  //   icon: 'ShoppingIcon',
+  //   name: 'Market',
+  // },
+  // {
+  //   path: '#',
+  //   icon: 'MoneyIcon',
+  //   name: 'Cash For Work',
+  // },
+  // {
+  //    path: '#',
+  //   icon: 'SettingsIcon',
+  //   name: 'Settings',
+  // },
+  // {
+  //   path: '#',
+  //   icon: 'SupportHeadphonesIcon',
+  //   name: 'Support',
+  // },
+  // {
+  //   path: '#',
+  //   icon: 'LogOutIcon',
+  //   name: 'Log Out',
+  // },
+
+
+
   // {
   //   icon: 'PagesIcon',
   //   name: 'Pages',
