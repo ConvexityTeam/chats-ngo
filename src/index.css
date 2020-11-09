@@ -12,14 +12,14 @@ code {
     monospace;
 }
 
-.h1 {
+/* .h1 {
   font-family: 'Gilroy-Bold';
   font-weight: 700;
   src: url('./fonts/Gilroy-Bold.ttf');
-  /* font-family: 'Gilroy-Medium';
+  font-family: 'Gilroy-Medium';
   src: local('Gilroy'), url(./fonts/Gilroy-Medium.ttf) format('truetype');
   font-family: 'Gilroy-Regular';
-  src: local('Gilroy'), url(./fonts/Gilroy-Regular.ttf) format('truetype'); */
+  src: local('Gilroy'), url(./fonts/Gilroy-Regular.ttf) format('truetype');
 }
 
 @font-face {
@@ -38,4 +38,4 @@ code {
     font-family: 'Montserrat';
     font-weight: 900;
     src: url('./fonts/Gilroy-Heavy.ttf');
-}
+} */
