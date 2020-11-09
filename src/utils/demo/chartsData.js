@@ -100,15 +100,15 @@ export const lineOptions = {
 
 export const barOptions = {
   data: {
-    labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+    labels: ['1', '2', '3', '4', '5', '6', '7'],
     datasets: [
-      {
-        label: 'Male',
-        backgroundColor: '#0694a2',
-        // borderColor: window.chartColors.red,
-        borderWidth: 1,
-        data: [-3, 14, 52, 74, 33, 90, 70],
-      },
+      // {
+      //   label: 'Male',
+      //   backgroundColor: '#0694a2',
+      //   // borderColor: window.chartColors.red,
+      //   borderWidth: 1,
+      //   data: [-3, 14, 52, 74, 33, 90, 70],
+      // },
       {
         label: 'Female',
         backgroundColor: '#7e3af2',
