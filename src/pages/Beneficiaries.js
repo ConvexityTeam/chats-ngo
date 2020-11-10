@@ -61,39 +61,39 @@ function Dashboard() {
       {/* <!-- Cards --> */}
       <div className="grid gap-6 mb-8 md:grid-cols-2 xl:grid-cols-4">
         <InfoCard title="Wallet Balance" value="$125,000">
-          <RoundIcon
+          {/* <RoundIcon
             icon={PeopleIcon}
             iconColorClass="text-orange-500 dark:text-orange-100"
             bgColorClass="bg-orange-100 dark:bg-orange-500"
             className="mr-4"
-          />
+          /> */}
         </InfoCard>
 
         <InfoCard title="Total Amount Received" value="$46,760">
-          <RoundIcon
+          {/* <RoundIcon
             icon={MoneyIcon}
             iconColorClass="text-green-500 dark:text-green-100"
             bgColorClass="bg-green-100 dark:bg-green-500"
             className="mr-4"
-          />
+          /> */}
         </InfoCard>
 
         <InfoCard title="Total Amount Disbursed" value="$842,000">
-          <RoundIcon
+          {/* <RoundIcon
             icon={MoneyIcon}
             iconColorClass="text-blue-500 dark:text-blue-100"
             bgColorClass="bg-blue-100 dark:bg-blue-500"
             className="mr-4"
-          />
+          /> */}
         </InfoCard>
 
         <InfoCard title="Total Balance" value="$842,000">
-          <RoundIcon
+          {/* <RoundIcon
             icon={MoneyIcon}
             iconColorClass="text-teal-500 dark:text-teal-100"
             bgColorClass="bg-teal-100 dark:bg-teal-500"
             className="mr-4"
-          />
+          /> */}
         </InfoCard>
       </div>
 
