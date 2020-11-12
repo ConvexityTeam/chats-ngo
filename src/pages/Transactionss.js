@@ -173,14 +173,14 @@ function Tables() {
             ))}
           </TableBody>
         </Table>
-        <TableFooter>
+        {/* <TableFooter>
           <Pagination
             totalResults={totalResults}
             resultsPerPage={resultsPerPage}
             onChange={onPageChangeTable1}
             label="Table navigation"
           />
-        </TableFooter>
+        </TableFooter> */}
       </TableContainer>
     </>
   );

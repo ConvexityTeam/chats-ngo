@@ -359,14 +359,14 @@ const Forms = () => {
             ))}
           </TableBody>
         </Table>
-        <TableFooter>
+        {/* <TableFooter>
           <Pagination
             totalResults={totalResults}
             resultsPerPage={resultsPerPage}
             label="Table navigation"
             onChange={onPageChange}
           />
-        </TableFooter>
+        </TableFooter> */}
       </TableContainer>
     </>
   )
