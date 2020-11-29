@@ -12,7 +12,8 @@ import {
   doughnutOptions,
   barOptions,
   doughnutLegends,
-  barLegends
+  barLegends,
+  beneficiaryAgeGroup
 } from '../utils/demo/chartsData'
 
 import AuthService from "../services/auth.service";
@@ -80,7 +81,7 @@ function Dashboard() {
         </Card>
          <ChartCard title="Beneficiary Age Group">
             <Doughnut {...doughnutOptions} />
-            <ChartLegend legends={doughnutLegends} />
+            <ChartLegend legends={beneficiaryAgeGroup} />
           </ChartCard>
 
           <ChartCard title="Beneficiary By Gender">
