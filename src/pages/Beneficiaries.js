@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import CampaignDataService from "../services/campaign.service";
 
 // import CTA from '../components/CTA'
 import InfoCard from '../components/Cards/InfoCard'
@@ -10,12 +11,14 @@ import { FilterIcon, MoneyIcon, PeopleIcon } from '../icons'
 import RoundIcon from '../components/RoundIcon'
 import response from '../utils/demo/tableData'
 import {
+  Modal, ModalHeader, ModalBody, ModalFooter,
   TableBody,
   TableContainer,
   Table,
   TableHeader,
   TableCell,
   TableRow,
+  Button,
   // TableFooter,
 } from '@windmill/react-ui'
 
@@ -29,6 +32,19 @@ import SectionTitle from '../components/Typography/SectionTitle'
 import AuthService from "../services/auth.service";
 
 function Dashboard() {
+
+  const initialCampaignState = {
+    title: "",
+    description: "",
+    budget: "",
+    start_date: "",
+    end_date: ""
+  };
+
+
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [campaign, setCampaign] = useState(initialCampaignState);
+  const [submitted, setSubmitted] = useState(false);
   const currentNGO = AuthService.getCurrentNGO();
   // const result = response.data
   // console.log(result)
@@ -40,10 +56,47 @@ function Dashboard() {
   // pagination setup
   const resultsPerPage = 10
   // const totalResults = response.length
+  const handleInputChange = event => {
+    const { name, value } = event.target;
+    setCampaign({ ...campaign, [name]: value });
+  };
 
+  const saveCampaign = () => {
+    var data = {
+      title: campaign.title,
+      description: campaign.description,
+      budget: campaign.budget,
+      start_date: campaign.start_date,
+      end_date: campaign.end_date
+    };
+
+    CampaignDataService.create(data)
+      .then(response => {
+        setCampaign({
+          title: response.data.title,
+          description: response.data.description,
+          budget: response.data.budget,
+          start_date: response.data.start_date,
+          end_date: response.data.end_date
+        });
+        setSubmitted(true);
+        console.log(response.data);
+      })
+      .catch(e => {
+        console.log(e);
+      });
+  };
   // pagination change control
   function onPageChange(p) {
     setPage(p)
+  }
+
+  function openModal() {
+    setIsModalOpen(true)
+  }
+
+  function closeModal() {
+    setIsModalOpen(false)
   }
 
   // on page change, load new sliced data
@@ -51,6 +104,18 @@ function Dashboard() {
   useEffect(() => {
     setData(response.slice((page - 1) * resultsPerPage, page * resultsPerPage))
   }, [page])
+
+  const retrieveCampaigns = () => {
+    CampaignDataService.getAll()
+      .then(response => {
+        setData(response.data);
+        console.log(response.data);
+        console.log(response.data.data);
+      })
+      .catch(e => {
+        console.log(e);
+      });
+  };
 
   return (
     <>
@@ -142,7 +207,324 @@ function Dashboard() {
         </TableFooter>
       </TableContainer> */}
 
-      <PageTitle>Charts</PageTitle>
+      <div class="flex bg-white-200 p-4 justify-end">
+        <span class="block text-white-700 text-center bg-white-400 px-4 py-2"><Button onClick={openModal}>Add A Beneficiary</Button></span>
+        {/* <span class="block text-gray-700 text-center bg-gray-400 px-4 py-2 mt-2">2</span>
+        <span class="block text-gray-700 text-center bg-gray-400 px-4 py-2 mt-2">3</span> */}
+      </div>
+
+      <Modal isOpen={isModalOpen} onClose={closeModal}>
+        
+        {submitted ? (
+          <>
+          <ModalBody>
+            <h4 className="text-4xl">Campaign Created Successfully!</h4>
+          </ModalBody>
+          <ModalFooter>
+          {/* I don't like this approach. Consider passing a prop to ModalFooter
+           * that if present, would duplicate the buttons in a way similar to this.
+           * Or, maybe find some way to pass something like size="large md:regular"
+           * to Button
+           */}
+          <div className="hidden sm:block">
+            <Button layout="outline" onClick={closeModal}>
+              Cancel
+            </Button>
+          </div>
+          <div className="hidden sm:block">
+            <Button onClick={closeModal}>Okay</Button>
+          </div>
+          {/* <div className="block w-full sm:hidden">
+            <Button block size="large" layout="outline" onClick={closeModal}>
+              Cancel
+            </Button>
+          </div> */}
+          <div className="block w-full sm:hidden">
+            <Button block size="large">
+              Create Campaign
+            </Button>
+          </div>
+        </ModalFooter>
+          </>
+        ) : (
+          <>
+        <ModalHeader>New Campaign</ModalHeader>
+        <ModalBody>
+        
+          <form className="w-full max-w-lg">
+            {/* <div className="flex flex-wrap -mx-3 mb-6">
+              <div className="w-full px-3">
+                <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-password">
+                  Title
+                </label>
+                <input 
+                  className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" 
+                  id="title" 
+                  required
+                  value={campaign.title}
+                  onChange={handleInputChange} 
+                  name="title"
+                  placeholder="Name of the Campaign" 
+                />
+                <p className="text-gray-600 text-xs italic"></p>
+              </div>
+            </div> */}
+            {/* <div className="flex flex-wrap -mx-3 mb-6">
+              <div className="w-full px-3">
+                <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-password">
+                  Description
+                </label>
+                <input 
+                  className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" 
+                  id="description"
+                  required
+                  value={campaign.description}
+                  onChange={handleInputChange} 
+                  name="description" 
+                  placeholder="" 
+                />
+                <p className="text-gray-600 text-xs italic"></p>
+              </div>
+            </div> */}
+            <div className="flex flex-wrap -mx-3 mb-6">
+              <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0">
+                <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">
+                  First Name
+                </label>
+                <input 
+                  className="appearance-none block w-full bg-gray-200 text-gray-700 border border-grey-500 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white" 
+                  id="budget" 
+                  required
+                  value={campaign.budget}
+                  onChange={handleInputChange} 
+                  name="budget" 
+                  placeholder="Campaign Budget" 
+                />
+                <p className="text-red-500 text-xs italic"></p>
+              </div>
+              <div className="w-full md:w-1/2 px-3">
+                <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-last-name">
+                  {/* Amount Per Recipient */}
+                  Last Name
+                </label>
+                <input 
+                  className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" 
+                  id="start_date" 
+                  type="text" 
+                  required
+                  value={campaign.start_date}
+                  onChange={handleInputChange} 
+                  name="start_date"
+                  placeholder="Start Date" 
+                />
+              </div>
+            </div>
+            <div className="flex flex-wrap -mx-3 mb-6">
+              <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0">
+                <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">
+                  Phone
+                </label>
+                <input 
+                  className="appearance-none block w-full bg-gray-200 text-gray-700 border border-grey-500 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white" 
+                  id="budget" 
+                  required
+                  value={campaign.budget}
+                  onChange={handleInputChange} 
+                  name="budget" 
+                  placeholder="Campaign Budget" 
+                />
+                <p className="text-red-500 text-xs italic"></p>
+              </div>
+              <div className="w-full md:w-1/2 px-3">
+                <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-last-name">
+                  {/* Amount Per Recipient */}
+                  BVN
+                </label>
+                <input 
+                  className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" 
+                  id="start_date" 
+                  type="text" 
+                  required
+                  value={campaign.start_date}
+                  onChange={handleInputChange} 
+                  name="start_date"
+                  placeholder="Start Date" 
+                />
+              </div>
+            </div>
+            <div className="flex flex-wrap -mx-3 mb-6">
+              <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0">
+                <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">
+                  Location
+                </label>
+                <input 
+                  className="appearance-none block w-full bg-gray-200 text-gray-700 border border-grey-500 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white" 
+                  id="budget" 
+                  required
+                  value={campaign.budget}
+                  onChange={handleInputChange} 
+                  name="budget" 
+                  placeholder="Campaign Budget" 
+                />
+                <p className="text-red-500 text-xs italic"></p>
+              </div>
+              <div className="w-full md:w-1/2 px-3">
+                <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-last-name">
+                  {/* Amount Per Recipient */}
+                  Blockchain Address
+                </label>
+                <input 
+                  className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" 
+                  id="start_date" 
+                  type="text" 
+                  required
+                  value={campaign.start_date}
+                  onChange={handleInputChange} 
+                  name="start_date"
+                  placeholder="Start Date" 
+                />
+              </div>
+            </div>
+            <div className="flex flex-wrap -mx-3 mb-6">
+              <div className="w-full px-3">
+                <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-password">
+                  Address
+                </label>
+                <input 
+                  className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" 
+                  id="title" 
+                  required
+                  value={campaign.title}
+                  onChange={handleInputChange} 
+                  name="title"
+                  placeholder="Current Address" 
+                />
+                <p className="text-gray-600 text-xs italic"></p>
+              </div>
+            </div>
+            <div className="flex flex-wrap -mx-3 mb-6">
+              <div className="w-full px-3">
+                <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-password">
+                  Email
+                </label>
+                <input 
+                  className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" 
+                  id="title" 
+                  required
+                  value={campaign.title}
+                  onChange={handleInputChange} 
+                  name="title"
+                  placeholder="Email. If available." 
+                />
+                <p className="text-gray-600 text-xs italic"></p>
+              </div>
+            </div>
+            {/* <div className="flex flex-wrap -mx-3 mb-6">
+              <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0">
+                <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-first-name">
+                  Total Amount
+                </label>
+                <input 
+                  className="appearance-none block w-full bg-gray-200 text-gray-700 border border-grey-500 rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white" 
+                  id="budget" 
+                  required
+                  value={campaign.budget}
+                  onChange={handleInputChange} 
+                  name="budget" 
+                  placeholder="Campaign Budget" 
+                />
+                <p className="text-red-500 text-xs italic"></p>
+              </div>
+              <div className="w-full md:w-1/2 px-3">
+                <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-last-name">
+                  
+                  Start Date
+                </label>
+                <input 
+                  className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" 
+                  id="start_date" 
+                  type="text" 
+                  required
+                  value={campaign.start_date}
+                  onChange={handleInputChange} 
+                  name="start_date"
+                  placeholder="Start Date" 
+                />
+              </div>
+            </div> */}
+            
+            {/* <div className="flex flex-wrap -mx-3 mb-6">
+            <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0">
+                <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-state">
+                  Location
+                </label>
+                <div className="relative">
+                  <select className="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-state">
+                    <option>Borno</option>
+                    <option>Adamawa</option>
+                    <option>Yobe</option>
+                  </select>
+                  <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                    <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
+                  </div>
+                </div>
+              </div>
+              <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0">
+                <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-city">
+                  End Date
+                </label>
+                <input 
+                  className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" 
+                  id="end_date" 
+                  type="text"
+                  required
+                  value={campaign.end_date}
+                  onChange={handleInputChange} 
+                  name="end_date" 
+                  placeholder="" 
+                />
+              </div> */}
+              
+              {/* <div className="w-full md:w-1/2 px-3 mb-6 md:mb-0">
+                <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-zip">
+                  Zip
+                </label>
+                <input className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-zip" type="text" placeholder="90210" />
+              </div> */}
+            {/* </div> */}
+          </form>
+       
+        
+        </ModalBody>
+        <ModalFooter>
+          {/* I don't like this approach. Consider passing a prop to ModalFooter
+           * that if present, would duplicate the buttons in a way similar to this.
+           * Or, maybe find some way to pass something like size="large md:regular"
+           * to Button
+           */}
+          <div className="hidden sm:block">
+            <Button layout="outline" onClick={closeModal}>
+              Cancel
+            </Button>
+          </div>
+          <div className="hidden sm:block">
+            <Button onClick={saveCampaign}>Save</Button>
+          </div>
+          <div className="block w-full sm:hidden">
+            <Button block size="large" layout="outline" onClick={closeModal}>
+              Cancel
+            </Button>
+          </div>
+          <div className="block w-full sm:hidden">
+            <Button block size="large">
+              Create Campaign
+            </Button>
+          </div>
+        </ModalFooter>
+        </>
+         )}
+      </Modal>
+
       <div className="grid gap-6 mb-8 md:grid-cols-3">
         <ChartCard title="Beneficiary Age Group">
           <Doughnut {...doughnutOptions} />
