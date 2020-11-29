@@ -11,11 +11,11 @@ const routes = [
     icon: 'DashboardIcon', // the component being exported from icons/index.js
     name: 'Dashboard', // name that appear in Sidebar
   },
-  // {
-  //   path: '#',
-  //   icon: 'OutlinePersonIcon',
-  //   name: 'Profile',
-  // },
+  {
+    path: '/app/profile',
+    icon: 'OutlinePersonIcon',
+    name: 'Profile',
+  },
   {
     path: '/app/campaign',
     icon: 'MegaphoneIcon',
@@ -26,41 +26,41 @@ const routes = [
     icon: 'UsersIcon',
     name: 'Beneficiaries',
   },
-  // {
-  //   path: '#',
-  //   icon: 'VendorBoothIcon',
-  //   name: 'Vendors',
-  // },
+  {
+    path: '/app/vendor',
+    icon: 'VendorBoothIcon',
+    name: 'Vendors',
+  },
   {
     path: '/app/transactions',
     icon: 'CreditCardIcon',
     name: 'Transactions',
   },
-  // {
-  //   path: '#',
-  //   icon: 'ShoppingIcon',
-  //   name: 'Market',
-  // },
-  // {
-  //   path: '#',
-  //   icon: 'MoneyIcon',
-  //   name: 'Cash For Work',
-  // },
-  // {
-  //    path: '#',
-  //   icon: 'SettingsIcon',
-  //   name: 'Settings',
-  // },
-  // {
-  //   path: '#',
-  //   icon: 'SupportHeadphonesIcon',
-  //   name: 'Support',
-  // },
-  // {
-  //   path: '#',
-  //   icon: 'LogOutIcon',
-  //   name: 'Log Out',
-  // },
+  {
+    path: '/app/market',
+    icon: 'ShoppingIcon',
+    name: 'Market',
+  },
+  {
+    path: '/app/cashforwork',
+    icon: 'MoneyIcon',
+    name: 'Cash For Work',
+  },
+  {
+     path: '/app/settings',
+    icon: 'SettingsIcon',
+    name: 'Settings',
+  },
+  {
+    path: '/app/support',
+    icon: 'SupportHeadphonesIcon',
+    name: 'Support',
+  },
+  {
+    path: '/app/logout',
+    icon: 'LogOutIcon',
+    name: 'Log Out',
+  },
 
 
 
