@@ -3,7 +3,7 @@ import { Card, CardBody } from '@windmill/react-ui'
 
 function InfoCard({ title, value, children: icon }) {
   return (
-    <Card className="shadow-md">
+    <Card className="group transform hover:scale-105 shadow-md hover:shadow-lg hover:border-transparent">
       <CardBody className="flex items-center">
         {icon}
         <div>
