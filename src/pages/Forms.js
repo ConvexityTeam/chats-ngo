@@ -65,6 +65,8 @@ const Forms = () => {
         console.log(response.data);
       })
       .catch(e => {
+        alert("There was an error creating the campaign!")
+        setIsModalOpen(false);
         console.log(e);
       });
   };
