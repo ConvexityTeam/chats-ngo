@@ -2,6 +2,10 @@ import React, { useEffect, useState } from 'react'
 import CampaignDataService from "../services/campaign.service";
 import PageTitle from '../components/Typography/PageTitle'
 import NGODataService from "../services/organization.service";
+import DatePicker from "react-datepicker";
+
+import "react-datepicker/dist/react-datepicker.css";
+import { format } from 'date-fns'
 
 import {  
   Modal, ModalHeader, ModalBody, ModalFooter,
@@ -35,6 +39,12 @@ const Forms = () => {
   const [data, setData] = useState([])
   const [isModalOpen, setIsModalOpen] = useState(false)
 
+  const [startDate, setStartDate] = useState(new Date());
+  console.log(startDate);
+
+  const date = format(new Date(startDate), 'MM/dd/yyyy')
+
+  console.log(date)
   const [campaign, setCampaign] = useState(initialCampaignState);
   const [submitted, setSubmitted] = useState(false);
 
@@ -48,10 +58,10 @@ const Forms = () => {
       title: campaign.title,
       description: campaign.description,
       budget: campaign.budget,
-      start_date: campaign.start_date,
+      start_date: date,
       end_date: campaign.end_date
     };
-
+    console.log(startDate);
     CampaignDataService.create(data)
       .then(response => {
         setCampaign({
@@ -234,13 +244,26 @@ const Forms = () => {
                   {/* Amount Per Recipient */}
                   Start Date
                 </label>
-                <input 
+                {/* <input 
                   className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" 
                   id="start_date" 
                   type="text" 
                   required
                   value={campaign.start_date}
                   onChange={handleInputChange} 
+                  name="start_date"
+                  placeholder="Start Date" 
+                /> */}
+                <DatePicker className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                dateFormat="yyyy/MM/dd"
+                selected={startDate} 
+                onChange={date => setStartDate(date)} 
+                id="start_date" 
+                
+                  type="text" 
+                  required
+                  // value={campaign.start_date}
+                  // onChange={handleInputChange} 
                   name="start_date"
                   placeholder="Start Date" 
                 />
@@ -267,7 +290,7 @@ const Forms = () => {
                 <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" for="grid-city">
                   End Date
                 </label>
-                <input 
+                {/* <input 
                   className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" 
                   id="end_date" 
                   type="text"
@@ -276,6 +299,16 @@ const Forms = () => {
                   onChange={handleInputChange} 
                   name="end_date" 
                   placeholder="" 
+                /> */}
+                 <DatePicker className="appearance-none block w-full bg-gray-200 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                  dateFormat="yyyy/MM/dd"
+                  selected={startDate} 
+                  onChange={date => setStartDate(date)} 
+                  id="end_date" 
+                  type="text" 
+                  required
+                  name="end_date"
+                  placeholder="End Date" 
                 />
               </div>
               
