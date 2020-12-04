@@ -106,11 +106,11 @@ const Login = (props) => {
     height: "100vh", }}>
             <header className="max-w-lg mx-auto">
                 <div className="flex items-center justify-center">
-                  <img className="h-16" src={logo} alt="CHATS logo" />
+                  <img className="h-24" src={logo} alt="CHATS logo" />
                 </div>
-                <div>
+                {/* <div>
                     <h1 className="flex text-2xl font-bold text-white text-center justify-center">Welcome to CHATS</h1>
-                </div>
+                </div> */}
             </header>
 
             <main className="bg-white max-w-lg mx-auto p-8 md:p-12 my-10 rounded-lg shadow-2xl">
