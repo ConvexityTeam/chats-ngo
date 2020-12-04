@@ -26,7 +26,8 @@ import {
   doughnutOptions,
   barOptions,
   doughnutLegends,
-  barLegends
+  barLegends,
+  beneficiaryAgeGroup
 } from '../utils/demo/chartsData'
 import SectionTitle from '../components/Typography/SectionTitle'
 import AuthService from "../services/auth.service";
@@ -218,7 +219,7 @@ function Dashboard() {
         {submitted ? (
           <>
           <ModalBody>
-            <h4 className="text-4xl">Campaign Created Successfully!</h4>
+            <h4 className="text-4xl">You added a New Beneficiary!</h4>
           </ModalBody>
           <ModalFooter>
           {/* I don't like this approach. Consider passing a prop to ModalFooter
@@ -241,14 +242,14 @@ function Dashboard() {
           </div> */}
           <div className="block w-full sm:hidden">
             <Button block size="large">
-              Create Campaign
+              Add a Beneficiary
             </Button>
           </div>
         </ModalFooter>
           </>
         ) : (
           <>
-        <ModalHeader>New Campaign</ModalHeader>
+        <ModalHeader>New Beneficiary</ModalHeader>
         <ModalBody>
         
           <form className="w-full max-w-lg">
@@ -517,7 +518,7 @@ function Dashboard() {
           </div>
           <div className="block w-full sm:hidden">
             <Button block size="large">
-              Create Campaign
+              Done
             </Button>
           </div>
         </ModalFooter>
@@ -528,7 +529,7 @@ function Dashboard() {
       <div className="grid gap-6 mb-8 md:grid-cols-3">
         <ChartCard title="Beneficiary Age Group">
           <Doughnut {...doughnutOptions} />
-          <ChartLegend legends={doughnutLegends} />
+          <ChartLegend legends={beneficiaryAgeGroup} />
         </ChartCard>
 
         <ChartCard title="Beneficiary By Gender">
