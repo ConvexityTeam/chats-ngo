@@ -5,11 +5,11 @@ export const doughnutLegends = [
 ]
 
 export const beneficiaryAgeGroup = [
-  { title: '18-29' },
-  { title: '30-41' },
-  { title: '42-53' },
-  { title: '54-65' },
-  { title: '66+'}
+  // { title: '18-29' },
+  { title: '30-41', color: 'bg-blue-500' },
+  { title: '42-53', color: 'bg-purple-600' },
+  // { title: '54-65' },
+  { title: '66+', color: 'bg-teal-600'}
 ]
 
 export const lineLegends = [
