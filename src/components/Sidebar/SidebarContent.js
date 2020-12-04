@@ -26,7 +26,7 @@ function SidebarContent() {
                 exact
                 to={route.path}
                 className="inline-flex pl-2 items-center w-full text-sm font-semibold transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200"
-                activeClassName="pl-2 text-white h-12 bg-purple-600 rounded-lg dark:text-gray-100"
+                activeClassName="pl-2 text-white h-12 bg-green-300 rounded-lg dark:text-gray-100"
               >
                 <Route path={route.path} exact={route.exact}>
                   {/* <span
