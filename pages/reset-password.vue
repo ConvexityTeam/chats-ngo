@@ -1,6 +1,6 @@
 <template>
     <div>
-    Forgot HERE
+    RESET HERE
     </div>
 </template>
 <script>
