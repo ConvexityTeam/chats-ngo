@@ -10,7 +10,7 @@
       </div>
 
       <!-- Route location here -->
-      <div class="col-lg-4 mx-5">
+      <div class="col-lg-4 mx-4">
         <h5 class="title">{{ title | capitalize }}</h5>
       </div>
 

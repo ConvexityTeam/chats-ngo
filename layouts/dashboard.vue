@@ -4,8 +4,8 @@
     <topNav />
 
     <div>
-      <div class="d-flex no-gutters h-100 mt-3">
-        <div class="mx-5">
+      <div class="d-flex no-gutters h-100 ">
+        <div class="ml-4">
           <sideMenu />
         </div>
         <div style="flex-grow:1">
@@ -24,6 +24,7 @@ export default {
     topNav,
     sideMenu
   },
+
 };
 </script>
 
