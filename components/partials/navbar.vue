@@ -10,8 +10,8 @@
       </div>
 
       <!-- Route location here -->
-      <div class="col-lg-4">
-        <h5 class="title">{{title | capitalize }}</h5>
+      <div class="col-lg-4 mx-5">
+        <h5 class="title">{{ title | capitalize }}</h5>
       </div>
 
       <div
@@ -19,7 +19,7 @@
       >
         <span>
           <div class="d-flex px-2">
-   <a href="#" class="pt-2 mx-3">
+            <a href="#" class="pt-2 mx-3">
               <i>
                 <svg
                   width="24"
@@ -39,8 +39,14 @@
             </a>
 
             <span class="d-none d-md-inline">
-              <img src="~/assets/img/user.png" class="rounded-circle" width="50" height="50" alt="" />
-            </span>        
+              <img
+                src="~/assets/img/user.png"
+                class="rounded-circle"
+                width="50"
+                height="50"
+                alt=""
+              />
+            </span>
           </div>
         </span>
       </div>
@@ -50,16 +56,15 @@
 
 <script>
 export default {
-
-data(){
-	return{
-title: ''
-	}
-},
-  mounted() {
-	  this.title = this.$router.history.current.name
-  console.log('this is router', this.$router.history.current.name)
-  }
+  data() {
+    return {
+      title: '',
+    }
+  },
+  created() {
+	this.title = this.$router.history.current.name
+	console.log('this is history',  this.$router.history.current)
+  },
 }
 </script>
 
@@ -67,13 +72,13 @@ title: ''
 .logo {
   height: 5vh;
 }
-.navbar{
-	padding:1rem
+.navbar {
+  padding: 1rem;
 }
-.title{
-	font-size: 1.5rem;
-	font-weight: 700;
-	color: var(--secondary-black)
+.title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--secondary-black);
 }
 
 .container,
