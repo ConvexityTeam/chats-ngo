@@ -23,7 +23,7 @@ export default {
   components: {
     topNav,
     sideMenu
-  }
+  },
 };
 </script>
 

@@ -25,6 +25,12 @@ export default {
     plugins: [
         '~/plugins/global.js',
     ],
+    loading: {
+        color: ' #17CE89',
+        name: 'fading-circle',
+        continuous: true,
+        duration: 1200,
+    },
 
     // Auto import components (https://go.nuxtjs.dev/config-components)
     components: true,
