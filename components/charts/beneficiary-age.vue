@@ -1,12 +1,12 @@
 <template>
-<div >
-  <div class>
-    <doughnut-chart
-      :data="doughnutChartData"
-      :options="doughnutChartOptions"
-      :height="480"
-    />
-  </div>
+  <div>
+    <div class="">
+      <doughnut-chart
+        :data="doughnutChartData"
+        :options="doughnutChartOptions"
+        :height="335"
+      />
+    </div>
   </div>
 </template>
 

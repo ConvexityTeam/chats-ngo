@@ -1,6 +1,6 @@
 <template>
   <div>
-    <bar-chart :data="barChartData" :options="barChartOptions" :height="525" />
+    <bar-chart :data="barChartData" :options="barChartOptions" :height="525"/>
   </div>
 </template>
 
@@ -13,10 +13,10 @@ export default {
   data() {
     return {
       barChartData: {
-        labels: ['1', '2', '3', '4', '5', '6'],
+        labels: ['KADUNA', 'ABUJA', 'LAGOS', 'JOS'],
         datasets: [
           {
-            label: 'Visits',
+            label: 'Beneficiary By Location',
             data: [10, 15, 20, 30, 40, 50],
             backgroundColor: '#855CF8',
           },
@@ -29,7 +29,7 @@ export default {
         },
         title: {
           display: true,
-          text: 'Vendor Transaction By Beneficiary',
+          text: 'Beneficiary By Location',
           fontSize: 18,
           fontColor: '#33333',
         },

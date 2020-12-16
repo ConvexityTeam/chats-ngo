@@ -1,12 +1,12 @@
 <template>
-<div >
-  <div class>
-    <doughnut-chart
-      :data="doughnutChartData"
-      :options="doughnutChartOptions"
-      :height="480"
-    />
-  </div>
+  <div>
+    <div class>
+      <doughnut-chart
+        :data="doughnutChartData"
+        :options="doughnutChartOptions"
+        :height="335"
+      />
+    </div>
   </div>
 </template>
 
@@ -22,12 +22,9 @@ export default {
         labels: ['Male', 'Female'],
         datasets: [
           {
-            label:  ['Male', 'Female'],
+            label: ['Male', 'Female'],
             data: [10, 15],
-            backgroundColor: [
-              '#855CF8',
-              '#E289F2',
-            ],
+            backgroundColor: ['#855CF8', '#E289F2'],
           },
         ],
       },
@@ -61,4 +58,3 @@ export default {
   },
 }
 </script>
-

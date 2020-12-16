@@ -1,6 +1,6 @@
 <template>
   <div>
-    <bar-chart :data="barChartData" :options="barChartOptions" :height="525" />
+    <bar-chart :data="barChartData" :options="barChartOptions" :height="525"/>
   </div>
 </template>
 
@@ -13,11 +13,11 @@ export default {
   data() {
     return {
       barChartData: {
-        labels: ['1', '2', '3', '4', '5', '6'],
+        labels: ['0', '10,000', '15,000', '20,000', '25,000', '30,000','35,000','40,000', '45,000'],
         datasets: [
           {
             label: 'Visits',
-            data: [10, 15, 20, 30, 40, 50],
+            data: [10000, 5000, 2000, 300, 4000, 500, 300, 4000, 500],
             backgroundColor: '#855CF8',
           },
         ],
@@ -29,7 +29,7 @@ export default {
         },
         title: {
           display: true,
-          text: 'Vendor Transaction By Beneficiary',
+          text: 'Beneficiary Balances',
           fontSize: 18,
           fontColor: '#33333',
         },
