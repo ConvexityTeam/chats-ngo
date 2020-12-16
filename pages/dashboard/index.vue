@@ -1,7 +1,7 @@
 <template>
-  <div class="row  no-gutters pt-lg-4">
-
-  <!-- Top cards here -->
+<div class="main">
+  <div class="row no-gutters pt-lg-4">
+    <!-- Top cards here -->
     <div class="col-lg-3" v-for="i in 4" :key="i">
       <div class="card__holder px-3 pt-2">
         <p class="text">Wallet Balance</p>
@@ -26,51 +26,112 @@
           </span>
         </p>
       </div>
+    </div>
+  </div>
+
+    <!-- First Beneficiary cards here -->
+    <div class="row no-gutters pt-lg-4">
+
+    <!-- Beneficiary Count Cards here -->
+      <div class="col-md-3 pb-3">
+        <div class="card__holder px-3 pt-3">
+          <p class="total-count pb-3">Total Count</p>
+
+          <!-- Beneficiaries Stats  here -->
+          <div>
+            <p class="beneficiaries">Beneficiaries</p>
+            <h4 class="beneficiaries-count">842,000</h4>
+          </div>
+
+          <!-- Vendors stats here -->
+          <div class="pb-4 mt-4">
+            <p class="beneficiaries">Vendors</p>
+            <h4 class="beneficiaries-count">142,000</h4>
+          </div>
+        </div>
+      </div>
+
+    <!-- Beneficiary Age group  Cards here -->
+       <div class="col-md-3 pb-3 " >
+        <div class="card__holder px-3 pt-3">
+          <beneficiaryAge/>
+        </div>
+      </div> 
+
+          <!-- Beneficiary By Gender  Cards here -->
+       <div class="col-md-3 pb-3 " >
+        <div class="card__holder px-3 pt-3">
+          <beneficiaryGender/>
+        </div>
+      </div> 
 
     </div>
 
-  <!-- Count card here -->
-    <div class="row pt-lg-4">
-        <div class="col-lg-3 pb-3" v-for="i in 4" :key="i">
-<div class="card__holder px-3 pt-3">
-<p class="total-count pb-3">Total Count</p>
+    <!-- Metric card here -->
+  <div class="row no-gutters pt-lg-4">
+      <div class="col-lg-3 pb-3" v-for="i in 4" :key="i">
+        <div class="card__holder px-3 pt-3">
+          <p class="total-count pb-3">Metrics</p>
 
-  <!-- Beneficiaries Stats  here -->
-<div>
-<p class="beneficiaries">Beneficiaries</p>
-<h4 class="beneficiaries-count">842,000</h4>
-</div>
+          <!-- Maximum Disbursement Date  here -->
+          <div>
+            <p class="beneficiaries">Maximum Disbursement Date</p>
+            <h4 class="date">12/04/2020</h4>
+          </div>
 
-  <!-- Vendors stats here -->
-<div class="pb-4 mt-4">
-<p class="beneficiaries">Vendors</p>
-<h4 class="beneficiaries-count">142,000</h4>
-</div>
-</div>
-</div>
+          <!-- Minimum Disbursement Date stats here -->
+          <div class="pb-4 mt-4">
+            <p class="beneficiaries">Minimum Disbursement Date</p>
+            <h4 class="date">12/04/2020</h4>
+          </div>
+
+          
+          <!-- Maximum Spending Date Date stats here -->
+          <div class="pb-4 ">
+            <p class="beneficiaries">Maximum Spending Date</p>
+            <h4 class="date">12/04/2020</h4>
+          </div>
+
+          
+          <!-- Maximum Spending Date Date stats here -->
+          <div class="pb-4  ">
+            <p class="beneficiaries">Maximum Spending Date</p>
+            <h4 class="date">12/04/2020</h4>
+          </div>
+        </div>
+      </div>
     </div>
-
   </div>
 </template>
 
 <script>
+import beneficiaryAge from '~/components/charts/beneficiary-age';
+import beneficiaryGender from '~/components/charts/beneficiary-gender'
 export default {
   layout: 'dashboard',
+  components:{
+    beneficiaryAge,
+    beneficiaryGender
+  }
 }
 </script>
 
 <style scoped>
-.beneficiaries{
-     color: var(--secondary-black);
-     font-size: 1rem;
-     font-weight: 400;
-     line-height: 19px;
+.date{
+      color: var(--secondary-black);
+      font-size: 1.125rem;
 }
-.beneficiaries-count{
-     color: var(--secondary-black);
-     font-size: 1.875rem;
-     font-weight: 500;
-     line-height: 35px; 
+.beneficiaries {
+  color: var(--secondary-black);
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 19px;
+}
+.beneficiaries-count {
+  color: var(--secondary-black);
+  font-size: 1.875rem;
+  font-weight: 500;
+  line-height: 35px;
 }
 .card__holder {
   background: #ffffff;
@@ -93,9 +154,11 @@ export default {
   color: #00bf6f;
   font-size: 0.8 75rem;
 }
-.total-count{
-   color: var(--secondary-black);
-   font-weight: 700;
-   font-size: 1.125rem;
+.total-count {
+  color: var(--secondary-black);
+  font-weight: 700;
+  font-size: 1.125rem;
 }
+
+
 </style>

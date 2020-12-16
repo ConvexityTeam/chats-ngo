@@ -61,7 +61,7 @@ export default {
       title: '',
     }
   },
-  created() {
+  renderrouteDone() {
 	this.title = this.$router.history.current.name
 	console.log('this is history',  this.$router.history.current)
   },
