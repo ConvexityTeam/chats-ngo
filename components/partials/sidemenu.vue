@@ -303,7 +303,7 @@ export default {
 ----------------------------------------------------- */
 
 #sidebar {
-  width: 17vw;
+  width: 19vw;
   color: var(--secondary-black);
   transition: all 0.3s;
   height: 100%;

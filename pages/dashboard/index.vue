@@ -140,21 +140,28 @@
             </div>
           </div>
 
-               <div class="d-flex pb-5" >
-            <div>
-             <nuxt-link class="viewall" to="/vendors">View all</nuxt-link>
+               <div class="d-flex pb-2" >
+            <div class="mt-2">
+             <nuxt-link class="viewall " to="/vendors">View all</nuxt-link>
             </div>
-            <div class="ml-auto">
+            <div class="ml-auto d-flex">
+
+             <p class="pt-3 paginate">1 - 10 of 24 </p>
               <button type="button" class="more-btn">
-                <i><dot /></i>
+                <i><leftArrow /></i>
               </button>
+              <button type="button" class="more-btn">
+                <i><rightArrow /></i>
+              </button>
+
+             
             </div>
           </div>
           
         </div>
       </div>
 
- 
+  
     </div>
   </div>
 </template>
@@ -166,6 +173,8 @@ import beneficiaryVendor from '~/components/charts/beneficiary-vendor'
 import beneficiaryBalances from '~/components/charts/beneficiary-balances'
 import beneficiaryLocation from '~/components/charts/beneficiary-location'
 import dot from '~/components/icons/dot'
+import rightArrow from '~/components/icons/right-arrow'
+import leftArrow from '~/components/icons/left-arrow'
 export default {
   layout: 'dashboard',
   components: {
@@ -174,7 +183,9 @@ export default {
     beneficiaryVendor,
     beneficiaryBalances,
     beneficiaryLocation,
-    dot
+    dot,
+    rightArrow,
+    leftArrow
   },
 }
 </script>
@@ -184,9 +195,15 @@ export default {
    height: calc(100vh - 72px);
     overflow-y: scroll;
 }
+.paginate{
+   color: var(--secondary-black);
+   font-size: 0.875rem;
+   font-weight: 500
+}
 .viewall{
   color: var(--primary-color);
   font-size: 0.875rem;
+  text-decoration: none;
 }
 .vendor-name{
    color: var(--secondary-black);
@@ -252,5 +269,24 @@ export default {
   color: var(--secondary-black);
   font-weight: 700;
   font-size: 1.125rem;
+}
+/* width */
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #888;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
 }
 </style>
