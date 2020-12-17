@@ -163,7 +163,7 @@ export default {
   background: var(--primary-color);
   border-radius: 10px;
   font-size: 1rem;
-   border: 1px solid var(--primary-color);
+  border: 1px solid var(--primary-color);
   color: white;
   border: none;
 }
@@ -185,7 +185,7 @@ export default {
 ::placeholder {
   color: #999999;
   letter-spacing: 0.01em;
-  font-size: 0.75rem;
+  font-size: 0.875rem;
   opacity: 0.7;
 }
 label {

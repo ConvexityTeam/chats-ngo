@@ -1,20 +1,21 @@
 <template>
-  <div class="container">
-    <!-- Modal here -->
-    <newCampaign />
-    <div class="d-flex pt-lg-4">
-      <div class="d-flex">
-        <!-- Search Box here -->
-        <input
-          type="text"
-          class="form-controls"
-          placeholder="Search campaigns"
-        />
+  <div class="main">
+    <div class="container">
+      <!-- Modal here -->
+      <newCampaign />
+      <div class="d-flex pt-lg-4">
+        <div class="d-flex">
+          <!-- Search Box here -->
+          <input
+            type="text"
+            class="form-controls"
+            placeholder="Search campaigns"
+          />
 
-        <div class="ml-3 position-relative">
-          <div>
-            <label for="">
-              <!--  <span>
+          <div class="ml-3 position-relative">
+            <div>
+              <label for="">
+                  <span class="filter position-absolute">
               <svg
                 width="24"
                 height="24"
@@ -29,61 +30,62 @@
                   stroke-width="0.4"
                 />
               </svg>
-            </span> -->
-              <b-form-select
-                v-model="selected"
-                :options="options"
-                class="py"
-                plain
-              ></b-form-select>
-            </label>
+            </span> 
+                <b-form-select
+                  v-model="selected"
+                  :options="options"
+                  class="py"
+                  plain
+                ></b-form-select>
+              </label>
+            </div>
           </div>
+        </div>
+
+        <div class="ml-auto">
+          <button type="button" v-b-modal.new-campaign class="create px-3">
+            <i>
+              <svg
+                width="13"
+                height="13"
+                viewBox="0 0 13 13"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path d="M13 6V7H7V13H6V7H0V6H6V0H7V6H13Z" fill="white" />
+              </svg>
+            </i>
+            <span class="mx-2">Create new campaign</span>
+          </button>
         </div>
       </div>
 
-      <div class="ml-auto">
-        <button type="button" v-b-modal.new-campaign class="create px-3">
-          <i>
-            <svg
-              width="13"
-              height="13"
-              viewBox="0 0 13 13"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path d="M13 6V7H7V13H6V7H0V6H6V0H7V6H13Z" fill="white" />
-            </svg>
-          </i>
-          <span class="mx-2">Create new campaign</span>
-        </button>
-      </div>
+      <!-- Table here -->
+      <table class="table table-borderless">
+        <thead>
+          <tr>
+            <th scope="col">Name</th>
+            <th scope="col">Total Amount</th>
+            <th scope="col">Amount Spent</th>
+            <th scope="col">Date Created</th>
+            <th scope="col">Status</th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="i in 3" :key="i">
+            <td>Project Mppape</td>
+            <td>$123,476,000</td>
+            <td>$123,476,000</td>
+            <td>12 Sep, 2020</td>
+            <td class="in-progress">In Progress</td>
+            <td>
+              <button type="button" class="more-btn"><dot /></button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
-
-    <!-- Table here -->
-    <table class="table table-borderless">
-      <thead>
-        <tr>
-          <th scope="col">Name</th>
-          <th scope="col">Total Amount</th>
-          <th scope="col">Amount Spent</th>
-          <th scope="col">Date Created</th>
-          <th scope="col">Status</th>
-          <th scope="col"></th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="i in 3" :key="i">
-          <td>Project Mppape</td>
-          <td>$123,476,000</td>
-          <td>$123,476,000</td>
-          <td>12 Sep, 2020</td>
-          <td class="in-progress">In Progress</td>
-          <td>
-            <button type="button" class="more-btn"><dot /></button>
-          </td>
-        </tr>
-      </tbody>
-    </table>
   </div>
 </template>
 
@@ -99,7 +101,7 @@ export default {
     return {
       selected: null,
       options: [
-        { value: null, text: 'Filter' },
+                  { value: null, text: 'filter' },
         { value: 'all', text: 'All' },
         { value: 'inprogress', text: 'In Progress' },
         { value: 'completed', text: 'Completed' },
@@ -115,6 +117,23 @@ export default {
 </script>
 
 <style scoped>
+.input-group-addon {
+    background: none;
+  }
+  .filter{
+          top: 12px;
+    left: 11px;
+}
+select {
+    border-left: 0px;
+    padding-left: 40px;
+    box-shadow: none;
+  }
+
+.main {
+  height: calc(100vh - 72px);
+  overflow-y: scroll;
+}
 .create {
   background: var(--primary-color);
 }
@@ -171,6 +190,26 @@ td.in-progress {
 }
 td.completed {
   color: #24b29f;
+}
+
+/* width */
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #888;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
 }
 
 </style>
