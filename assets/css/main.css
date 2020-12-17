@@ -9,6 +9,16 @@ body {
     background: #FAFAFA;
 }
 
+button:focus {
+    outline: none;
+}
+
+.more-btn {
+    border: none;
+    background: inherit;
+    box-shadow: none;
+}
+
 .onboarding-btn {
     background: var(--primary-color);
     border-radius: 5px;

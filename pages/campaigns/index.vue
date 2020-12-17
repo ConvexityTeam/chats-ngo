@@ -1,10 +1,14 @@
 <template>
-    <div>
-    CAmpaigns here
-    </div>
+  <div>
+    <campaignTable />
+  </div>
 </template>
 <script>
+import campaignTable from '~/components/tables/campaigns'
 export default {
-    layout: "dashboard"
+  layout: 'dashboard',
+  components: {
+    campaignTable,
+  },
 }
 </script>

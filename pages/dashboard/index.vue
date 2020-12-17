@@ -208,14 +208,7 @@ export default {
 .vendor-name{
    color: var(--secondary-black);
 }
-.more-btn {
-  border: none;
-  background: inherit;
-  box-shadow: none;
-}
-.more-btn:focus {
-  outline: none;
-}
+
 .date {
   color: var(--secondary-black);
   font-size: 1.125rem;
