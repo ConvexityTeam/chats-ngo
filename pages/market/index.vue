@@ -64,6 +64,11 @@
         </div>
       </div>
     </div>
+
+    <!-- All Products table here -->
+    <div>
+    <allProducts/>
+    </div>
   </div>
 </template>
 
@@ -71,12 +76,14 @@
 import productsGenderFemale from '~/components/charts/products-gender-female'
 import productsGenderMale from '~/components/charts/products-gender-male'
 import productsAgeGroup from '~/components/charts/products-age-group'
+import allProducts from '~/components/tables/all-products'
 export default {
   layout: 'dashboard',
   components: {
     productsGenderFemale,
     productsGenderMale,
-    productsAgeGroup
+    productsAgeGroup,
+    allProducts
   },
 }
 </script>
