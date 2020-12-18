@@ -257,12 +257,8 @@
 </template>
 
 <script>
-// import {mapGetters, mapActions} from 'vuex'
+// import { mapActions} from 'vuex'
 export default {
-  computed: {
-    // ...mapGetters('profile', ['USER']),
-    // ...mapGetters('authentication', ['role', 'token', 'cookie'])
-  },
   methods: {
     // ...mapActions('authentication', ['LOGOUT']),
     logout() {

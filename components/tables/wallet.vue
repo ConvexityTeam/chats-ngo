@@ -1,5 +1,5 @@
 <template>
-  <div class="mr-2">
+  <div class="ml-2">
     <div class="holder p-3">
       <h4 class="header">Fund Wallet</h4>
 

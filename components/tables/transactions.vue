@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="d-flex pt-lg-4 mr-5">
+    <div class="d-flex pt-lg-4 mr-2">
       <div>
         <!-- Search Box here -->
         <input
@@ -16,7 +16,7 @@
     </div>
 
     <!-- Transactions Table here -->
-    <div class="holder mr-4">
+    <div class="holder mr-2">
       <div class="d-flex px-4 pt-3">
         <div>
           <h4 class="header">Trasactions</h4>
@@ -34,10 +34,10 @@
       <table class="table table-borderless">
         <thead>
           <tr>
-            <th scope="col">Reference ID</th>
+            <th scope="col">Reference </th>
             <th scope="col">Amount</th>
             <th scope="col">Type</th>
-            <th scope="col">Paid To</th>
+            <th scope="col">Paid </th>
             <th scope="col">Date</th>
             <th scope="col"></th>
           </tr>
@@ -46,7 +46,7 @@
           <tr v-for="i in 3" :key="i">
             <td>12345678910</td>
             <td>$123,476,000</td>
-            <td>Dangote</td>
+            <td class=""><span class="badge badge-pill  py-2 ">Deposited</span></td>
             <td>Funke</td>
             <td>12 Dec, 2020</td>
             <td>
@@ -95,7 +95,9 @@ select:focus {
   border-radius: 10px;
   margin-top: 30px;
 }
-
+.badge{
+    border: 1px solid #999999;
+}
 .table thead th {
   color: #4f4f4f;
   letter-spacing: 0.01em;
