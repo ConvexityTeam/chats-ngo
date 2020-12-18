@@ -107,7 +107,7 @@
             </li>
 
             <li class="mb-2">
-              <nuxt-link to="/transactions">
+              <nuxt-link to="/account">
                 <span>
                   <svg
                     width="24"
@@ -129,7 +129,7 @@
                     />
                   </svg>
                 </span>
-                <span class="mx-4 pt-1">Transactions</span>
+                <span class="mx-4 pt-1">Account</span>
               </nuxt-link>
             </li>
 

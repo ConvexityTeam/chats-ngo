@@ -62,3 +62,26 @@ button:focus {
     text-align: center;
     vertical-align: middle;
 }
+
+
+/* toast */
+
+.toasted-container {
+    background-color: transparent !important;
+}
+
+.toasted-container .toasted-primary.success {
+    border-left: 2px solid #47d664;
+    background: white !important;
+    color: #47d664 !important;
+    padding: 1rem !important;
+    font-size: 1rem;
+}
+
+.toasted-container .toasted-primary.error {
+    border-left: 2px solid #ee3934;
+    background: white !important;
+    color: #ee3934 !important;
+    padding: 1rem !important;
+    font-size: 1rem;
+}

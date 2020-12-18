@@ -30,9 +30,9 @@
             <th scope="col">Account Created</th>
           </tr>
         </thead>
-        <tbody>
-          <tr v-for="i in 3" :key="i">
-             <td><input type="checkbox"></td>
+        <tbody >
+          <tr v-for="i in 3" :key="i" >
+             <td class="pt-3"><input type="checkbox"></td>
             <td class="d-flex"> <img src="~/assets/img/user.png" width="30" height="30" class="rounded" alt=""> <p class="mx-3 pt-1">Cadbury Ng</p> </td>
             <td>DEV63016762</td>
             <td>2348013123065</td>
@@ -84,7 +84,7 @@ letter-spacing: -0.05px;
 }
 .table th,
 .table td {
-  padding: 0.75rem 2rem;
+  padding: 0.5rem 2rem;
 color: #3A3B3F;
   font-size: 0.875rem;
 }
