@@ -4,7 +4,6 @@
       <doughnut-chart
         :data="doughnutChartData"
         :options="doughnutChartOptions"
-        :height="335"
       />
     </div>
   </div>

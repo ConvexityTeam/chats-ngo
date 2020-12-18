@@ -1,8 +1,9 @@
 <template>
   <div class="main">
-    <div class="row no-gutters pt-lg-4">
       <!-- Top cards here -->
-      <div class="col-lg-3" v-for="i in 4" :key="i">
+    <div class="row no-gutters pt-lg-4">
+      <!-- Wallet balance here -->
+      <div class="col-lg-3" >
         <div class="card__holder px-3 pt-2">
           <p class="text">Wallet Balance</p>
           <h4 class="funds">$125,000/N120,000</h4>
@@ -27,25 +28,107 @@
           </p>
         </div>
       </div>
+
+    <!-- Total amount Received here -->
+       <div class="col-lg-3" >
+        <div class="card__holder px-3 pt-2">
+          <p class="text">Total Amount Recieved</p>
+          <h4 class="funds">$125,000/N120,000</h4>
+          <p class="percentage pb-2">
+            2.5%
+            <span class="mx-1">
+              <svg
+                width="10"
+                height="10"
+                viewBox="0 0 10 10"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  fill-rule="evenodd"
+                  clip-rule="evenodd"
+                  d="M5.06659 1.33514e-05C4.90339 -0.000432014 4.74003 0.0629158 4.62262 0.190026L0.517362 4.63447C0.303943 4.86552 0.328941 5.21648 0.573196 5.41837C0.817451 5.62025 1.18847 5.5966 1.40189 5.36555L4.48338 2.02946L4.48338 9.44444C4.48338 9.75127 4.74632 10 5.07068 10C5.39504 10 5.65798 9.75127 5.65798 9.44444L5.65798 2.03883L8.74013 5.36614C8.95389 5.59691 9.32495 5.62006 9.5689 5.41785C9.81285 5.21564 9.83733 4.86465 9.62356 4.63388L5.55655 0.243358C5.45086 0.096467 5.27268 0 5.07068 0C5.06932 0 5.06795 4.76837e-06 5.06659 1.33514e-05Z"
+                  fill="#00BF6F"
+                />
+              </svg>
+            </span>
+          </p>
+        </div>
+      </div>
+
+        <!-- Total Amount Disbursed here -->
+       <div class="col-lg-3" >
+        <div class="card__holder px-3 pt-2">
+          <p class="text">Total Amount Disbursed</p>
+          <h4 class="funds">$125,000/N120,000</h4>
+          <p class="percentage pb-2">
+            2.5%
+            <span class="mx-1">
+              <svg
+                width="10"
+                height="10"
+                viewBox="0 0 10 10"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  fill-rule="evenodd"
+                  clip-rule="evenodd"
+                  d="M5.06659 1.33514e-05C4.90339 -0.000432014 4.74003 0.0629158 4.62262 0.190026L0.517362 4.63447C0.303943 4.86552 0.328941 5.21648 0.573196 5.41837C0.817451 5.62025 1.18847 5.5966 1.40189 5.36555L4.48338 2.02946L4.48338 9.44444C4.48338 9.75127 4.74632 10 5.07068 10C5.39504 10 5.65798 9.75127 5.65798 9.44444L5.65798 2.03883L8.74013 5.36614C8.95389 5.59691 9.32495 5.62006 9.5689 5.41785C9.81285 5.21564 9.83733 4.86465 9.62356 4.63388L5.55655 0.243358C5.45086 0.096467 5.27268 0 5.07068 0C5.06932 0 5.06795 4.76837e-06 5.06659 1.33514e-05Z"
+                  fill="#00BF6F"
+                />
+              </svg>
+            </span>
+          </p>
+        </div>
+      </div>
+
+        <!-- Total Balance -->
+       <div class="col-lg-3" >
+        <div class="card__holder px-3 pt-2">
+          <p class="text">Total Balance</p>
+          <h4 class="funds">$125,000/N120,000</h4>
+          <p class="percentage pb-2">
+            2.5%
+            <span class="mx-1">
+              <svg
+                width="10"
+                height="10"
+                viewBox="0 0 10 10"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  fill-rule="evenodd"
+                  clip-rule="evenodd"
+                  d="M5.06659 1.33514e-05C4.90339 -0.000432014 4.74003 0.0629158 4.62262 0.190026L0.517362 4.63447C0.303943 4.86552 0.328941 5.21648 0.573196 5.41837C0.817451 5.62025 1.18847 5.5966 1.40189 5.36555L4.48338 2.02946L4.48338 9.44444C4.48338 9.75127 4.74632 10 5.07068 10C5.39504 10 5.65798 9.75127 5.65798 9.44444L5.65798 2.03883L8.74013 5.36614C8.95389 5.59691 9.32495 5.62006 9.5689 5.41785C9.81285 5.21564 9.83733 4.86465 9.62356 4.63388L5.55655 0.243358C5.45086 0.096467 5.27268 0 5.07068 0C5.06932 0 5.06795 4.76837e-06 5.06659 1.33514e-05Z"
+                  fill="#00BF6F"
+                />
+              </svg>
+            </span>
+          </p>
+        </div>
+      </div>
+
     </div>
 
     <!-- First Beneficiary cards here -->
     <div class="row no-gutters pt-lg-4">
       <!-- Beneficiary Count Cards here -->
-      <div class="col-lg-4 pb-3">
+      <div class="col-lg-4 pb-4">
         <div class="cards__holder px-3 pt-3">
-          <p class="total-count pb-3">Total Count</p>
+          <p class="total-count pb-4">Total Count</p>
 
           <!-- Beneficiaries Stats  here -->
-          <div>
+          <div class="pb-4">
             <p class="beneficiaries">Beneficiaries</p>
             <h4 class="beneficiaries-count">842,000</h4>
           </div>
 
           <!-- Vendors stats here -->
-          <div class="pb-4 mt-4">
+          <div class=" pb-5">
             <p class="beneficiaries">Vendors</p>
-            <h4 class="beneficiaries-count">142,000</h4>
+            <h4 class="beneficiaries-count pb-3">142,000</h4>
           </div>
         </div>
       </div>

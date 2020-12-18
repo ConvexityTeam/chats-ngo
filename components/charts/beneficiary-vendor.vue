@@ -1,6 +1,7 @@
 <template>
   <div>
-    <bar-chart :data="barChartData" :options="barChartOptions" :height="525" />
+    <bar-chart :data="barChartData" :options="barChartOptions"  />
+   <!-- :height="525" -->
   </div>
 </template>
 

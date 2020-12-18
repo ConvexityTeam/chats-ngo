@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="">
+    <div class>
       <doughnut-chart
         :data="doughnutChartData"
         :options="doughnutChartOptions"
@@ -18,18 +18,12 @@ export default {
   data() {
     return {
       doughnutChartData: {
-        labels: ['18-29', '30-41', '42-53', '54-65', '66~'],
+        labels: ['Single', 'Married', 'Divorced'],
         datasets: [
           {
-            label: ['18-29', '30-41', '42-53', '54-65', '66~'],
-            data: [10, 15, 20, 30, 40],
-            backgroundColor: [
-              '#855CF8',
-              '#E289F2',
-              '#263238',
-              '#B085FF',
-              '#503795',
-            ],
+            label:['Single', 'Married', 'Divorced'],
+            data: [10, 15, 5],
+            backgroundColor: ['#855CF8', '#E289F2', '#503795'],
           },
         ],
       },
@@ -46,12 +40,12 @@ export default {
         },
         title: {
           display: true,
-          text: 'Beneficiary Age Group',
+          text: 'Beneficiary By Marital Status',
           fontSize: 18,
           fontColor: '#333333',
         },
         cutoutPercentage: 70,
-        // rotation: Math.PI * 1,
+        rotation: Math.PI * 1,
         animation: {
           animateScale: true,
         },
