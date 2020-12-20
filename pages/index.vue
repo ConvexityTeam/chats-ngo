@@ -10,29 +10,83 @@
 
     <div class="d-flex justify-content-center align-items-center">
       <div class="card__holder">
-        <form>
+        <form @submit.prevent="registerUser">
           <!-- Organisation name here -->
           <div class="form-group">
             <label for="name">Name Of Organization</label>
-            <input type="text" class="form-controls" id="name" />
+            <input
+              type="text"
+              class="form-controls"
+              id="name"
+              v-model="payload.name"
+              @blur="$v.payload.name.$touch()"
+            />
+            <transition name="fade">
+              <p v-if="$v.payload.name.$error" class="form-input__error">
+                <span v-if="!$v.payload.name.required">
+                  This field is required
+                </span>
+              </p>
+            </transition>
           </div>
 
           <!-- Organisation email here -->
           <div class="form-group">
             <label for="email">Email</label>
-            <input type="email" class="form-controls" id="email" />
+            <input
+              type="email"
+              class="form-controls"
+              id="email"
+              v-model="payload.email"
+              @blur="$v.payload.email.$touch()"
+            />
+            <transition name="fade">
+              <p v-if="$v.payload.email.$error" class="form-input__error">
+                <span v-if="!$v.payload.email.required">
+                  This field is required
+                </span>
+              </p>
+            </transition>
           </div>
 
           <!-- Password here -->
           <div class="form-group pb-2">
             <label for="password">Password</label>
-            <input type="password" class="form-controls" id="password" />
+            <input
+              type="password"
+              class="form-controls"
+              id="password"
+              v-model="payload.password"
+              @blur="$v.payload.password.$touch()"
+            />
+            <transition name="fade">
+              <p v-if="$v.payload.password.$error" class="form-input__error">
+                <span v-if="!$v.payload.password.required">
+                  This field is required
+                </span>
+              </p>
+            </transition>
           </div>
 
           <div class="mt-4 text-center">
-            <button type="button" class="onboarding-btn">Create Account</button>
+            <button type="button" class="onboarding-btn">
+              <span v-if="loading">
+                <img
+                  src="~/assets/img/vectors/spinner.svg"
+                  class="btn-spinner"
+                />
+              </span>
+              <span v-else>Create Account</span>
+            </button>
           </div>
         </form>
+
+        <code>
+          <pre>
+        payload: {{ payload }}
+        </pre
+          >
+        </code>
 
         <div class="mt-4 text-center">
           <p class="account">
@@ -46,8 +100,37 @@
 </template>
 
 <script>
+import { required, email } from 'vuelidate/lib/validators'
 export default {
-   layout: "default"
+  layout: 'default',
+  data() {
+    return {
+      loading: false,
+      payload: {
+        name: '',
+        email: '',
+        password: '',
+      },
+    }
+  },
+  validations: {
+    payload: {
+      name: {
+        required,
+      },
+      email: {
+        required,
+        email,
+      },
+      password: {
+        required,
+      },
+    },
+  },
+
+  methods: {
+    registerUser() {},
+  },
 }
 </script>
 

@@ -21,6 +21,7 @@ export default {
 
     plugins: [
         '~/plugins/global.js',
+        '~/plugins/index.js',
         { src: '~/plugins/vuex-persist', ssr: false }
     ],
     loading: {
@@ -43,7 +44,13 @@ export default {
     ],
 
     // Axios module configuration (https://go.nuxtjs.dev/config-axios)
-    axios: {},
+    axios: {
+        baseURL: 'virtserver.swaggerhub.com/habeeb-salami/CHATS/1.0/',
+        https: true,
+        progress: true,
+        retry: { retries: 2 }
+    },
+
     toast: {
         position: 'top-right',
         duration: 10000
