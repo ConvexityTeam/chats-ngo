@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="main">
     <h4 class="header">All Beneficiaries</h4>
 
     <div class="d-flex pt-lg-4 mr-4">
@@ -128,6 +128,10 @@ export default {
 </script>
 
 <style scoped>
+.main {
+  height: calc(100vh - 72px);
+  overflow-y: scroll;
+}
 .header {
   color: var(--secondary-black);
   font-weight: 700;
@@ -165,5 +169,24 @@ export default {
   color: #3a3b3f;
   cursor: pointer;
   font-size: 0.875rem;
+}
+/* width */
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #888;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
 }
 </style>
