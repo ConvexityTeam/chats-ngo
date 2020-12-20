@@ -8,8 +8,7 @@
           <p class="text">Beneficiaries</p>
           <h4 class="funds">125,000</h4>
           <p class="pb-2">
-            <a href="#Beneficiaries" class="percentage">View all</a>
-         
+          <nuxt-link to="/beneficiaries/all-beneficiaries" class="percentage">View all</nuxt-link>     
           </p>
         </div>
       </div>
@@ -157,6 +156,10 @@
    </div>
   
     </div>
+
+<!-- Beneficiary transaction here -->
+<beneficiaryTransaction/>
+
   </div>
 </template>
 
@@ -171,6 +174,7 @@ import dot from '~/components/icons/dot'
 import rightArrow from '~/components/icons/right-arrow'
 import leftArrow from '~/components/icons/left-arrow'
 import beneficiaryComplaints from '~/components/tables/beneficiary-complaints'
+import beneficiaryTransaction from '~/components/tables/beneficiary-transaction'
 export default {
   layout: 'dashboard',
   components: {
@@ -183,7 +187,8 @@ export default {
     dot,
     rightArrow,
     leftArrow,
-    beneficiaryComplaints
+    beneficiaryComplaints,
+    beneficiaryTransaction
   },
 }
 </script>

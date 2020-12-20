@@ -26,46 +26,28 @@
       <!-- Tabs Here -->
       <div>
         <b-tabs content-class="mt-3">
-          <b-tab title="First" active><p>I'm the first tab</p></b-tab>
-          <b-tab title="Second"><p>I'm the second tab</p></b-tab>
-          <b-tab title="Disabled" disabled><p>I'm a disabled tab!</p></b-tab>
+        <!-- All complaints tab here -->
+          <b-tab title="All" active>
+          <div class="text-center mt-5">
+          <p class="no-complaints"> No Complaints</p>
+          </div>
+          </b-tab>
+
+          <!-- Resolved complaints here -->
+          <b-tab title="Resolved">
+              <div class="text-center mt-5">
+          <p class="no-complaints"> No Complaints</p>
+          </div>
+          </b-tab>
+
+          <!-- Unresolved Complaints here -->
+          <b-tab title="Unresolved" >
+              <div class="text-center mt-5">
+          <p class="no-complaints"> No Complaints</p>
+          </div>
+          </b-tab>
         </b-tabs>
       </div>
-
-
-    <div class="tabs d-flex">
-              <!-- Using the key property to rerender the component when a tab is clicked -->
-              <li
-                @click="
-                  tab == 2 ? key++ : '';
-                  tab = 1;
-                "
-                :class="{ selected: tab == 1 }"
-                class="d-flex"
-              >
-                <a href="#">Upcoming Interviews</a>
-                <span class="count ml-2" v-if="tab == 1">ww</span>
-              </li>
-              <li
-                class="mx-4 d-flex"
-                @click="
-                  tab == 1 ? key++ : '';
-                  tab = 2;
-                "
-                :class="{ selected: tab == 2 }"
-              >
-                <a href="#">Past Interviews</a>
-                <span class="count ml-2" v-if="tab == 2">gg</span>
-              </li>
-            </div>
-
-<div tab='1'>
-sssssss
-</div>
-
-<div tab='2'>
-222222
-</div>
 
     </div>
   </div>
@@ -75,7 +57,6 @@ sssssss
 export default {
   data(){
     return{
-        tab: 1,
       key: 0,
     }
   }
@@ -83,7 +64,10 @@ export default {
 </script>
 
 <style scoped>
-
+.no-complaints{
+  color: var(--secondary-black);
+  font-size: 0.875rem;
+}
 .tabs li {
   list-style: none;
   font-size: 13px;

@@ -2,7 +2,6 @@ export default {
     // Disable server-side rendering (https://go.nuxtjs.dev/ssr-mode)
     ssr: false,
 
-    // Global page headers (https://go.nuxtjs.dev/config-head)
     head: {
         title: 'frontend-ngo-web',
         meta: [
@@ -15,13 +14,11 @@ export default {
         ]
     },
 
-    // Global CSS (https://go.nuxtjs.dev/config-css)
     css: [
         '~/assets/css/main.css',
         '~/assets/css/fonts.css'
     ],
 
-    // Plugins to run before rendering page (https://go.nuxtjs.dev/config-plugins)
     plugins: [
         '~/plugins/global.js',
     ],
@@ -32,7 +29,6 @@ export default {
         duration: 1200,
     },
 
-    // Auto import components (https://go.nuxtjs.dev/config-components)
     components: true,
 
     // Modules for dev and build (recommended) (https://go.nuxtjs.dev/config-modules)

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="d-flex pt-lg-4 mr-2">
+    <div class="d-flex pt-lg-5 mr-2">
       <div>
         <!-- Search Box here -->
         <input
