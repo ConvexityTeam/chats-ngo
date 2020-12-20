@@ -29,8 +29,8 @@
               Selected
               {{
                 data.length == 1
-                  ? data.length + ' ' + `user`
-                  : data.length + ' ' + `users`
+                  ? data.length + ' ' + `vendor`
+                  : data.length + ' ' + `vendors`
               }}
             </th>
             <th scope="col" class="py-4">Vendor ID</th>
@@ -142,6 +142,7 @@ export default {
   box-shadow: 0px 4px 30px rgba(174, 174, 192, 0.2);
   border-radius: 10px;
   margin-top: 30px;
+   margin-right: 20px;
 }
 .table thead th {
   color: #4f4f4f;

@@ -21,6 +21,7 @@ export default {
 
     plugins: [
         '~/plugins/global.js',
+        { src: '~/plugins/vuex-persist', ssr: false }
     ],
     loading: {
         color: ' #17CE89',
