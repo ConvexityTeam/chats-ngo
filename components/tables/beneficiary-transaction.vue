@@ -101,14 +101,14 @@ select:focus {
 .table thead th {
   color: #4f4f4f;
   letter-spacing: 0.01em;
-  font-size: 0.7rem;
+  font-size: 1rem;
   font-weight: 700;
 }
 .table th,
 .table td {
   padding: 0.75rem 2rem;
   color: var(--secondary-black);
-  font-size: 0.7rem;
+  font-size: 1rem;
 }
 ::placeholder{
     color: #999999;
