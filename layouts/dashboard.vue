@@ -20,6 +20,7 @@
 import topNav from "~/components/partials/navbar";
 import sideMenu from "~/components/partials/sidemenu";
 export default {
+    middleware: 'authenticated',
   components: {
     topNav,
     sideMenu

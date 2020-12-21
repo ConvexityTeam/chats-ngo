@@ -24,7 +24,6 @@ export default {
          * User Authentication Actions
          */
         commitToken({ commit }, payload) {
-            debugger
             commit('setUserToken', payload)
         },
 
