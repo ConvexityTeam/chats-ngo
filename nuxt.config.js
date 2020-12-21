@@ -1,6 +1,11 @@
+const BASE_URL = 'https://chats-backend.herokuapp.com/api/v1';
 export default {
     // Disable server-side rendering (https://go.nuxtjs.dev/ssr-mode)
     ssr: false,
+
+    env: {
+        BASE_URL,
+    },
 
     head: {
         title: 'frontend-ngo-web',
@@ -22,6 +27,7 @@ export default {
     plugins: [
         '~/plugins/global.js',
         '~/plugins/index.js',
+        '~/plugins/axios.js',
         { src: '~/plugins/vuex-persist', ssr: false }
     ],
     loading: {
@@ -45,7 +51,7 @@ export default {
 
     // Axios module configuration (https://go.nuxtjs.dev/config-axios)
     axios: {
-        baseURL: 'virtserver.swaggerhub.com/habeeb-salami/CHATS/1.0/',
+        baseURL: BASE_URL,
         https: true,
         progress: true,
         retry: { retries: 2 }

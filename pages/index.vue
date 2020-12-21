@@ -68,8 +68,9 @@
             </transition>
           </div>
 
+          <!-- Submit button here -->
           <div class="mt-4 text-center">
-            <button type="button" class="onboarding-btn">
+            <button class="onboarding-btn">
               <span v-if="loading">
                 <img
                   src="~/assets/img/vectors/spinner.svg"
@@ -83,7 +84,7 @@
 
         <code>
           <pre>
-        payload: {{ payload }}
+        <!-- payload: {{ payload }} -->
         </pre
           >
         </code>
@@ -129,7 +130,35 @@ export default {
   },
 
   methods: {
-    registerUser() {},
+    async registerUser() {
+      try {
+        this.loading = true
+        this.$v.payload.$touch()
+
+        if (this.$v.payload.$error === true) {
+          this.loading = false
+          this.$toast.error('Please fill in appropriately')
+          return
+        }
+        
+        const response = await this.$axios.post(
+          '/ngo/auth/register',
+          this.payload,
+        )
+
+        if(response.data.code == 201){
+        this.loading = false
+        console.log(response)
+        this.$toast.success(response.data.message)
+        this.$router.push('/login')
+        }
+      
+      } catch (error) {
+        this.loading = false
+        this.$toast.error(error.response.data.message)
+this.$router.push('/forgot-password')
+      }
+    },
   },
 }
 </script>

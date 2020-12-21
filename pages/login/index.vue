@@ -10,21 +10,43 @@
 
     <div class="d-flex justify-content-center align-items-center">
       <div class="card__holder">
-        <form>
+        <form @submit.prevent="loginUser">
           <!-- Organisation email here -->
           <div class="form-group">
             <label for="email">Email</label>
-            <input type="email" class="form-controls" id="email" />
+            <input type="email" class="form-controls" id="email" v-model="payload.email" @blur="$v.payload.email.$touch()" />
+             <transition name="fade">
+              <p v-if="$v.payload.email.$error" class="form-input__error">
+                <span v-if="!$v.payload.email.required">
+                  This field is required
+                </span>
+              </p>
+            </transition>
           </div>
 
           <!-- Password here -->
           <div class="form-group pb-2">
             <label for="password">Password</label>
-            <input type="password" class="form-controls" id="password" />
+            <input type="password" class="form-controls" id="password" v-model="payload.password"   @blur="$v.payload.password.$touch()"  />
+             <transition name="fade">
+              <p v-if="$v.payload.password.$error" class="form-input__error">
+                <span v-if="!$v.payload.password.required">
+                  This field is required
+                </span>
+              </p>
+            </transition>
           </div>
 
           <div class="mt-4 text-center">
-            <button type="button" class="onboarding-btn">Login</button>
+            <button  class="onboarding-btn">  
+                 <span v-if="loading">
+                <img
+                  src="~/assets/img/vectors/spinner.svg"
+                  class="btn-spinner"
+                />
+              </span>
+              <span v-else>Login</span>
+            </button>
           </div>
         </form>
 
@@ -41,8 +63,60 @@
 </template>
 
 <script>
+import { required, email } from 'vuelidate/lib/validators'
 export default {
-    layout: "default"
+    layout: "default",
+    data(){
+      return{
+        loading: false,
+        payload:{
+          email: '',
+          password: ''
+        }
+      }
+    },
+      validations: {
+    payload: {
+      email: {
+        required,
+        email,
+      },
+      password: {
+        required,
+      },
+    },
+  },
+
+  methods:{
+async loginUser(){
+
+try{
+     this.loading = true
+        this.$v.payload.$touch()
+
+           if (this.$v.payload.$error === true) {
+          this.loading = false
+          this.$toast.error('Please fill in appropriately')
+          return
+        }
+
+         debugger
+        const response = await this.$axios.post(
+          '/ngo/auth/login',
+          this.payload,
+        )
+        debugger
+        this.loading = false
+        console.log(response)
+
+}
+catch (error) {
+        this.loading = false
+        this.$toast.error(error.message)
+        console.log(error)
+      }
+}
+  }
 }
 </script>
 
