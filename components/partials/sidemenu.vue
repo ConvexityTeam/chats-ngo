@@ -226,7 +226,7 @@
             </li>
 
             <li class="mb-2">
-              <a href="#" @click.prevent="logout">
+              <a href="#" @click.prevent="logOut">
                 <span>
                   <svg
                     width="20"
@@ -257,12 +257,19 @@
 </template>
 
 <script>
-// import { mapActions} from 'vuex'
+import { mapActions} from 'vuex'
 export default {
   methods: {
-    // ...mapActions('authentication', ['LOGOUT']),
-    logout() {
-      this.LOGOUT().then(this.successAction).catch(this.failedToast)
+    ...mapActions("authentication", ["logout"]),
+
+     async logOut() {
+      try {
+        await this.logout();
+        this.$router.push("/login");
+
+      } catch (error) {
+        this.$toast.error(error)
+      }
     },
   },
 }
