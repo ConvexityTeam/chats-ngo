@@ -85,8 +85,7 @@
         <code>
           <pre>
         <!-- payload: {{ payload }} -->
-        </pre
-          >
+        </pre>
         </code>
 
         <div class="mt-4 text-center">
@@ -140,23 +139,23 @@ export default {
           this.$toast.error('Please fill in appropriately')
           return
         }
-        
+
         const response = await this.$axios.post(
           '/ngo/auth/register',
           this.payload,
         )
 
-        if(response.data.code == 201){
-        this.loading = false
-        console.log(response)
-        this.$toast.success(response.data.message)
-        this.$router.push('/login')
+        if (response.data.code == 201) {
+          this.loading = false
+          console.log(response)
+          this.$toast.success(response.data.message)
+          this.$router.push('/login')
         }
-      
+        
       } catch (error) {
         this.loading = false
         this.$toast.error(error.response.data.message)
-this.$router.push('/forgot-password')
+        this.$router.push('/forgot-password')
       }
     },
   },

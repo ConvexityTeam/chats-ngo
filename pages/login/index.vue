@@ -64,6 +64,7 @@
 
 <script>
 import { required, email } from 'vuelidate/lib/validators'
+import { mapActions } from 'vuex'
 export default {
     layout: "default",
     data(){
@@ -88,8 +89,9 @@ export default {
   },
 
   methods:{
-async loginUser(){
+    ...mapActions('authentication', ['commitToken']),
 
+async loginUser(){
 try{
      this.loading = true
         this.$v.payload.$touch()
@@ -100,20 +102,24 @@ try{
           return
         }
 
-         debugger
+         
         const response = await this.$axios.post(
           '/ngo/auth/login',
           this.payload,
         )
-        debugger
-        this.loading = false
-        console.log(response)
+        
+    if (response.data.code == 200) {
+          this.loading = false
+          console.log(response)
+         const jwt = response.data.data.token;
+          this.commitToken(jwt);
+          this.$router.push('/dashboard')
+        }
 
 }
 catch (error) {
         this.loading = false
-        this.$toast.error(error.message)
-        console.log(error)
+        this.$toast.error(error.response.data.message)
       }
 }
   }
