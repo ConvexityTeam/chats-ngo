@@ -98,7 +98,9 @@ export default {
       ],
     }
   },
-
+created(){
+  this.fetchAllBeneficiaries()
+},
   methods: {
     ...mapActions("beneficiaries", ["SAVE_TEMP_BENEFACTOR"]),
     checkAll() {
@@ -121,6 +123,17 @@ export default {
     handleTempBenefactor(benefactor){
   this.SAVE_TEMP_BENEFACTOR(benefactor);
    this.$router.push(`/beneficiaries/${benefactor.id}`);
+    },
+
+       async fetchAllBeneficiaries(){
+try{
+const response =  await this.$axios.get('/beneficiaries')
+this.beneficiaryCount = response.data.data.length
+console.log(response)
+}
+catch(error){
+  // console.log(error)
+}
     },
 
   },

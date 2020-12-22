@@ -68,7 +68,7 @@
             <div class="col-lg-6">
               <!--Total Amount  field  here -->
               <div class="form-group">
-                <label for="total-amount">Number Of Beneficiaries</label>
+                <label for="total-amount">Total Wallet</label>
                 <input
                   type="text"
                   class="form-controls"
@@ -83,7 +83,7 @@
             <div class="col-lg-6">
               <!--Amount per receipient field  here -->
               <div class="form-group">
-                <label for="receipient-amount">Number Of Beneficiaries</label>
+                <label for="receipient-amount">Amount Per Recipient</label>
                 <input
                   type="text"
                   class="form-controls"

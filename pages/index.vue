@@ -81,13 +81,6 @@
             </button>
           </div>
         </form>
-
-        <code>
-          <pre>
-        <!-- payload: {{ payload }} -->
-        </pre>
-        </code>
-
         <div class="mt-4 text-center">
           <p class="account">
             Have an account?
@@ -155,7 +148,7 @@ export default {
       } catch (error) {
         this.loading = false
         this.$toast.error(error.response.data.message)
-        // this.$router.push('/forgot-password')
+        this.$router.push('/forgot-password')
       }
     },
   },

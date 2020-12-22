@@ -108,10 +108,25 @@ export default {
       ],
     }
   },
+
+  created(){
+    this.fetchAllCampaigns()
+  },
   methods: {
     filterCampaigns() {
       console.log('filtering')
     },
+
+   async fetchAllCampaigns(){
+      try{
+const response =  await this.$axios.get('/campaigns')
+// this.beneficiaryCount = response.data.data.length
+console.log(response)
+}
+catch(error){
+  console.log(error)
+}
+    }
   },
 }
 </script>
