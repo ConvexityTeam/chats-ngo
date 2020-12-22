@@ -61,10 +61,18 @@
               />
               <p class="mx-3 pt-1">{{ benefactor.name }}</p>
             </td>
-            <td @click="handleTempBenefactor(benefactor)">{{ benefactor.id }}</td>
-            <td @click="handleTempBenefactor(benefactor)">{{ benefactor.number }}</td>
-            <td @click="handleTempBenefactor(benefactor)">{{ benefactor.email }}</td>
-            <td @click="handleTempBenefactor(benefactor)">{{ benefactor.created }}</td>
+            <td @click="handleTempBenefactor(benefactor)">
+              {{ benefactor.id }}
+            </td>
+            <td @click="handleTempBenefactor(benefactor)">
+              {{ benefactor.number }}
+            </td>
+            <td @click="handleTempBenefactor(benefactor)">
+              {{ benefactor.email }}
+            </td>
+            <td @click="handleTempBenefactor(benefactor)">
+              {{ benefactor.created }}
+            </td>
           </tr>
         </tbody>
       </table>
@@ -73,7 +81,7 @@
 </template>
 
 <script>
-import { mapActions } from "vuex";
+import { mapActions } from 'vuex'
 export default {
   layout: 'dashboard',
   data() {
@@ -98,11 +106,11 @@ export default {
       ],
     }
   },
-created(){
-  this.fetchAllBeneficiaries()
-},
+  created() {
+    this.fetchAllBeneficiaries()
+  },
   methods: {
-    ...mapActions("beneficiaries", ["SAVE_TEMP_BENEFACTOR"]),
+    ...mapActions('beneficiaries', ['SAVE_TEMP_BENEFACTOR']),
     checkAll() {
       this.isCheckAll = !this.isCheckAll
       this.data = []
@@ -120,22 +128,20 @@ created(){
         : (this.isCheckAll = false)
     },
 
-    handleTempBenefactor(benefactor){
-  this.SAVE_TEMP_BENEFACTOR(benefactor);
-   this.$router.push(`/beneficiaries/${benefactor.id}`);
+    handleTempBenefactor(benefactor) {
+      this.SAVE_TEMP_BENEFACTOR(benefactor)
+      this.$router.push(`/beneficiaries/${benefactor.id}`)
     },
 
-       async fetchAllBeneficiaries(){
-try{
-const response =  await this.$axios.get('/beneficiaries')
-this.beneficiaryCount = response.data.data.length
-console.log(response)
-}
-catch(error){
-  // console.log(error)
-}
+    async fetchAllBeneficiaries() {
+      try {
+        const response = await this.$axios.get('/beneficiaries')
+        this.beneficiaryCount = response.data.data.length
+        console.log(response)
+      } catch (error) {
+        // console.log(error)
+      }
     },
-
   },
 }
 </script>
@@ -166,7 +172,7 @@ catch(error){
   box-shadow: 0px 4px 30px rgba(174, 174, 192, 0.2);
   border-radius: 10px;
   margin-top: 30px;
-   margin-right: 20px;
+  margin-right: 20px;
 }
 .table thead th {
   color: #4f4f4f;

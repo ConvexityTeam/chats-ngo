@@ -51,7 +51,7 @@
               />
             </td>
 
-            <td class="d-flex">
+            <td class="d-flex" @click="handleTempVendor(vendor)">
               <img
                 src="~/assets/img/user.png"
                 width="30"
@@ -61,10 +61,10 @@
               />
               <p class="mx-3 pt-1">{{ vendor.name }}</p>
             </td>
-            <td>{{ vendor.id }}</td>
-            <td>{{ vendor.number }}</td>
-            <td>{{ vendor.email }}</td>
-            <td>{{ vendor.created }}</td>
+            <td @click="handleTempVendor(vendor)">{{ vendor.id }}</td>
+            <td @click="handleTempVendor(vendor)">{{ vendor.number }}</td>
+            <td @click="handleTempVendor(vendor)">{{ vendor.email }}</td>
+            <td @click="handleTempVendor(vendor)">{{ vendor.created }}</td>
           </tr>
         </tbody>
       </table>
@@ -73,6 +73,7 @@
 </template>
 
 <script>
+import {mapActions} from 'vuex'
 export default {
   layout: 'dashboard',
   data() {
@@ -99,7 +100,7 @@ export default {
   },
 
   methods: {
-
+  ...mapActions('beneficiaries', ['SAVE_TEMP_VENDOR']),
     checkAll() {
       this.isCheckAll = !this.isCheckAll
       this.data = []
@@ -115,6 +116,11 @@ export default {
       this.data.length === this.vendors.length
         ? (this.isCheckAll = true)
         : (this.isCheckAll = false)
+    },
+
+  handleTempVendor(vendor) {
+      this.SAVE_TEMP_VENDOR(vendor)
+      this.$router.push(`/vendors/${vendor.id}`)
     },
   },
 }
@@ -157,5 +163,6 @@ export default {
   padding: 0.5rem 2rem;
   color: #3a3b3f;
   font-size: 0.875rem;
+  cursor: pointer;
 }
 </style>
