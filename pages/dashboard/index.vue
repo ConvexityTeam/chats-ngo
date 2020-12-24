@@ -6,7 +6,7 @@
       <div class="col-lg-3" >
         <div class="card__holder px-3 pt-2">
           <p class="text">Wallet Balance</p>
-          <h4 class="funds pb-3">$125,000/N120,000</h4>
+          <h4 class="funds pb-3 d-flex"> {{userLocation.currencySymbol  + userLocation.convertedValue}}</h4>
           <!-- <p class="percentage pb-2">
             2.5%
             <span class="mx-1">
@@ -201,14 +201,28 @@ import beneficiaryLocation from '~/components/charts/beneficiary-location'
 import dot from '~/components/icons/dot'
 import rightArrow from '~/components/icons/right-arrow'
 import leftArrow from '~/components/icons/left-arrow'
+import locateMixin from '~/components/mixins/locate'
+import { mapGetters } from 'vuex';
+import countries from '~/plugins/countries'
 export default {
   layout: 'dashboard',
+   mixins: [locateMixin],
   data(){
 return{
   vendorCount: '',
-  beneficiaryCount: ''
+  beneficiaryCount: '',
+
+  userLocation:{
+    alphaCode: '',
+currencySymbol:'',
+currencyCode:'',
+amount: '5000',
+convertedValue:''
+  }
+
 }
   },
+ 
   components: {
     beneficiaryAge,
     beneficiaryGender,
@@ -222,15 +236,55 @@ return{
 
   created(){
     this.fetchAllVendors();
-    this.fetchAllBeneficiaries()
+    this.fetchAllBeneficiaries();
+    this.getIp();
   },
 
   methods:{
+
+ getIp(){
+this.$axios.get('http://ip-api.com/json')
+.then((response) => {
+    console.log({response: response.data.countryCode})
+    this.userLocation.alphaCode = response.data.countryCode
+         this.setCurrency();
+         this.convertCurrency()
+})
+.catch((err) => {
+    console.log(err)
+})
+},
+
+setCurrency(){
+
+const userCountry = countries.filter(countries => countries.alpha2Code == this.userLocation.alphaCode)
+
+
+this.userLocation.currencySymbol = userCountry[0].currencies[0].symbol
+this.userLocation.currencyCode = userCountry[0].currencies[0].code
+},
+
+convertCurrency(){
+    this.$axios.get(`https://fixer-fixer-currency-v1.p.rapidapi.com/convert`,{ params: { from: 'USD', to: this.userLocation.currencyCode, amount: this.userLocation.amount },      headers: {
+  'x-rapidapi-key': '53a42b6342msha5eeed4491364b5p1c9fb1jsn357450c321a9',
+    'x-rapidapi-host': 'fixer-fixer-currency-v1.p.rapidapi.com'
+    } } )
+
+    .then((response)=>{
+        console.log('converted', response)
+        this.userLocation.convertedValue = response.data.result
+    })
+
+    .catch((error)=>{
+        console.log(error)
+    })
+},
+
    async fetchAllBeneficiaries(){
 try{
 const response =  await this.$axios.get('/beneficiaries')
 this.beneficiaryCount = response.data.data.length
-console.log(response)
+// console.log(response)
 }
 catch(error){
   // console.log(error)
