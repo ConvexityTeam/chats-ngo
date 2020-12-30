@@ -33,10 +33,10 @@
                   : data.length + ' ' + `vendors`
               }}
             </th>
-            <th scope="col" class="py-4">Vendor ID</th>
+            <th scope="col" class="py-4"> ID</th>
             <th scope="col" class="py-4">Phone Number</th>
             <th scope="col" class="py-4">Email Address</th>
-            <th scope="col" class="py-4">Account Created</th>
+            <th scope="col" class="py-4">Created</th>
           </tr>
         </thead>
 
@@ -53,18 +53,28 @@
 
             <td class="d-flex" @click="handleTempVendor(vendor)">
               <img
-                src="~/assets/img/user.png"
+              v-if="vendor.profile_pic == null"
+                :src="src"
                 width="30"
                 height="30"
                 class="rounded"
-                alt=""
+                alt="Vendor"
               />
-              <p class="mx-3 pt-1">{{ vendor.name }}</p>
+
+                <img
+            v-else
+                :src="vendor.profile_pic "
+                width="30"
+                height="30"
+                class="rounded"
+                alt="Vendor"
+              />  
+              <p class="mx-3 pt-1">{{ vendor.first_name }}</p>
             </td>
             <td @click="handleTempVendor(vendor)">{{ vendor.id }}</td>
-            <td @click="handleTempVendor(vendor)">{{ vendor.number }}</td>
+            <td @click="handleTempVendor(vendor)">{{ vendor.phone }}</td>
             <td @click="handleTempVendor(vendor)">{{ vendor.email }}</td>
-            <td @click="handleTempVendor(vendor)">{{ vendor.created }}</td>
+            <td @click="handleTempVendor(vendor)">{{ vendor.createdAt | formatDateOnly }}</td>
           </tr>
         </tbody>
       </table>
@@ -78,27 +88,16 @@ export default {
   layout: 'dashboard',
   data() {
     return {
+      src:'https://t4.ftcdn.net/jpg/02/29/75/83/240_F_229758328_7x8jwCwjtBMmC6rgFzLFhZoEpLobB6L8.jpg',
       isCheckAll: false,
       data: [],
-      vendors: [
-        {
-          name: 'Cadbury Ng',
-          id: 'DEV63016762',
-          number: 2348013123065,
-          email: 'rsnyder@blogspan.gov',
-          created: '04/28/2018',
-        },
-        {
-          name: 'Dangote Ng',
-          id: 'DEV63016763',
-          number: 2348013123066,
-          email: 'dangote@blogspan.gov',
-          created: '04/28/2019',
-        },
-      ],
+      vendors: [],
     }
   },
-
+  created(){
+    this.fetchAllVendors()
+  },
+  
   methods: {
   ...mapActions('beneficiaries', ['SAVE_TEMP_VENDOR']),
     checkAll() {
@@ -121,6 +120,14 @@ export default {
   handleTempVendor(vendor) {
       this.SAVE_TEMP_VENDOR(vendor)
       this.$router.push(`/vendors/${vendor.id}`)
+    },
+
+      async fetchAllVendors() {
+      try {
+        const response = await this.$axios.get('/vendors')
+        console.log(response)
+        this.vendors = response.data.data
+      } catch (error) {}
     },
   },
 }
