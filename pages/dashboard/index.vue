@@ -1,12 +1,14 @@
 <template>
   <div class="main">
-      <!-- Top cards here -->
+    <!-- Top cards here -->
     <div class="row no-gutters pt-lg-4">
       <!-- Wallet balance here -->
-      <div class="col-lg-3" >
+      <div class="col-lg-3">
         <div class="card__holder px-3 pt-2">
           <p class="text">Wallet Balance</p>
-          <h4 class="funds pb-3 d-flex"> {{userLocation.currencySymbol  + userLocation.convertedValue}}</h4>
+          <h4 class="funds pb-3 d-flex">
+            {{ userLocation.currencySymbol + userLocation.convertedValue}}
+          </h4>
           <!-- <p class="percentage pb-2">
             2.5%
             <span class="mx-1">
@@ -29,30 +31,29 @@
         </div>
       </div>
 
-    <!-- Total amount Received here -->
-       <div class="col-lg-3" >
+      <!-- Total amount Received here -->
+      <div class="col-lg-3">
         <div class="card__holder px-3 pt-2">
           <p class="text">Total Amount Recieved</p>
-          <h4 class="funds pb-3">$125,000/N120,000</h4>
+          <h4 class="funds pb-3">   {{ userLocation.currencySymbol + userLocation.convertedValue}}</h4>
         </div>
       </div>
 
-        <!-- Total Amount Disbursed here -->
-       <div class="col-lg-3" >
+      <!-- Total Amount Disbursed here -->
+      <div class="col-lg-3">
         <div class="card__holder px-3 pt-2">
           <p class="text">Total Amount Disbursed</p>
-          <h4 class="funds pb-3">$125,000/N120,000</h4>
+          <h4 class="funds pb-3">   {{ userLocation.currencySymbol + userLocation.convertedValue}}</h4>
         </div>
       </div>
 
-        <!-- Total Balance -->
-       <div class="col-lg-3" >
+      <!-- Total Balance -->
+      <div class="col-lg-3">
         <div class="card__holder px-3 pt-2">
           <p class="text">Total Balance</p>
-          <h4 class="funds pb-3">$125,000/N120,000</h4>
+          <h4 class="funds pb-3"> {{ userLocation.currencySymbol + userLocation.convertedValue}}</h4>
         </div>
       </div>
-
     </div>
 
     <!-- First Beneficiary cards here -->
@@ -65,13 +66,13 @@
           <!-- Beneficiaries Stats  here -->
           <div class="pb-4">
             <p class="beneficiaries">Beneficiaries</p>
-            <h4 class="beneficiaries-count">{{beneficiaryCount}}</h4>
+            <h4 class="beneficiaries-count">{{ beneficiaryCount }}</h4>
           </div>
 
           <!-- Vendors stats here -->
-          <div class=" pb-5">
+          <div class="pb-5">
             <p class="beneficiaries">Vendors</p>
-            <h4 class="beneficiaries-count pb-3">{{vendorCount}}</h4>
+            <h4 class="beneficiaries-count pb-3">{{ allVendors.length }}</h4>
           </div>
         </div>
       </div>
@@ -93,14 +94,13 @@
 
     <!-- Second Beneficiary cards here -->
     <div class="row no-gutters pt-lg-4">
-  
-  <!-- Beneficiary By Location card here -->
-        <div class="col-lg-4 pb-3">
+      <!-- Beneficiary By Location card here -->
+      <div class="col-lg-4 pb-3">
         <div class="cards__holder px-3 pt-3">
-         <beneficiaryLocation/>
-          </div>  
+          <beneficiaryLocation />
+        </div>
       </div>
-      
+
       <!-- Vendor Transaction By Beneficiary  Cards here -->
       <div class="col-lg-4 pb-3">
         <div class="cards__holder px-3 pt-3">
@@ -116,10 +116,9 @@
       </div>
     </div>
 
-   <!-- Third Beneficiary cards here -->
-    <div class="row  no-gutters pt-lg-4">
-
-        <!-- Metric card here -->
+    <!-- Third Beneficiary cards here -->
+    <div class="row no-gutters pt-lg-4">
+      <!-- Metric card here -->
       <div class="col-lg-5 pb-3">
         <div class="metric__holder px-3 pt-3">
           <p class="total-count pb-3">Metrics</p>
@@ -155,9 +154,9 @@
         <div class="metric__holder mr-4 px-3 pt-3">
           <p class="total-count pb-3">Vendors</p>
 
-          <div class="d-flex pb-3" v-for="i in 5" :key="i">
+          <div class="d-flex pb-3" v-for="vendor in allVendors.slice(0, 5)" :key="vendor.id">
             <div>
-              <p class="vendor-name">Dangote Flour Mill</p>
+              <p class="vendor-name">{{vendor.first_name}}</p>
             </div>
             <div class="ml-auto">
               <button type="button" class="more-btn">
@@ -166,28 +165,22 @@
             </div>
           </div>
 
-               <div class="d-flex pb-2" >
+          <div class="d-flex pb-2">
             <div class="mt-2">
-             <nuxt-link class="viewall " to="/vendors">View all</nuxt-link>
+              <nuxt-link class="viewall" to="/vendors">View all</nuxt-link>
             </div>
             <div class="ml-auto d-flex">
-
-             <p class="pt-3 paginate">1 - 10 of 24 </p>
+              <p class="pt-3 paginate">1 - 10 of 24</p>
               <button type="button" class="more-btn">
                 <i><leftArrow /></i>
               </button>
               <button type="button" class="more-btn">
                 <i><rightArrow /></i>
               </button>
-
-             
             </div>
           </div>
-          
         </div>
       </div>
-
-  
     </div>
   </div>
 </template>
@@ -202,27 +195,25 @@ import dot from '~/components/icons/dot'
 import rightArrow from '~/components/icons/right-arrow'
 import leftArrow from '~/components/icons/left-arrow'
 import locateMixin from '~/components/mixins/locate'
-import { mapGetters } from 'vuex';
 import countries from '~/plugins/countries'
 export default {
   layout: 'dashboard',
-   mixins: [locateMixin],
-  data(){
-return{
-  vendorCount: '',
-  beneficiaryCount: '',
+  mixins: [locateMixin],
+  data() {
+    return {
+      allVendors:[],
+      beneficiaryCount: '20',
+      amount: '5000',
 
-  userLocation:{
-    alphaCode: '',
-currencySymbol:'',
-currencyCode:'',
-amount: '5000',
-convertedValue:''
-  }
-
-}
+      userLocation: {
+        alphaCode: '',
+        currencySymbol: '',
+        currencyCode: '',
+        convertedValue: '5000',
+      },
+    }
   },
- 
+
   components: {
     beneficiaryAge,
     beneficiaryGender,
@@ -231,97 +222,105 @@ convertedValue:''
     beneficiaryLocation,
     dot,
     rightArrow,
-    leftArrow
+    leftArrow,
   },
 
-  created(){
+  created() {
     this.fetchAllVendors();
     this.fetchAllBeneficiaries();
     this.getIp();
   },
 
-  methods:{
-
- getIp(){
-this.$axios.get('http://ip-api.com/json')
-.then((response) => {
-    console.log({response: response.data.countryCode})
-    this.userLocation.alphaCode = response.data.countryCode
-         this.setCurrency();
-         this.convertCurrency()
-})
-.catch((err) => {
-    console.log(err)
-})
-},
-
-setCurrency(){
-
-const userCountry = countries.filter(countries => countries.alpha2Code == this.userLocation.alphaCode)
-
-
-this.userLocation.currencySymbol = userCountry[0].currencies[0].symbol
-this.userLocation.currencyCode = userCountry[0].currencies[0].code
-},
-
-convertCurrency(){
-    this.$axios.get(`https://fixer-fixer-currency-v1.p.rapidapi.com/convert`,{ params: { from: 'USD', to: this.userLocation.currencyCode, amount: this.userLocation.amount },      headers: {
-  'x-rapidapi-key': '53a42b6342msha5eeed4491364b5p1c9fb1jsn357450c321a9',
-    'x-rapidapi-host': 'fixer-fixer-currency-v1.p.rapidapi.com'
-    } } )
-
-    .then((response)=>{
-        console.log('converted', response)
-        this.userLocation.convertedValue = response.data.result
-    })
-
-    .catch((error)=>{
-        console.log(error)
-    })
-},
-
-   async fetchAllBeneficiaries(){
-try{
-const response =  await this.$axios.get('/beneficiaries')
-this.beneficiaryCount = response.data.data.length
-// console.log(response)
-}
-catch(error){
-  // console.log(error)
-}
+  methods: {
+    getIp() {
+      this.$axios
+        .get('http://ip-api.com/json')
+        .then((response) => {
+          console.log({ response: response.data.countryCode })
+          this.userLocation.alphaCode = response.data.countryCode
+          this.setCurrency()
+          this.convertCurrency()
+        })
+        .catch((err) => {
+          console.log(err)
+        })
     },
 
-       async fetchAllVendors(){
-try{
-const response =  await this.$axios.get('vendors/stores')
-// this.beneficiaryCount = response.data.data.length
-// console.log(response)
-}
-catch(error){
-  console.log(error)
-}
-    }
-  }
+    setCurrency() {
+      const userCountry = countries.filter(
+        (countries) => countries.alpha2Code == this.userLocation.alphaCode,
+      )
+
+      this.userLocation.currencySymbol = userCountry[0].currencies[0].symbol
+      this.userLocation.currencyCode = userCountry[0].currencies[0].code
+    },
+
+    convertCurrency() {
+      this.$axios
+        .get(`https://fixer-fixer-currency-v1.p.rapidapi.com/convert`, {
+          params: {
+            from: 'USD',
+            to: this.userLocation.currencyCode,
+            amount: this.amount,
+          },
+          headers: {
+            'x-rapidapi-key':
+              '53a42b6342msha5eeed4491364b5p1c9fb1jsn357450c321a9',
+            'x-rapidapi-host': 'fixer-fixer-currency-v1.p.rapidapi.com',
+          },
+        })
+
+        .then((response) => {
+          // this.userLocation.convertedValue = response.data.result
+        })
+
+        .catch((error) => {
+          console.log('erroo',error)
+        })
+    },
+
+    async fetchAllBeneficiaries() {
+      try {
+        const response = await this.$axios.get('/beneficiaries')
+        console.log({response:response})
+        this.beneficiaryCount = response.data.data.length
+      } catch (error) {
+         console.log('erroo',error)
+      }
+    },
+
+    async fetchAllVendors() {
+      try {
+        const response = await this.$axios.get('/vendors')
+        this.allVendors = response.data.data
+
+        console.log('all', this.allVendors)
+        console.log('vendors', response)
+      } catch (error) {
+        console.log(error)
+      }
+    },
+  },
 }
 </script>
 
 <style scoped>
-.main{
-   height: calc(100vh - 72px);
-    overflow-y: scroll;
+.main {
+  height: calc(100vh - 72px);
+  overflow-y: scroll;
 }
-.paginate{
-   color: var(--secondary-black);
-   font-size: 0.875rem;
-   font-weight: 500
+.paginate {
+  color: var(--secondary-black);
+  font-size: 0.875rem;
+  font-weight: 500;
 }
-.viewall{
+.viewall {
   color: var(--primary-color);
   font-size: 0.875rem;
   text-decoration: none;
 }
-.vendor-name{
-   color: var(--secondary-black);
+.vendor-name {
+  color: var(--secondary-black);
 }
 
 .date {
@@ -350,7 +349,6 @@ catch(error){
   background: #ffffff;
   box-shadow: 0px 4px 30px rgba(174, 174, 192, 0.2);
   border-radius: 10px;
-  
 }
 .cards__holder {
   background: #ffffff;
