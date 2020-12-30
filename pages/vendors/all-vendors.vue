@@ -9,17 +9,15 @@
           type="text"
           class="form-controls"
           placeholder="Search vendors by name or ID"
+          v-model="searchQuery"
         />
       </div>
 
       <div class="ml-auto">
         <button type="button" class="export-btn p-3">
-              <download-csv     :data="vendors"
-              name="All-Vendors.csv">
-              
-          
-        Export as CSV
-            </download-csv>
+          <download-csv :data="vendors" name="All-Vendors.csv">
+            Export as CSV
+          </download-csv>
         </button>
       </div>
     </div>
@@ -48,7 +46,7 @@
         </thead>
 
         <tbody>
-          <tr v-for="vendor in vendors.reverse()" :key="vendor.id">
+          <tr v-for="vendor in resultQuery" :key="vendor.id">
             <td class="pt-3">
               <input
                 type="checkbox"
@@ -101,8 +99,25 @@ export default {
       isCheckAll: false,
       data: [],
       vendors: [],
+      searchQuery: null,
     }
   },
+
+  computed: {
+    resultQuery() {
+      if (this.searchQuery) {
+        return this.vendors.filter((vendor) => {
+          return this.searchQuery
+            .toLowerCase()
+            .split(' ')
+            .every((v) => vendor.first_name.toLowerCase().includes(v))
+        })
+      } else {
+        return this.vendors
+      }
+    },
+  },
+
   created() {
     this.fetchAllVendors()
   },
