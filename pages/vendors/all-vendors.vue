@@ -24,7 +24,7 @@
 
     <!-- Vendors Table here -->
     <div class="holder">
-      <table class="table table-borderless">
+      <table class="table table-borderless" v-if="vendors != ''">
         <thead>
           <tr>
             <th scope="col" class="py-4">
@@ -84,6 +84,8 @@
           </tr>
         </tbody>
       </table>
+      <div v-else-if="loading" class="loader text-center"></div>
+      <h3 v-else class="text-center no-record">NO RECORD FOUND</h3> 
     </div>
   </div>
 </template>
@@ -100,6 +102,7 @@ export default {
       data: [],
       vendors: [],
       searchQuery: null,
+        loading:false,
     }
   },
 
@@ -148,10 +151,13 @@ export default {
 
     async fetchAllVendors() {
       try {
+        this.loading = true
         const response = await this.$axios.get('/vendors')
-        console.log(response)
         this.vendors = response.data.data
-      } catch (error) {}
+           this.loading = false
+      } catch (error) {
+           this.loading = false
+      }
     },
   },
 }
