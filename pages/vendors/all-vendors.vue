@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="main">
     <h4 class="header">All Vendors</h4>
 
     <div class="d-flex pt-lg-4 mr-4">
@@ -13,7 +13,14 @@
       </div>
 
       <div class="ml-auto">
-        <button type="button" class="export-btn p-3">Export as CSV</button>
+        <button type="button" class="export-btn p-3">
+              <download-csv     :data="vendors"
+              name="All-Vendors.csv">
+              
+          
+        Export as CSV
+            </download-csv>
+        </button>
       </div>
     </div>
 
@@ -33,7 +40,7 @@
                   : data.length + ' ' + `vendors`
               }}
             </th>
-            <th scope="col" class="py-4"> ID</th>
+            <th scope="col" class="py-4">ID</th>
             <th scope="col" class="py-4">Phone Number</th>
             <th scope="col" class="py-4">Email Address</th>
             <th scope="col" class="py-4">Created</th>
@@ -41,7 +48,7 @@
         </thead>
 
         <tbody>
-          <tr v-for="vendor in vendors" :key="vendor.id">
+          <tr v-for="vendor in vendors.reverse()" :key="vendor.id">
             <td class="pt-3">
               <input
                 type="checkbox"
@@ -53,28 +60,29 @@
 
             <td class="d-flex" @click="handleTempVendor(vendor)">
               <img
-              v-if="vendor.profile_pic == null"
+                v-if="vendor.profile_pic == null"
                 :src="src"
                 width="30"
                 height="30"
                 class="rounded"
                 alt="Vendor"
               />
-
-                <img
-            v-else
-                :src="vendor.profile_pic "
+              <img
+                v-else
+                :src="vendor.profile_pic"
                 width="30"
                 height="30"
                 class="rounded"
                 alt="Vendor"
-              />  
+              />
               <p class="mx-3 pt-1">{{ vendor.first_name }}</p>
             </td>
             <td @click="handleTempVendor(vendor)">{{ vendor.id }}</td>
             <td @click="handleTempVendor(vendor)">{{ vendor.phone }}</td>
             <td @click="handleTempVendor(vendor)">{{ vendor.email }}</td>
-            <td @click="handleTempVendor(vendor)">{{ vendor.createdAt | formatDateOnly }}</td>
+            <td @click="handleTempVendor(vendor)">
+              {{ vendor.createdAt | formatDateOnly }}
+            </td>
           </tr>
         </tbody>
       </table>
@@ -83,23 +91,24 @@
 </template>
 
 <script>
-import {mapActions} from 'vuex'
+import { mapActions } from 'vuex'
 export default {
   layout: 'dashboard',
   data() {
     return {
-      src:'https://t4.ftcdn.net/jpg/02/29/75/83/240_F_229758328_7x8jwCwjtBMmC6rgFzLFhZoEpLobB6L8.jpg',
+      src:
+        'https://t4.ftcdn.net/jpg/02/29/75/83/240_F_229758328_7x8jwCwjtBMmC6rgFzLFhZoEpLobB6L8.jpg',
       isCheckAll: false,
       data: [],
       vendors: [],
     }
   },
-  created(){
+  created() {
     this.fetchAllVendors()
   },
-  
+
   methods: {
-  ...mapActions('beneficiaries', ['SAVE_TEMP_VENDOR']),
+    ...mapActions('beneficiaries', ['SAVE_TEMP_VENDOR']),
     checkAll() {
       this.isCheckAll = !this.isCheckAll
       this.data = []
@@ -117,12 +126,12 @@ export default {
         : (this.isCheckAll = false)
     },
 
-  handleTempVendor(vendor) {
+    handleTempVendor(vendor) {
       this.SAVE_TEMP_VENDOR(vendor)
       this.$router.push(`/vendors/${vendor.id}`)
     },
 
-      async fetchAllVendors() {
+    async fetchAllVendors() {
       try {
         const response = await this.$axios.get('/vendors')
         console.log(response)
@@ -155,7 +164,7 @@ export default {
   box-shadow: 0px 4px 30px rgba(174, 174, 192, 0.2);
   border-radius: 10px;
   margin-top: 30px;
-   margin-right: 20px;
+  margin-right: 20px;
 }
 .table thead th {
   color: #4f4f4f;
@@ -171,5 +180,28 @@ export default {
   color: #3a3b3f;
   font-size: 0.875rem;
   cursor: pointer;
+}
+.main {
+  height: calc(100vh - 72px);
+  overflow-y: scroll;
+}
+/* width */
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #888;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
 }
 </style>
