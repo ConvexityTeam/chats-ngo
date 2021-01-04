@@ -85,7 +85,7 @@
         </tbody>
       </table>
       <div v-else-if="loading" class="loader text-center"></div>
-      <h3 v-else class="text-center no-record">NO RECORD FOUND</h3> 
+      <h3 v-else class="text-center no-record">NO RECORD FOUND</h3>
     </div>
   </div>
 </template>
@@ -102,7 +102,7 @@ export default {
       data: [],
       vendors: [],
       searchQuery: null,
-        loading:false,
+      loading: false,
     }
   },
 
@@ -152,11 +152,16 @@ export default {
     async fetchAllVendors() {
       try {
         this.loading = true
+
         const response = await this.$axios.get('/vendors')
         this.vendors = response.data.data
-           this.loading = false
+
+        console.log('response', response)
+
+        this.loading = false
+
       } catch (error) {
-           this.loading = false
+        this.loading = false
       }
     },
   },

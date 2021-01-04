@@ -118,7 +118,7 @@
             <!-- Name here -->
             <div class="d-table-row row">
               <p class="detail-caption col">Name</p>
-              <p class="detail-value col">{{ VENDOR.name }}</p>
+              <p class="detail-value col">{{ VENDOR.first_name }}</p>
             </div>
 
             <!-- user id here -->
@@ -130,7 +130,7 @@
             <!-- Phone number here -->
             <div class="d-table-row row">
               <p class="detail-caption col">Phone Number</p>
-              <p class="detail-value col">+{{ VENDOR.number }}</p>
+              <p class="detail-value col">{{ VENDOR.phone }}</p>
             </div>
 
             <!-- Email here -->
@@ -142,7 +142,7 @@
             <!-- Date created here -->
             <div class="d-table-row row">
               <p class="detail-caption col">Created</p>
-              <p class="detail-value col">{{ VENDOR.created }}</p>
+              <p class="detail-value col">{{ VENDOR.createdAt | formatDateOnly }}</p>
             </div>
           </div>
         </div>

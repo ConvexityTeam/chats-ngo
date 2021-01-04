@@ -61,9 +61,19 @@ export default {
       title: '',
     }
   },
+  watch: {
+    $route() {
+      if (this.$router.history.current.name.includes('vendors')) {
+        this.title = 'Vendors'
+      } else if (this.$router.history.current.name.includes('beneficiaries')) {
+        this.title = 'Beneficiaries'
+      } else {
+        this.title = this.$router.history.current.name
+      }
+    },
+  },
   mounted() {
-	this.title = this.$router.history.current.name
-	console.log('this is history',  this.$router.history.current)
+    this.title = this.$router.history.current.name
   },
 }
 </script>

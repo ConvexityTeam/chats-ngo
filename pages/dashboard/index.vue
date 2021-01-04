@@ -202,7 +202,7 @@ export default {
   data() {
     return {
       allVendors:[],
-      beneficiaryCount: '20',
+      beneficiaryCount: '',
       amount: '5000',
 
       userLocation: {
