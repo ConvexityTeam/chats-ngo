@@ -225,6 +225,7 @@ export default {
     },
   },
 
+
   methods: {
     closeModal() {
       this.$bvModal.hide('new-campaign')
@@ -240,7 +241,7 @@ export default {
         this.$toast.success(response.data.message)
         this.loading = false
         this.closeModal()
-        
+
       } catch (err) {
         console.log(err)
          this.loading = false
