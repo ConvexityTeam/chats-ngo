@@ -61,7 +61,7 @@
               name="description"
               id="description"
               cols="30"
-              rows="10"
+              rows="2"
               v-model="payload.description"
             ></textarea>
           </div>
@@ -75,7 +75,7 @@
                   type="text"
                   class="form-controls"
                   name="total-amount"
-                  pattern="^[0-9]*$"
+                  pattern="^[-,0-9]+$"
                   id="total-amount"
                   placeholder="Amount from NGO wallet"
                   v-model="payload.budget"
@@ -169,7 +169,15 @@
             </div>
 
             <div class="ml-auto">
-              <button class="create-campaign px-4 py-2">Create</button>
+              <button class="create-campaign px-4 py-2">
+                   <span v-if="loading">
+                <img
+                  src="~/assets/img/vectors/spinner.svg"
+                  class="btn-spinner"
+                />
+              </span>
+              <span v-else>Create</span>
+              </button>
             </div>
           </div>
         </form>
@@ -228,10 +236,15 @@ export default {
 
         const response = await this.$axios.post('/campaigns', this.payload)
         console.log({ campaignResponse: response })
+
+        this.$toast.success(response.data.message)
         this.loading = false
+        this.closeModal()
+        
       } catch (err) {
         console.log(err)
          this.loading = false
+         this.$toast.error(err.response.data.message)
       }
     },
   },
@@ -287,6 +300,6 @@ label {
   border: 1px solid #999999;
 }
 textarea {
-  height: 10vh;
+  height: auto;
 }
 </style>
