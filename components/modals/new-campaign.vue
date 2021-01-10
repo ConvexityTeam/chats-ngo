@@ -39,7 +39,7 @@
       </div>
 
       <div class="mt-5 px-3">
-        <form>
+        <form @submit.prevent="createCampaign">
           <!-- Name field  here -->
           <div class="form-group">
             <label for="name">Name</label>
@@ -49,19 +49,21 @@
               name="name"
               id="name"
               placeholder="Name of the campaign"
+              v-model="payload.title"
             />
           </div>
 
-          <!--Number of Beneficiaries field  here -->
+          <!--Description field  here -->
           <div class="form-group">
-            <label for="number">Number Of Beneficiaries</label>
-            <input
-              type="text"
+            <label for="description">Description</label>
+            <textarea
               class="form-controls"
-              name="number"
-              pattern="^[0-9]*$"
-              id="number"
-            />
+              name="description"
+              id="description"
+              cols="30"
+              rows="10"
+              v-model="payload.description"
+            ></textarea>
           </div>
 
           <div class="row">
@@ -76,34 +78,10 @@
                   pattern="^[0-9]*$"
                   id="total-amount"
                   placeholder="Amount from NGO wallet"
+                  v-model="payload.budget"
+                  ref="budget"
+          
                 />
-              </div>
-            </div>
-
-            <div class="col-lg-6">
-              <!--Amount per receipient field  here -->
-              <div class="form-group">
-                <label for="receipient-amount">Amount Per Recipient</label>
-                <input
-                  type="text"
-                  class="form-controls"
-                  name="receipient-amount"
-                  pattern="^[0-9]*$"
-                  id="receipient-amount"
-                  placeholder="Amount for each recipient"
-                />
-              </div>
-            </div>
-          </div>
-
-          <div class="row">
-            <!--Location  field  here -->
-            <div class="col-lg-6">
-              <div class="form-group">
-                <label for="location">Location</label>
-                <select name="location" class="form-controls" id="location">
-                  <option value="">Lagos</option>
-                </select>
               </div>
             </div>
 
@@ -116,6 +94,64 @@
                   class="form-controls"
                   name="field-office"
                   id="field-office"
+                  v-model="payload.location.field_office"
+                />
+              </div>
+            </div>
+
+            <!--Amount per receipient field  here -->
+            <!-- <div class="col-lg-6">
+              <div class="form-group">
+                <label for="receipient-amount">Amount Per Recipient</label>
+                <input
+                  type="text"
+                  class="form-controls"
+                  name="receipient-amount"
+                  pattern="^[0-9]*$"
+                  id="receipient-amount"
+                  placeholder="Amount for each recipient"
+                />
+              </div>
+            </div> -->
+          </div>
+
+          <div class="row">
+            <!--Location  field  here -->
+            <!-- <div class="col-lg-6">
+              <div class="form-group">
+                <label for="location">Location</label>
+                <select name="location" class="form-controls" id="location">
+                  <option value="">Lagos</option>
+                </select>
+              </div>
+            </div> -->
+
+            <div class="col-lg-6">
+              <!--start date  field  here -->
+              <div class="form-group">
+                <label for="start-date">Start Date</label>
+                <input
+                  type="date"
+                  class="form-controls"
+                  name="total-amount"
+                  id="start-date"
+                  placeholder="Amount from NGO wallet"
+                  v-model="payload.start_date"
+                />
+              </div>
+            </div>
+
+            <!--end date field  here -->
+            <div class="col-lg-6">
+              <div class="form-group">
+                <label for="end-date">End Date</label>
+                <input
+                  type="date"
+                  class="form-controls"
+                  name="total-amount"
+                  id="end-date"
+                  placeholder="Amount from NGO wallet"
+                  v-model="payload.end_date"
                 />
               </div>
             </div>
@@ -138,14 +174,65 @@
           </div>
         </form>
       </div>
+      <div>
+        <code>
+          <pre>{{ payload }}</pre>
+        </code>
+      </div>
     </b-modal>
   </div>
 </template>
 <script>
 export default {
+  data() {
+    return {
+      loading: false,
+      budget:'',
+      payload: {
+        title: '',
+        description: '',
+        budget: '',
+        location: {
+          country: '',
+          state: '',
+          field_office: '',
+          coodordinates: [
+            {
+              long: '',
+              lat: '',
+            },
+          ],
+        },
+        start_date: '',
+        end_date: '',
+      },
+    }
+  },
+
+  watch: {
+   'payload.budget': function(newValue) {
+      const result = newValue.replace(/\D/g, "")
+        .replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+       this.$nextTick(() => this.payload.budget = result);
+    },
+  },
+
   methods: {
     closeModal() {
       this.$bvModal.hide('new-campaign')
+    },
+
+    async createCampaign() {
+      try {
+        this.loading = true
+
+        const response = await this.$axios.post('/campaigns', this.payload)
+        console.log({ campaignResponse: response })
+        this.loading = false
+      } catch (err) {
+        console.log(err)
+         this.loading = false
+      }
     },
   },
 }
@@ -198,5 +285,8 @@ label {
 }
 .form-controls {
   border: 1px solid #999999;
+}
+textarea {
+  height: 10vh;
 }
 </style>
