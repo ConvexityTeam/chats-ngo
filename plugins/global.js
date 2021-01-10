@@ -30,5 +30,14 @@ const formatDateOnly = (date) => {
 
     return date.toDateString();
 };
+
+const formatNumber = (value) => {
+    if (value !== null) {
+        return value.toString().replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
+    return 0;
+
+}
 Vue.filter('capitalize', capitalize)
 Vue.filter('formatDateOnly', formatDateOnly)
+Vue.filter('formatNumber', formatNumber)

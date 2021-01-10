@@ -76,7 +76,7 @@
           <tbody>
             <tr v-for="campaign in campaigns" :key="campaign.id">
               <td>{{ campaign.title }}</td>
-              <td>{{ campaign.budget }}</td>
+              <td>{{ campaign.budget | formatNumber }}</td>
               <td>{{ campaign.spent }}</td>
               <td>{{ campaign.createdAt | formatDateOnly }}</td>
               <td class="in-progress">In Progress</td>

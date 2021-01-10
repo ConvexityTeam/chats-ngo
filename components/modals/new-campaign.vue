@@ -182,6 +182,7 @@
           </div>
         </form>
       </div>
+      <button type="button" @click="test">TEST</button>
       <div>
         <code>
           <pre>{{ payload }}</pre>
@@ -231,9 +232,21 @@ export default {
       this.$bvModal.hide('new-campaign')
     },
 
+    test(){
+var mystring = "4,000";
+mystring = mystring.replace(',','');
+
+console.log('my', mystring)
+    },
+
     async createCampaign() {
       try {
         this.loading = true
+
+
+ let budgetString = this.payload.budget
+ budgetString = budgetString.replaceAll(',','');
+ this.payload.budget = budgetString
 
         const response = await this.$axios.post('/campaigns', this.payload)
         console.log({ campaignResponse: response })
@@ -241,11 +254,26 @@ export default {
         this.$toast.success(response.data.message)
         this.loading = false
         this.closeModal()
+        location.reload();
+        // this.$router.push('/campaigns')
 
       } catch (err) {
         console.log(err)
          this.loading = false
          this.$toast.error(err.response.data.message)
+      }
+    },
+
+       async fetchAllCampaigns() {
+      try {
+        this.loading = true
+
+        const response = await this.$axios.get('/campaigns')
+        this.campaigns = response.data.data
+
+        console.log('All campaigns', response)
+      } catch (err) {
+        console.log(err)
       }
     },
   },
