@@ -10,6 +10,7 @@
             type="text"
             class="form-controls"
             placeholder="Search campaigns"
+                 v-model="searchQuery"
           />
 
           <div class="ml-3 position-relative">
@@ -66,15 +67,15 @@
           <thead>
             <tr>
               <th scope="col">Name</th>
-              <th scope="col">Total Amount</th>
-              <th scope="col">Amount Spent</th>
-              <th scope="col">Date Created</th>
+              <th scope="col">Total </th>
+              <th scope="col"> Spent</th>
+              <th scope="col"> Created</th>
               <th scope="col">Status</th>
               <th scope="col"></th>
             </tr>
           </thead>
           <tbody>
-            <tr v-for="campaign in campaigns" :key="campaign.id">
+            <tr v-for="campaign in resultQuery" :key="campaign.id">
               <td>{{ campaign.title }}</td>
               <td>{{ campaign.budget | formatNumber }}</td>
               <td>{{ campaign.spent }}</td>
@@ -106,6 +107,7 @@ export default {
       loading: false,
       campaigns: [],
       selected: null,
+      searchQuery: null,
       options: [
         { value: null, text: 'filter' },
         { value: 'all', text: 'All' },
@@ -113,6 +115,21 @@ export default {
         { value: 'completed', text: 'Completed' },
       ],
     }
+  },
+
+   computed: {
+    resultQuery() {
+      if (this.searchQuery) {
+        return this.campaigns.filter((campaign) => {
+          return this.searchQuery
+            .toLowerCase()
+            .split(' ')
+            .every((v) => campaign.title.toLowerCase().includes(v))
+        })
+      } else {
+        return this.campaigns
+      }
+    },
   },
 
   created() {
