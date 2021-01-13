@@ -10,7 +10,7 @@
             type="text"
             class="form-controls"
             placeholder="Search campaigns"
-                 v-model="searchQuery"
+            v-model="searchQuery"
           />
 
           <div class="ml-3 position-relative">
@@ -67,9 +67,9 @@
           <thead>
             <tr>
               <th scope="col">Name</th>
-              <th scope="col">Total </th>
-              <th scope="col"> Spent</th>
-              <th scope="col"> Created</th>
+              <th scope="col">Total</th>
+              <th scope="col">Spent</th>
+              <th scope="col">Created</th>
               <th scope="col">Status</th>
               <th scope="col"></th>
             </tr>
@@ -82,7 +82,16 @@
               <td>{{ campaign.createdAt | formatDateOnly }}</td>
               <td class="in-progress">In Progress</td>
               <td>
-                <button type="button" class="more-btn"><dot /></button>
+                <b-dropdown
+                  variant="link"
+                  toggle-class="text-decoration-none"
+                  no-caret
+                >
+                  <template #button-content>
+                    <dot />
+                  </template>
+                  <b-dropdown-item href="#">View</b-dropdown-item>
+                </b-dropdown>
               </td>
             </tr>
           </tbody>
@@ -117,7 +126,7 @@ export default {
     }
   },
 
-   computed: {
+  computed: {
     resultQuery() {
       if (this.searchQuery) {
         return this.campaigns.filter((campaign) => {
@@ -146,10 +155,11 @@ export default {
 
         const response = await this.$axios.get('/campaigns')
         this.campaigns = response.data.data
+        this.loading = false
 
         console.log('All campaigns', response)
       } catch (err) {
-        console.log(err)
+          this.loading = false
       }
     },
   },

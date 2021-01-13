@@ -78,6 +78,10 @@ p.form-input__error span {
     vertical-align: middle;
 }
 
+select.form-control {
+    width: fit-content;
+}
+
 
 /* toast */
 
@@ -153,6 +157,11 @@ p.form-input__error span {
     -webkit-animation: spin 2s linear infinite;
     animation: spin 2s linear infinite;
     margin: auto;
+}
+
+.dropdown-item.active,
+.dropdown-item:active {
+    background: inherit
 }
 
 @-webkit-keyframes spin {

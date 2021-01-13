@@ -50,6 +50,7 @@
               id="name"
               placeholder="Name of the campaign"
               v-model="payload.title"
+              @input.once="initMap"
             />
           </div>
 
@@ -80,7 +81,6 @@
                   placeholder="Amount from NGO wallet"
                   v-model="payload.budget"
                   ref="budget"
-          
                 />
               </div>
             </div>
@@ -116,16 +116,6 @@
           </div>
 
           <div class="row">
-            <!--Location  field  here -->
-            <!-- <div class="col-lg-6">
-              <div class="form-group">
-                <label for="location">Location</label>
-                <select name="location" class="form-controls" id="location">
-                  <option value="">Lagos</option>
-                </select>
-              </div>
-            </div> -->
-
             <div class="col-lg-6">
               <!--start date  field  here -->
               <div class="form-group">
@@ -157,7 +147,25 @@
             </div>
           </div>
 
-          <div class="d-flex pb-3">
+          <div class="row">
+            <!--Location  field  here -->
+            <div class="col-lg-12">
+              <div class="form-group">
+                <label for="location">Location</label>
+                  <input
+                  type="text"
+                  class="form-controls"
+                  name="location"
+                  id="location"
+                  v-model="payload.location.state"
+                />
+              </div>
+            </div> 
+          </div>
+
+          <div id="map_canvas" ></div>
+
+          <div class="d-flex py-3">
             <div>
               <button
                 type="button"
@@ -170,33 +178,45 @@
 
             <div class="ml-auto">
               <button class="create-campaign px-4 py-2">
-                   <span v-if="loading">
-                <img
-                  src="~/assets/img/vectors/spinner.svg"
-                  class="btn-spinner"
-                />
-              </span>
-              <span v-else>Create</span>
+                <span v-if="loading">
+                  <img
+                    src="~/assets/img/vectors/spinner.svg"
+                    class="btn-spinner"
+                  />
+                </span>
+                <span v-else>Create</span>
               </button>
             </div>
           </div>
         </form>
       </div>
-      <button type="button" @click="test">TEST</button>
-      <div>
+
+      <!-- <div>
         <code>
           <pre>{{ payload }}</pre>
         </code>
-      </div>
+      </div> -->
     </b-modal>
   </div>
 </template>
 <script>
+const apiKey = 'AIzaSyApnZ4U1qeeHgHZuckDndNVVMIJAo-b5Vo'
+let geocoder
 export default {
+  head() {
+    return {
+      script: [
+        {
+          src: `https://maps.googleapis.com/maps/api/js?key=${apiKey}&callback=initMap&libraries=geometry&v=weekly`,
+        },
+      ],
+    }
+  },
+
   data() {
     return {
       loading: false,
-      budget:'',
+      budget: '',
       payload: {
         title: '',
         description: '',
@@ -205,12 +225,7 @@ export default {
           country: '',
           state: '',
           field_office: '',
-          coodordinates: [
-            {
-              long: '',
-              lat: '',
-            },
-          ],
+          coodordinates: [],
         },
         start_date: '',
         end_date: '',
@@ -219,34 +234,26 @@ export default {
   },
 
   watch: {
-   'payload.budget': function(newValue) {
-      const result = newValue.replace(/\D/g, "")
-        .replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-       this.$nextTick(() => this.payload.budget = result);
+    'payload.budget': function (newValue) {
+      const result = newValue
+        .replace(/\D/g, '')
+        .replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+      this.$nextTick(() => (this.payload.budget = result))
     },
   },
-
 
   methods: {
     closeModal() {
       this.$bvModal.hide('new-campaign')
     },
 
-    test(){
-var mystring = "4,000";
-mystring = mystring.replace(',','');
-
-console.log('my', mystring)
-    },
-
     async createCampaign() {
       try {
         this.loading = true
 
-
- let budgetString = this.payload.budget
- budgetString = budgetString.replaceAll(',','');
- this.payload.budget = budgetString
+        let budgetString = this.payload.budget
+        budgetString = budgetString.replaceAll(',', '')
+        this.payload.budget = budgetString
 
         const response = await this.$axios.post('/campaigns', this.payload)
         console.log({ campaignResponse: response })
@@ -254,33 +261,81 @@ console.log('my', mystring)
         this.$toast.success(response.data.message)
         this.loading = false
         this.closeModal()
-        location.reload();
-        // this.$router.push('/campaigns')
+        location.reload()
 
       } catch (err) {
         console.log(err)
-         this.loading = false
-         this.$toast.error(err.response.data.message)
+        this.loading = false
+        this.$toast.error(err.response.data.message)
       }
     },
 
-       async fetchAllCampaigns() {
-      try {
-        this.loading = true
+// TODO:Try emiting fetch all campaigns method from parent and calling here
 
-        const response = await this.$axios.get('/campaigns')
-        this.campaigns = response.data.data
+    initMap() {
+  //Map Constructor here
+      var map = new google.maps.Map(document.getElementById('map_canvas'), {
+        zoom: 1,
+        center: new google.maps.LatLng(35.137879, -82.836914),
+        mapTypeId: google.maps.MapTypeId.ROADMAP,
+      })
 
-        console.log('All campaigns', response)
-      } catch (err) {
-        console.log(err)
-      }
+// Marker Constructor here
+      var myMarker = new google.maps.Marker({
+        position: new google.maps.LatLng(21.47542448391573, 15.103484999999983),
+        animation: google.maps.Animation.DROP,
+        draggable: true,
+        title: 'Drag me!',
+      });
+
+//Event listener added here
+      google.maps.event.addListener(myMarker, 'dragend',  (evt) => {
+        // this.payload.location.coodordinates.push({long: evt.latLng.lng(), lat:evt.latLng.lat()})
+        this.payload.location.coodordinates = {long: evt.latLng.lng(), lat:evt.latLng.lat()}
+
+//Geocoder constructor here
+        geocoder = new google.maps.Geocoder()
+        var latlng = new google.maps.LatLng( evt.latLng.lat(), evt.latLng.lng())
+        codeLatLng( (address) => {
+          this.payload.location.state = address
+        })
+
+// Geocoder call back function here
+        function codeLatLng(callback) {
+          var latlng = new google.maps.LatLng(
+            evt.latLng.lat(),
+             evt.latLng.lng(),
+          )
+          if (geocoder) {
+            geocoder.geocode({ latLng: latlng }, function (results, status) {
+              if (status == google.maps.GeocoderStatus.OK) {
+                if (results[1]) {
+                  callback(results[1].formatted_address)
+                } else {
+                  this.$toast.error('No results found')
+                }
+              } else {
+                this.$toast.error('Geocoder failed, Please try again' )
+              }
+            })
+          }
+        }
+      })
+      map.setCenter(myMarker.position)
+      myMarker.setMap(map)
     },
   },
 }
 </script>
 
 <style scoped>
+#map_canvas {
+  height: 300px;
+}
+#current {
+  padding-top: 25px;
+}
+
 .cancel {
   color: #492954;
   font-size: 1rem;
