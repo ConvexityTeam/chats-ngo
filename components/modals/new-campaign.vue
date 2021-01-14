@@ -152,7 +152,7 @@
             <div class="col-lg-12">
               <div class="form-group">
                 <label for="location">Location</label>
-                  <input
+                <input
                   type="text"
                   class="form-controls"
                   name="location"
@@ -160,10 +160,10 @@
                   v-model="payload.location.state"
                 />
               </div>
-            </div> 
+            </div>
           </div>
 
-          <div id="map_canvas" ></div>
+          <div id="map_canvas"></div>
 
           <div class="d-flex py-3">
             <div>
@@ -190,16 +190,11 @@
           </div>
         </form>
       </div>
-
-      <!-- <div>
-        <code>
-          <pre>{{ payload }}</pre>
-        </code>
-      </div> -->
     </b-modal>
   </div>
 </template>
 <script>
+import { required } from 'vuelidate/lib/validators'
 const apiKey = 'AIzaSyApnZ4U1qeeHgHZuckDndNVVMIJAo-b5Vo'
 let geocoder
 export default {
@@ -216,7 +211,6 @@ export default {
   data() {
     return {
       loading: false,
-      budget: '',
       payload: {
         title: '',
         description: '',
@@ -231,6 +225,18 @@ export default {
         end_date: '',
       },
     }
+  },
+
+    validations: {
+    payload: {
+      email: {
+        required,
+  
+      },
+      password: {
+        required,
+      },
+    },
   },
 
   watch: {
@@ -262,7 +268,6 @@ export default {
         this.loading = false
         this.closeModal()
         location.reload()
-
       } catch (err) {
         console.log(err)
         this.loading = false
@@ -270,41 +275,44 @@ export default {
       }
     },
 
-// TODO:Try emiting fetch all campaigns method from parent and calling here
+    // TODO:Try emiting fetch all campaigns method from parent and calling here
 
     initMap() {
-  //Map Constructor here
+      //Map Constructor here
       var map = new google.maps.Map(document.getElementById('map_canvas'), {
         zoom: 1,
         center: new google.maps.LatLng(35.137879, -82.836914),
         mapTypeId: google.maps.MapTypeId.ROADMAP,
       })
 
-// Marker Constructor here
+      // Marker Constructor here
       var myMarker = new google.maps.Marker({
         position: new google.maps.LatLng(21.47542448391573, 15.103484999999983),
         animation: google.maps.Animation.DROP,
         draggable: true,
         title: 'Drag me!',
-      });
+      })
 
-//Event listener added here
-      google.maps.event.addListener(myMarker, 'dragend',  (evt) => {
+      //Event listener added here
+      google.maps.event.addListener(myMarker, 'dragend', (evt) => {
         // this.payload.location.coodordinates.push({long: evt.latLng.lng(), lat:evt.latLng.lat()})
-        this.payload.location.coodordinates = {long: evt.latLng.lng(), lat:evt.latLng.lat()}
+        this.payload.location.coodordinates = {
+          long: evt.latLng.lng(),
+          lat: evt.latLng.lat(),
+        }
 
-//Geocoder constructor here
+        //Geocoder constructor here
         geocoder = new google.maps.Geocoder()
-        var latlng = new google.maps.LatLng( evt.latLng.lat(), evt.latLng.lng())
-        codeLatLng( (address) => {
+        var latlng = new google.maps.LatLng(evt.latLng.lat(), evt.latLng.lng())
+        codeLatLng((address) => {
           this.payload.location.state = address
         })
 
-// Geocoder call back function here
+        // Geocoder call back function here
         function codeLatLng(callback) {
           var latlng = new google.maps.LatLng(
             evt.latLng.lat(),
-             evt.latLng.lng(),
+            evt.latLng.lng(),
           )
           if (geocoder) {
             geocoder.geocode({ latLng: latlng }, function (results, status) {
@@ -315,7 +323,7 @@ export default {
                   this.$toast.error('No results found')
                 }
               } else {
-                this.$toast.error('Geocoder failed, Please try again' )
+                this.$toast.error('Geocoder failed, Please try again')
               }
             })
           }
@@ -349,7 +357,7 @@ export default {
   font-size: 1rem;
   border: 1px solid var(--primary-color);
   color: white;
-  border: none;
+  border: none; 
 }
 .header {
   color: var(--secondary-black);

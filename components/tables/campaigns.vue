@@ -80,7 +80,9 @@
               <td>{{ campaign.budget | formatNumber }}</td>
               <td>{{ campaign.spent }}</td>
               <td>{{ campaign.createdAt | formatDateOnly }}</td>
-              <td class="in-progress">In Progress</td>
+              <td v-if="campaign.status == 0" class="pending" >Pending</td>
+              <td v-if="campaign.status == 1" class="in-progress">In Progress</td>
+              <td v-if="campaign.status == 2" class="completed">Closed</td>
               <td>
                 <b-dropdown
                   variant="link"
@@ -240,6 +242,9 @@ td.in-progress {
 }
 td.completed {
   color: #24b29f;
+}
+td.pending {
+  color: tomato;
 }
 
 /* width */
