@@ -51,7 +51,16 @@
               placeholder="Name of the campaign"
               v-model="payload.title"
               @input.once="initMap"
+              @blur="$v.payload.title.$touch()"
             />
+
+            <transition name="fade">
+              <p v-if="$v.payload.title.$error" class="form-input__error">
+                <span v-if="!$v.payload.title.required">
+                  This field is required
+                </span>
+              </p>
+            </transition>
           </div>
 
           <!--Description field  here -->
@@ -64,7 +73,16 @@
               cols="30"
               rows="2"
               v-model="payload.description"
+              @blur="$v.payload.description.$touch()"
             ></textarea>
+
+            <transition name="fade">
+              <p v-if="$v.payload.description.$error" class="form-input__error">
+                <span v-if="!$v.payload.description.required">
+                  This field is required
+                </span>
+              </p>
+            </transition>
           </div>
 
           <div class="row">
@@ -80,8 +98,17 @@
                   id="total-amount"
                   placeholder="Amount from NGO wallet"
                   v-model="payload.budget"
+                  @blur="$v.payload.budget.$touch()"
                   ref="budget"
                 />
+
+                <transition name="fade">
+                  <p v-if="$v.payload.budget.$error" class="form-input__error">
+                    <span v-if="!$v.payload.budget.required">
+                      This field is required
+                    </span>
+                  </p>
+                </transition>
               </div>
             </div>
 
@@ -163,8 +190,8 @@
             </div>
           </div>
 
-          <div id="map_canvas"></div>
-
+   <div id="map_canvas"></div>
+       
           <div class="d-flex py-3">
             <div>
               <button
@@ -194,9 +221,9 @@
   </div>
 </template>
 <script>
-import { required } from 'vuelidate/lib/validators'
-const apiKey = 'AIzaSyApnZ4U1qeeHgHZuckDndNVVMIJAo-b5Vo'
-let geocoder
+import { required } from "vuelidate/lib/validators";
+const apiKey = "AIzaSyApnZ4U1qeeHgHZuckDndNVVMIJAo-b5Vo";
+let geocoder;
 export default {
   head() {
     return {
@@ -205,140 +232,163 @@ export default {
           src: `https://maps.googleapis.com/maps/api/js?key=${apiKey}&callback=initMap&libraries=geometry&v=weekly`,
         },
       ],
-    }
+    };
   },
 
   data() {
     return {
       loading: false,
+      isFired: false,
       payload: {
-        title: '',
-        description: '',
-        budget: '',
+        title: "",
+        description: "",
+        budget: "",
         location: {
-          country: '',
-          state: '',
-          field_office: '',
-          coodordinates: [],
+          country: "",
+          state: "",
+          field_office: "",
+          coordinates: [],
         },
-        start_date: '',
-        end_date: '',
+        start_date: "",
+        end_date: "",
       },
-    }
+    };
   },
 
-    validations: {
+  validations: {
     payload: {
-      email: {
+      title: {
         required,
-  
       },
-      password: {
+      description: {
+        required,
+      },
+      budget: {
+        required,
+      },
+      location: {
+        state: {
+          required,
+        },
+      },
+      start_date: {
+        required,
+      },
+      end_date: {
         required,
       },
     },
   },
 
   watch: {
-    'payload.budget': function (newValue) {
+    "payload.budget": function (newValue) {
       const result = newValue
-        .replace(/\D/g, '')
-        .replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-      this.$nextTick(() => (this.payload.budget = result))
+        .replace(/\D/g, "")
+        .replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+      this.$nextTick(() => (this.payload.budget = result));
     },
   },
 
   methods: {
     closeModal() {
-      this.$bvModal.hide('new-campaign')
+      this.$bvModal.hide("new-campaign");
     },
 
     async createCampaign() {
       try {
-        this.loading = true
+        this.loading = true;
+        this.$v.payload.$touch();
 
-        let budgetString = this.payload.budget
-        budgetString = budgetString.replaceAll(',', '')
-        this.payload.budget = budgetString
+        if (this.$v.payload.$error === true) {
+          this.loading = false;
+          this.$toast.error("Please fill in appropriately");
+          return;
+        }
 
-        const response = await this.$axios.post('/campaigns', this.payload)
-        console.log({ campaignResponse: response })
+        let budgetString = this.payload.budget;
+        budgetString = budgetString.replaceAll(",", "");
+        this.payload.budget = budgetString;
 
-        this.$toast.success(response.data.message)
-        this.loading = false
-        this.closeModal()
-        location.reload()
+        const response = await this.$axios.post("/campaigns", this.payload);
+        console.log({ campaignResponse: response });
+
+        this.$toast.success(response.data.message);
+        this.loading = false;
+        this.closeModal();
+        location.reload();
       } catch (err) {
-        console.log(err)
-        this.loading = false
-        this.$toast.error(err.response.data.message)
+        console.log(err);
+        this.loading = false;
+        this.$toast.error(err.response.data.message);
       }
     },
 
     // TODO:Try emiting fetch all campaigns method from parent and calling here
 
     initMap() {
+      document.getElementById('map_canvas').style.display = 'block'
       //Map Constructor here
-      var map = new google.maps.Map(document.getElementById('map_canvas'), {
+      var map = new google.maps.Map(document.getElementById("map_canvas"), {
         zoom: 1,
         center: new google.maps.LatLng(35.137879, -82.836914),
         mapTypeId: google.maps.MapTypeId.ROADMAP,
-      })
+      });
 
       // Marker Constructor here
       var myMarker = new google.maps.Marker({
         position: new google.maps.LatLng(21.47542448391573, 15.103484999999983),
         animation: google.maps.Animation.DROP,
         draggable: true,
-        title: 'Drag me!',
-      })
+        title: "Drag me!",
+      });
 
       //Event listener added here
-      google.maps.event.addListener(myMarker, 'dragend', (evt) => {
-        // this.payload.location.coodordinates.push({long: evt.latLng.lng(), lat:evt.latLng.lat()})
-        this.payload.location.coodordinates = {
+      google.maps.event.addListener(myMarker, "dragend", (evt) => {
+        // this.payload.location.coordinates.push({long: evt.latLng.lng(), lat:evt.latLng.lat()})
+        this.payload.location.coordinates = {
           long: evt.latLng.lng(),
           lat: evt.latLng.lat(),
-        }
+        };
 
         //Geocoder constructor here
-        geocoder = new google.maps.Geocoder()
-        var latlng = new google.maps.LatLng(evt.latLng.lat(), evt.latLng.lng())
+        geocoder = new google.maps.Geocoder();
+        var latlng = new google.maps.LatLng(evt.latLng.lat(), evt.latLng.lng());
         codeLatLng((address) => {
-          this.payload.location.state = address
-        })
+          this.payload.location.state = address;
+        });
 
         // Geocoder call back function here
         function codeLatLng(callback) {
           var latlng = new google.maps.LatLng(
             evt.latLng.lat(),
-            evt.latLng.lng(),
-          )
+            evt.latLng.lng()
+          );
           if (geocoder) {
             geocoder.geocode({ latLng: latlng }, function (results, status) {
               if (status == google.maps.GeocoderStatus.OK) {
                 if (results[1]) {
-                  callback(results[1].formatted_address)
+                  callback(results[1].formatted_address);
                 } else {
-                  this.$toast.error('No results found')
+                  this.$toast.error("No results found");
                 }
               } else {
-                this.$toast.error('Geocoder failed, Please try again')
+                this.$toast.error("Geocoder failed, Please try again");
               }
-            })
+            });
           }
         }
-      })
-      map.setCenter(myMarker.position)
-      myMarker.setMap(map)
+      });
+      map.setCenter(myMarker.position);
+      myMarker.setMap(map);
     },
   },
-}
+};
 </script>
 
 <style scoped>
 #map_canvas {
   height: 300px;
+  display: none
 }
 #current {
   padding-top: 25px;
@@ -357,7 +407,7 @@ export default {
   font-size: 1rem;
   border: 1px solid var(--primary-color);
   color: white;
-  border: none; 
+  border: none;
 }
 .header {
   color: var(--secondary-black);
