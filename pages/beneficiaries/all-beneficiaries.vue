@@ -9,17 +9,29 @@
           type="text"
           class="form-controls"
           placeholder="Search beneficiaries by name or ID"
+          v-model="searchQuery"
         />
       </div>
 
       <div class="ml-auto">
-        <button type="button" class="export-btn p-3">Export as CSV</button>
+        <button
+          type="button"
+          :disabled="(beneficiaries = '')"
+          class="export-btn p-3"
+        >
+          <download-csv
+            :data="beneficiaries"
+            name="Beneficiaries-Transactions.csv"
+          >
+            Export as CSV
+          </download-csv>
+        </button>
       </div>
     </div>
 
     <!-- beneficiaries Table here -->
     <div class="holder">
-      <table class="table table-borderless" v-if="beneficiaries !=''">
+      <table class="table table-borderless" v-if="beneficiaries != ''">
         <thead>
           <tr>
             <th scope="col" class="py-4">
@@ -29,8 +41,8 @@
               Selected
               {{
                 data.length == 1
-                  ? data.length + ' ' + `user`
-                  : data.length + ' ' + `users`
+                  ? data.length + " " + `user`
+                  : data.length + " " + `users`
               }}
             </th>
             <th scope="col" class="py-4">User ID</th>
@@ -41,7 +53,7 @@
         </thead>
 
         <tbody>
-          <tr v-for="benefactor in beneficiaries" :key="benefactor.id">
+          <tr v-for="benefactor in resultQuery" :key="benefactor.id">
             <td class="pt-3">
               <input
                 type="checkbox"
@@ -76,36 +88,53 @@
           </tr>
         </tbody>
       </table>
-         <div v-else-if="loading" class="loader text-center"></div>
-        <h3 v-else class="text-center no-record">NO RECORD FOUND</h3>
+      <div v-else-if="loading" class="loader text-center"></div>
+      <h3 v-else class="text-center no-record">NO RECORD FOUND</h3>
     </div>
   </div>
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapActions } from "vuex";
 export default {
-  layout: 'dashboard',
+  layout: "dashboard",
   data() {
     return {
       isCheckAll: false,
-      loading:false,
+      loading: false,
+      searchQuery: null,
       data: [],
       beneficiaries: [],
-    }
+    };
   },
+
+  computed: {
+    resultQuery() {
+      if (this.searchQuery) {
+        return this.beneficiaries.filter((benefactor) => {
+          return this.searchQuery
+            .toLowerCase()
+            .split(" ")
+            .every((v) => benefactor.name.toLowerCase().includes(v));
+        });
+      } else {
+        return this.beneficiaries;
+      }
+    },
+  },
+
   created() {
-    this.fetchAllBeneficiaries()
+    this.fetchAllBeneficiaries();
   },
   methods: {
-    ...mapActions('beneficiaries', ['SAVE_TEMP_BENEFACTOR']),
+    ...mapActions("beneficiaries", ["SAVE_TEMP_BENEFACTOR"]),
     checkAll() {
-      this.isCheckAll = !this.isCheckAll
-      this.data = []
+      this.isCheckAll = !this.isCheckAll;
+      this.data = [];
       if (this.isCheckAll) {
         // Check all
         for (var key in this.beneficiaries) {
-          this.data.push(this.beneficiaries[key].id)
+          this.data.push(this.beneficiaries[key].id);
         }
       }
     },
@@ -113,34 +142,33 @@ export default {
     updateCheckall() {
       this.data.length === this.beneficiaries.length
         ? (this.isCheckAll = true)
-        : (this.isCheckAll = false)
+        : (this.isCheckAll = false);
     },
 
     handleTempBenefactor(benefactor) {
-      this.SAVE_TEMP_BENEFACTOR(benefactor)
-      this.$router.push(`/beneficiaries/${benefactor.id}`)
+      this.SAVE_TEMP_BENEFACTOR(benefactor);
+      this.$router.push(`/beneficiaries/${benefactor.id}`);
     },
 
     async fetchAllBeneficiaries() {
       try {
-       this.loading =true
+        this.loading = true;
 
-  const response = await this.$axios.get(
-          '/ngo/auth/dashboard',
-          this.payload,
-        )
-         if (response.data.code == 200) {
-           this.loading =false;
-           this.beneficiaries = response.data.data.beneficiaries
-         }
-
+        const response = await this.$axios.get(
+          "/ngo/auth/dashboard",
+          this.payload
+        );
+        if (response.data.code == 200) {
+          this.loading = false;
+          this.beneficiaries = response.data.data.beneficiaries;
+        }
       } catch (error) {
-          this.loading = false
-        this.$toast.error(error.response.data.message)
+        this.loading = false;
+        this.$toast.error(error.response.data.message);
       }
     },
   },
-}
+};
 </script>
 
 <style scoped>

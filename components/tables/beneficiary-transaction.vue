@@ -7,12 +7,23 @@
           type="text"
           class="form-controls"
           placeholder="Search transactions"
-               v-model="searchQuery"
+          v-model="searchQuery"
         />
       </div>
 
       <div class="ml-auto">
-        <button type="button" class="export-btn p-3">Export as CSV</button>
+        <button
+          type="button"
+          :disabled="(data.transactions = '')"
+          class="export-btn p-3"
+        >
+          <download-csv
+            :data="data.transactions"
+            name="Beneficiaries-Transactions.csv"
+          >
+            Export as CSV
+          </download-csv>
+        </button>
       </div>
     </div>
 
@@ -34,48 +45,50 @@
       </div>
 
       <div>
-      <table class="table table-borderless" v-if="data.transactions !=''" >
-        <thead>
-          <tr>
-            <th scope="col">Reference </th>
-            <th scope="col">Amount</th>
-            <th scope="col">Type</th>
-            <th scope="col">Paid </th>
-            <th scope="col">Date</th>
-            <th scope="col"></th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="(transaction, index) in resultQuery" :key="index">
-            <td>{{transaction.reference}}</td>
-            <td>${{transaction.amount}</td>
-            <td class=""><span class="badge badge-pill py-2">{{transaction.type}</span></td>
-            <td>{{transactio.user}}</td>
-            <td>{{ transaction.createdAt | formatDateOnly }}</td>
-            <td>
-              <button type="button" class="more-btn"><dot /></button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-     <div v-else-if="loading" class="loader text-center"></div>
+        <table class="table table-borderless" v-if="data.transactions != ''">
+          <thead>
+            <tr>
+              <th scope="col">Reference</th>
+              <th scope="col">Amount</th>
+              <th scope="col">Type</th>
+              <th scope="col">Paid</th>
+              <th scope="col">Date</th>
+              <th scope="col"></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(transaction, index) in resultQuery" :key="index">
+              <td>{{ transaction.reference }}</td>
+              <td>${{transaction.amount}</td>
+              <td class="">
+                <span class="badge badge-pill py-2">{{transaction.type}</span>
+              </td>
+              <td>{{ transactio.user }}</td>
+              <td>{{ transaction.createdAt | formatDateOnly }}</td>
+              <td>
+                <button type="button" class="more-btn"><dot /></button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <div v-else-if="loading" class="loader text-center"></div>
         <h3 v-else class="text-center no-record">NO RECORD FOUND</h3>
       </div>
     </div>
   </div>
 </template>
 <script>
-import dot from '~/components/icons/dot'
+import dot from "~/components/icons/dot";
 export default {
-  props:{
-    data:{}
+  props: {
+    data
   },
 
-  data(){
-    return{
-          searchQuery: null,
-          loading:false
-    }
+  data() {
+    return {
+      searchQuery: null,
+      loading: false,
+    };
   },
 
   computed: {
@@ -84,20 +97,19 @@ export default {
         return this.data.transactions.filter((data) => {
           return this.searchQuery
             .toLowerCase()
-            .split(' ')
-            .every((v) => data.reference.toLowerCase().includes(v))
-        })
+            .split(" ")
+            .every((v) => data.reference.toLowerCase().includes(v));
+        });
       } else {
-        return this.data.transactions
+        return this.data.transactions;
       }
     },
   },
 
-
   components: {
-    dot
+    dot,
   },
-}
+};
 </script>
 
 <style scoped>
@@ -128,8 +140,8 @@ select:focus {
   border-radius: 10px;
   margin-top: 30px;
 }
-.badge{
-    border: 1px solid #999999;
+.badge {
+  border: 1px solid #999999;
 }
 .table thead th {
   color: #4f4f4f;
@@ -143,8 +155,8 @@ select:focus {
   color: var(--secondary-black);
   font-size: 1rem;
 }
-::placeholder{
-    color: #999999;
-font-size: 1rem;
+::placeholder {
+  color: #999999;
+  font-size: 1rem;
 }
 </style>

@@ -1,50 +1,50 @@
 <template>
   <div class="main">
-      <!-- Top cards here -->
+    <!-- Top cards here -->
     <div class="row no-gutters pt-lg-4">
       <!-- Beneficiaries here -->
-      <div class="col-lg-3" >
+      <div class="col-lg-3">
         <div class="card__holder px-3 pt-2">
           <p class="text">Beneficiaries</p>
-          <h4 class="funds">{{data.beneficiariesCount}}</h4>
+          <h4 class="funds">{{ data.beneficiariesCount }}</h4>
           <p class="pb-2">
-          <nuxt-link to="/beneficiaries/all-beneficiaries" class="percentage">View all</nuxt-link>     
+            <nuxt-link to="/beneficiaries/all-beneficiaries" class="percentage"
+              >View all</nuxt-link
+            >
           </p>
         </div>
       </div>
 
-    <!-- Total amount Received here -->
-       <div class="col-lg-3" >
+      <!-- Total amount Received here -->
+      <div class="col-lg-3">
         <div class="card__holder px-3 pt-2">
           <p class="text">Total Amount Recieved</p>
-          <h4 class="funds">${{ loading ? 0 : data.disbursed + data.balance}}</h4>
-     
+          <h4 class="funds">
+            ${{ loading ? 0 : data.disbursed + data.balance }}
+          </h4>
         </div>
       </div>
 
-        <!-- Total Amount Disbursed here -->
-       <div class="col-lg-3" >
+      <!-- Total Amount Disbursed here -->
+      <div class="col-lg-3">
         <div class="card__holder px-3 pt-2">
           <p class="text">Total Amount Disbursed</p>
-          <h4 class="funds">${{data.disbursed}}</h4>
-      
+          <h4 class="funds">${{ data.disbursed }}</h4>
         </div>
       </div>
 
-        <!-- Total Balance -->
-       <div class="col-lg-3" >
+      <!-- Total Balance -->
+      <div class="col-lg-3">
         <div class="card__holder px-3 pt-2">
           <p class="text">Total Balance</p>
-          <h4 class="funds">${{data.balance}}</h4>
-       
+          <h4 class="funds">${{ data.balance }}</h4>
         </div>
       </div>
     </div>
 
     <!-- First Beneficiary cards here -->
     <div class="row no-gutters pt-lg-4">
-
-     <!-- Beneficiary By Gender  Cards here -->
+      <!-- Beneficiary By Gender  Cards here -->
       <div class="col-lg-4 pb-3">
         <div class="cards__holder px-3 pt-3">
           <beneficiaryGender />
@@ -58,33 +58,30 @@
         </div>
       </div>
 
-        <!-- Vendor Transaction By Beneficiary  Cards here -->
+      <!-- Vendor Transaction By Beneficiary  Cards here -->
       <div class="col-lg-4 pb-3">
         <div class="cards__holder px-3 pt-3">
           <beneficiaryPerVendor />
         </div>
       </div>
-
- 
     </div>
 
     <!-- Second Beneficiary cards here -->
     <div class="row no-gutters pt-lg-4">
-
-     <!-- Beneficiary Marital card here -->
+      <!-- Beneficiary Marital card here -->
       <div class="col-lg-4 pb-3">
         <div class="cards__holder px-3 pt-3">
-         <beneficiaryMarital/>
+          <beneficiaryMarital />
         </div>
       </div>
-  
-  <!-- Beneficiary By Location card here -->
-        <div class="col-lg-4 pb-3">
+
+      <!-- Beneficiary By Location card here -->
+      <div class="col-lg-4 pb-3">
         <div class="cards__holder px-3 pt-3">
-         <beneficiaryLocation/>
-          </div>  
+          <beneficiaryLocation />
+        </div>
       </div>
-      
+
       <!-- Beneficiary Balances card here -->
       <div class="col-lg-4 pb-3">
         <div class="cards__holder px-3 pt-3">
@@ -93,41 +90,38 @@
       </div>
     </div>
 
-   <!-- Third Beneficiary cards here -->
-    <div class="row  no-gutters pt-lg-4 mr-3">
-
+    <!-- Third Beneficiary cards here -->
+    <div class="row no-gutters pt-lg-4 mr-3">
       <!-- Beneficiary complaints card here -->
-   <div class="w-100">
-   <beneficiaryComplaints/>
-   </div>
-  
+      <div class="w-100">
+        <beneficiaryComplaints />
+      </div>
     </div>
 
-<!-- Beneficiary transaction here -->
-<beneficiaryTransaction :data="data"/>
-
+    <!-- Beneficiary transaction here -->
+    <beneficiaryTransaction :data="data" />
   </div>
 </template>
 
 <script>
-import beneficiaryAge from '~/components/charts/beneficiary-age'
-import beneficiaryGender from '~/components/charts/beneficiary-gender'
-import beneficiaryPerVendor from '~/components/charts/beneficiary-per-vendor'
-import beneficiaryBalances from '~/components/charts/beneficiary-balances'
-import beneficiaryLocation from '~/components/charts/beneficiary-location'
-import beneficiaryMarital from '~/components/charts/beneficiary-marital'
-import dot from '~/components/icons/dot'
-import rightArrow from '~/components/icons/right-arrow'
-import leftArrow from '~/components/icons/left-arrow'
-import beneficiaryComplaints from '~/components/tables/beneficiary-complaints'
-import beneficiaryTransaction from '~/components/tables/beneficiary-transaction'
+import beneficiaryAge from "~/components/charts/beneficiary-age";
+import beneficiaryGender from "~/components/charts/beneficiary-gender";
+import beneficiaryPerVendor from "~/components/charts/beneficiary-per-vendor";
+import beneficiaryBalances from "~/components/charts/beneficiary-balances";
+import beneficiaryLocation from "~/components/charts/beneficiary-location";
+import beneficiaryMarital from "~/components/charts/beneficiary-marital";
+import dot from "~/components/icons/dot";
+import rightArrow from "~/components/icons/right-arrow";
+import leftArrow from "~/components/icons/left-arrow";
+import beneficiaryComplaints from "~/components/tables/beneficiary-complaints";
+import beneficiaryTransaction from "~/components/tables/beneficiary-transaction";
 export default {
-  layout: 'dashboard',
-  data(){
-    return{
+  layout: "dashboard",
+  data() {
+    return {
       loading: false,
-data:[]
-    }
+      data: [],
+    };
   },
   components: {
     beneficiaryAge,
@@ -140,58 +134,56 @@ data:[]
     rightArrow,
     leftArrow,
     beneficiaryComplaints,
-    beneficiaryTransaction
+    beneficiaryTransaction,
   },
 
-  mounted(){
-    this.fetchBeneficiariesData()
+  mounted() {
+    this.fetchBeneficiariesData();
   },
 
-  methods:{
-    async fetchBeneficiariesData(){
-      try{
-this.loading =true
+  methods: {
+    async fetchBeneficiariesData() {
+      try {
+        this.loading = true;
 
-  const response = await this.$axios.get(
-          '/ngo/auth/dashboard',
-          this.payload,
-        )
-         if (response.data.code == 200) {
-           this.loading =false;
+        const response = await this.$axios.get(
+          "/ngo/auth/dashboard",
+          this.payload
+        );
+        if (response.data.code == 200) {
+          this.loading = false;
 
-           this.data = response.data.data
-         }
+          this.data = response.data.data;
+        }
 
-        console.log('response', response)
-            console.log('datat', this.data)
+        console.log("response", response);
+        console.log("datat", this.data);
+      } catch (error) {
+        this.loading = false;
+        this.$toast.error(error.response.data.message);
       }
-      catch(error){
-   this.loading = false
-        this.$toast.error(error.response.data.message)
-      }
-
-    }
-  }
-}
+    },
+  },
+};
 </script>
 
 <style scoped>
-.main{
-   height: calc(100vh - 72px);
-    overflow-y: scroll;
+.main {
+  height: calc(100vh - 72px);
+  overflow-y: scroll;
 }
-.paginate{
-   color: var(--secondary-black);
-   font-size: 0.875rem;
-   font-weight: 500
+.paginate {
+  color: var(--secondary-black);
+  font-size: 0.875rem;
+  font-weight: 500;
 }
-.viewall{
+.viewall {
   color: var(--primary-color);
   font-size: 0.875rem;
   text-decoration: none;
 }
-.vendor-name{
-   color: var(--secondary-black);
+.vendor-name {
+  color: var(--secondary-black);
 }
 
 .date {
@@ -220,7 +212,6 @@ this.loading =true
   background: #ffffff;
   box-shadow: 0px 4px 30px rgba(174, 174, 192, 0.2);
   border-radius: 10px;
-  
 }
 .cards__holder {
   background: #ffffff;
