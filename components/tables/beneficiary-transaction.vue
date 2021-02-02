@@ -7,6 +7,7 @@
           type="text"
           class="form-controls"
           placeholder="Search transactions"
+               v-model="searchQuery"
         />
       </div>
 
@@ -31,7 +32,9 @@
           </div>
         </div>
       </div>
-      <table class="table table-borderless">
+
+      <div>
+      <table class="table table-borderless" v-if="data.transactions !=''" >
         <thead>
           <tr>
             <th scope="col">Reference </th>
@@ -43,24 +46,54 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="i in 3" :key="i">
-            <td>12345678910</td>
-            <td>$123,476,000</td>
-            <td class=""><span class="badge badge-pill  py-2 ">Deposited</span></td>
-            <td>Funke</td>
-            <td>12 Dec, 2020</td>
+          <tr v-for="(transaction, index) in resultQuery" :key="index">
+            <td>{{transaction.reference}}</td>
+            <td>${{transaction.amount}</td>
+            <td class=""><span class="badge badge-pill py-2">{{transaction.type}</span></td>
+            <td>{{transactio.user}}</td>
+            <td>{{ transaction.createdAt | formatDateOnly }}</td>
             <td>
               <button type="button" class="more-btn"><dot /></button>
             </td>
           </tr>
         </tbody>
       </table>
+     <div v-else-if="loading" class="loader text-center"></div>
+        <h3 v-else class="text-center no-record">NO RECORD FOUND</h3>
+      </div>
     </div>
   </div>
 </template>
 <script>
 import dot from '~/components/icons/dot'
 export default {
+  props:{
+    data:{}
+  },
+
+  data(){
+    return{
+          searchQuery: null,
+          loading:false
+    }
+  },
+
+  computed: {
+    resultQuery() {
+      if (this.searchQuery) {
+        return this.data.transactions.filter((data) => {
+          return this.searchQuery
+            .toLowerCase()
+            .split(' ')
+            .every((v) => data.reference.toLowerCase().includes(v))
+        })
+      } else {
+        return this.data.transactions
+      }
+    },
+  },
+
+
   components: {
     dot
   },

@@ -19,7 +19,7 @@
 
     <!-- beneficiaries Table here -->
     <div class="holder">
-      <table class="table table-borderless">
+      <table class="table table-borderless" v-if="beneficiaries !=''">
         <thead>
           <tr>
             <th scope="col" class="py-4">
@@ -76,6 +76,8 @@
           </tr>
         </tbody>
       </table>
+         <div v-else-if="loading" class="loader text-center"></div>
+        <h3 v-else class="text-center no-record">NO RECORD FOUND</h3>
     </div>
   </div>
 </template>
@@ -87,23 +89,9 @@ export default {
   data() {
     return {
       isCheckAll: false,
+      loading:false,
       data: [],
-      beneficiaries: [
-        {
-          name: 'Adam Denis',
-          id: 'DEV63016762',
-          number: 2348013123065,
-          email: 'rsnyder@blogspan.gov',
-          created: '04/28/2018',
-        },
-        {
-          name: 'Jane Doe',
-          id: 'DEV63016763',
-          number: 2348013123066,
-          email: 'dangote@blogspan.gov',
-          created: '04/28/2019',
-        },
-      ],
+      beneficiaries: [],
     }
   },
   created() {
@@ -135,11 +123,20 @@ export default {
 
     async fetchAllBeneficiaries() {
       try {
-        const response = await this.$axios.get('/beneficiaries')
-        this.beneficiaryCount = response.data.data.length
-        console.log(response)
+       this.loading =true
+
+  const response = await this.$axios.get(
+          '/ngo/auth/dashboard',
+          this.payload,
+        )
+         if (response.data.code == 200) {
+           this.loading =false;
+           this.beneficiaries = response.data.data.beneficiaries
+         }
+
       } catch (error) {
-        // console.log(error)
+          this.loading = false
+        this.$toast.error(error.response.data.message)
       }
     },
   },
