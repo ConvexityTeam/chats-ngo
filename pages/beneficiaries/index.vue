@@ -6,7 +6,7 @@
       <div class="col-lg-3">
         <div class="card__holder px-3 pt-2">
           <p class="text">Beneficiaries</p>
-          <h4 class="funds">{{ data.beneficiariesCount }}</h4>
+          <h4 class="funds">{{ beneficiariesData.beneficiariesCount }}</h4>
           <p class="pb-2">
             <nuxt-link to="/beneficiaries/all-beneficiaries" class="percentage"
               >View all</nuxt-link
@@ -20,7 +20,7 @@
         <div class="card__holder px-3 pt-2">
           <p class="text">Total Amount Recieved</p>
           <h4 class="funds">
-            ${{ loading ? 0 : data.disbursed + data.balance }}
+            ${{ loading ? 0 : beneficiariesData.disbursed + beneficiariesData.balance }}
           </h4>
         </div>
       </div>
@@ -29,7 +29,7 @@
       <div class="col-lg-3">
         <div class="card__holder px-3 pt-2">
           <p class="text">Total Amount Disbursed</p>
-          <h4 class="funds">${{ data.disbursed }}</h4>
+          <h4 class="funds">${{ beneficiariesData.disbursed }}</h4>
         </div>
       </div>
 
@@ -37,7 +37,7 @@
       <div class="col-lg-3">
         <div class="card__holder px-3 pt-2">
           <p class="text">Total Balance</p>
-          <h4 class="funds">${{ data.balance }}</h4>
+          <h4 class="funds">${{ beneficiariesData.balance }}</h4>
         </div>
       </div>
     </div>
@@ -94,12 +94,12 @@
     <div class="row no-gutters pt-lg-4 mr-3">
       <!-- Beneficiary complaints card here -->
       <div class="w-100">
-        <beneficiaryComplaints />
+        <beneficiaryComplaints :beneficiariesData="beneficiariesData" />
       </div>
     </div>
 
     <!-- Beneficiary transaction here -->
-    <beneficiaryTransaction :data="data" />
+    <beneficiaryTransaction :beneficiariesData="beneficiariesData" /> 
   </div>
 </template>
 
@@ -120,7 +120,7 @@ export default {
   data() {
     return {
       loading: false,
-      data: [],
+      beneficiariesData: {},
     };
   },
   components: {
@@ -153,11 +153,11 @@ export default {
         if (response.data.code == 200) {
           this.loading = false;
 
-          this.data = response.data.data;
+          this.beneficiariesData = response.data.data;
         }
 
         console.log("response", response);
-        console.log("datat", this.data);
+
       } catch (error) {
         this.loading = false;
         this.$toast.error(error.response.data.message);

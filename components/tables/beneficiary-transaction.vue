@@ -14,11 +14,11 @@
       <div class="ml-auto">
         <button
           type="button"
-          :disabled="(data.transactions = '')"
+        
           class="export-btn p-3"
         >
           <download-csv
-            :data="data.transactions"
+            :data="transactions"
             name="Beneficiaries-Transactions.csv"
           >
             Export as CSV
@@ -45,7 +45,7 @@
       </div>
 
       <div>
-        <table class="table table-borderless" v-if="data.transactions != ''">
+        <table class="table table-borderless" v-if="transactions !=''">
           <thead>
             <tr>
               <th scope="col">Reference</th>
@@ -57,13 +57,13 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="(transaction, index) in resultQuery" :key="index">
+            <tr v-for="(transaction, index) in transactions" :key="index">
               <td>{{ transaction.reference }}</td>
               <td>${{transaction.amount}</td>
               <td class="">
                 <span class="badge badge-pill py-2">{{transaction.type}</span>
               </td>
-              <td>{{ transactio.user }}</td>
+              <td>{{ transaction.user }}</td>
               <td>{{ transaction.createdAt | formatDateOnly }}</td>
               <td>
                 <button type="button" class="more-btn"><dot /></button>
@@ -71,7 +71,7 @@
             </tr>
           </tbody>
         </table>
-        <div v-else-if="loading" class="loader text-center"></div>
+     <div v-else-if="loading" class="loader text-center"></div>
         <h3 v-else class="text-center no-record">NO RECORD FOUND</h3>
       </div>
     </div>
@@ -80,28 +80,35 @@
 <script>
 import dot from "~/components/icons/dot";
 export default {
+    layout: "dashboard",
   props: {
-    data
+    beneficiariesData:{}
   },
 
   data() {
     return {
       searchQuery: null,
       loading: false,
+      transactions:[]
     };
+  },
+
+  mounted(){
+// console.log('test',this.beneficiariesData.transactions)
+this.transactions = this.beneficiariesData.transactions
   },
 
   computed: {
     resultQuery() {
       if (this.searchQuery) {
-        return this.data.transactions.filter((data) => {
+        return this.transactions.filter((data) => {
           return this.searchQuery
             .toLowerCase()
             .split(" ")
             .every((v) => data.reference.toLowerCase().includes(v));
         });
       } else {
-        return this.data.transactions;
+        return this.transactions;
       }
     },
   },
