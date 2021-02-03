@@ -8,8 +8,6 @@ export default function({ store, redirect }) {
         return redirect("/login");
     }
 
-    // if (Date.now() >= session * 1000) {
-    //     return redirect("/login");
-    // }
+
 
 };

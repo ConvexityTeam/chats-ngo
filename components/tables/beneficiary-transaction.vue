@@ -45,7 +45,7 @@
       </div>
 
       <div>
-        <table class="table table-borderless" v-if="transactions !=''">
+        <table class="table table-borderless" v-if="beneficiariesData.transactions !=''">
           <thead>
             <tr>
               <th scope="col">Reference</th>
@@ -57,7 +57,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="(transaction, index) in transactions" :key="index">
+            <tr v-for="(transaction, index) in beneficiariesData.transactions" :key="index">
               <td>{{ transaction.reference }}</td>
               <td>${{transaction.amount}</td>
               <td class="">
@@ -81,21 +81,21 @@
 import dot from "~/components/icons/dot";
 export default {
     layout: "dashboard",
-  props: {
-    beneficiariesData:{}
-  },
+    props: {
+    beneficiariesData:Array
+    },
 
   data() {
     return {
       searchQuery: null,
       loading: false,
-      transactions:[]
+      transactions:null
     };
   },
 
   mounted(){
 // console.log('test',this.beneficiariesData.transactions)
-this.transactions = this.beneficiariesData.transactions
+// this.transactions = this.beneficiariesData.transactions
   },
 
   computed: {

@@ -26,45 +26,91 @@
       <!-- Tabs Here -->
       <div>
         <b-tabs content-class="mt-3">
-        <!-- All complaints tab here -->
+          <!-- All complaints tab here -->
           <b-tab title="All" active>
-          <div class="text-center mt-5">
-          <p class="no-complaints"> No Complaints</p>
-          </div>
+            <div>
+              <div v-if="complaints != ''">
+                <p
+                  v-for="(complaint, i) in beneficiariesData.complaint"
+                  :key="i"
+                >
+                  {{ i + 1 + "." }} {{ complaint.title }}
+                </p>
+              </div>
+
+              <div v-else-if="loading" class="loader text-center"></div>
+              <p v-else class="no-complaints text-center mt-5">No Complaints</p>
+            </div>
           </b-tab>
 
           <!-- Resolved complaints here -->
-          <b-tab title="Resolved">
-              <div class="text-center mt-5">
-          <p class="no-complaints"> No Complaints</p>
-          </div>
+          <b-tab title="Resolved" @click="handleResolved">
+            <div>
+              <div v-if="resolved != ''">
+                <p v-for="(complaint, i) in resolved" :key="i">
+                  {{ i + 1 + "." }} {{ complaint.title }}
+                </p>
+              </div>
+
+              <div v-else-if="loading" class="loader text-center"></div>
+              <p v-else class="no-complaints text-center mt-5">No Complaints</p>
+            </div>
           </b-tab>
 
           <!-- Unresolved Complaints here -->
-          <b-tab title="Unresolved" >
-              <div class="text-center mt-5">
-          <p class="no-complaints"> No Complaints</p>
-          </div>
+          <b-tab title="Unresolved" @click="handleUnresolved">
+            <div class=" ">
+              <div v-if="unresolved != ''">
+                <p v-for="(complaint, i) in unresolved" :key="i">
+                  {{ i + 1 + "." }} {{ complaint.title }}
+                </p>
+              </div>
+
+              <div v-else-if="loading" class="loader text-center"></div>
+              <p v-else class="no-complaints text-center mt-5">No Complaints</p>
+            </div>
           </b-tab>
         </b-tabs>
       </div>
-
     </div>
   </div>
 </template>
 
 <script>
 export default {
-  data(){
-    return{
+  props: {
+    beneficiariesData: Array,
+  },
+
+  data() {
+    return {
       key: 0,
-    }
-  }
-}
+      complaints: null,
+      loading: false,
+      resolved: [],
+      unresolved: [],
+    };
+  },
+
+  methods: {
+    handleResolved() {
+      let resolved = this.beneficiariesData.complaint.filter(
+        (complaint) => complaint.status == "Clossed"
+      );
+      this.resolved = resolved;
+    },
+    handleUnresolved() {
+      let unresolved = this.beneficiariesData.complaint.filter(
+        (complaint) => complaint.status == "Pending"
+      );
+      this.unresolved = unresolved;
+    },
+  },
+};
 </script>
 
 <style scoped>
-.no-complaints{
+.no-complaints {
   color: var(--secondary-black);
   font-size: 0.875rem;
 }
@@ -85,7 +131,7 @@ li.selected:after {
   content: "";
   width: 100%;
   height: 4px;
-  background:red;
+  background: red;
   position: absolute;
   left: 0;
   bottom: -17px;
@@ -124,5 +170,4 @@ select:focus {
 .nav-tabs {
   border: none !important;
 }
-
 </style>
