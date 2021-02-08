@@ -79,7 +79,10 @@
 <script>
 export default {
   props: {
-    beneficiariesData: Array,
+    beneficiariesData: {
+       type: Object
+    },
+
   },
 
   data() {

@@ -6,7 +6,7 @@
       <div class="col-lg-3">
         <div class="card__holder px-3 pt-2">
           <p class="text">Beneficiaries</p>
-          <h4 class="funds">{{ beneficiariesData.beneficiariesCount }}</h4>
+          <h4 class="funds">{{  beneficiariesData.beneficiariesCount }}</h4>
           <p class="pb-2">
             <nuxt-link to="/beneficiaries/all-beneficiaries" class="percentage"
               >View all</nuxt-link
@@ -99,7 +99,7 @@
     </div>
 
     <!-- Beneficiary transaction here -->
-    <beneficiaryTransaction :beneficiariesData="beneficiariesData" /> 
+    <beneficiaryTransaction :beneficiariesData="beneficiariesData"  /> 
   </div>
 </template>
 

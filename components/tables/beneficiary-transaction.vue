@@ -18,7 +18,7 @@
           class="export-btn p-3"
         >
           <download-csv
-            :data="transactions"
+            :data="beneficiariesData.transactions"
             name="Beneficiaries-Transactions.csv"
           >
             Export as CSV
@@ -51,19 +51,19 @@
               <th scope="col">Reference</th>
               <th scope="col">Amount</th>
               <th scope="col">Type</th>
-              <th scope="col">Paid</th>
+              <th scope="col">Status</th>
               <th scope="col">Date</th>
               <th scope="col"></th>
             </tr>
           </thead>
           <tbody>
-            <tr v-for="(transaction, index) in beneficiariesData.transactions" :key="index">
-              <td>{{ transaction.reference }}</td>
-              <td>${{transaction.amount}</td>
+            <tr v-for="(transaction, index) in resultQuery" :key="index">
+              <td>{{ transaction.transactionId }}</td>
+              <td>${{transaction.amount}}</td>
               <td class="">
-                <span class="badge badge-pill py-2">{{transaction.type}</span>
+                <span class="badge badge-pill py-2">{{transaction.type}}</span>
               </td>
-              <td>{{ transaction.user }}</td>
+              <td>{{ transaction.status }}</td>
               <td>{{ transaction.createdAt | formatDateOnly }}</td>
               <td>
                 <button type="button" class="more-btn"><dot /></button>
@@ -82,7 +82,13 @@ import dot from "~/components/icons/dot";
 export default {
     layout: "dashboard",
     props: {
-    beneficiariesData:Array
+    beneficiariesData:{
+      type: Object
+    },
+    data:{
+      type: Object
+    }
+
     },
 
   data() {
@@ -101,14 +107,14 @@ export default {
   computed: {
     resultQuery() {
       if (this.searchQuery) {
-        return this.transactions.filter((data) => {
+        return this.beneficiariesData.transactions.filter((data) => {
           return this.searchQuery
             .toLowerCase()
             .split(" ")
-            .every((v) => data.reference.toLowerCase().includes(v));
+            .every((v) => data.transactionId.toLowerCase().includes(v));
         });
       } else {
-        return this.transactions;
+        return this.beneficiariesData.transactions;
       }
     },
   },
