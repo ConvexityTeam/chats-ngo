@@ -12,11 +12,7 @@
       </div>
 
       <div class="ml-auto">
-        <button
-          type="button"
-        
-          class="export-btn p-3"
-        >
+        <button type="button" class="export-btn p-3">
           <download-csv
             :data="beneficiariesData.transactions"
             name="Beneficiaries-Transactions.csv"
@@ -45,7 +41,10 @@
       </div>
 
       <div>
-        <table class="table table-borderless" v-if="beneficiariesData.transactions !=''">
+        <table
+          class="table table-borderless"
+          v-if="beneficiariesData.transactions != ''"
+        >
           <thead>
             <tr>
               <th scope="col">Reference</th>
@@ -59,9 +58,11 @@
           <tbody>
             <tr v-for="(transaction, index) in resultQuery" :key="index">
               <td>{{ transaction.transactionId }}</td>
-              <td>${{transaction.amount}}</td>
+              <td>${{ transaction.amount }}</td>
               <td class="">
-                <span class="badge badge-pill py-2">{{transaction.type}}</span>
+                <span class="badge badge-pill py-2">{{
+                  transaction.type
+                }}</span>
               </td>
               <td>{{ transaction.status }}</td>
               <td>{{ transaction.createdAt | formatDateOnly }}</td>
@@ -71,7 +72,7 @@
             </tr>
           </tbody>
         </table>
-     <div v-else-if="loading" class="loader text-center"></div>
+        <div v-else-if="loading" class="loader text-center"></div>
         <h3 v-else class="text-center no-record">NO RECORD FOUND</h3>
       </div>
     </div>
@@ -80,28 +81,24 @@
 <script>
 import dot from "~/components/icons/dot";
 export default {
-    layout: "dashboard",
-    props: {
-    beneficiariesData:{
-      type: Object
+  layout: "dashboard",
+  props: {
+    beneficiariesData: {
+      type: Object,
     },
-    data:{
-      type: Object
-    }
-
-    },
+  },
 
   data() {
     return {
       searchQuery: null,
       loading: false,
-      transactions:null
+      transactions: null,
     };
   },
 
-  mounted(){
-// console.log('test',this.beneficiariesData.transactions)
-// this.transactions = this.beneficiariesData.transactions
+  mounted() {
+    // console.log('test',this.beneficiariesData.transactions)
+    // this.transactions = this.beneficiariesData.transactions
   },
 
   computed: {

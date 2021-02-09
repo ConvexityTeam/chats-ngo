@@ -14,7 +14,7 @@
       </div>
 
       <div class="ml-auto">
-        <button
+        <!-- <button
           type="button"
           :disabled="(beneficiaries = '')"
           class="export-btn p-3"
@@ -25,13 +25,13 @@
           >
             Export as CSV
           </download-csv>
-        </button>
+        </button> -->
       </div>
     </div>
 
     <!-- beneficiaries Table here -->
     <div class="holder">
-      <table class="table table-borderless" v-if="beneficiaries != ''">
+      <table class="table table-borderless" >
         <thead>
           <tr>
             <th scope="col" class="py-4">
@@ -53,7 +53,7 @@
         </thead>
 
         <tbody>
-          <tr v-for="benefactor in resultQuery" :key="benefactor.id">
+          <tr v-for="(benefactor, index) in beneficiaries" :key="index">
             <td class="pt-3">
               <input
                 type="checkbox"
@@ -71,13 +71,13 @@
                 class="rounded"
                 alt=""
               />
-              <p class="mx-3 pt-1">{{ benefactor.name }}</p>
+              <p class="mx-3 pt-1">{{benefactor.first_name + ' ' + benefactor.last_name }}</p>
             </td>
             <td @click="handleTempBenefactor(benefactor)">
               {{ benefactor.id }}
             </td>
             <td @click="handleTempBenefactor(benefactor)">
-              {{ benefactor.number }}
+              {{ benefactor.phone }}
             </td>
             <td @click="handleTempBenefactor(benefactor)">
               {{ benefactor.email }}
@@ -88,8 +88,8 @@
           </tr>
         </tbody>
       </table>
-      <div v-else-if="loading" class="loader text-center"></div>
-      <h3 v-else class="text-center no-record">NO RECORD FOUND</h3>
+     <!-- <div v-else-if="loading" class="loader text-center"></div>
+      <h3 v-else class="text-center no-record">NO RECORD FOUND</h3> -->
     </div>
   </div>
 </template>
@@ -104,7 +104,7 @@ export default {
       loading: false,
       searchQuery: null,
       data: [],
-      beneficiaries: [],
+      beneficiaries: {},
     };
   },
 
@@ -115,7 +115,7 @@ export default {
           return this.searchQuery
             .toLowerCase()
             .split(" ")
-            .every((v) => benefactor.name.toLowerCase().includes(v));
+            .every((v) => benefactor.first_name.toLowerCase().includes(v));
         });
       } else {
         return this.beneficiaries;
@@ -123,7 +123,7 @@ export default {
     },
   },
 
-  created() {
+  mounted() {
     this.fetchAllBeneficiaries();
   },
   methods: {
@@ -136,6 +136,7 @@ export default {
         for (var key in this.beneficiaries) {
           this.data.push(this.beneficiaries[key].id);
         }
+        console.log(this.data)
       }
     },
 
@@ -158,13 +159,18 @@ export default {
           "/ngo/auth/dashboard",
           this.payload
         );
+           console.log('response',response)
+
         if (response.data.code == 200) {
           this.loading = false;
           this.beneficiaries = response.data.data.beneficiaries;
+                console.log('beneficiaries000000',this.beneficiaries)
+          
         }
       } catch (error) {
         this.loading = false;
         this.$toast.error(error.response.data.message);
+        console.log(error)
       }
     },
   },
