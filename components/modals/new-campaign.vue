@@ -1,0 +1,447 @@
+<template>
+  <div>
+    <b-modal id="new-campaign" hide-header hide-footer>
+      <div class="text-center position-relative pt-2">
+        <h3 class="header">New Campaign</h3>
+        <!--Close button here -->
+        <button
+          type="button"
+          class="close-btn position-absolute"
+          @click="closeModal"
+        >
+          <i>
+            <svg
+              width="23"
+              height="27"
+              viewBox="0 0 23 27"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <line
+                y1="-1.5"
+                x2="31.241"
+                y2="-1.5"
+                transform="matrix(0.640184 0.768221 -0.704167 0.710035 0 3)"
+                stroke="#333333"
+                stroke-width="3"
+              />
+              <line
+                y1="-1.5"
+                x2="21.5132"
+                y2="-1.5"
+                transform="matrix(0.673504 -0.739183 0.673504 0.739183 2.73074 22.9814)"
+                stroke="#333333"
+                stroke-width="3"
+              />
+            </svg>
+          </i>
+        </button>
+      </div>
+
+      <div class="mt-5 px-3">
+        <form @submit.prevent="createCampaign">
+          <!-- Name field  here -->
+          <div class="form-group">
+            <label for="name">Name</label>
+            <input
+              type="text"
+              class="form-controls"
+              name="name"
+              id="name"
+              placeholder="Name of the campaign"
+              v-model="payload.title"
+              @input.once="initMap"
+              @blur="$v.payload.title.$touch()"
+            />
+
+            <transition name="fade">
+              <p v-if="$v.payload.title.$error" class="form-input__error">
+                <span v-if="!$v.payload.title.required">
+                  This field is required
+                </span>
+              </p>
+            </transition>
+          </div>
+
+          <!--Description field  here -->
+          <div class="form-group">
+            <label for="description">Description</label>
+            <textarea
+              class="form-controls"
+              name="description"
+              id="description"
+              cols="30"
+              rows="2"
+              v-model="payload.description"
+              @blur="$v.payload.description.$touch()"
+            ></textarea>
+
+            <transition name="fade">
+              <p v-if="$v.payload.description.$error" class="form-input__error">
+                <span v-if="!$v.payload.description.required">
+                  This field is required
+                </span>
+              </p>
+            </transition>
+          </div>
+
+          <div class="row">
+            <div class="col-lg-6">
+              <!--Total Amount  field  here -->
+              <div class="form-group">
+                <label for="total-amount">Total Wallet</label>
+                <input
+                  type="text"
+                  class="form-controls"
+                  name="total-amount"
+                  pattern="^[-,0-9]+$"
+                  id="total-amount"
+                  placeholder="Amount from NGO wallet"
+                  v-model="payload.budget"
+                  @blur="$v.payload.budget.$touch()"
+                  ref="budget"
+                />
+
+                <transition name="fade">
+                  <p v-if="$v.payload.budget.$error" class="form-input__error">
+                    <span v-if="!$v.payload.budget.required">
+                      This field is required
+                    </span>
+                  </p>
+                </transition>
+              </div>
+            </div>
+
+            <!--Field office field  here -->
+            <div class="col-lg-6">
+              <div class="form-group">
+                <label for="field-office">Field Office</label>
+                <input
+                  type="text"
+                  class="form-controls"
+                  name="field-office"
+                  id="field-office"
+                  v-model="payload.location.field_office"
+                />
+              </div>
+            </div>
+
+            <!--Amount per receipient field  here -->
+            <!-- <div class="col-lg-6">
+              <div class="form-group">
+                <label for="receipient-amount">Amount Per Recipient</label>
+                <input
+                  type="text"
+                  class="form-controls"
+                  name="receipient-amount"
+                  pattern="^[0-9]*$"
+                  id="receipient-amount"
+                  placeholder="Amount for each recipient"
+                />
+              </div>
+            </div> -->
+          </div>
+
+          <div class="row">
+            <div class="col-lg-6">
+              <!--start date  field  here -->
+              <div class="form-group">
+                <label for="start-date">Start Date</label>
+                <input
+                  type="date"
+                  class="form-controls"
+                  name="total-amount"
+                  id="start-date"
+                  placeholder="Amount from NGO wallet"
+                  v-model="payload.start_date"
+                />
+              </div>
+            </div>
+
+            <!--end date field  here -->
+            <div class="col-lg-6">
+              <div class="form-group">
+                <label for="end-date">End Date</label>
+                <input
+                  type="date"
+                  class="form-controls"
+                  name="total-amount"
+                  id="end-date"
+                  placeholder="Amount from NGO wallet"
+                  v-model="payload.end_date"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <!--Location  field  here -->
+            <div class="col-lg-12">
+              <div class="form-group">
+                <label for="location">Location</label>
+                <input
+                  type="text"
+                  class="form-controls"
+                  name="location"
+                  id="location"
+                  v-model="payload.location.state"
+                />
+              </div>
+            </div>
+          </div>
+
+   <div id="map_canvas"></div>
+       
+          <div class="d-flex py-3">
+            <div>
+              <button
+                type="button"
+                class="cancel px-4 py-2"
+                @click="closeModal"
+              >
+                Cancel
+              </button>
+            </div>
+
+            <div class="ml-auto">
+              <button class="create-campaign px-4 py-2">
+                <span v-if="loading">
+                  <img
+                    src="~/assets/img/vectors/spinner.svg"
+                    class="btn-spinner"
+                  />
+                </span>
+                <span v-else>Create</span>
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </b-modal>
+  </div>
+</template>
+<script>
+import { required } from "vuelidate/lib/validators";
+const apiKey = "AIzaSyApnZ4U1qeeHgHZuckDndNVVMIJAo-b5Vo";
+let geocoder;
+export default {
+  head() {
+    return {
+      script: [
+        {
+          src: `https://maps.googleapis.com/maps/api/js?key=${apiKey}&callback=initMap&libraries=geometry&v=weekly`,
+        },
+      ],
+    };
+  },
+
+  data() {
+    return {
+      loading: false,
+      isFired: false,
+      payload: {
+        title: "",
+        description: "",
+        budget: "",
+        location: {
+          country: "",
+          state: "",
+          field_office: "",
+          coordinates: [],
+        },
+        start_date: "",
+        end_date: "",
+      },
+    };
+  },
+
+  validations: {
+    payload: {
+      title: {
+        required,
+      },
+      description: {
+        required,
+      },
+      budget: {
+        required,
+      },
+      location: {
+        state: {
+          required,
+        },
+      },
+      start_date: {
+        required,
+      },
+      end_date: {
+        required,
+      },
+    },
+  },
+
+  watch: {
+    "payload.budget": function (newValue) {
+      const result = newValue
+        .replace(/\D/g, "")
+        .replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+      this.$nextTick(() => (this.payload.budget = result));
+    },
+  },
+
+  methods: {
+    closeModal() {
+      this.$bvModal.hide("new-campaign");
+    },
+
+    async createCampaign() {
+      try {
+        this.loading = true;
+        this.$v.payload.$touch();
+
+        if (this.$v.payload.$error === true) {
+          this.loading = false;
+          this.$toast.error("Please fill in appropriately");
+          return;
+        }
+
+        let budgetString = this.payload.budget;
+        budgetString = budgetString.replaceAll(",", "");
+        this.payload.budget = budgetString;
+
+        const response = await this.$axios.post("/campaigns", this.payload);
+        console.log({ campaignResponse: response });
+
+        this.$toast.success(response.data.message);
+        this.loading = false;
+        this.closeModal();
+        location.reload();
+      } catch (err) {
+        console.log(err);
+        this.loading = false;
+        this.$toast.error(err.response.data.message);
+      }
+    },
+
+    // TODO:Try emiting fetch all campaigns method from parent and calling here
+
+    initMap() {
+      document.getElementById('map_canvas').style.display = 'block'
+      //Map Constructor here
+      var map = new google.maps.Map(document.getElementById("map_canvas"), {
+        zoom: 1,
+        center: new google.maps.LatLng(35.137879, -82.836914),
+        mapTypeId: google.maps.MapTypeId.ROADMAP,
+      });
+
+      // Marker Constructor here
+      var myMarker = new google.maps.Marker({
+        position: new google.maps.LatLng(21.47542448391573, 15.103484999999983),
+        animation: google.maps.Animation.DROP,
+        draggable: true,
+        title: "Drag me!",
+      });
+
+      //Event listener added here
+      google.maps.event.addListener(myMarker, "dragend", (evt) => {
+        // this.payload.location.coordinates.push({long: evt.latLng.lng(), lat:evt.latLng.lat()})
+        this.payload.location.coordinates = {
+          long: evt.latLng.lng(),
+          lat: evt.latLng.lat(),
+        };
+
+        //Geocoder constructor here
+        geocoder = new google.maps.Geocoder();
+        var latlng = new google.maps.LatLng(evt.latLng.lat(), evt.latLng.lng());
+        codeLatLng((address) => {
+          this.payload.location.state = address;
+        });
+
+        // Geocoder call back function here
+        function codeLatLng(callback) {
+          var latlng = new google.maps.LatLng(
+            evt.latLng.lat(),
+            evt.latLng.lng()
+          );
+          if (geocoder) {
+            geocoder.geocode({ latLng: latlng }, function (results, status) {
+              if (status == google.maps.GeocoderStatus.OK) {
+                if (results[1]) {
+                  callback(results[1].formatted_address);
+                } else {
+                  this.$toast.error("No results found");
+                }
+              } else {
+                this.$toast.error("Geocoder failed, Please try again");
+              }
+            });
+          }
+        }
+      });
+      map.setCenter(myMarker.position);
+      myMarker.setMap(map);
+    },
+  },
+};
+</script>
+
+<style scoped>
+#map_canvas {
+  height: 300px;
+  display: none
+}
+#current {
+  padding-top: 25px;
+}
+
+.cancel {
+  color: #492954;
+  font-size: 1rem;
+  border: 1px solid #492954;
+  background: inherit;
+  border-radius: 10px;
+}
+.create-campaign {
+  background: var(--primary-color);
+  border-radius: 10px;
+  font-size: 1rem;
+  border: 1px solid var(--primary-color);
+  color: white;
+  border: none;
+}
+.header {
+  color: var(--secondary-black);
+  font-weight: 700;
+  font-size: 1.5rem;
+}
+.modal-body {
+  border-radius: 10px;
+  background: white;
+}
+.close-btn {
+  border: none;
+  background: inherit;
+  bottom: -3px;
+  right: 10px;
+}
+::placeholder {
+  color: #999999;
+  letter-spacing: 0.01em;
+  font-size: 0.875rem;
+  opacity: 0.7;
+}
+label {
+  color: var(--secondary-black);
+  font-size: 1rem;
+  font-weight: 500;
+}
+.form-group {
+  margin-bottom: 1.5rem;
+}
+.form-controls {
+  border: 1px solid #999999;
+}
+textarea {
+  height: auto;
+}
+</style>

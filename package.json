@@ -1,93 +1,32 @@
 {
-  "name": "chats-ngo-web-app",
-  "version": "0.4.0",
-  "description": "Chats NGO Web App.",
+  "name": "frontend-ngo-web",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
-    "tailwind:dev": "tailwindcss build src/assets/css/tailwind.css -o src/assets/css/tailwind.output.css",
-    "tailwind:build": "cross-env NODE_ENV=production postcss src/assets/css/tailwind.css -o src/assets/css/tailwind.output.css",
-    "prestart": "npm run tailwind:dev",
-    "start": "react-scripts start",
-    "prebuild": "npm run tailwind:build",
-    "build": "react-scripts build",
-    "cz": "git-cz",
-    "release": "release-it",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "dev": "nuxt",
+    "build": "nuxt build",
+    "start": "nuxt start",
+    "generate": "nuxt generate",
+    "test": "jest"
   },
   "dependencies": {
-    "@testing-library/jest-dom": "5.11.5",
-    "@testing-library/react": "11.1.0",
-    "@testing-library/user-event": "12.1.10",
-    "@windmill/react-ui": "0.3.2",
-    "axios": "^0.21.0",
-    "chart.js": "2.9.4",
-    "classnames": "2.2.6",
-    "date-fns": "^2.16.1",
-    "faker": "5.1.0",
-    "react": "^17.0.1",
-    "react-chartjs-2": "2.10.0",
-    "react-datepicker": "^3.3.0",
-    "react-dom": "^17.0.1",
-    "react-focus-lock": "2.4.1",
-    "react-router-dom": "5.2.0",
-    "react-scripts": "4.0.0",
-    "react-transition-group": "4.4.1",
-    "react-validation": "^3.0.7",
-    "validator": "^13.1.17"
+    "@nuxtjs/axios": "^5.12.2",
+    "@nuxtjs/toast": "^3.3.1",
+    "bootstrap": "^4.5.2",
+    "bootstrap-vue": "^2.17.3",
+    "chart.js": "^2.9.4",
+    "core-js": "^3.6.5",
+    "nuxt": "^2.14.6",
+    "vue-chartjs": "^3.5.1",
+    "vue-json-csv": "^1.2.12",
+    "vuelidate": "^0.7.6",
+    "vuex-persist": "^3.1.3"
   },
   "devDependencies": {
-    "@release-it/conventional-changelog": "2.0.0",
-    "@svgr/webpack": "5.4.0",
-    "autoprefixer": "^9.8.6",
-    "commitizen": "4.2.2",
-    "cross-env": "7.0.2",
-    "cssnano": "4.1.10",
-    "cz-conventional-changelog": "3.3.0",
-    "postcss-cli": "8.1.0",
-    "react-axe": "3.5.4",
-    "release-it": "14.2.0",
-    "tailwindcss": "1.9.6"
-  },
-  "keywords": [
-    "windmill",
-    "dashboard",
-    "admin",
-    "tailwind",
-    "react"
-  ],
-  "release-it": {
-    "github": {
-      "release": true
-    },
-    "npm": {
-      "publish": false
-    },
-    "plugins": {
-      "@release-it/conventional-changelog": {
-        "preset": "angular",
-        "infile": "CHANGELOG.md"
-      }
-    }
-  },
-  "config": {
-    "commitizen": {
-      "path": "./node_modules/cz-conventional-changelog"
-    }
-  },
-  "eslintConfig": {
-    "extends": "react-app"
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
+    "@vue/test-utils": "^1.1.0",
+    "babel-core": "7.0.0-bridge.0",
+    "babel-jest": "^26.5.0",
+    "jest": "^26.5.0",
+    "vue-jest": "^3.0.4"
   }
 }
