@@ -47,6 +47,10 @@ p.form-input__error span {
     outline: none;
 }
 
+.form-group {
+    margin-bottom: 0.7rem !important;
+}
+
 .form-controls {
     display: block;
     width: 100%;
@@ -66,6 +70,11 @@ p.form-input__error span {
 
 .form-controls:focus {
     border: 1px solid var(--primary-color) !important;
+}
+
+.form__input__error {
+    border: 1px #ee3934;
+    border-style: solid solid double solid;
 }
 
 .export-btn {
