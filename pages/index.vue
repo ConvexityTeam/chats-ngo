@@ -3,7 +3,7 @@
     <div class="text-center">
       <!-- Logo here -->
       <div class="logo-div">
-        <img src="~/assets/img/logo.png" class="logo" alt="Chats" />
+        <img src="~/assets/img/logo.png" class="" alt="Chats" />
       </div>
       <h3 class="text-white welcome py-4">Welcome To CHATS</h3>
     </div>
@@ -141,16 +141,19 @@ export default {
 
         console.log("response", response)
 
-        if (response.data.code == 201) {
+        if (response.data.code == 200) {
           this.loading = false;
-          console.log(response);
           this.$toast.success(response.data.message);
           this.$router.push("/login");
         }
         
       } catch (error) {
         this.loading = false;
-        // this.$toast.error(error.response.data.message);
+        console.log({error: error})
+        this.$toast.error(error.response.data.message);
+        if(error.response.data.message == "Email Already Exists, Recover Your Account"){
+          this.$router.push("/login")
+        }
         // this.$router.push("/forgot-password");
       }
     },
@@ -170,9 +173,7 @@ export default {
   font-weight: 400;
   letter-spacing: 0.01em;
 }
-.logo {
-  height: 10vh;
-}
+
 .welcome {
   font-size: 2.25rem;
   font-weight: 500;
@@ -181,9 +182,11 @@ export default {
   padding-top: 50px;
 }
 .main {
-  background-image: url("../assets/img/Cash For Work.png");
-  background-repeat: no-repeat;
-  background-size: cover;
+  background-image: url("../assets/img/CHATS bgchats-bg.png");
+background-repeat: no-repeat;
+background-position: center;
+background-size: cover;
+
 }
 .card__holder {
   background: #ffffff;
@@ -205,11 +208,11 @@ label {
 }
 
 @media (min-width: 576px) and (max-width: 767.98px) {
+  .card__holder {
+    padding: 2rem;
+    width: 21.25rem;
+  }
 }
 
-@media (min-width: 768px) and (max-width: 991.98px) {
-}
 
-@media (min-width: 992px) and (max-width: 1199.98px) {
-}
 </style>

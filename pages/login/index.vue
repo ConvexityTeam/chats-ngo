@@ -3,7 +3,7 @@
     <div class="text-center">
       <!-- Logo here -->
       <div class="logo-div">
-        <img src="~/assets/img/logo.png" class="logo" alt="Chats" />
+         <img src="~/assets/img/logo.png" class="" alt="Chats" />
       </div>
       <h3 class="text-white welcome py-4">Welcome To CHATS</h3>
     </div>
@@ -131,43 +131,60 @@ export default {
   color: var(--primary-black);
   font-weight: 700;
 }
+
 .forgot {
   color: var(--primary-black);
   font-size: 0.875rem;
   font-weight: 500;
   letter-spacing: 0.01em;
 }
+
 .account {
   color: var(--primary-black);
   font-size: 1rem;
   font-weight: 400;
   letter-spacing: 0.01em;
 }
-.logo {
-  height: 10vh;
-}
+
 .welcome {
   font-size: 2.25rem;
   font-weight: 500;
 }
+
 .logo-div {
-  padding-top: 100px;
+  padding-top: 50px;
 }
+
 .main {
-  background-image: url("../../assets/img/Cash For Work.png");
-  background-repeat: no-repeat;
-  background-size: cover;
-  height: 100%;
+   background-image: url("../../assets/img/CHATS bgchats-bg.png");
+background-repeat: no-repeat;
+background-position: center;
+background-size: cover;
 }
+
 .card__holder {
   background: #ffffff;
   border-radius: 10px;
-  padding: 2.5rem 5rem 2rem 5rem;
-  width: 30rem;
+  padding: 2rem 4rem;
+  width: 31.25rem;
 }
 label {
   color: var(--primary-black);
   font-size: 1rem;
   font-weight: 400;
+}
+
+@media (max-width: 575.98px) {
+  .card__holder {
+    padding: 2rem;
+    width: 21.25rem;
+  }
+}
+
+@media (min-width: 576px) and (max-width: 767.98px) {
+  .card__holder {
+    padding: 2rem;
+    width: 21.25rem;
+  }
 }
 </style>

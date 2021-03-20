@@ -59,7 +59,7 @@ export default {
 
     toast: {
         position: 'top-right',
-        duration: 10000
+        duration: 3500
     },
 
     // Build Configuration (https://go.nuxtjs.dev/config-build)
