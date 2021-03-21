@@ -138,7 +138,7 @@ export default {
   },
 
   mounted() {
-    this.fetchBeneficiariesData();
+    // this.fetchBeneficiariesData();
   },
 
   methods: {
@@ -147,7 +147,7 @@ export default {
         this.loading = true;
 
         const response = await this.$axios.get(
-          "/ngo/auth/dashboard",
+          "/beneficiaries",
           this.payload
         );
         if (response.data.code == 200) {
@@ -156,7 +156,7 @@ export default {
           this.beneficiariesData = response.data.data;
         }
 
-        console.log("response", response);
+        console.log("allBeneficiaries:::", response);
 
       } catch (error) {
         this.loading = false;

@@ -1,5 +1,5 @@
 <template>
-  <div class="main">
+  <div class="main" @reload="reload">
     <div class="container">
       <!-- Modal here -->
       <newCampaign />
@@ -151,15 +151,20 @@ export default {
       console.log('filtering')
     },
 
+    reload(){
+      this.fetchAllCampaigns()
+      console.log(" i was called")
+    },
+
     async fetchAllCampaigns() {
       try {
         this.loading = true
 
-        const response = await this.$axios.get('/campaigns')
+        const response = await this.$axios.get('/campaigns/all/?type=cash-for-work')
         this.campaigns = response.data.data
         this.loading = false
 
-        console.log('All campaigns', response)
+        console.log('All campaigns:::', response)
       } catch (err) {
           this.loading = false
       }

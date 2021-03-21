@@ -139,20 +139,22 @@ export default {
           this.payload
         );
 
-        console.log("response", response)
+        console.log("response", response);
 
         if (response.data.code == 200) {
           this.loading = false;
           this.$toast.success(response.data.message);
           this.$router.push("/login");
         }
-        
       } catch (error) {
         this.loading = false;
-        console.log({error: error})
+        console.log({ error: error });
         this.$toast.error(error.response.data.message);
-        if(error.response.data.message == "Email Already Exists, Recover Your Account"){
-          this.$router.push("/login")
+        if (
+          error.response.data.message ==
+          "Email Already Exists, Recover Your Account"
+        ) {
+          this.$router.push("/login");
         }
         // this.$router.push("/forgot-password");
       }
@@ -183,10 +185,9 @@ export default {
 }
 .main {
   background-image: url("../assets/img/CHATS bgchats-bg.png");
-background-repeat: no-repeat;
-background-position: center;
-background-size: cover;
-
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
 }
 .card__holder {
   background: #ffffff;
@@ -213,6 +214,4 @@ label {
     width: 21.25rem;
   }
 }
-
-
 </style>

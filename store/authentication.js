@@ -1,12 +1,14 @@
 export default {
     state: () => ({
         token: "",
-        userLocation: {}
+        userLocation: {},
+        user: null
     }),
 
     getters: {
         token: state => state.token,
         userLocation: state => state.userLocation,
+        user: state => state.user
     },
 
     mutations: {
@@ -16,6 +18,10 @@ export default {
         },
         setUserLocation(state, payload) {
             state.userLocation = payload
+        },
+
+        setUserObject(state, payload) {
+            state.user = payload
         },
 
         removeToken(state) {
@@ -31,8 +37,13 @@ export default {
         commitToken({ commit }, payload) {
             commit('setUserToken', payload)
         },
+
         locateUser({ commit }, payload) {
             commit('setUserLocation', payload)
+        },
+
+        commitUser({ commit }, payload) {
+            commit("setUserObject", payload)
         },
 
         async logout({ commit }) {

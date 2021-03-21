@@ -3,7 +3,7 @@
     <div class="text-center">
       <!-- Logo here -->
       <div class="logo-div">
-         <img src="~/assets/img/logo.png" class="" alt="Chats" />
+        <img src="~/assets/img/logo.png" class="" alt="Chats" />
       </div>
       <h3 class="text-white welcome py-4">Welcome To CHATS</h3>
     </div>
@@ -94,7 +94,7 @@ export default {
   },
 
   methods: {
-    ...mapActions("authentication", ["commitToken"]),
+    ...mapActions("authentication", ["commitToken", "commitUser"]),
 
     async loginUser() {
       try {
@@ -108,12 +108,12 @@ export default {
         }
 
         const response = await this.$axios.post("/auth/login", this.payload);
+        console.log("login response", response);
 
         if (response.data.code == 200) {
           this.loading = false;
-          console.log(response);
-          const jwt = response.data.data.token;
-          this.commitToken(jwt);
+          this.commitToken(response.data.data.token);
+          this.commitUser(response.data.data.user);
           this.$router.push("/dashboard");
         }
       } catch (error) {
@@ -156,10 +156,10 @@ export default {
 }
 
 .main {
-   background-image: url("../../assets/img/CHATS bgchats-bg.png");
-background-repeat: no-repeat;
-background-position: center;
-background-size: cover;
+  background-image: url("../../assets/img/CHATS bgchats-bg.png");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
 }
 
 .card__holder {

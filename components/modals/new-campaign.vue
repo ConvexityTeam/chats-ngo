@@ -51,16 +51,7 @@
               placeholder="Name of the campaign"
               v-model="payload.title"
               @input.once="initMap"
-              @blur="$v.payload.title.$touch()"
             />
-
-            <transition name="fade">
-              <p v-if="$v.payload.title.$error" class="form-input__error">
-                <span v-if="!$v.payload.title.required">
-                  This field is required
-                </span>
-              </p>
-            </transition>
           </div>
 
           <!--Description field  here -->
@@ -73,20 +64,11 @@
               cols="30"
               rows="2"
               v-model="payload.description"
-              @blur="$v.payload.description.$touch()"
             ></textarea>
-
-            <transition name="fade">
-              <p v-if="$v.payload.description.$error" class="form-input__error">
-                <span v-if="!$v.payload.description.required">
-                  This field is required
-                </span>
-              </p>
-            </transition>
           </div>
 
           <div class="row">
-            <div class="col-lg-6">
+            <div class="col-lg-12">
               <!--Total Amount  field  here -->
               <div class="form-group">
                 <label for="total-amount">Total Wallet</label>
@@ -98,22 +80,13 @@
                   id="total-amount"
                   placeholder="Amount from NGO wallet"
                   v-model="payload.budget"
-                  @blur="$v.payload.budget.$touch()"
                   ref="budget"
                 />
-
-                <transition name="fade">
-                  <p v-if="$v.payload.budget.$error" class="form-input__error">
-                    <span v-if="!$v.payload.budget.required">
-                      This field is required
-                    </span>
-                  </p>
-                </transition>
               </div>
             </div>
 
             <!--Field office field  here -->
-            <div class="col-lg-6">
+            <!--<div class="col-lg-6">
               <div class="form-group">
                 <label for="field-office">Field Office</label>
                 <input
@@ -124,7 +97,7 @@
                   v-model="payload.location.field_office"
                 />
               </div>
-            </div>
+            </div> -->
 
             <!--Amount per receipient field  here -->
             <!-- <div class="col-lg-6">
@@ -184,14 +157,14 @@
                   class="form-controls"
                   name="location"
                   id="location"
-                  v-model="payload.location.state"
+                  v-model="payload.location"
                 />
               </div>
             </div>
           </div>
 
-   <div id="map_canvas"></div>
-       
+          <div id="map_canvas"></div>
+
           <div class="d-flex py-3">
             <div>
               <button
@@ -214,6 +187,12 @@
                 <span v-else>Create</span>
               </button>
             </div>
+            <code>
+              <pre>
+            {{ payload }}
+            </pre
+              >
+            </code>
           </div>
         </form>
       </div>
@@ -222,6 +201,7 @@
 </template>
 <script>
 import { required } from "vuelidate/lib/validators";
+import {mapGetters} from "vuex"
 const apiKey = "AIzaSyApnZ4U1qeeHgHZuckDndNVVMIJAo-b5Vo";
 let geocoder;
 export default {
@@ -240,17 +220,18 @@ export default {
       loading: false,
       isFired: false,
       payload: {
+        organisation_id: 0,
+        type: "campaign",
         title: "",
         description: "",
         budget: "",
-        location: {
-          country: "",
-          state: "",
-          field_office: "",
-          coordinates: [],
-        },
+        location: "",
         start_date: "",
         end_date: "",
+      },
+
+      location: {
+        coordinates: [],
       },
     };
   },
@@ -267,9 +248,7 @@ export default {
         required,
       },
       location: {
-        state: {
-          required,
-        },
+        required,
       },
       start_date: {
         required,
@@ -289,6 +268,16 @@ export default {
     },
   },
 
+  computed:{
+...mapGetters("authentication", ["user"])
+  },
+
+  
+  mounted(){
+    this.payload.organisation_id = this.user.id
+    console.log("user:::", this.user)
+  },
+
   methods: {
     closeModal() {
       this.$bvModal.hide("new-campaign");
@@ -299,6 +288,7 @@ export default {
         this.loading = true;
         this.$v.payload.$touch();
 
+        // Gebneral check to see that all compulsory fields are provided
         if (this.$v.payload.$error === true) {
           this.loading = false;
           this.$toast.error("Please fill in appropriately");
@@ -310,12 +300,12 @@ export default {
         this.payload.budget = budgetString;
 
         const response = await this.$axios.post("/campaigns", this.payload);
-        console.log({ campaignResponse: response });
-
-        this.$toast.success(response.data.message);
-        this.loading = false;
+        console.log("campaignResponse:::", response);
+this.$emit("reload")
+        // this.$toast.success(response.data.message);
+        // this.loading = false;
         this.closeModal();
-        location.reload();
+        // location.reload();
       } catch (err) {
         console.log(err);
         this.loading = false;
@@ -326,7 +316,7 @@ export default {
     // TODO:Try emiting fetch all campaigns method from parent and calling here
 
     initMap() {
-      document.getElementById('map_canvas').style.display = 'block'
+      document.getElementById("map_canvas").style.display = "block";
       //Map Constructor here
       var map = new google.maps.Map(document.getElementById("map_canvas"), {
         zoom: 1,
@@ -339,13 +329,13 @@ export default {
         position: new google.maps.LatLng(21.47542448391573, 15.103484999999983),
         animation: google.maps.Animation.DROP,
         draggable: true,
-        title: "Drag me!",
+        // title: "Drag me!",
       });
 
       //Event listener added here
       google.maps.event.addListener(myMarker, "dragend", (evt) => {
         // this.payload.location.coordinates.push({long: evt.latLng.lng(), lat:evt.latLng.lat()})
-        this.payload.location.coordinates = {
+        this.location.coordinates = {
           long: evt.latLng.lng(),
           lat: evt.latLng.lat(),
         };
@@ -354,7 +344,8 @@ export default {
         geocoder = new google.maps.Geocoder();
         var latlng = new google.maps.LatLng(evt.latLng.lat(), evt.latLng.lng());
         codeLatLng((address) => {
-          this.payload.location.state = address;
+          console.log("address:::", address);
+          this.payload.location = address;
         });
 
         // Geocoder call back function here
@@ -363,6 +354,7 @@ export default {
             evt.latLng.lat(),
             evt.latLng.lng()
           );
+
           if (geocoder) {
             geocoder.geocode({ latLng: latlng }, function (results, status) {
               if (status == google.maps.GeocoderStatus.OK) {
@@ -388,7 +380,7 @@ export default {
 <style scoped>
 #map_canvas {
   height: 300px;
-  display: none
+  display: none;
 }
 #current {
   padding-top: 25px;

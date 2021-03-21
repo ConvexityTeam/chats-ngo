@@ -14,9 +14,8 @@
       </div>
 
       <div class="ml-auto">
-        <!-- <button
+        <button
           type="button"
-          :disabled="(beneficiaries = '')"
           class="export-btn p-3"
         >
           <download-csv
@@ -25,13 +24,13 @@
           >
             Export as CSV
           </download-csv>
-        </button> -->
+        </button>
       </div>
     </div>
 
     <!-- beneficiaries Table here -->
     <div class="holder">
-      <table class="table table-borderless" >
+      <table class="table table-borderless" v-if="beneficiaries !== null">
         <thead>
           <tr>
             <th scope="col" class="py-4">
@@ -45,7 +44,7 @@
                   : data.length + " " + `users`
               }}
             </th>
-            <th scope="col" class="py-4">User ID</th>
+          <!--  <th scope="col" class="py-4">User ID</th> -->
             <th scope="col" class="py-4">Phone Number</th>
             <th scope="col" class="py-4">Email Address</th>
             <th scope="col" class="py-4">Account Created</th>
@@ -53,7 +52,7 @@
         </thead>
 
         <tbody>
-          <tr v-for="(benefactor, index) in beneficiaries" :key="index">
+          <tr v-for="(benefactor, index) in resultQuery" :key="index">
             <td class="pt-3">
               <input
                 type="checkbox"
@@ -65,17 +64,29 @@
 
             <td class="d-flex" @click="handleTempBenefactor(benefactor)">
               <img
+              v-if="benefactor.profile_pic == null"
                 src="~/assets/img/user.png"
                 width="30"
                 height="30"
-                class="rounded"
-                alt=""
+                class="rounded-circle"
+                :alt="benefactor.first_name"
+                loading="lazy"
               />
+               <img
+               v-else
+                :src="benefactor.profile_pic"
+                width="30"
+                height="30"
+                class="rounded-circle"
+                :alt="benefactor.first_name"
+                loading="lazy"
+              />
+
               <p class="mx-3 pt-1">{{benefactor.first_name + ' ' + benefactor.last_name }}</p>
             </td>
-            <td @click="handleTempBenefactor(benefactor)">
+           <!-- <td @click="handleTempBenefactor(benefactor)">
               {{ benefactor.id }}
-            </td>
+            </td> -->
             <td @click="handleTempBenefactor(benefactor)">
               {{ benefactor.phone }}
             </td>
@@ -83,13 +94,13 @@
               {{ benefactor.email }}
             </td>
             <td @click="handleTempBenefactor(benefactor)">
-              {{ benefactor.created }}
+              {{ benefactor.createdAt | formatDateOnly }}
             </td>
           </tr>
         </tbody>
       </table>
-     <!-- <div v-else-if="loading" class="loader text-center"></div>
-      <h3 v-else class="text-center no-record">NO RECORD FOUND</h3> -->
+  <div v-else-if="loading" class="loader text-center"></div>
+      <h3 v-else class="text-center no-record">NO RECORD FOUND</h3> 
     </div>
   </div>
 </template>
@@ -104,7 +115,7 @@ export default {
       loading: false,
       searchQuery: null,
       data: [],
-      beneficiaries: {},
+      beneficiaries: null,
     };
   },
 
@@ -155,15 +166,12 @@ export default {
       try {
         this.loading = true;
 
-        const response = await this.$axios.get(
-          "/ngo/auth/dashboard",
-          this.payload
-        );
-           console.log('response',response)
+        const response = await this.$axios.get("/beneficiaries");
+           console.log('Allbeneficiaries:::',response)
 
         if (response.data.code == 200) {
           this.loading = false;
-          this.beneficiaries = response.data.data.beneficiaries;
+          this.beneficiaries = response.data.data;
                 console.log('beneficiaries000000',this.beneficiaries)
           
         }
