@@ -92,12 +92,12 @@
     <div class="row no-gutters pt-lg-4 mr-3">
       <!-- Beneficiary complaints card here -->
       <div class="w-100">
-        <!-- <beneficiaryComplaints /> -->
+        <beneficiaryComplaints />
       </div>
     </div>
 
     <!-- Beneficiary transaction here -->
-    <!-- <beneficiaryTransaction  />  -->
+    <beneficiaryTransaction  /> 
   </div>
 </template>
 
@@ -138,7 +138,8 @@ export default {
 
   mounted() {
     this.fetchAllBeneficiaries();
-    this.getStatistics();
+    this.getStats();
+    this.getChartData()
   },
 
   methods: {
@@ -165,7 +166,7 @@ export default {
       }
     },
 
-    async getStatistics() {
+    async getStats() {
       try {
         this.loading = true;
         const response = await this.$axios.get("/users/info/statistics");
@@ -177,6 +178,21 @@ export default {
       } catch (err) {
         this.loading = false;
         console.log("statserr:::", err);
+      }
+    },
+
+       async getChartData() {
+      try {
+        this.loading = true;
+        const response = await this.$axios.get("/users/info/chart");
+        // if (response.data.code == 200) {
+        //   this.loading = false;
+        //   this.stats = response.data.data[0];
+        // }
+        console.log("chatresponse:::", response);
+      } catch (err) {
+        this.loading = false;
+        console.log("chsrtserr:::", err);
       }
     },
   },

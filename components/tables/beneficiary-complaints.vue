@@ -31,7 +31,7 @@
             <div>
               <div v-if="complaints != ''">
                 <p
-                  v-for="(complaint, i) in beneficiariesData.complaint"
+                  v-for="(complaint, i) in complaints"
                   :key="i"
                 >
                   {{ i + 1 + "." }} {{ complaint.title }}
@@ -47,7 +47,7 @@
           <b-tab title="Resolved" @click="handleResolved">
             <div>
               <div v-if="resolved != ''">
-                <p v-for="(complaint, i) in resolved" :key="i">
+                <p v-for="(complaint, i) in complaints" :key="i">
                   {{ i + 1 + "." }} {{ complaint.title }}
                 </p>
               </div>
@@ -61,7 +61,7 @@
           <b-tab title="Unresolved" @click="handleUnresolved">
             <div class=" ">
               <div v-if="unresolved != ''">
-                <p v-for="(complaint, i) in unresolved" :key="i">
+                <p v-for="(complaint, i) in complaints" :key="i">
                   {{ i + 1 + "." }} {{ complaint.title }}
                 </p>
               </div>
@@ -88,10 +88,10 @@ export default {
   data() {
     return {
       key: 0,
-      complaints: null,
+      complaints: [{}],
       loading: false,
-      resolved: [],
-      unresolved: [],
+      resolved: [{}],
+      unresolved: [{}],
     };
   },
 

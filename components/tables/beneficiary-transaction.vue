@@ -14,7 +14,7 @@
       <div class="ml-auto">
         <button type="button" class="export-btn p-3">
           <download-csv
-            :data="beneficiariesData.transactions"
+            :data="transactions"
             name="Beneficiaries-Transactions.csv"
           >
             Export as CSV
@@ -43,7 +43,7 @@
       <div>
         <table
           class="table table-borderless"
-          v-if="beneficiariesData.transactions != ''"
+          v-if="transactions != ''"
         >
           <thead>
             <tr>
@@ -82,19 +82,12 @@
 import dot from "~/components/icons/dot";
 export default {
   layout: "dashboard",
-  props: {
-    beneficiariesData: {
-      type: Object,
-    },
-  },
 
-  data() {
-    return {
-      searchQuery: null,
+data: () =>({
+     searchQuery: null,
       loading: false,
-      transactions: null,
-    };
-  },
+      transactions: [],
+}),
 
   mounted() {
     // console.log('test',this.beneficiariesData.transactions)
@@ -104,14 +97,14 @@ export default {
   computed: {
     resultQuery() {
       if (this.searchQuery) {
-        return this.beneficiariesData.transactions.filter((data) => {
+        return this.transactions.filter((data) => {
           return this.searchQuery
             .toLowerCase()
             .split(" ")
             .every((v) => data.transactionId.toLowerCase().includes(v));
         });
       } else {
-        return this.beneficiariesData.transactions;
+        return this.transactions;
       }
     },
   },

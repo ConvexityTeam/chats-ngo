@@ -14,7 +14,9 @@
             <div class="col-lg-4">
               <div class="card__holder px-3 pt-2">
                 <p class="text">Total Recieved</p>
-                <h4 class="funds pb-2">$ {{ user.Wallet ? user.Wallet.balance : "0" }}</h4>
+                <h4 class="funds pb-2">
+                  $ {{ user.Wallet ? user.Wallet.balance : "0" }}
+                </h4>
               </div>
             </div>
 
@@ -22,7 +24,9 @@
             <div class="col-lg-4">
               <div class="card__holder px-3 pt-2">
                 <p class="text">Total Spent</p>
-                <h4 class="funds pb-2">$ {{ user.Wallet ? user.Wallet.balance : "0" }}</h4>
+                <h4 class="funds pb-2">
+                  $ {{ user.Wallet ? user.Wallet.balance : "0" }}
+                </h4>
               </div>
             </div>
 
@@ -30,7 +34,9 @@
             <div class="col-lg-4">
               <div class="card__holder px-3 pt-2">
                 <p class="text">Total Remaining</p>
-                <h4 class="funds pb-2">$ {{ user.Wallet ? user.Wallet.balance : "0" }}</h4>
+                <h4 class="funds pb-2">
+                  $ {{ user.Wallet ? user.Wallet.balance : "0" }}
+                </h4>
               </div>
             </div>
           </div>
@@ -176,19 +182,18 @@ import { mapGetters } from "vuex";
 export default {
   layout: "dashboard",
 
-data : () => ({
-   loading: false,
-      selected: null,
-      options: [
-        { value: null, text: "filter" },
-        { value: "all", text: "All" },
-        { value: "inprogress", text: "In Progress" },
-        { value: "completed", text: "Completed" },
-      ],
+  data: () => ({
+    loading: false,
+    selected: null,
+    options: [
+      { value: null, text: "filter" },
+      { value: "all", text: "All" },
+      { value: "inprogress", text: "In Progress" },
+      { value: "completed", text: "Completed" },
+    ],
 
-      user: {},
-}),
-
+    user: {},
+  }),
 
   mounted() {
     console.log("BEnEfacor", this.BENEFACTOR);
@@ -209,13 +214,11 @@ data : () => ({
           `beneficiaries/user/${this.BENEFACTOR.id}`
         );
 
-      
         this.loading = false;
         if (response.data.code == 200) {
-                    this.loading = false;
+          this.loading = false;
           this.user = response.data.data;
-            console.log("beneficiaryDetail:::", response);
-
+          console.log("beneficiaryDetail:::", response);
         }
       } catch (err) {
         this.loading = false;
