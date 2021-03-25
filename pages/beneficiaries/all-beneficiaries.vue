@@ -14,13 +14,10 @@
       </div>
 
       <div class="ml-auto">
-        <button
-          type="button"
-          class="export-btn p-3"
-        >
+        <button type="button" class="export-btn p-3">
           <download-csv
             :data="beneficiaries"
-            name="Beneficiaries-Transactions.csv"
+            name="Beneficiaries.csv"
           >
             Export as CSV
           </download-csv>
@@ -30,7 +27,8 @@
 
     <!-- beneficiaries Table here -->
     <div class="holder">
-      <table class="table table-borderless" v-if="beneficiaries !== null">
+          <div v-if="loading" class="loader text-center my-5"></div>
+      <table class="table table-borderless" v-else-if="beneficiaries.length != 0 ">
         <thead>
           <tr>
             <th scope="col" class="py-4">
@@ -44,7 +42,7 @@
                   : data.length + " " + `users`
               }}
             </th>
-          <!--  <th scope="col" class="py-4">User ID</th> -->
+            <!--  <th scope="col" class="py-4">User ID</th> -->
             <th scope="col" class="py-4">Phone Number</th>
             <th scope="col" class="py-4">Email Address</th>
             <th scope="col" class="py-4">Account Created</th>
@@ -64,7 +62,7 @@
 
             <td class="d-flex" @click="handleTempBenefactor(benefactor)">
               <img
-              v-if="benefactor.profile_pic == null"
+                v-if="benefactor.profile_pic == null"
                 src="~/assets/img/user.png"
                 width="30"
                 height="30"
@@ -72,8 +70,8 @@
                 :alt="benefactor.first_name"
                 loading="lazy"
               />
-               <img
-               v-else
+              <img
+                v-else
                 :src="benefactor.profile_pic"
                 width="30"
                 height="30"
@@ -82,9 +80,11 @@
                 loading="lazy"
               />
 
-              <p class="mx-3 pt-1">{{benefactor.first_name + ' ' + benefactor.last_name }}</p>
+              <p class="mx-3 pt-1">
+                {{ benefactor.first_name + " " + benefactor.last_name }}
+              </p>
             </td>
-           <!-- <td @click="handleTempBenefactor(benefactor)">
+            <!-- <td @click="handleTempBenefactor(benefactor)">
               {{ benefactor.id }}
             </td> -->
             <td @click="handleTempBenefactor(benefactor)">
@@ -99,8 +99,8 @@
           </tr>
         </tbody>
       </table>
-  <div v-else-if="loading" class="loader text-center"></div>
-      <h3 v-else class="text-center no-record">NO RECORD FOUND</h3> 
+
+      <h3 v-else class="text-center no-record">NO RECORD FOUND</h3>
     </div>
   </div>
 </template>
@@ -115,7 +115,7 @@ export default {
       loading: false,
       searchQuery: null,
       data: [],
-      beneficiaries: null,
+      beneficiaries: [],
     };
   },
 
@@ -137,8 +137,10 @@ export default {
   mounted() {
     this.fetchAllBeneficiaries();
   },
+
   methods: {
     ...mapActions("beneficiaries", ["SAVE_TEMP_BENEFACTOR"]),
+    ...mapActions("authentication", ["logout"]),
     checkAll() {
       this.isCheckAll = !this.isCheckAll;
       this.data = [];
@@ -147,7 +149,7 @@ export default {
         for (var key in this.beneficiaries) {
           this.data.push(this.beneficiaries[key].id);
         }
-        console.log(this.data)
+        console.log(this.data);
       }
     },
 
@@ -158,6 +160,7 @@ export default {
     },
 
     handleTempBenefactor(benefactor) {
+      //Dynamic page throws error, try to make the call to get details here and save it to the store then use getter yo pick on dynamic page
       this.SAVE_TEMP_BENEFACTOR(benefactor);
       this.$router.push(`/beneficiaries/${benefactor.id}`);
     },
@@ -167,18 +170,22 @@ export default {
         this.loading = true;
 
         const response = await this.$axios.get("/beneficiaries");
-           console.log('Allbeneficiaries:::',response)
+        console.log("Allbeneficiaries:::", response);
 
         if (response.data.code == 200) {
           this.loading = false;
           this.beneficiaries = response.data.data;
-                console.log('beneficiaries000000',this.beneficiaries)
-          
+          console.log("beneficiaries000000", this.beneficiaries);
         }
       } catch (error) {
         this.loading = false;
         this.$toast.error(error.response.data.message);
-        console.log(error)
+
+        if (error.response.status == 401) {
+                this.$toast.error("Unauthorized, Please Login");
+          this.logout();
+          this.$router.push("/login");
+        }
       }
     },
   },

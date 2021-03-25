@@ -6,8 +6,8 @@
       <div class="col-lg-3">
         <div class="card__holder px-3 pt-2">
           <p class="text">Beneficiaries</p>
-          <h4 class="funds">{{  beneficiariesData.beneficiariesCount }}</h4>
-          <p class="pb-2">
+          <h4 class="funds">{{ loading ? "0" : count }}</h4>
+          <p class="pb-1">
             <nuxt-link to="/beneficiaries/all-beneficiaries" class="percentage"
               >View all</nuxt-link
             >
@@ -19,9 +19,7 @@
       <div class="col-lg-3">
         <div class="card__holder px-3 pt-2">
           <p class="text">Total Amount Recieved</p>
-          <h4 class="funds">
-            ${{ loading ? 0 : beneficiariesData.disbursed + beneficiariesData.balance }}
-          </h4>
+          <h4 class="funds pb">$ {{ loading ? "0" : stats.income }}</h4>
         </div>
       </div>
 
@@ -29,7 +27,7 @@
       <div class="col-lg-3">
         <div class="card__holder px-3 pt-2">
           <p class="text">Total Amount Disbursed</p>
-          <h4 class="funds">${{ beneficiariesData.disbursed }}</h4>
+          <h4 class="funds pb">$ {{ loading ? "0" : stats.expense }}</h4>
         </div>
       </div>
 
@@ -37,7 +35,7 @@
       <div class="col-lg-3">
         <div class="card__holder px-3 pt-2">
           <p class="text">Total Balance</p>
-          <h4 class="funds">${{ beneficiariesData.balance }}</h4>
+          <h4 class="funds pb">$ {{ loading ? "0" : stats.balance }}</h4>
         </div>
       </div>
     </div>
@@ -94,12 +92,12 @@
     <div class="row no-gutters pt-lg-4 mr-3">
       <!-- Beneficiary complaints card here -->
       <div class="w-100">
-        <beneficiaryComplaints :beneficiariesData="beneficiariesData" />
+        <!-- <beneficiaryComplaints /> -->
       </div>
     </div>
 
     <!-- Beneficiary transaction here -->
-    <beneficiaryTransaction :beneficiariesData="beneficiariesData"  /> 
+    <!-- <beneficiaryTransaction  />  -->
   </div>
 </template>
 
@@ -120,7 +118,8 @@ export default {
   data() {
     return {
       loading: false,
-      beneficiariesData: {},
+      count: "",
+      stats: {},
     };
   },
   components: {
@@ -138,29 +137,46 @@ export default {
   },
 
   mounted() {
-    // this.fetchBeneficiariesData();
+    this.fetchAllBeneficiaries();
+    this.getStatistics();
   },
 
   methods: {
-    async fetchBeneficiariesData() {
+    async fetchAllBeneficiaries() {
       try {
         this.loading = true;
 
-        const response = await this.$axios.get(
-          "/beneficiaries",
-          this.payload
-        );
+        const response = await this.$axios.get("/beneficiaries");
+        console.log("Allbeneficiaries:::", response);
+
         if (response.data.code == 200) {
           this.loading = false;
-
-          this.beneficiariesData = response.data.data;
+          this.count = response.data.data.length;
         }
-
-        console.log("allBeneficiaries:::", response);
-
       } catch (error) {
         this.loading = false;
         this.$toast.error(error.response.data.message);
+
+        if (error.response.status == 401) {
+          this.$toast.error("Unauthorized, Please Login");
+          this.logout();
+          this.$router.push("/login");
+        }
+      }
+    },
+
+    async getStatistics() {
+      try {
+        this.loading = true;
+        const response = await this.$axios.get("/users/info/statistics");
+        if (response.data.code == 200) {
+          this.loading = false;
+          this.stats = response.data.data[0];
+        }
+        console.log("statsresponse:::", response);
+      } catch (err) {
+        this.loading = false;
+        console.log("statserr:::", err);
       }
     },
   },
@@ -230,6 +246,8 @@ export default {
   font-size: 1.5rem;
   font-weight: 500;
 }
+.funds.pb{
+padding-bottom: 35px;}
 .percentage {
   color: #00bf6f;
   font-size: 0.8 75rem;
