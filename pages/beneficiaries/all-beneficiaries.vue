@@ -8,7 +8,7 @@
         <input
           type="text"
           class="form-controls"
-          placeholder="Search beneficiaries by name or ID"
+          placeholder="Search beneficiaries by name"
           v-model="searchQuery"
         />
       </div>

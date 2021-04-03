@@ -94,8 +94,22 @@ export default {
       unresolved: [{}],
     };
   },
+  mounted(){
+    this.getComplaints()
+  },
 
   methods: {
+
+async getComplaints(){
+  try{
+const response = await this.$axios.get("/campaigns/complaints/1")
+console.log("response", response)
+  }
+  catch(err){
+    console.log(err)
+  }
+},
+
     handleResolved() {
       let resolved = this.beneficiariesData.complaint.filter(
         (complaint) => complaint.status == "Clossed"

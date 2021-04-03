@@ -19,19 +19,19 @@
       <table class="table table-borderless">
         <thead>
           <tr>
-            <th scope="col"> Product Name</th>
+            <th scope="col">Product Name</th>
             <th scope="col">Vendor</th>
             <th scope="col">Sales Volume</th>
-            <th scope="col">Total Revenue </th>
+            <th scope="col">Total Revenue</th>
             <th scope="col"></th>
           </tr>
         </thead>
         <tbody>
-          <tr v-for="i in 3" :key="i">
-            <td>Cray Fish</td>
+          <tr v-for="product in products" :key="product.id">
+            <td>{{ product.name }}</td>
             <td>Dangote Flour</td>
-            <td>111k</td>
-            <td>$123,476,000</td>
+            <td>{{ product.quantity | formatCount }}</td>
+            <td>$ {{ product.price | formatCurrency }}</td>
             <td>
               <button type="button" class="more-btn"><dot /></button>
             </td>
@@ -42,16 +42,40 @@
   </div>
 </template>
 <script>
-import dot from '~/components/icons/dot'
+import dot from "~/components/icons/dot";
 export default {
   components: {
-    dot
+    dot,
   },
-}
+
+  data: () => ({
+    loading: false,
+    products: [],
+  }),
+
+  mounted() {
+    this.fetchProducts();
+  },
+
+  methods: {
+    async fetchProducts() {
+      try {
+        this.loading = true;
+        const response = await this.$axios.get("/vendors/products/all");
+        if ((response.data.code = 200)) {
+          this.loading = false;
+          this.products = response.data.data;
+        }
+        console.log("response", response);
+      } catch (err) {
+        console.log(err);
+      }
+    },
+  },
+};
 </script>
 
 <style scoped>
-
 .header {
   color: var(--secondary-black);
   font-weight: 700;
@@ -88,8 +112,8 @@ select:focus {
   color: var(--secondary-black);
   font-size: 1rem;
 }
-::placeholder{
-    color: #999999;
-font-size: 1rem;
+::placeholder {
+  color: #999999;
+  font-size: 1rem;
 }
 </style>

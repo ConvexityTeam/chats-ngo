@@ -52,6 +52,7 @@
                   type="text"
                   class="form-controls"
                   placeholder="Search campaigns"
+                  v-model="searchQuery"
                 />
 
                 <div class="ml-3 position-relative">
@@ -98,7 +99,7 @@
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="i in 3" :key="i">
+                <tr v-for="campaign in resultQuery" :key="campaign.id">
                   <td>Project Mppape</td>
                   <td>$123,476,000</td>
                   <td>$123,476,000</td>
@@ -158,7 +159,7 @@
 
               <!-- Email here -->
               <div class="d-table-row row">
-                <p class="detail-caption col">Email Address</p>
+                <p class="detail-caption col">Email </p>
                 <p class="detail-value col">{{ user.email }}</p>
               </div>
 
@@ -184,25 +185,38 @@ export default {
 
   data: () => ({
     loading: false,
-    selected: null,
+    selected: null,    
+      searchQuery: "",
     options: [
       { value: null, text: "filter" },
       { value: "all", text: "All" },
       { value: "inprogress", text: "In Progress" },
       { value: "completed", text: "Completed" },
     ],
-
     user: {},
+    campaigns: []
   }),
 
   mounted() {
     console.log("BEnEfacor", this.BENEFACTOR);
-
     this.getDetails();
   },
 
   computed: {
     ...mapGetters("beneficiaries", ["BENEFACTOR"]),
+
+        resultQuery() {
+      if (this.searchQuery) {
+        return this.campaigns.filter((campaign) => {
+          return this.searchQuery
+            .toLowerCase()
+            .split(' ')
+            .every((v) => campaign.title.toLowerCase().includes(v))
+        })
+      } else {
+        return this.campaigns
+      }
+    },
   },
 
   methods: {
@@ -217,7 +231,8 @@ export default {
         this.loading = false;
         if (response.data.code == 200) {
           this.loading = false;
-          this.user = response.data.data;
+          this.user = response.data.data.user;
+          this.campaigns = response.data.data.associatedCampaigns
           console.log("beneficiaryDetail:::", response);
         }
       } catch (err) {

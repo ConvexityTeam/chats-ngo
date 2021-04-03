@@ -22,6 +22,18 @@ const formatNumber = value => {
     }
     return 0;
 };
+
+const formatCurrency = value => {
+    let val = (value / 1).toFixed(2).replace(".", ".");
+    return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+};
+const formatCount = value => {
+    let val = (value / 1).toFixed().replace(".", ".");
+    return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+};
+
 Vue.filter("capitalize", capitalize);
 Vue.filter("formatDateOnly", formatDateOnly);
 Vue.filter("formatNumber", formatNumber);
+Vue.filter("formatCurrency", formatCurrency);
+Vue.filter("formatCount", formatCount);

@@ -85,6 +85,8 @@ export default {
     productsAgeGroup,
     allProducts
   },
+
+
 }
 </script>
 
