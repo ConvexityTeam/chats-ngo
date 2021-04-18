@@ -68,6 +68,11 @@ p.form-input__error span {
     outline: none;
 }
 
+.form-controls.error {
+    border: 1px #ee3934 !important;
+    border-style: solid solid double solid !important;
+}
+
 .form-controls:focus {
     border: 1px solid var(--primary-color) !important;
 }
@@ -124,7 +129,7 @@ select.form-control {
 .nav-tabs .nav-link.active,
 .nav-tabs .nav-item.show .nav-link {
     border-bottom: 3px solid var(--primary-color);
-    background-color: #fff;
+    background-color: inherit;
     border-top: none;
     border-left: none;
     border-right: none;
@@ -145,6 +150,38 @@ select.form-control {
 
 .nav-tabs {
     border: none !important;
+}
+
+
+/* Calendar styles here */
+
+.mx-datepicker {
+    width: inherit !important;
+}
+
+.mx-calendar {
+    z-index: 0 !important;
+    width: 300px !important;
+    padding: 8px !important;
+}
+
+.mx-btn {
+    color: #4D555D !important;
+    font-weight: 600 !important;
+}
+
+.mx-btn:focus {
+    outline: none !important;
+}
+
+.mx-input {
+    height: calc(1.5em + 0.75rem + 2px)!important;
+    color: #495057 !important;
+    background-color: #fff !important;
+    border: 1px solid #999999 !important;
+    border-radius: 5px !important;
+    color: inherit !important;
+    font-size: 0.875rem !important;
 }
 
 

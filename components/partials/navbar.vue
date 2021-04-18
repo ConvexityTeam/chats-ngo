@@ -67,13 +67,29 @@ export default {
         this.title = 'Vendors'
       } else if (this.$router.history.current.name.includes('beneficiaries')) {
         this.title = 'Beneficiaries'
-      } else {
+      }
+      else if (this.$router.history.current.name.includes('campaigns')) {
+        this.title = 'campaigns'
+      }
+      
+       else {
         this.title = this.$router.history.current.name
       }
     },
   },
   mounted() {
-    this.title = this.$router.history.current.name
+        if (this.$router.history.current.name.includes('vendors')) {
+        this.title = 'Vendors'
+      } else if (this.$router.history.current.name.includes('beneficiaries')) {
+        this.title = 'Beneficiaries'
+      }
+      else if (this.$router.history.current.name.includes('campaigns')) {
+        this.title = 'campaigns'
+      }
+      
+       else {
+        this.title = this.$router.history.current.name
+      }
   },
 }
 </script>

@@ -46,11 +46,15 @@
             <input
               type="text"
               class="form-controls"
+              :class="{
+                error: $v.payload.title.$error,
+              }"
               name="name"
               id="name"
               placeholder="Name of the campaign"
               v-model="payload.title"
-              @input.once="initMap"
+              @mouseenter.once="initMap"
+              @blur="$v.payload.title.$touch()"
             />
           </div>
 
@@ -59,10 +63,14 @@
             <label for="description">Description</label>
             <textarea
               class="form-controls"
+              :class="{
+                error: $v.payload.description.$error,
+              }"
               name="description"
               id="description"
               cols="30"
               rows="2"
+              @blur="$v.payload.description.$touch()"
               v-model="payload.description"
             ></textarea>
           </div>
@@ -73,13 +81,16 @@
               <div class="form-group">
                 <label for="total-amount">Total Wallet</label>
                 <input
-                  type="text"
+                  type="number"
                   class="form-controls"
+                  :class="{
+                    error: $v.payload.budget.$error,
+                  }"
                   name="total-amount"
-                  pattern="^[-,0-9]+$"
                   id="total-amount"
                   placeholder="Amount from NGO wallet"
                   v-model="payload.budget"
+                  @blur="$v.payload.budget.$touch()"
                   ref="budget"
                 />
               </div>
@@ -120,14 +131,13 @@
               <!--start date  field  here -->
               <div class="form-group">
                 <label for="start-date">Start Date</label>
-                <input
-                  type="date"
-                  class="form-controls"
-                  name="total-amount"
-                  id="start-date"
-                  placeholder="Amount from NGO wallet"
+
+                <date-picker
                   v-model="payload.start_date"
-                />
+                  format="MM-DD-YYYY"
+                  placeholder="MM-DD-YYYY"
+                  valueType="format"
+                ></date-picker>
               </div>
             </div>
 
@@ -135,14 +145,13 @@
             <div class="col-lg-6">
               <div class="form-group">
                 <label for="end-date">End Date</label>
-                <input
-                  type="date"
-                  class="form-controls"
-                  name="total-amount"
-                  id="end-date"
-                  placeholder="Amount from NGO wallet"
+
+                <date-picker
                   v-model="payload.end_date"
-                />
+                  format="MM-DD-YYYY"
+                  placeholder="MM-DD-YYYY"
+                  valueType="format"
+                ></date-picker>
               </div>
             </div>
           </div>
@@ -155,9 +164,13 @@
                 <input
                   type="text"
                   class="form-controls"
+                  :class="{
+                    error: $v.payload.location.country.$error,
+                  }"
                   name="location"
                   id="location"
-                  v-model="payload.location"
+                  v-model="payload.location.country"
+                  @blur="$v.payload.location.country.$touch()"
                 />
               </div>
             </div>
@@ -187,12 +200,6 @@
                 <span v-else>Create</span>
               </button>
             </div>
-            <code>
-              <pre>
-            {{ payload }}
-            </pre
-              >
-            </code>
           </div>
         </form>
       </div>
@@ -201,8 +208,10 @@
 </template>
 <script>
 import { required } from "vuelidate/lib/validators";
-import {mapGetters} from "vuex"
+import { mapGetters } from "vuex";
 const apiKey = "AIzaSyApnZ4U1qeeHgHZuckDndNVVMIJAo-b5Vo";
+import DatePicker from "vue2-datepicker";
+import "vue2-datepicker/index.css";
 let geocoder;
 export default {
   head() {
@@ -225,7 +234,10 @@ export default {
         title: "",
         description: "",
         budget: "",
-        location: "",
+        location: {
+          country: "",
+          coordinates: [],
+        },
         start_date: "",
         end_date: "",
       },
@@ -248,7 +260,9 @@ export default {
         required,
       },
       location: {
-        required,
+        country: {
+          required,
+        },
       },
       start_date: {
         required,
@@ -258,24 +272,16 @@ export default {
       },
     },
   },
+  components: { DatePicker },
 
-  watch: {
-    "payload.budget": function (newValue) {
-      const result = newValue
-        .replace(/\D/g, "")
-        .replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-      this.$nextTick(() => (this.payload.budget = result));
-    },
+  computed: {
+    ...mapGetters("authentication", ["user"]),
   },
 
-  computed:{
-...mapGetters("authentication", ["user"])
-  },
-
-  
-  mounted(){
-    this.payload.organisation_id = this.user.id
-    console.log("user:::", this.user)
+  mounted() {
+    this.payload.organisation_id = this.user.AssociatedOrganisations[0].OrganisationId;
+    console.log("user:::", this.user);
+    console.log("orgId:::", this.user.AssociatedOrganisations[0].OrganisationId)
   },
 
   methods: {
@@ -284,6 +290,9 @@ export default {
     },
 
     async createCampaign() {
+      console.log("pd::", this.payload)
+   
+    
       try {
         this.loading = true;
         this.$v.payload.$touch();
@@ -295,17 +304,21 @@ export default {
           return;
         }
 
-        let budgetString = this.payload.budget;
-        budgetString = budgetString.replaceAll(",", "");
-        this.payload.budget = budgetString;
+        // let budgetString = this.payload.budget;
+        // budgetString = budgetString.replaceAll(",", "");
+        // this.payload.budget = budgetString;
+           this.payload.location =   JSON.stringify(this.payload.location)
 
-        const response = await this.$axios.post("/campaigns", this.payload);
+        const response = await this.$axios.post(
+          "/organisation/campaign",
+          this.payload
+        );
         console.log("campaignResponse:::", response);
-this.$emit("reload")
-        // this.$toast.success(response.data.message);
-        // this.loading = false;
-        this.closeModal();
-        // location.reload();
+        this.$emit("reload");
+        this.closeModal()
+        this.$toast.success(response.data.message);
+        this.loading = false;
+
       } catch (err) {
         console.log(err);
         this.loading = false;
@@ -334,7 +347,10 @@ this.$emit("reload")
 
       //Event listener added here
       google.maps.event.addListener(myMarker, "dragend", (evt) => {
-        // this.payload.location.coordinates.push({long: evt.latLng.lng(), lat:evt.latLng.lat()})
+        this.payload.location.coordinates.push({
+          long: evt.latLng.lng(),
+          lat: evt.latLng.lat(),
+        });
         this.location.coordinates = {
           long: evt.latLng.lng(),
           lat: evt.latLng.lat(),
@@ -345,7 +361,7 @@ this.$emit("reload")
         var latlng = new google.maps.LatLng(evt.latLng.lat(), evt.latLng.lng());
         codeLatLng((address) => {
           console.log("address:::", address);
-          this.payload.location = address;
+          this.payload.location.country = address;
         });
 
         // Geocoder call back function here
@@ -435,5 +451,17 @@ label {
 }
 textarea {
   height: auto;
+}
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type="number"] {
+  -moz-appearance: textfield;
 }
 </style>

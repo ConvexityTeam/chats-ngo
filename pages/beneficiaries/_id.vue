@@ -87,7 +87,8 @@
             </div>
 
             <!-- Table here -->
-            <table class="table table-borderless">
+            <div class="table">
+            <table class=" table-borderless" v-if="campaigns.length != 0">
               <thead>
                 <tr>
                   <th scope="col">Name</th>
@@ -108,72 +109,88 @@
                 </tr>
               </tbody>
             </table>
+           
+             <h3 v-else class="text-center no-record">NO RECORD FOUND</h3>
+              </div>
           </div>
         </div>
+
 
         <!-- Personal details here -->
         <div class="col-lg-4">
           <div class="div__holder p-3">
             <h4 class="top-header">Personal details</h4>
 
-            <div class="text-center my-5">
+             <div
+              class="text-center d-flex justify-content-center mx-auto align-items-center logo-holder my-5"
+            >
               <img
-                v-if="user.profile_pic == null"
-                src="~/assets/img/user-1.png"
-                class="rounded-circle"
-                width="100"
-                height="100"
-                :alt="user.first_name"
-              />
-
-              <img
-                v-else
+                v-if="user.profile_pic != null"
                 :src="user.profile_pic"
-                class="rounded-circle"
                 width="100"
                 height="100"
-                :alt="user.first_name"
+                alt=""
+                class="rounded-circle"
               />
             </div>
 
-            <div class="d-table" style="border-spacing: 0px 20px">
-              <!-- Name here -->
-              <div class="d-table-row row">
-                <p class="detail-caption col">Name</p>
-                <p class="detail-value col">
-                  {{ user.first_name + " " + user.last_name }}
-                </p>
-              </div>
+            <!--Vendor Details here -->
+            <div>
+              <table class="w-100">
+                <!-- name here -->
+                <tr>
+                  <th><p class="detail-caption col">Name</p></th>
+                  <td>
+                    <p class="detail-value col">{{ user.first_name + " " + user.last_name }}</p>
+                  </td>
+                </tr>
 
-              <!-- user id here -->
-              <div class="d-table-row row">
-                <p class="detail-caption col">User ID</p>
-                <p class="detail-value col">{{ user.id }}</p>
-              </div>
+                <!-- id here -->
+                <tr>
+                  <th><p class="detail-caption col">User ID</p></th>
+                  <td>
+                    <p class="detail-value col">{{ user.id }}</p>
+                  </td>
+                </tr>
 
-              <!-- Phone number here -->
-              <div class="d-table-row row">
-                <p class="detail-caption col">Number</p>
-                <p class="detail-value col">{{ user.phone }}</p>
-              </div>
+                <!-- Phone here -->
+                <tr>
+                  <th><p class="detail-caption col">Phone Number</p></th>
+                  <td>
+                    <p class="detail-value col">
+                       {{ user.phone }}
+                    </p>
+                  </td>
+                </tr>
 
-              <!-- Email here -->
-              <div class="d-table-row row">
-                <p class="detail-caption col">Email </p>
-                <p class="detail-value col">{{ user.email }}</p>
-              </div>
+                <!-- email here -->
+                <tr>
+                  <th><p class="detail-caption col">Email Address</p></th>
+                  <td>
+                    <p class="detail-value col">
+                      {{ user.email}}
+                    </p>
+                  </td>
+                </tr>
 
-              <!-- Date created here -->
-              <div class="d-table-row row">
-                <p class="detail-caption col">Created</p>
-                <p class="detail-value col">
-                  {{ user.createdAt | formatDateOnly }}
-                </p>
-              </div>
+                <!-- Date created here  -->
+                <tr>
+                  <th><p class="detail-caption col">Created</p></th>
+                  <td>
+                    <p class="detail-value col">
+                      {{ user.createdAt | formatDateText }}
+                    </p>
+                  </td>
+                </tr>
+
+
+              </table>
             </div>
           </div>
         </div>
-      </div>
+          </div>
+
+ 
     </div>
   </div>
 </template>
@@ -245,11 +262,18 @@ export default {
 </script>
 
 <style scoped>
+.logo-holder {
+  background: #eef0f4;
+  border-radius: 50%;
+  width: 96px;
+  height: 96px;
+}
 .detail-caption {
   color: #4f4f4f;
   font-size: 0.845rem;
   opacity: 0.9;
   display: table-cell;
+    padding: 10px 0px;
 }
 .detail-value {
   color: var(--secondary-black);

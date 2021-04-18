@@ -20,6 +20,7 @@
     "nuxt": "^2.14.6",
     "vue-chartjs": "^3.5.1",
     "vue-json-csv": "^1.2.12",
+    "vue2-datepicker": "^3.9.0",
     "vuelidate": "^0.7.6",
     "vuex-persist": "^3.1.3"
   },

@@ -41,7 +41,6 @@
                   : data.length + ' ' + `vendors`
               }}
             </th>
-            <th scope="col" class="py-4">ID</th>
             <th scope="col" class="py-4">Phone Number</th>
             <th scope="col" class="py-4">Email Address</th>
             <th scope="col" class="py-4">Created</th>
@@ -73,16 +72,15 @@
                 :src="vendor.profile_pic"
                 width="30"
                 height="30"
-                class="rounded"
+                class="rounded-circle"
                 alt="Vendor"
               />
-              <p class="mx-3 pt-1">{{ vendor.first_name }}</p>
+              <p class="mx-3 pt-1">{{ vendor.first_name + " " + vendor.last_name}}</p>
             </td>
-            <td @click="handleTempVendor(vendor)">{{ vendor.id }}</td>
             <td @click="handleTempVendor(vendor)">{{ vendor.phone }}</td>
             <td @click="handleTempVendor(vendor)">{{ vendor.email }}</td>
             <td @click="handleTempVendor(vendor)">
-              {{ vendor.createdAt | formatDateOnly }}
+              {{ vendor.createdAt | formatDateText }}
             </td>
           </tr>
         </tbody>

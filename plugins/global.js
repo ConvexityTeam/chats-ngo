@@ -13,6 +13,11 @@ const formatDateOnly = value => {
     return moment().format("DD/MM/YYYY");
 };
 
+const formatDateText = value => {
+    if (!value) return "";
+    return moment(value).format(" dddd, MMMM DD, YYYY ");
+};
+
 const formatNumber = value => {
     if (value !== null) {
         return value
@@ -27,6 +32,7 @@ const formatCurrency = value => {
     let val = (value / 1).toFixed(2).replace(".", ".");
     return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 };
+
 const formatCount = value => {
     let val = (value / 1).toFixed().replace(".", ".");
     return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -37,3 +43,4 @@ Vue.filter("formatDateOnly", formatDateOnly);
 Vue.filter("formatNumber", formatNumber);
 Vue.filter("formatCurrency", formatCurrency);
 Vue.filter("formatCount", formatCount);
+Vue.filter("formatDateText", formatDateText)

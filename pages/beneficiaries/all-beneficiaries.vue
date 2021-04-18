@@ -94,7 +94,7 @@
               {{ benefactor.email }}
             </td>
             <td @click="handleTempBenefactor(benefactor)">
-              {{ benefactor.createdAt | formatDateOnly }}
+              {{ benefactor.createdAt | formatDateText }}
             </td>
           </tr>
         </tbody>

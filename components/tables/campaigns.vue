@@ -1,8 +1,8 @@
 <template>
-  <div class="main" @reload="reload">
+  <div class="main">
     <div class="container">
       <!-- Modal here -->
-      <newCampaign />
+      <newCampaign @reload="reload" />
       <div class="d-flex pt-lg-4">
         <div class="d-flex">
           <!-- Search Box here -->
@@ -75,14 +75,45 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="campaign in resultQuery" :key="campaign.id">
-              <td>{{ campaign.title }}</td>
-              <td>{{ campaign.budget | formatNumber }}</td>
-              <td>{{ campaign.spent }}</td>
-              <td>{{ campaign.createdAt | formatDateOnly }}</td>
-              <td v-if="campaign.status == 0" class="pending" >Pending</td>
-              <td v-if="campaign.status == 1" class="in-progress">In Progress</td>
-              <td v-if="campaign.status == 2" class="completed">Closed</td>
+            <tr
+              v-for="campaign in resultQuery"
+              :key="campaign.id"
+              style="cursor: pointer"
+            >
+              <td @click="handleTempCampaign(campaign)">
+                {{ campaign.title }}
+              </td>
+              <td @click="handleTempCampaign(campaign)">
+                $ {{ campaign.budget | formatCurrency }}
+              </td>
+              <td @click="handleTempCampaign(campaign)">
+                {{ campaign.spent }}
+              </td>
+              <td @click="handleTempCampaign(campaign)">
+                {{ campaign.createdAt | formatDateOnly }}
+              </td>
+
+              <td
+                @click="handleTempCampaign(campaign)"
+                v-if="campaign.status == 0"
+                class="pending"
+              >
+                Pending
+              </td>
+              <td
+                @click="handleTempCampaign(campaign)"
+                v-if="campaign.status == 1"
+                class="in_progress"
+              >
+                In Progress
+              </td>
+              <td
+                @click="handleTempCampaign(campaign)"
+                v-if="campaign.status == 2"
+                class="completed"
+              >
+                Closed
+              </td>
               <td>
                 <b-dropdown
                   variant="link"
@@ -92,7 +123,9 @@
                   <template #button-content>
                     <dot />
                   </template>
-                  <b-dropdown-item href="#">View</b-dropdown-item>
+                  <b-dropdown-item @click="handleTempCampaign(campaign)"
+                    >View</b-dropdown-item
+                  >
                 </b-dropdown>
               </td>
             </tr>
@@ -106,8 +139,9 @@
 </template>
 
 <script>
-import dot from '~/components/icons/dot'
-import newCampaign from '~/components/modals/new-campaign'
+import dot from "~/components/icons/dot";
+import newCampaign from "~/components/modals/new-campaign";
+import { mapGetters } from "vuex";
 export default {
   components: {
     dot,
@@ -116,61 +150,68 @@ export default {
   data() {
     return {
       loading: false,
+      id: "",
       campaigns: [],
       selected: null,
       searchQuery: null,
       options: [
-        { value: null, text: 'filter' },
-        { value: 'all', text: 'All' },
-        { value: 'inprogress', text: 'In Progress' },
-        { value: 'completed', text: 'Completed' },
+        { value: null, text: "filter" },
+        { value: "all", text: "All" },
+        { value: "inprogress", text: "In Progress" },
+        { value: "completed", text: "Completed" },
       ],
-    }
+    };
   },
 
   computed: {
+    ...mapGetters("authentication", ["user"]),
     resultQuery() {
       if (this.searchQuery) {
         return this.campaigns.filter((campaign) => {
           return this.searchQuery
             .toLowerCase()
-            .split(' ')
-            .every((v) => campaign.title.toLowerCase().includes(v))
-        })
+            .split(" ")
+            .every((v) => campaign.title.toLowerCase().includes(v));
+        });
       } else {
-        return this.campaigns
+        return this.campaigns;
       }
     },
   },
 
-  created() {
-    this.fetchAllCampaigns()
+  mounted() {
+    this.id = this.user.AssociatedOrganisations[0].OrganisationId;
+    this.fetchAllCampaigns();
+
+    console.log("or:::", this.user.AssociatedOrganisations[0].OrganisationId);
   },
   methods: {
-    filterCampaigns() {
-      console.log('filtering')
-    },
-
-    reload(){
-      this.fetchAllCampaigns()
-      console.log(" i was called")
-    },
-
     async fetchAllCampaigns() {
       try {
-        this.loading = true
+        this.loading = true;
 
-        const response = await this.$axios.get('/campaigns/all/?type=cash-for-work')
-        this.campaigns = response.data.data
-        this.loading = false
+        const response = await this.$axios.get(
+          `/campaigns/organisation/${+this.id}?type=campaign`
+        );
+        this.campaigns = response.data.data;
+        this.loading = false;
 
-        console.log('All campaigns:::', response)
+        console.log("All campaigns:::", response);
       } catch (err) {
-          this.loading = false
+        this.loading = false;
       }
     },
+
+    handleTempCampaign(campaign) {
+      this.$router.push(`/campaigns/${campaign.id}`);
+    },
+
+    reload() {
+      this.fetchAllCampaigns();
+      console.log(" i was called");
+    },
   },
-}
+};
 </script>
 
 <style scoped>
@@ -242,7 +283,7 @@ select.form-control {
   color: var(--secondary-black);
   font-size: 1rem;
 }
-td.in-progress {
+td.in_progress {
   color: #008cff;
 }
 td.completed {

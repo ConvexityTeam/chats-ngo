@@ -19,7 +19,7 @@
       <div class="col-lg-3">
         <div class="card__holder px-3 pt-2">
           <p class="text">Total Amount Recieved</p>
-          <h4 class="funds pb">$ {{ loading ? "0" : stats.income }}</h4>
+          <h4 class="funds pb">$ {{ loading ? "0" : stats.income | formatCurrency}}</h4>
         </div>
       </div>
 
@@ -27,7 +27,7 @@
       <div class="col-lg-3">
         <div class="card__holder px-3 pt-2">
           <p class="text">Total Amount Disbursed</p>
-          <h4 class="funds pb">$ {{ loading ? "0" : stats.expense }}</h4>
+          <h4 class="funds pb">$ {{ loading ? "0" : stats.expense | formatCurrency }}</h4>
         </div>
       </div>
 
@@ -35,7 +35,7 @@
       <div class="col-lg-3">
         <div class="card__holder px-3 pt-2">
           <p class="text">Total Balance</p>
-          <h4 class="funds pb">$ {{ loading ? "0" : stats.balance }}</h4>
+          <h4 class="funds pb">$ {{ loading ? "0" : stats.balance | formatCurrency }}</h4>
         </div>
       </div>
     </div>
@@ -88,16 +88,8 @@
       </div>
     </div>
 
-    <!-- Third Beneficiary cards here -->
-    <div class="row no-gutters pt-lg-4 mr-3">
-      <!-- Beneficiary complaints card here -->
-      <div class="w-100">
-        <beneficiaryComplaints />
-      </div>
-    </div>
-
     <!-- Beneficiary transaction here -->
-    <beneficiaryTransaction  /> 
+    <beneficiaryTransaction />
   </div>
 </template>
 
@@ -111,7 +103,6 @@ import beneficiaryMarital from "~/components/charts/beneficiary-marital";
 import dot from "~/components/icons/dot";
 import rightArrow from "~/components/icons/right-arrow";
 import leftArrow from "~/components/icons/left-arrow";
-import beneficiaryComplaints from "~/components/tables/beneficiary-complaints";
 import beneficiaryTransaction from "~/components/tables/beneficiary-transaction";
 export default {
   layout: "dashboard",
@@ -132,14 +123,13 @@ export default {
     dot,
     rightArrow,
     leftArrow,
-    beneficiaryComplaints,
     beneficiaryTransaction,
   },
 
   mounted() {
     this.fetchAllBeneficiaries();
     this.getStats();
-    this.getChartData()
+    this.getChartData();
   },
 
   methods: {
@@ -181,7 +171,7 @@ export default {
       }
     },
 
-       async getChartData() {
+    async getChartData() {
       try {
         this.loading = true;
         const response = await this.$axios.get("/users/info/chart");
@@ -262,8 +252,9 @@ export default {
   font-size: 1.5rem;
   font-weight: 500;
 }
-.funds.pb{
-padding-bottom: 35px;}
+.funds.pb {
+  padding-bottom: 35px;
+}
 .percentage {
   color: #00bf6f;
   font-size: 0.8 75rem;

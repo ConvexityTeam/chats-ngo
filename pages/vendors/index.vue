@@ -71,6 +71,8 @@ export default {
         this.loading = true;
         const response = await this.$axios.get("/vendors");
 
+        console.log("allendors:::", response)
+
         if (response.data.code == 200) {
           this.loading = false;
           this.allVendors = response.data.data.length;

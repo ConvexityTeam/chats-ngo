@@ -29,9 +29,9 @@
         <tbody>
           <tr v-for="product in products" :key="product.id">
             <td>{{ product.name }}</td>
-            <td>Dangote Flour</td>
+            <td> {{ product.Vendor ? product.Vendor.store_name : " " }} </td>
             <td>{{ product.quantity | formatCount }}</td>
-            <td>$ {{ product.price | formatCurrency }}</td>
+            <td>$ {{ product.value | formatCurrency }}</td>
             <td>
               <button type="button" class="more-btn"><dot /></button>
             </td>
@@ -68,9 +68,12 @@ export default {
         }
         console.log("response", response);
       } catch (err) {
+        this.loading = false
         console.log(err);
       }
     },
+
+ 
   },
 };
 </script>

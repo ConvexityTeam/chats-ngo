@@ -7,7 +7,7 @@
         <div class="card__holder px-3 pt-2">
           <p class="text">Wallet Balance</p>
           <h4 class="funds pb-3 d-flex">
-            {{ userLocation.currencySymbol + userLocation.convertedValue}}
+           $ {{ loading ? "0" : stats.balance | formatCurrency }}
           </h4>
           <!-- <p class="percentage pb-2">
             2.5%
@@ -35,7 +35,7 @@
       <div class="col-lg-3">
         <div class="card__holder px-3 pt-2">
           <p class="text">Total Amount Recieved</p>
-          <h4 class="funds pb-3">   {{ userLocation.currencySymbol + userLocation.convertedValue}}</h4>
+          <h4 class="funds pb-3">  $ {{ loading ? "0" : stats.income | formatCurrency}} </h4>
         </div>
       </div>
 
@@ -43,7 +43,7 @@
       <div class="col-lg-3">
         <div class="card__holder px-3 pt-2">
           <p class="text">Total Amount Disbursed</p>
-          <h4 class="funds pb-3">   {{ userLocation.currencySymbol + userLocation.convertedValue}}</h4>
+          <h4 class="funds pb-3">  $ {{ loading ? "0" : stats.expense | formatCurrency }}</h4>
         </div>
       </div>
 
@@ -51,7 +51,7 @@
       <div class="col-lg-3">
         <div class="card__holder px-3 pt-2">
           <p class="text">Total Balance</p>
-          <h4 class="funds pb-3"> {{ userLocation.currencySymbol + userLocation.convertedValue}}</h4>
+          <h4 class="funds pb-3"> $ {{ loading ? "0" : stats.balance | formatCurrency }}</h4>
         </div>
       </div>
     </div>
@@ -204,6 +204,7 @@ export default {
       allVendors:[],
       beneficiaryCount: '',
       amount: '5000',
+      stats:{},
 
       userLocation: {
         alphaCode: '',
@@ -229,9 +230,25 @@ export default {
     this.fetchAllVendors();
     this.fetchAllBeneficiaries();
     this.getIp();
+    this.getStats()
   },
 
   methods: {
+
+        async getStats() {
+      try {
+        this.loading = true;
+        const response = await this.$axios.get("/users/info/statistics");
+        if (response.data.code == 200) {
+          this.loading = false;
+          this.stats = response.data.data[0];
+        }
+        console.log("statsresponse:::", response);
+      } catch (err) {
+        this.loading = false;
+        console.log("statserr:::", err);
+      }
+    },
     getIp() {
       this.$axios
         .get('http://ip-api.com/json')
