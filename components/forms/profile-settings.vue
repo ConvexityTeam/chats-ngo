@@ -30,6 +30,13 @@
             <input type="file" accept="image/png, .pdf" @change="handleFile" />
           </label>
         </div>
+
+        <code>
+          <pre
+            >{{ payload }}
+</pre
+          >
+        </code>
       </div>
 
       <!-- Form Here -->
@@ -201,8 +208,9 @@
               <div class="row">
                 <!-- Phone number Here  -->
                 <div class="col-lg-6 mb-3">
-                  <label for="last_name">Phone Number</label>
+                  <label for="phone">Phone Number</label>
                   <vue-tel-input
+                    id="phone"
                     mode="international"
                     class="profile-control"
                     :inputOptions="options"
@@ -380,7 +388,7 @@ export default {
 
         if (response.data.status == "success") {
           this.$toast.success(response.data.message);
-          this.loadData();
+          //   this.loadData();
         }
 
         console.log("updateResponse:::", response);
@@ -388,6 +396,7 @@ export default {
       } catch (err) {
         console.log("updateerr::::", err);
         this.loading = false;
+        this.$toast.error(error.response.data.message);
       }
     },
 
