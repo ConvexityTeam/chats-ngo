@@ -38,15 +38,24 @@
               </i>
             </a>
 
-            <span class="d-none d-md-inline">
-              <img
-                src="~/assets/img/user.png"
-                class="rounded-circle"
-                width="50"
-                height="50"
-                alt=""
-              />
-            </span>
+            <div class="d-flex image-holder justify-content-center mx-auto">
+              <div class="m-auto">
+                <img
+                  v-if="
+                    user.AssociatedOrganisations[0].Organisation.logo_link !=
+                    null
+                  "
+                  :src="
+                    user.AssociatedOrganisations[0]
+                      ? user.AssociatedOrganisations[0].Organisation.logo_link
+                      : ''
+                  "
+                  width="50"
+                  height="50"
+                  style="object-fit: contain"
+                />
+              </div>
+            </div>
           </div>
         </span>
       </div>
@@ -55,43 +64,47 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
 export default {
   data() {
     return {
-      title: '',
-    }
+      title: "",
+    };
   },
+
+  computed: {
+    ...mapGetters("authentication", ["user"]),
+  },
+
   watch: {
     $route() {
-      if (this.$router.history.current.name.includes('vendors')) {
-        this.title = 'Vendors'
-      } else if (this.$router.history.current.name.includes('beneficiaries')) {
-        this.title = 'Beneficiaries'
-      }
-      else if (this.$router.history.current.name.includes('campaigns')) {
-        this.title = 'campaigns'
-      }
-      
-       else {
-        this.title = this.$router.history.current.name
+      if (this.$router.history.current.name.includes("vendors")) {
+        this.title = "Vendors";
+      } else if (this.$router.history.current.name.includes("beneficiaries")) {
+        this.title = "Beneficiaries";
+      } else if (this.$router.history.current.name.includes("campaigns")) {
+        this.title = "campaigns";
+      } else {
+        this.title = this.$router.history.current.name;
       }
     },
   },
   mounted() {
-        if (this.$router.history.current.name.includes('vendors')) {
-        this.title = 'Vendors'
-      } else if (this.$router.history.current.name.includes('beneficiaries')) {
-        this.title = 'Beneficiaries'
-      }
-      else if (this.$router.history.current.name.includes('campaigns')) {
-        this.title = 'campaigns'
-      }
-      
-       else {
-        this.title = this.$router.history.current.name
-      }
+    if (this.$router.history.current.name.includes("vendors")) {
+      this.title = "Vendors";
+    } else if (this.$router.history.current.name.includes("beneficiaries")) {
+      this.title = "Beneficiaries";
+    } else if (this.$router.history.current.name.includes("campaigns")) {
+      this.title = "campaigns";
+    } else {
+      this.title = this.$router.history.current.name;
+    }
+    console.log(
+      "use::",
+      this.user.AssociatedOrganisations[0].Organisation.logo_link
+    );
   },
-}
+};
 </script>
 
 <style scoped>
@@ -105,6 +118,14 @@ export default {
   font-size: 1.5rem;
   font-weight: 700;
   color: var(--secondary-black);
+}
+
+.image-holder {
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  background: #e7e7e7;
+  border: none;
 }
 
 .container,

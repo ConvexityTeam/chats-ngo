@@ -91,6 +91,7 @@
 
 <script>
 import { required, email } from "vuelidate/lib/validators";
+import { mapActions } from "vuex";
 export default {
   layout: "default",
   data() {
@@ -123,6 +124,7 @@ export default {
   },
 
   methods: {
+      ...mapActions("authentication", ["commitToken", "commitUser"]),
     async registerUser() {
       try {
         this.loading = true;
@@ -144,7 +146,8 @@ export default {
         if (response.data.code == 200) {
           this.loading = false;
           this.$toast.success(response.data.message);
-          this.$router.push("/login");
+          // this.$router.push("/login");
+          this.loginUser()
         }
       } catch (error) {
         this.loading = false;
@@ -157,6 +160,22 @@ export default {
           this.$router.push("/login");
         }
         // this.$router.push("/forgot-password");
+      }
+    },
+
+        async loginUser() {
+      try {
+        const response = await this.$axios.post("/auth/login", {email:this.payload.email, password:this.payload.password });
+        console.log("login response", response);
+
+        if (response.data.code == 200) {
+          this.commitToken(response.data.data.token);
+          this.commitUser(response.data.data.user);
+          this.$router.push("/settings");
+        }
+      } catch (error) {
+        this.loading = false;
+        this.$toast.error(error.response.data.message);
       }
     },
   },

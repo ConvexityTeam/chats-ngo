@@ -1,9 +1,11 @@
 <template>
   <div>
     <h1>This page is under construction</h1>
-    <nuxt-link to="/dashboard">Return Home</nuxt-link>
+    <nuxt-link @click="$router.go(-1)" to="">Return Home</nuxt-link>
   </div>
 </template>
+
+
 
 <style scoped>
 div {

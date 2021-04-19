@@ -96,6 +96,49 @@ select.form-control {
     width: fit-content;
 }
 
+.vti__input:focus {
+    width: inherit;
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+.vti__input {
+    border: none;
+    width: auto !important;
+    outline: none !important;
+    padding-left: 0px !important;
+}
+
+.vti__dropdown.open,
+.vti__dropdown:hover {
+    background: inherit !important;
+}
+
+.vue-tel-input:focus-within {
+    -webkit-box-shadow: none !important;
+    box-shadow: none !important;
+}
+
+#balance>.el-select>.el-input>.el-input__inner {
+    width: 100%;
+    border: 1px solid #999999;
+    height: 42px;
+    border-radius: 10px;
+}
+
+.el-select {
+    width: 100%;
+}
+
+.el-select-dropdown__item {
+    color: #333333 !important;
+    font-weight: 500;
+}
+
+.el-select-dropdown__item.selected {
+    color: #17ce89 !important;
+}
+
 
 /* toast */
 
