@@ -30,13 +30,6 @@
             <input type="file" accept="image/png, .pdf" @change="handleFile" />
           </label>
         </div>
-
-        <code>
-          <pre
-            >{{ payload }}
-</pre
-          >
-        </code>
       </div>
 
       <!-- Form Here -->
@@ -258,7 +251,7 @@ import countries from "~/plugins/all-countries";
 import { mapGetters } from "vuex";
 export default {
   data: () => ({
-    options: { placeholder: "09065233507" },
+    options: { placeholder: "Phone number" },
     loading: false,
     countries: [],
     step: 1,
@@ -275,51 +268,51 @@ export default {
       registration_id: "",
       year: "",
       logo: null,
-      website_url: "",
-    },
+      website_url: ""
+    }
   }),
 
   validations: {
     payload: {
       first_name: {
-        required,
+        required
       },
       last_name: {
-        required,
+        required
       },
       email: {
         email,
-        required,
+        required
       },
       phone: {
-        required,
+        required
       },
       address: {
-        required,
+        required
       },
       state: {
-        required,
+        required
       },
       country: {
-        required,
+        required
       },
       registration_id: {
-        required,
+        required
       },
       year: {
-        required,
+        required
       },
       logo: {
-        required,
+        required
       },
       website_url: {
-        required,
-      },
-    },
+        required
+      }
+    }
   },
 
   computed: {
-    ...mapGetters("authentication", ["user"]),
+    ...mapGetters("authentication", ["user"])
   },
 
   mounted() {
@@ -365,7 +358,7 @@ export default {
           registration_id,
           year,
           logo,
-          website_url,
+          website_url
         } = this.payload;
 
         formData.append("organisation_id", organisation_id);
@@ -388,7 +381,6 @@ export default {
 
         if (response.data.status == "success") {
           this.$toast.success(response.data.message);
-          //   this.loadData();
         }
 
         console.log("updateResponse:::", response);
@@ -396,7 +388,7 @@ export default {
       } catch (err) {
         console.log("updateerr::::", err);
         this.loading = false;
-        this.$toast.error(error.response.data.message);
+        // this.$toast.error(err.response.data.message);
       }
     },
 
@@ -423,8 +415,8 @@ export default {
       console.log("file", value.target.files[0]);
       this.file = URL.createObjectURL(file);
       this.payload.logo = file;
-    },
-  },
+    }
+  }
 };
 </script>
 

@@ -47,7 +47,7 @@
               type="text"
               class="form-controls"
               :class="{
-                error: $v.payload.title.$error
+                error: $v.payload.title.$error,
               }"
               name="name"
               id="name"
@@ -64,7 +64,7 @@
             <textarea
               class="form-controls"
               :class="{
-                error: $v.payload.description.$error
+                error: $v.payload.description.$error,
               }"
               name="description"
               id="description"
@@ -84,7 +84,7 @@
                   type="number"
                   class="form-controls"
                   :class="{
-                    error: $v.payload.budget.$error
+                    error: $v.payload.budget.$error,
                   }"
                   name="total-amount"
                   id="total-amount"
@@ -165,7 +165,7 @@
                   type="text"
                   class="form-controls"
                   :class="{
-                    error: $v.payload.location.country.$error
+                    error: $v.payload.location.country.$error,
                   }"
                   name="location"
                   id="location"
@@ -175,13 +175,13 @@
               </div>
             </div>
           </div>
-          <code>
-            <pre>
+<code>
 
-    {{ payload }}
-  </pre
-            >
-          </code>
+  <pre>
+
+    {{payload}}
+  </pre>
+</code>
           <div id="map_canvas"></div>
 
           <div class="d-flex py-3">
@@ -224,9 +224,9 @@ export default {
     return {
       script: [
         {
-          src: `https://maps.googleapis.com/maps/api/js?key=${apiKey}&callback=initMap&libraries=geometry&v=weekly`
-        }
-      ]
+          src: `https://maps.googleapis.com/maps/api/js?key=${apiKey}&callback=initMap&libraries=geometry&v=weekly`,
+        },
+      ],
     };
   },
 
@@ -242,55 +242,52 @@ export default {
         budget: "",
         location: {
           country: "",
-          coordinates: []
+          coordinates: [],
         },
         start_date: "",
-        end_date: ""
+        end_date: "",
       },
 
       location: {
-        coordinates: []
-      }
+        coordinates: [],
+      },
     };
   },
 
   validations: {
     payload: {
       title: {
-        required
+        required,
       },
       description: {
-        required
+        required,
       },
       budget: {
-        required
+        required,
       },
       location: {
         country: {
-          required
-        }
+          required,
+        },
       },
       start_date: {
-        required
+        required,
       },
       end_date: {
-        required
-      }
-    }
+        required,
+      },
+    },
   },
   components: { DatePicker },
 
   computed: {
-    ...mapGetters("authentication", ["user"])
+    ...mapGetters("authentication", ["user"]),
   },
 
   mounted() {
     this.payload.organisation_id = this.user.AssociatedOrganisations[0].OrganisationId;
     console.log("user:::", this.user);
-    console.log(
-      "orgId:::",
-      this.user.AssociatedOrganisations[0].OrganisationId
-    );
+    console.log("orgId:::", this.user.AssociatedOrganisations[0].OrganisationId)
   },
 
   methods: {
@@ -299,8 +296,9 @@ export default {
     },
 
     async createCampaign() {
-      console.log("pd::", this.payload);
-
+      console.log("pd::", this.payload)
+   
+    
       try {
         this.loading = true;
         this.$v.payload.$touch();
@@ -315,7 +313,7 @@ export default {
         // let budgetString = this.payload.budget;
         // budgetString = budgetString.replaceAll(",", "");
         // this.payload.budget = budgetString;
-        this.payload.location = JSON.stringify(this.payload.location);
+           this.payload.location =   JSON.stringify(this.payload.location)
 
         const response = await this.$axios.post(
           "/organisation/campaign",
@@ -323,9 +321,10 @@ export default {
         );
         console.log("campaignResponse:::", response);
         this.$emit("reload");
-        this.closeModal();
+        this.closeModal()
         this.$toast.success(response.data.message);
         this.loading = false;
+
       } catch (err) {
         console.log(err);
         this.loading = false;
@@ -334,123 +333,129 @@ export default {
     },
 
     // TODO:Try emiting fetch all campaigns method from parent and calling here
-    initMaps() {
-      console.log("i was called");
-
-      var markers = [
+    initMaps(){
+console.log("i was called")
+var markers = [
         {
-          lat: "17.35297042396732",
-          lng: "8.808737500000019",
+            "title": 'Alibaug',
+            "lat": '18.641400',
+            "lng": '72.872200',
+            "description": 'Alibaug is a coastal town and a municipal council in Raigad District in the Konkan region of Maharashtra, India.'
         },
         {
-          lat: "11.862346682750987",
-          lng: "14.337043750000023",
+            "title": 'Lonavla',
+            "lat": '18.750000',
+            "lng": '73.416700',
+            "description": 'Lonavla'
         },
         {
-          lat: "11.285839918881504",
-          lng: "2.0176749999999988",
+            "title": 'Mumbai',
+            "lat": '18.964700',
+            "lng": '72.825800',
+            "description": 'Mumbai formerly Bombay, is the capital city of the Indian state of Maharashtra.'
         },
         {
-          lat: "7.645340455380781",
-          lng: "6.6198250000000325",
+            "title": 'Pune',
+            "lat": '18.523600',
+            "lng": '73.847800',
+            "description": 'Pune is the seventh largest metropolis in India, the second largest in the state of Maharashtra after Mumbai.'
         },
         {
-          lat: "9.953930119882546",
-          lng: "13.235956249999997",
+            "title": 'Thane',
+            "lat": '19.182800',
+            "lng": '72.961200',
+            "description": 'Thane'
         },
         {
-          lat: "20.01078764878095",
-          lng: "2.824481250000006",
+            "title": 'Vashi',
+            "lat": '18.750000',
+            "lng": '73.033300',
+            "description": 'Vashi'
         }
-      ];
+    ];
+   document.getElementById("map_canvas").style.display = "block";
+         var mapOptions = {
+            center: new google.maps.LatLng(markers[0].lat, markers[0].lng),
+            zoom: 8,
+            mapTypeId: google.maps.MapTypeId.ROADMAP
+        };
 
-      document.getElementById("map_canvas").style.display = "block";
-      var mapOptions = {
-        center: new google.maps.LatLng(markers[0].lat, markers[0].lng),
-        zoom: 8,
-        mapTypeId: google.maps.MapTypeId.ROADMAP
-      };
+        var infoWindow = new google.maps.InfoWindow();
+        var latlngbounds = new google.maps.LatLngBounds();
+        var geocoder = geocoder = new google.maps.Geocoder();
 
-      var infoWindow = new google.maps.InfoWindow();
-      var latlngbounds = new google.maps.LatLngBounds();
-      var geocoder = (geocoder = new google.maps.Geocoder());
+        var map = new google.maps.Map(document.getElementById("map_canvas"), mapOptions);
 
-      var map = new google.maps.Map(
-        document.getElementById("map_canvas"),
-        mapOptions
-      );
-
-      // Marker here
-      for (var i = 0; i < markers.length; i++) {
-        var data = markers[i];
-        var myLatlng = new google.maps.LatLng(data.lat, data.lng);
-        var marker = new google.maps.Marker({
-          position: myLatlng,
-          map: map,
-          title: data.title,
-          draggable: true,
-          animation: google.maps.Animation.DROP
-        });
-        ((marker, data) => {
-          google.maps.event.addListener(marker, "click", e => {
-            infoWindow.setContent(data.description);
-            infoWindow.open(map, marker);
-          });
-          google.maps.event.addListener(marker, "dragend", e => {
-            var lat, lng, address;
-            geocoder.geocode(
-              { latLng: marker.getPosition() },
-              (results, status) => {
-                if (status == google.maps.GeocoderStatus.OK) {
-                  lat = marker.getPosition().lat();
-                  lng = marker.getPosition().lng();
-                  address = results[0].formatted_address;
-                  this.payload.location.coordinates.push(lat + "," + lng);
-                }
-              }
-            );
-          });
-        })(marker, data);
-        latlngbounds.extend(marker.position);
-      }
-      var bounds = new google.maps.LatLngBounds();
-      map.setCenter(latlngbounds.getCenter());
-      map.fitBounds(latlngbounds);
+// Marker here
+        for (var i = 0; i < markers.length; i++) {
+            var data = markers[i]
+            var myLatlng = new google.maps.LatLng(data.lat, data.lng);
+            var marker = new google.maps.Marker({
+                position: myLatlng,
+                map: map,
+                title: data.title,
+                draggable: true,
+                animation: google.maps.Animation.DROP
+            });
+            (function (marker, data) {
+                google.maps.event.addListener(marker, "click", function (e) {
+                    infoWindow.setContent(data.description);
+                    infoWindow.open(map, marker);
+                });
+                google.maps.event.addListener(marker, "dragend", function (e) {
+                    var lat, lng, address;
+                    geocoder.geocode({ 'latLng': marker.getPosition() }, function (results, status) {
+                        if (status == google.maps.GeocoderStatus.OK) {
+                            lat = marker.getPosition().lat();
+                            lng = marker.getPosition().lng();
+                            address = results[0].formatted_address;
+                            this.payload.location.coordinates.push(lat, lng)
+                            console.log("coordinates:::", this.payload.location)
+                            alert("Latitude: " + lat + "\nLongitude: " + lng + "\nAddress: " + address);
+                        }
+                    });
+                });
+            })(marker, data);
+            latlngbounds.extend(marker.position);
+        }
+          var bounds = new google.maps.LatLngBounds();
+        map.setCenter(latlngbounds.getCenter());
+        map.fitBounds(latlngbounds);
     },
 
     initMap() {
       document.getElementById("map_canvas").style.display = "block";
-
+      
       //Map Constructor here
       var map = new google.maps.Map(document.getElementById("map_canvas"), {
         zoom: 1,
         center: new google.maps.LatLng(35.137879, -82.836914),
-        mapTypeId: google.maps.MapTypeId.ROADMAP
+        mapTypeId: google.maps.MapTypeId.ROADMAP,
       });
 
       // Marker Constructor here
       var myMarker = new google.maps.Marker({
         position: new google.maps.LatLng(21.47542448391573, 15.103484999999983),
         animation: google.maps.Animation.DROP,
-        draggable: true
+        draggable: true,
         // title: "Drag me!",
       });
 
       //Event listener added here
-      google.maps.event.addListener(myMarker, "dragend", evt => {
+      google.maps.event.addListener(myMarker, "dragend", (evt) => {
         this.payload.location.coordinates.push({
           long: evt.latLng.lng(),
-          lat: evt.latLng.lat()
+          lat: evt.latLng.lat(),
         });
         this.location.coordinates = {
           long: evt.latLng.lng(),
-          lat: evt.latLng.lat()
+          lat: evt.latLng.lat(),
         };
 
         //Geocoder constructor here
         geocoder = new google.maps.Geocoder();
         var latlng = new google.maps.LatLng(evt.latLng.lat(), evt.latLng.lng());
-        codeLatLng(address => {
+        codeLatLng((address) => {
           console.log("address:::", address);
           this.payload.location.country = address;
         });
@@ -463,7 +468,7 @@ export default {
           );
 
           if (geocoder) {
-            geocoder.geocode({ latLng: latlng }, function(results, status) {
+            geocoder.geocode({ latLng: latlng }, function (results, status) {
               if (status == google.maps.GeocoderStatus.OK) {
                 if (results[1]) {
                   callback(results[1].formatted_address);
@@ -479,8 +484,8 @@ export default {
       });
       map.setCenter(myMarker.position);
       myMarker.setMap(map);
-    }
-  }
+    },
+  },
 };
 </script>
 
