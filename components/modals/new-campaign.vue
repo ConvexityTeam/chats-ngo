@@ -175,13 +175,13 @@
               </div>
             </div>
           </div>
-          <code>
+          <!-- <code>
             <pre>
 
     {{ payload }}
   </pre
             >
-          </code>
+          </code> -->
           <div id="map_canvas"></div>
 
           <div class="d-flex py-3">
@@ -312,15 +312,22 @@ export default {
           return;
         }
 
-        // let budgetString = this.payload.budget;
-        // budgetString = budgetString.replaceAll(",", "");
-        // this.payload.budget = budgetString;
+        // Array length check here to get last 6 coordinates
+        let coordinates = this.payload.location.coordinates;
+        let length = coordinates.length;
+
+        if (length > 6) {
+          coordinates.splice(0, length - 6);
+          this.payload.location.coordinates = coordinates;
+        }
+
         this.payload.location = JSON.stringify(this.payload.location);
 
         const response = await this.$axios.post(
           "/organisation/campaign",
           this.payload
         );
+
         console.log("campaignResponse:::", response);
         this.$emit("reload");
         this.closeModal();
@@ -335,32 +342,30 @@ export default {
 
     // TODO:Try emiting fetch all campaigns method from parent and calling here
     initMaps() {
-      console.log("i was called");
-
       var markers = [
         {
           lat: "17.35297042396732",
-          lng: "8.808737500000019",
+          lng: "8.808737500000019"
         },
         {
           lat: "11.862346682750987",
-          lng: "14.337043750000023",
+          lng: "14.337043750000023"
         },
         {
           lat: "11.285839918881504",
-          lng: "2.0176749999999988",
+          lng: "2.0176749999999988"
         },
         {
           lat: "7.645340455380781",
-          lng: "6.6198250000000325",
+          lng: "6.6198250000000325"
         },
         {
           lat: "9.953930119882546",
-          lng: "13.235956249999997",
+          lng: "13.235956249999997"
         },
         {
           lat: "20.01078764878095",
-          lng: "2.824481250000006",
+          lng: "2.824481250000006"
         }
       ];
 
@@ -405,6 +410,7 @@ export default {
                   lat = marker.getPosition().lat();
                   lng = marker.getPosition().lng();
                   address = results[0].formatted_address;
+                  this.payload.location.country = address;
                   this.payload.location.coordinates.push(lat + "," + lng);
                 }
               }

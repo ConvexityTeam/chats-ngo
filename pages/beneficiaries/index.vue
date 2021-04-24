@@ -104,6 +104,7 @@ import dot from "~/components/icons/dot";
 import rightArrow from "~/components/icons/right-arrow";
 import leftArrow from "~/components/icons/left-arrow";
 import beneficiaryTransaction from "~/components/tables/beneficiary-transaction";
+import {mapActions} from "vuex"
 export default {
   layout: "dashboard",
   data() {
@@ -133,6 +134,7 @@ export default {
   },
 
   methods: {
+    ...mapActions("authenticaion",["logout"]),
     async fetchAllBeneficiaries() {
       try {
         this.loading = true;

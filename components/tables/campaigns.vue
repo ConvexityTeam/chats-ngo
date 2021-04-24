@@ -193,7 +193,7 @@ export default {
         const response = await this.$axios.get(
           `/campaigns/organisation/${+this.id}?type=campaign`
         );
-        this.campaigns = response.data.data;
+        this.campaigns = response.data.data.reverse();
         this.loading = false;
 
         console.log("All campaigns:::", response);

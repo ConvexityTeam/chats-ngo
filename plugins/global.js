@@ -10,7 +10,7 @@ const capitalize = value => {
 
 const formatDateOnly = value => {
     if (!value) return "";
-    return moment().format("DD/MM/YYYY");
+    return moment(value).format("DD/MM/YYYY");
 };
 
 const formatDateText = value => {
