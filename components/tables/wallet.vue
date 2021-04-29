@@ -1,10 +1,12 @@
 <template>
   <div class="ml-2">
+    <fundAmount @sentAmount="payViaService" />
+
     <div class="holder p-3">
       <h4 class="header">Fund Wallet</h4>
 
       <!-- Cards text here -->
-      <div class="d-flex mt-5">
+      <!-- <div class="d-flex mt-5">
         <div>
           <p class="my-cards">My cards</p>
         </div>
@@ -12,10 +14,10 @@
         <div class="ml-auto">
           <a href="#" class="see">see all</a>
         </div>
-      </div>
+      </div> -->
 
       <!-- Card here -->
-      <div>
+      <!-- <div>
         <img src="~/assets/img/vectors/Card 1.svg" alt />
 
         <div class="mt-4">
@@ -45,7 +47,7 @@
             <span class="mx-2">Add new card</span>
           </button>
         </div>
-      </div>
+      </div> -->
 
       <!-- Payment options here -->
       <div class="mt-3">
@@ -57,7 +59,13 @@
               You can fund your NGO wallet usuing a mastercard or Visa card.
             </p>
 
-            <button type="button" class="pay-btn">Pay Now</button>
+            <button
+              type="button"
+              class="pay-btn"
+              @click="$bvModal.show('fund-amount')"
+            >
+              Pay Now
+            </button>
           </div>
         </div>
 
@@ -98,21 +106,80 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
+import fundAmount from "~/components/modals/fund-amount";
 export default {
   data() {
-    return {}
+    return {
+      paymentData: {
+        tx_ref: this.generateReference(),
+        amount: 10,
+        currency: "USD",
+        payment_options: "card,ussd,barter,account, banktransfer,qr,paga",
+        redirect_url: "",
+        meta: {
+          counsumer_id: "7898",
+          consumer_mac: "kjs9s8ss7dd"
+        },
+        customer: {
+          name: "",
+          email: "",
+          phone_number: ""
+        },
+        customizations: {
+          title: "Fund CHATS Wallet",
+          description: " Description",
+          logo: ""
+        },
+        callback: this.makePaymentCallback,
+        onclose: this.closedPaymentModal
+      }
+    };
   },
+
+  components: {
+    fundAmount
+  },
+
+  computed: {
+    ...mapGetters("authentication", ["user"])
+  },
+
+  mounted() {
+    this.loadData();
+  },
+
   methods: {
+    payViaService(amount) {
+      this.paymentData.amount = amount;
+      this.payWithFlutterwave(this.paymentData);
+    },
+    makePaymentCallback(response) {
+      console.log("Pay", response);
+    },
+    closedPaymentModal() {
+      console.log("payment is closed");
+    },
+    generateReference() {
+      let date = new Date();
+      return date.getTime().toString();
+    },
+
+    loadData() {
+      (this.paymentData.customer.email = this.user.email),
+        (this.paymentData.customer.name = this.user.AssociatedOrganisations[0].Organisation.name);
+      this.paymentData.customer.phone_number = this.user.AssociatedOrganisations[0].Organisation.phone;
+    },
     copyNumber() {
       try {
-        navigator.clipboard.writeText(this.$refs.account.innerHTML)
-        this.$toast.success('copied to clipboard!')
+        navigator.clipboard.writeText(this.$refs.account.innerHTML);
+        this.$toast.success("copied to clipboard!");
       } catch (error) {
-        this.$toast.error(" couldn't copy! ")
+        this.$toast.error(" couldn't copy! ");
       }
-    },
-  },
-}
+    }
+  }
+};
 </script>
 <style scoped>
 .pay-btn {
