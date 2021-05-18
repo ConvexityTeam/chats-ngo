@@ -12,7 +12,7 @@
         <b-tab title="Notifications"> </b-tab>
 
         <!--Preferences Tab here -->
-        <b-tab title="Preferences"> </b-tab>
+        <b-tab title="Security"> </b-tab>
       </b-tabs>
     </div>
   </div>

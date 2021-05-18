@@ -19,7 +19,7 @@
       <div class="col-lg-3">
         <div class="card__holder px-3 pt-2">
           <p class="text">Total Amount Recieved</p>
-          <h4 class="funds pb">$ {{ loading ? "0" : stats.income | formatCurrency}}</h4>
+          <h4 class="funds pb">$ {{ loading ?0 : stats.income | formatCurrency}}</h4>
         </div>
       </div>
 
@@ -27,7 +27,7 @@
       <div class="col-lg-3">
         <div class="card__holder px-3 pt-2">
           <p class="text">Total Amount Disbursed</p>
-          <h4 class="funds pb">$ {{ loading ? "0" : stats.expense | formatCurrency }}</h4>
+          <h4 class="funds pb">$ {{ loading ? 0 : stats.expense | formatCurrency }}</h4>
         </div>
       </div>
 
@@ -35,7 +35,7 @@
       <div class="col-lg-3">
         <div class="card__holder px-3 pt-2">
           <p class="text">Total Balance</p>
-          <h4 class="funds pb">$ {{ loading ? "0" : stats.balance | formatCurrency }}</h4>
+          <h4 class="funds pb">$ {{ loading ? 0 : stats.balance | formatCurrency }}</h4>
         </div>
       </div>
     </div>

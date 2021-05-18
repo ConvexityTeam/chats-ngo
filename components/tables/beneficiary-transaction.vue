@@ -41,10 +41,7 @@
       </div>
 
       <div>
-        <table
-          class="table table-borderless"
-          v-if="transactions != ''"
-        >
+        <table class="table table-borderless" v-if="transactions.length">
           <thead>
             <tr>
               <th scope="col">Reference</th>
@@ -83,11 +80,11 @@ import dot from "~/components/icons/dot";
 export default {
   layout: "dashboard",
 
-data: () =>({
-     searchQuery: null,
-      loading: false,
-      transactions: [],
-}),
+  data: () => ({
+    searchQuery: null,
+    loading: false,
+    transactions: []
+  }),
 
   mounted() {
     // console.log('test',this.beneficiariesData.transactions)
@@ -97,21 +94,21 @@ data: () =>({
   computed: {
     resultQuery() {
       if (this.searchQuery) {
-        return this.transactions.filter((data) => {
+        return this.transactions.filter(data => {
           return this.searchQuery
             .toLowerCase()
             .split(" ")
-            .every((v) => data.transactionId.toLowerCase().includes(v));
+            .every(v => data.transactionId.toLowerCase().includes(v));
         });
       } else {
         return this.transactions;
       }
-    },
+    }
   },
 
   components: {
-    dot,
-  },
+    dot
+  }
 };
 </script>
 

@@ -3,7 +3,7 @@
     <div class="text-center">
       <!-- Logo here -->
       <div class="logo-div">
-        <img src="~/assets/img/logo.png" class="" alt="Chats" />
+        <img src="~/assets/img/logo.png" class="img-fluid" alt="Chats" />
       </div>
       <h3 class="text-white welcome py-4">Welcome To CHATS</h3>
     </div>
@@ -152,15 +152,16 @@ export default {
 }
 
 .logo-div {
-  padding-top: 50px;
+  padding: 50px 15px 0px 15px;
 }
 
 .main {
-  background-image: url("../../assets/img/CHATS bgchats-bg.png");
+  background-image: url("../../assets/img/DSC_1227-min 2 jpeg-min.jpg");
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
   height: 100vh;
+   overflow: auto;
 }
 
 .card__holder {

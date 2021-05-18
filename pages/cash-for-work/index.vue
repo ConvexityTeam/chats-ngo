@@ -35,7 +35,7 @@
       <div class="row mt-5">
         <div class="col-lg-4 mb-4" v-for="i in 3" :key="i">
           <div class="card__holder">
-            <img src="~/assets/img/dish.png" width="322" alt />
+            <!-- <img src="~/assets/img/dish.png" width="322" alt /> -->
             <div class="p-3">
               <h4 class="caption">Feed The Hungry Campaign</h4>
               <p class="beneficiary-count">284 Beneficiaries</p>
@@ -67,14 +67,14 @@
 
 <script>
 export default {
-  layout: 'dashboard',
+  layout: "dashboard",
   data() {
     return {
       value: 64,
-      max: 100,
-    }
-  },
-}
+      max: 100
+    };
+  }
+};
 </script>
 
 <style scoped>

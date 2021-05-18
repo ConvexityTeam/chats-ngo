@@ -16,7 +16,7 @@
           </div>
         </div>
       </div>
-      <table class="table table-borderless">
+      <table class="table table-borderless" v-if="products.length">
         <thead>
           <tr>
             <th scope="col">Product Name</th>
@@ -29,7 +29,7 @@
         <tbody>
           <tr v-for="product in products" :key="product.id">
             <td>{{ product.name }}</td>
-            <td> {{ product.Vendor ? product.Vendor.store_name : " " }} </td>
+            <td>{{ product.Vendor ? product.Vendor.store_name : " " }}</td>
             <td>{{ product.quantity | formatCount }}</td>
             <td>$ {{ product.value | formatCurrency }}</td>
             <td>
@@ -38,6 +38,8 @@
           </tr>
         </tbody>
       </table>
+      <div v-else-if="loading" class="loader text-center"></div>
+      <h3 v-else class="text-center no-record">NO RECORD FOUND</h3>
     </div>
   </div>
 </template>
@@ -45,12 +47,12 @@
 import dot from "~/components/icons/dot";
 export default {
   components: {
-    dot,
+    dot
   },
 
   data: () => ({
     loading: false,
-    products: [],
+    products: []
   }),
 
   mounted() {
@@ -68,13 +70,11 @@ export default {
         }
         console.log("response", response);
       } catch (err) {
-        this.loading = false
+        this.loading = false;
         console.log(err);
       }
-    },
-
- 
-  },
+    }
+  }
 };
 </script>
 

@@ -118,13 +118,13 @@ export default {
         payment_options: "card,ussd,barter,account, banktransfer,qr,paga",
         redirect_url: "",
         meta: {
-          counsumer_id: "7898",
-          consumer_mac: "kjs9s8ss7dd"
+          id: ""
         },
         customer: {
           name: "",
           email: "",
-          phone_number: ""
+          phone_number: "",
+          id: ""
         },
         customizations: {
           title: "Fund CHATS Wallet",
@@ -154,12 +154,15 @@ export default {
       this.paymentData.amount = amount;
       this.payWithFlutterwave(this.paymentData);
     },
+
     makePaymentCallback(response) {
       console.log("Pay", response);
     },
+
     closedPaymentModal() {
       console.log("payment is closed");
     },
+
     generateReference() {
       let date = new Date();
       return date.getTime().toString();
@@ -169,13 +172,15 @@ export default {
       (this.paymentData.customer.email = this.user.email),
         (this.paymentData.customer.name = this.user.AssociatedOrganisations[0].Organisation.name);
       this.paymentData.customer.phone_number = this.user.AssociatedOrganisations[0].Organisation.phone;
+      this.paymentData.customer.id = this.user.AssociatedOrganisations[0].Organisation.id;
+      this.paymentData.meta.id = this.user.AssociatedOrganisations[0].Organisation.id;
     },
     copyNumber() {
       try {
         navigator.clipboard.writeText(this.$refs.account.innerHTML);
         this.$toast.success("copied to clipboard!");
       } catch (error) {
-        this.$toast.error(" couldn't copy! ");
+        this.$toast.error("couldn't copy!");
       }
     }
   }

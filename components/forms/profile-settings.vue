@@ -6,7 +6,7 @@
         <div class="d-flex image-holder justify-content-center mx-auto">
           <div class="m-auto">
             <img
-              v-if="file != null"
+              v-if="file"
               :src="file"
               class="objec-fit"
               alt="Logo"
@@ -255,7 +255,7 @@ export default {
     loading: false,
     countries: [],
     step: 1,
-    file: null,
+    file: {},
     payload: {
       organisation_id: 0,
       first_name: "",
@@ -267,7 +267,7 @@ export default {
       country: "",
       registration_id: "",
       year: "",
-      logo: null,
+      logo: {},
       website_url: ""
     }
   }),
@@ -302,9 +302,6 @@ export default {
       year: {
         required
       },
-      logo: {
-        required
-      },
       website_url: {
         required
       }
@@ -329,16 +326,13 @@ export default {
         this.$v.payload.$touch();
 
         if (this.$v.payload.$error === true) {
+          
           if (this.$v.payload.country.$error === true) {
             this.$toast.error("Please select a country");
             this.loading = false;
             return;
           }
-          if (this.$v.payload.logo.$error === true) {
-            this.$toast.error("Please select a logo");
-            this.loading = false;
-            return;
-          }
+
           this.loading = false;
           this.$toast.error("Please fill in appropriately");
           return;
@@ -386,15 +380,17 @@ export default {
         console.log("updateResponse:::", response);
         this.loading = false;
       } catch (err) {
-        console.log("updateerr::::", err);
+        console.log("updateerr::::", err.response);
         this.loading = false;
-        // this.$toast.error(err.response.data.message);
+        this.$toast.error(err.response.data.message);
       }
     },
 
     loadData() {
       this.file = this.user.AssociatedOrganisations[0].Organisation.logo_link;
       this.payload.logo = this.user.AssociatedOrganisations[0].Organisation.logo_link;
+
+      console.log("logo", this.payload.logo, " ---", " file", this.file)
 
       this.payload.organisation_id = this.user.AssociatedOrganisations[0].Organisation.id;
       this.payload.address = this.user.AssociatedOrganisations[0].Organisation.address;
@@ -407,7 +403,7 @@ export default {
       this.payload.first_name = this.user.first_name;
       this.payload.last_name = this.user.last_name;
       this.payload.email = this.user.email;
-      this.payload.phone = this.user.phone;
+      this.payload.phone = this.user.AssociatedOrganisations[0].Organisation.phone;
     },
 
     handleFile(value) {
