@@ -18,7 +18,7 @@
               type="text"
               class="form-controls"
               :class="{
-                form__input__error: $v.payload.organisation_name.$error,
+                form__input__error: $v.payload.organisation_name.$error
               }"
               id="name"
               v-model="payload.organisation_name"
@@ -101,30 +101,30 @@ export default {
         organisation_name: "",
         email: "",
         website_url: "",
-        password: "",
-      },
+        password: ""
+      }
     };
   },
   validations: {
     payload: {
       organisation_name: {
-        required,
+        required
       },
       email: {
         required,
-        email,
+        email
       },
       website_url: {
-        required,
+        required
       },
       password: {
-        required,
-      },
-    },
+        required
+      }
+    }
   },
 
   methods: {
-      ...mapActions("authentication", ["commitToken", "commitUser"]),
+    ...mapActions("authentication", ["commitToken", "commitUser"]),
     async registerUser() {
       try {
         this.loading = true;
@@ -136,49 +136,67 @@ export default {
           return;
         }
 
-        const response = await this.$axios.post(
-          "/auth/ngo-register",
-          this.payload
-        );
+        const encrypted = this.CryptoJS.AES.encrypt(
+          JSON.stringify(this.payload),
+          "PO#64a978c028JA68c40182#!UAOENL#c22eaSNLSJFLJFSD@#31d740239c6243+*9c62439c6b1d41d7402"
+        ).toString();
 
-        console.log("response", response);
+        const response = await this.$axios.post("/auth/ngo-register", {
+          data: encrypted
+        });
 
-        if (response.data.code == 200) {
-          this.loading = false;
-          this.$toast.success(response.data.message);
-          // this.$router.push("/login");
-          this.loginUser()
+        console.log("Register response", response);
+
+        if (response.status == "success") {
+          this.$toast.success(response.message);
+          this.loginUser();
+        } else {
+          this.$toast.error(response.message);
+          if (
+            response.message == "Email Already Exists, Recover Your Account"
+          ) {
+            this.$router.push("/login");
+          }
         }
+
+        this.loading = false;
       } catch (error) {
         this.loading = false;
-        console.log({ error: error });
-        this.$toast.error(error.response.data.message);
-        if (
-          error.response.data.message ==
-          "Email Already Exists, Recover Your Account"
-        ) {
-          this.$router.push("/login");
-        }
-        // this.$router.push("/forgot-password");
       }
     },
 
-        async loginUser() {
+    async loginUser() {
       try {
-        const response = await this.$axios.post("/auth/login", {email:this.payload.email, password:this.payload.password });
+        const data = {
+          email: this.payload.email,
+          password: this.payload.password
+        };
+        const encrypted = this.CryptoJS.AES.encrypt(
+          JSON.stringify(data),
+          "PO#64a978c028JA68c40182#!UAOENL#c22eaSNLSJFLJFSD@#31d740239c6243+*9c62439c6b1d41d7402"
+        ).toString();
+
+        console.log("LoginEncrypt::", encrypted);
+
+        const response = await this.$axios.post("/auth/login", {
+          data: encrypted
+        });
+
         console.log("login response", response);
 
-        if (response.data.code == 200) {
-          this.commitToken(response.data.data.token);
-          this.commitUser(response.data.data.user);
+        if (response.status == "success") {
+          this.commitToken(response.data.token);
+          this.commitUser(response.data.user);
           this.$router.push("/settings");
+        } else {
+          this.$toast.error(response.message);
         }
       } catch (error) {
         this.loading = false;
         this.$toast.error(error.response.data.message);
       }
-    },
-  },
+    }
+  }
 };
 </script>
 
@@ -203,12 +221,12 @@ export default {
   padding: 50px 15px 0px 15px;
 }
 .main {
-   background-image: url("../assets/img/DSC_1227-min 2 jpeg-min.jpg");
+  background-image: url("../assets/img/DSC_1227-min 2 jpeg-min.jpg");
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
-    height: 100vh;
-    overflow: auto;
+  height: 100vh;
+  overflow: auto;
 }
 .card__holder {
   background: #ffffff;

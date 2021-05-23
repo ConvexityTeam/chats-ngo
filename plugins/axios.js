@@ -1,41 +1,38 @@
+var CryptoJS = require("crypto-js");
 export default async function({ $axios, app }) {
-    $axios.onRequest(config => {
+  $axios.onRequest(config => {
+    const token = localStorage.getItem("userToken");
 
-        const token = localStorage.getItem('userToken')
+    if (token) {
+      config.headers["Authorization"] = `Bearer ${token}`;
+    }
+  });
 
-        if (token) {
-            config.headers["Authorization"] = `Bearer ${token}`;
-        }
+  $axios.onResponse(response => {
+    console.log("Response:::", response);
 
+    const decrypted = CryptoJS.AES.decrypt(
+      response.data,
+      "PO#64a978c028JA68c40182#!UAOENL#c22eaSNLSJFLJFSD@#31d740239c6243+*9c62439c6b1d41d7402"
+    ).toString(CryptoJS.enc.Utf8);
 
-    });
+    return JSON.parse(decrypted);
+  });
 
-    $axios.onError(err => {
-        console.log(err);
+  $axios.onError(err => {
+    console.log("error:::", err);
+    
+    const decrypted = CryptoJS.AES.decrypt(
+      err.response.data,
+      "PO#64a978c028JA68c40182#!UAOENL#c22eaSNLSJFLJFSD@#31d740239c6243+*9c62439c6b1d41d7402"
+    ).toString(CryptoJS.enc.Utf8);
 
-        if (err.message == 'jwt expired"') {
-            return redirect("/login");
-        }
-    });
+    const data = JSON.parse(decrypted);
 
-    const instance = $axios.create({
-        baseURL: 'https://chats-backend.herokuapp.com/api/v1',
-        // headers: config.headers["Authorization"] = `Bearer ${token}`
-    });
+    if (data.message == "jwt expired") {
+      return redirect("/login");
+    }
 
-    instance.interceptors.response.use((response) => {
-        if (response.status === 419) {
-            //add your code
-            return redirect("/login");
-        }
-        return response;
-    }, (error) => {
-        if (error.response && error.response.data) {
-            //add your code
-            return Promise.reject(error.response.data);
-        }
-        return Promise.reject(error.message);
-    });
-
-    return instance;
+    return data;
+  });
 }

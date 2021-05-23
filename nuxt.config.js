@@ -1,4 +1,4 @@
-const BASE_URL = "https://chats-backend.herokuapp.com/api/v1";
+const BASE_URL = "http://18.221.50.78/api/v1/";
 export default {
     // Disable server-side rendering (https://go.nuxtjs.dev/ssr-mode)
     ssr: false,
@@ -51,11 +51,11 @@ export default {
     // Axios module configuration (https://go.nuxtjs.dev/config-axios)
     axios: {
         baseURL: BASE_URL,
-        https: true,
+        https: false,
         progress: true,
         retry: { retries: 2 }
     },
-
+  
     toast: {
         position: "top-right",
         duration: 3500

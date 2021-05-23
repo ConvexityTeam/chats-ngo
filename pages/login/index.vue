@@ -77,20 +77,20 @@ export default {
       loading: false,
       payload: {
         email: "",
-        password: "",
-      },
+        password: ""
+      }
     };
   },
   validations: {
     payload: {
       email: {
         required,
-        email,
+        email
       },
       password: {
-        required,
-      },
-    },
+        required
+      }
+    }
   },
 
   methods: {
@@ -107,21 +107,33 @@ export default {
           return;
         }
 
-        const response = await this.$axios.post("/auth/login", this.payload);
+        const encrypted = this.CryptoJS.AES.encrypt(
+          JSON.stringify(this.payload),
+          "PO#64a978c028JA68c40182#!UAOENL#c22eaSNLSJFLJFSD@#31d740239c6243+*9c62439c6b1d41d7402"
+        ).toString();
+
+        console.log("PL:::", encrypted);
+
+        const response = await this.$axios.post("/auth/login", {
+          data: encrypted
+        });
+
         console.log("login response", response);
 
-        if (response.data.code == 200) {
-          this.loading = false;
-          this.commitToken(response.data.data.token);
-          this.commitUser(response.data.data.user);
+        if (response.status == "success") {
+          this.commitToken(response.data.token);
+          this.commitUser(response.data.user);
           this.$router.push("/dashboard");
+        } else {
+          this.$toast.error(response.message);
         }
-      } catch (error) {
+        
         this.loading = false;
-        this.$toast.error(error.response.data.message);
+      } catch (err) {
+        this.loading = false;
       }
-    },
-  },
+    }
+  }
 };
 </script>
 
@@ -161,7 +173,7 @@ export default {
   background-position: center;
   background-size: cover;
   height: 100vh;
-   overflow: auto;
+  overflow: auto;
 }
 
 .card__holder {
