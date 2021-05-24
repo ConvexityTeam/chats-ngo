@@ -64,9 +64,9 @@ export default {
       try {
         this.loading = true;
         const response = await this.$axios.get("/vendors/products/all");
-        if ((response.data.code = 200)) {
+        if ((response.status == "success")) {
           this.loading = false;
-          this.products = response.data.data;
+          this.products = response.data;
         }
         console.log("response", response);
       } catch (err) {

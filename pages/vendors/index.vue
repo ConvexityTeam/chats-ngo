@@ -73,9 +73,9 @@ export default {
 
         console.log("allendors:::", response)
 
-        if (response.data.code == 200) {
+        if (response.status == "success") {
           this.loading = false;
-          this.allVendors = response.data.data.length;
+          this.allVendors = response.data.length;
         }
       } catch (error) {}
     },

@@ -215,9 +215,9 @@ async getDetails() {
       const response = await this.$axios.get(`vendors/${this.VENDOR.id}`);
 
       this.loading = false;
-      if (response.data.code == 200) {
+      if (response.status == "success") {
         this.loading = false;
-        this.user = response.data.data;
+        this.user = response.data;
         console.log("vendorDetail:::", response);
       }
     } catch (err) {

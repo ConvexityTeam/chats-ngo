@@ -6,7 +6,7 @@
       <div class="col-lg-3">
         <div class="card__holder px-3 pt-2">
           <p class="text">Beneficiaries</p>
-          <h4 class="funds">{{ loading ? "0" : count }}</h4>
+          <h4 class="funds">{{ loading ? 0 : count }}</h4>
           <p class="pb-1">
             <nuxt-link to="/beneficiaries/all-beneficiaries" class="percentage"
               >View all</nuxt-link
@@ -19,7 +19,7 @@
       <div class="col-lg-3">
         <div class="card__holder px-3 pt-2">
           <p class="text">Total Amount Recieved</p>
-          <h4 class="funds pb">$ {{ loading ?0 : stats.income | formatCurrency}}</h4>
+          <h4 class="funds pb">$ {{ loading ? 0 : stats.income | formatCurrency}}</h4>
         </div>
       </div>
 
@@ -142,19 +142,13 @@ export default {
         const response = await this.$axios.get("/beneficiaries");
         console.log("Allbeneficiaries:::", response);
 
-        if (response.data.code == 200) {
+        if (response.status == "success") {
           this.loading = false;
-          this.count = response.data.data.length;
+          this.count = response.data.length;
         }
       } catch (error) {
         this.loading = false;
         this.$toast.error(error.response.data.message);
-
-        if (error.response.status == 401) {
-          this.$toast.error("Unauthorized, Please Login");
-          this.logout();
-          this.$router.push("/login");
-        }
       }
     },
 
@@ -162,9 +156,9 @@ export default {
       try {
         this.loading = true;
         const response = await this.$axios.get("/users/info/statistics");
-        if (response.data.code == 200) {
+        if (response.status == "success") {
           this.loading = false;
-          this.stats = response.data.data[0];
+          this.stats = response.data[0];
         }
         console.log("statsresponse:::", response);
       } catch (err) {

@@ -246,10 +246,10 @@ export default {
         );
 
         this.loading = false;
-        if (response.data.code == 200) {
+        if (response.status == "success") {
           this.loading = false;
-          this.user = response.data.data.user;
-          this.campaigns = response.data.data.associatedCampaigns
+          this.user = response.data.user;
+          this.campaigns = response.data.associatedCampaigns
           console.log("beneficiaryDetail:::", response);
         }
       } catch (err) {

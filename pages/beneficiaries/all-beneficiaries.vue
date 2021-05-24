@@ -172,20 +172,14 @@ export default {
         const response = await this.$axios.get("/beneficiaries");
         console.log("Allbeneficiaries:::", response);
 
-        if (response.data.code == 200) {
+        if (response.status == "success") {
           this.loading = false;
-          this.beneficiaries = response.data.data;
+          this.beneficiaries = response.data;
           console.log("beneficiaries000000", this.beneficiaries);
         }
       } catch (error) {
         this.loading = false;
         this.$toast.error(error.response.data.message);
-
-        if (error.response.status == 401) {
-                this.$toast.error("Unauthorized, Please Login");
-          this.logout();
-          this.$router.push("/login");
-        }
       }
     },
   },

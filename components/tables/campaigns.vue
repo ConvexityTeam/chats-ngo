@@ -145,7 +145,7 @@ import { mapGetters } from "vuex";
 export default {
   components: {
     dot,
-    newCampaign,
+    newCampaign
   },
   data() {
     return {
@@ -158,8 +158,8 @@ export default {
         { value: null, text: "filter" },
         { value: "all", text: "All" },
         { value: "inprogress", text: "In Progress" },
-        { value: "completed", text: "Completed" },
-      ],
+        { value: "completed", text: "Completed" }
+      ]
     };
   },
 
@@ -167,16 +167,16 @@ export default {
     ...mapGetters("authentication", ["user"]),
     resultQuery() {
       if (this.searchQuery) {
-        return this.campaigns.filter((campaign) => {
+        return this.campaigns.filter(campaign => {
           return this.searchQuery
             .toLowerCase()
             .split(" ")
-            .every((v) => campaign.title.toLowerCase().includes(v));
+            .every(v => campaign.title.toLowerCase().includes(v));
         });
       } else {
         return this.campaigns;
       }
-    },
+    }
   },
 
   mounted() {
@@ -193,7 +193,10 @@ export default {
         const response = await this.$axios.get(
           `/campaigns/organisation/${+this.id}?type=campaign`
         );
-        this.campaigns = response.data.reverse();
+
+        if (response.status == "success") {
+          this.campaigns = response.data.reverse();
+        }
         this.loading = false;
 
         console.log("All campaigns:::", response);
@@ -209,8 +212,8 @@ export default {
     reload() {
       this.fetchAllCampaigns();
       console.log(" i was called");
-    },
-  },
+    }
+  }
 };
 </script>
 

@@ -108,8 +108,8 @@ export default {
           `/campaigns/complaints/${+this.id}`
         );
         console.log("complaints::::", response);
-        if (response.data.code == "200") {
-          this.complaints = response.data.data.complaints;
+        if (response.status == "success") {
+          this.complaints = response.data.complaints;
         }
       } catch (err) {
         console.log(err);

@@ -99,9 +99,9 @@ this.getSoldProductsValue()
       try {
         this.loading = true;
         const response = await this.$axios.get("/vendors/products/sold/value");
-        if ((response.data.code = 200)) {
+        if ((response.status == "success")) {
           this.loading = false;
-          this.data = response.data.data[0];
+          this.data = response.data[0];
         }
         console.log("productsValue:::", response);
       } catch (err) {

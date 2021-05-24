@@ -194,11 +194,11 @@ export default {
 
         console.log("details:::", response);
 
-        if (response.data.code == "200") {
-          this.details = response.data.data[0];
-          this.beneficiaries = response.data.data[0].Beneficiaries;
-          this.location = JSON.parse(response.data.data[0].location);
-          console.log("here", response.data.data[0]);
+        if (response.status == "success") {
+          this.details = response.data[0];
+          this.beneficiaries = response.data[0].Beneficiaries;
+          this.location = JSON.parse(response.data[0].location);
+          console.log("here", response.data[0]);
         }
         this.loading = false;
       } catch (err) {

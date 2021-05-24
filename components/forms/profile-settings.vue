@@ -248,7 +248,7 @@
 <script>
 import { required, email } from "vuelidate/lib/validators";
 import countries from "~/plugins/all-countries";
-import { mapGetters } from "vuex";
+import { mapGetters, mapActions } from "vuex";
 export default {
   data: () => ({
     options: { placeholder: "Phone number" },
@@ -319,6 +319,7 @@ export default {
   },
 
   methods: {
+    ...mapActions("authentication", ["commitUserUpdate"]),
     async updateProfile() {
       try {
         this.loading = true;
@@ -326,7 +327,6 @@ export default {
         this.$v.payload.$touch();
 
         if (this.$v.payload.$error === true) {
-          
           if (this.$v.payload.country.$error === true) {
             this.$toast.error("Please select a country");
             this.loading = false;
@@ -373,8 +373,9 @@ export default {
           formData
         );
 
-        if (response.data.status == "success") {
-          this.$toast.success(response.data.message);
+        if (response.status == "success") {
+          this.$toast.success(response.message);
+          this.commitUserUpdate(response.data.org);
         }
 
         console.log("updateResponse:::", response);
@@ -390,7 +391,7 @@ export default {
       this.file = this.user.AssociatedOrganisations[0].Organisation.logo_link;
       this.payload.logo = this.user.AssociatedOrganisations[0].Organisation.logo_link;
 
-      console.log("logo", this.payload.logo, " ---", " file", this.file)
+      console.log("logo", this.payload.logo, " ---", " file", this.file);
 
       this.payload.organisation_id = this.user.AssociatedOrganisations[0].Organisation.id;
       this.payload.address = this.user.AssociatedOrganisations[0].Organisation.address;
