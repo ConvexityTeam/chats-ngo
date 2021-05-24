@@ -21,17 +21,17 @@ export default async function({ $axios, app }) {
 
   $axios.onError(err => {
     console.log("error:::", err);
-    
+
+    if (err.response.status == "401") {
+      app.router.push('/login')
+    }
+
     const decrypted = CryptoJS.AES.decrypt(
       err.response.data,
       "PO#64a978c028JA68c40182#!UAOENL#c22eaSNLSJFLJFSD@#31d740239c6243+*9c62439c6b1d41d7402"
     ).toString(CryptoJS.enc.Utf8);
 
     const data = JSON.parse(decrypted);
-
-    if (data.message == "jwt expired") {
-      return redirect("/login");
-    }
 
     return data;
   });

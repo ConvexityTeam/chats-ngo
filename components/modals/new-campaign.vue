@@ -323,20 +323,29 @@ export default {
 
         this.payload.location = JSON.stringify(this.payload.location);
 
-        const response = await this.$axios.post(
-          "/organisation/campaign",
-          this.payload
-        );
+        const encrypted = this.CryptoJS.AES.encrypt(
+          JSON.stringify(this.payload),
+          "PO#64a978c028JA68c40182#!UAOENL#c22eaSNLSJFLJFSD@#31d740239c6243+*9c62439c6b1d41d7402"
+        ).toString();
+
+        const response = await this.$axios.post("/organisation/campaign", {
+          data: encrypted
+        });
+
+        if (respose.message == "success") {
+          this.$emit("reload");
+          this.closeModal();
+          this.$toast.success(response.message);
+        } else {
+          this.$toast.error(response.message);
+        }
 
         console.log("campaignResponse:::", response);
-        this.$emit("reload");
-        this.closeModal();
-        this.$toast.success(response.data.message);
+
         this.loading = false;
       } catch (err) {
         console.log(err);
         this.loading = false;
-        this.$toast.error(err.response.data.message);
       }
     },
 
