@@ -53,7 +53,7 @@
               id="name"
               placeholder="Name of the campaign"
               v-model="payload.title"
-              @mouseenter.once="initMaps"
+              @mouseenter.once="runMap"
               @blur="$v.payload.title.$touch()"
             />
           </div>
@@ -218,13 +218,14 @@ import { mapGetters } from "vuex";
 const apiKey = "AIzaSyApnZ4U1qeeHgHZuckDndNVVMIJAo-b5Vo";
 import DatePicker from "vue2-datepicker";
 import "vue2-datepicker/index.css";
-// let geocoder;
+let geocoder;
+// import * as test from "~/plugins/geofence.js"
 export default {
   head() {
     return {
       script: [
         {
-          src: `https://maps.googleapis.com/maps/api/js?key=${apiKey}&callback=initMap&libraries=geometry&v=weekly`
+          src: `https://maps.googleapis.com/maps/api/js?key=${apiKey}&callback=initMap&libraries=geometry,drawing&v=weekly`
         }
       ]
     };
@@ -268,6 +269,9 @@ export default {
       location: {
         country: {
           required
+        },
+        coordinates:{
+          required
         }
       },
       start_date: {
@@ -291,6 +295,8 @@ export default {
       "orgId:::",
       this.user.AssociatedOrganisations[0].OrganisationId
     );
+
+    // console.log("test", test)
   },
 
   methods: {
@@ -305,21 +311,14 @@ export default {
         this.loading = true;
         this.$v.payload.$touch();
 
-        // Gebneral check to see that all compulsory fields are provided
         if (this.$v.payload.$error === true) {
-          this.loading = false;
-          this.$toast.error("Please fill in appropriately");
-          return;
+          if(this.$v.payload.location.coordinates.$error == true){
+            this.$toast.error("Please Geofence a location on the map");  
+          }
+            return this.loading = false;
         }
 
-        // Array length check here to get last 6 coordinates
-        let coordinates = this.payload.location.coordinates;
-        let length = coordinates.length;
-
-        if (length > 6) {
-          coordinates.splice(0, length - 6);
-          this.payload.location.coordinates = coordinates;
-        }
+        console.log("COORDINATES:::", this.payload.location.coordinates)
 
         this.payload.location = JSON.stringify(this.payload.location);
 
@@ -332,7 +331,7 @@ export default {
           data: encrypted
         });
 
-        if (respose.message == "success") {
+        if (response.status == "success") {
           this.$emit("reload");
           this.closeModal();
           this.$toast.success(response.message);
@@ -494,6 +493,146 @@ export default {
       });
       map.setCenter(myMarker.position);
       myMarker.setMap(map);
+    },
+
+    runMap() {
+      document.getElementById("map_canvas").style.display = "block";
+
+      const map = new google.maps.Map(document.getElementById("map_canvas"), {
+        center: { lat:  17.35297042396732, lng: 8.808737500000019},
+        zoom: 3,
+        mapTypeId: google.maps.MapTypeId.ROADMAP
+      });
+
+      var all_overlays = [];
+      var selectedShape;
+      var drawingManager = new google.maps.drawing.DrawingManager({
+        drawingMode: google.maps.drawing.OverlayType.POLYGON,
+        drawingControl: true,
+        drawingControlOptions: {
+          position: google.maps.ControlPosition.TOP_CENTER,
+          drawingModes: [google.maps.drawing.OverlayType.POLYGON]
+        },
+
+        polygonOptions: {
+          clickable: true,
+          draggable: true,
+          editable: true,
+          fillColor: "",
+          fillOpacity: 0.35
+        }
+      });
+
+      const clearSelection = () => {
+        if (selectedShape) {
+          selectedShape.setEditable(false);
+          selectedShape = null;
+        }
+      };
+
+      const setSelection = shape => {
+        clearSelection();
+        selectedShape = shape;
+        shape.setEditable(true);
+      };
+
+      const deleteSelectedShape = () => {
+        if (selectedShape) {
+          this.payload.location.coordinates = []
+          selectedShape.setMap(null);   
+        }
+      };
+
+      const CenterControl = (controlDiv, map) => {
+        // Set CSS for the control border.
+        var controlUI = document.createElement("div");
+        controlUI.style.backgroundColor = "#17CE89";
+        controlUI.style.border = "none";
+        controlUI.style.borderRadius = "10px";
+
+        controlUI.style.cursor = "pointer";
+        controlUI.style.marginBottom = "22px";
+        controlUI.style.textAlign = "center";
+        controlUI.title = "Select to delete the shape";
+        controlDiv.appendChild(controlUI);
+
+        // Set CSS for the control interior.
+        var controlText = document.createElement("div");
+        controlText.style.color = "#fff";
+        controlText.style.fontWeight = 500;
+        controlText.style.fontSize = "1rem";
+        controlText.style.lineHeight = "38px";
+        controlText.style.padding = "3px 15px";
+        controlText.innerHTML = "Delete Selected Area";
+        controlUI.appendChild(controlText);
+
+        // Setup the click event listeners: simply set the map to Chicago.
+        controlUI.addEventListener("click", function() {
+          deleteSelectedShape();
+        });
+      };
+
+      drawingManager.setMap(map);
+
+      google.maps.event.addListener(
+        drawingManager,
+        "polygoncomplete",
+        event => {
+          const vertices = event.getPath();
+          for (let i = 0; i < vertices.getLength(); i++) {
+            const coordinates = vertices.getAt(i).toUrlValue(6);
+            // reassign into array
+            // this.payload.location.coordinates.length = 0
+            this.payload.location.coordinates.push(coordinates);
+          }
+
+          // event.getPath().getLength();
+          google.maps.event.addListener(event.getPath(), "insert_at", () => {
+            var len = event.getPath().getLength();
+            for (var i = 0; i < len; i++) {
+              const coordinates = vertices.getAt(i).toUrlValue(6);
+              // push into array
+              this.payload.location.coordinates.push(coordinates);
+            }
+          });
+
+          google.maps.event.addListener(event.getPath(), "set_at", () => {
+            var len = event.getPath().getLength();
+            for (var i = 0; i < len; i++) {
+              const coordinates = vertices.getAt(i).toUrlValue(6);
+              // reassign into array
+              // this.payload.location.coordinates.length = 0
+              this.payload.location.coordinates.push(coordinates);
+            }
+          });
+        }
+      );
+
+      google.maps.event.addListener(drawingManager, "overlaycomplete", function(
+        event
+      ) {
+        all_overlays.push(event);
+        if (event.type !== google.maps.drawing.OverlayType.MARKER) {
+          drawingManager.setDrawingMode(null);
+          //Write code to select the newly selected object.
+
+          var newShape = event.overlay;
+          newShape.type = event.type;
+          google.maps.event.addListener(newShape, "click", function() {
+            setSelection(newShape);
+          });
+
+          setSelection(newShape);
+        }
+      });
+
+      var centerControlDiv = document.createElement("div");
+      var centerControl = new CenterControl(centerControlDiv, map);
+
+      centerControlDiv.index = 1;
+      map.controls[google.maps.ControlPosition.BOTTOM_CENTER].push(
+        centerControlDiv
+      );
     }
   }
 };
@@ -504,6 +643,7 @@ export default {
   height: 300px;
   display: none;
 }
+
 #current {
   padding-top: 25px;
 }

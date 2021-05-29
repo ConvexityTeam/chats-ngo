@@ -155,9 +155,9 @@ export default {
         this.loading = true
 
         const response = await this.$axios.get('/vendors')
-             if (response.data.code == 200) {
+             if (response.status == "success") {
           this.loading = false;
-          this.vendors = response.data.data
+          this.vendors = response.data
         }
     
         console.log('vendors::::', response)

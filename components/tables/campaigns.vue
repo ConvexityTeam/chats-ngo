@@ -2,7 +2,7 @@
   <div class="main">
     <div class="container">
       <!-- Modal here -->
-      <newCampaign @reload="reload" />
+      <newCampaign @reload="fetchAllCampaigns()" />
       <div class="d-flex pt-lg-4">
         <div class="d-flex">
           <!-- Search Box here -->
@@ -209,10 +209,6 @@ export default {
       this.$router.push(`/campaigns/${campaign.id}`);
     },
 
-    reload() {
-      this.fetchAllCampaigns();
-      console.log(" i was called");
-    }
   }
 };
 </script>

@@ -1,4 +1,4 @@
-const BASE_URL = "http://18.221.50.78/api/v1/";
+const BASE_URL = "http://api.chats.cash/v1/";
 export default {
     // Disable server-side rendering (https://go.nuxtjs.dev/ssr-mode)
     ssr: false,

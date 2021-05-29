@@ -129,7 +129,7 @@ export default {
         customizations: {
           title: "Fund CHATS Wallet",
           description: " Description",
-          logo: ""
+          logo: "https://convexity.s3.us-east-2.amazonaws.com/chats+transparent.png"
         },
         callback: this.makePaymentCallback,
         onclose: this.closedPaymentModal
@@ -233,4 +233,6 @@ export default {
   color: var(--secondary-black);
   font-size: 0.875rem;
 }
+
+
 </style>
