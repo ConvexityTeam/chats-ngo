@@ -156,8 +156,8 @@
             </div>
           </div>
 
-          <div class="row">
-            <!--Location  field  here -->
+          <!--Location  field  here -->
+          <!-- <div class="row">
             <div class="col-lg-12">
               <div class="form-group">
                 <label for="location">Location</label>
@@ -174,14 +174,7 @@
                 />
               </div>
             </div>
-          </div>
-          <!-- <code>
-            <pre>
-
-    {{ payload }}
-  </pre
-            >
-          </code> -->
+          </div> -->
           <div id="map_canvas"></div>
 
           <div class="d-flex py-3">
@@ -219,7 +212,6 @@ const apiKey = "AIzaSyApnZ4U1qeeHgHZuckDndNVVMIJAo-b5Vo";
 import DatePicker from "vue2-datepicker";
 import "vue2-datepicker/index.css";
 let geocoder;
-// import * as test from "~/plugins/geofence.js"
 export default {
   head() {
     return {
@@ -267,10 +259,7 @@ export default {
         required
       },
       location: {
-        country: {
-          required
-        },
-        coordinates:{
+        coordinates: {
           required
         }
       },
@@ -312,13 +301,13 @@ export default {
         this.$v.payload.$touch();
 
         if (this.$v.payload.$error === true) {
-          if(this.$v.payload.location.coordinates.$error == true){
-            this.$toast.error("Please Geofence a location on the map");  
+          if (this.$v.payload.location.coordinates.$error == true) {
+            this.$toast.error("Please Geofence a location on the map");
           }
-            return this.loading = false;
+          return (this.loading = false);
         }
 
-        console.log("COORDINATES:::", this.payload.location.coordinates)
+        console.log("COORDINATES:::", this.payload.location.coordinates);
 
         this.payload.location = JSON.stringify(this.payload.location);
 
@@ -499,7 +488,7 @@ export default {
       document.getElementById("map_canvas").style.display = "block";
 
       const map = new google.maps.Map(document.getElementById("map_canvas"), {
-        center: { lat:  17.35297042396732, lng: 8.808737500000019},
+        center: { lat: 17.35297042396732, lng: 8.808737500000019 },
         zoom: 3,
         mapTypeId: google.maps.MapTypeId.ROADMAP
       });
@@ -538,8 +527,8 @@ export default {
 
       const deleteSelectedShape = () => {
         if (selectedShape) {
-          this.payload.location.coordinates = []
-          selectedShape.setMap(null);   
+          this.payload.location.coordinates = [];
+          selectedShape.setMap(null);
         }
       };
 

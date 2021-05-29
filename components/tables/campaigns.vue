@@ -67,7 +67,7 @@
           <thead>
             <tr>
               <th scope="col">Name</th>
-              <th scope="col">Total</th>
+              <th scope="col"> Budget</th>
               <th scope="col">Spent</th>
               <th scope="col">Created</th>
               <th scope="col">Status</th>
