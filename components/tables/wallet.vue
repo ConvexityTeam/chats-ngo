@@ -114,7 +114,7 @@ export default {
       paymentData: {
         tx_ref: this.generateReference(),
         amount: 10,
-        currency: "USD",
+        currency: "CFA",
         payment_options: "card,ussd,barter,account, banktransfer,qr,paga",
         redirect_url: "",
         meta: {

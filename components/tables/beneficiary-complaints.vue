@@ -123,9 +123,9 @@ export default {
 `
         );
         console.log("complaints::::", response);
-        if (response.data.code == "200") {
-          this.resolved = response.data.data.complaints;
-        }
+        // if (response.data.code == "200") {
+        //   this.resolved = response.data.data.complaints;
+        // }
       } catch (err) {
         console.log(err);
       }

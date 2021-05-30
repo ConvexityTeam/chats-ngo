@@ -66,12 +66,19 @@
               class="text-center d-flex justify-content-center mx-auto align-items-center logo-holder my-5"
             >
               <img
-                v-if="user.profile_pic != null"
-                :src="user.profile_pic"
+                v-if="
+                  user.AssociatedOrganisations[0].Organisation.logo_link != null
+                "
+                :src="
+                  user.AssociatedOrganisations
+                    ? user.AssociatedOrganisations[0].Organisation.logo_link
+                    : ''
+                "
                 width="100"
                 height="100"
                 alt=""
-                   class="rounded-circle"
+                class="rounded-circle"
+                style="object-fit: contain"
               />
             </div>
 
@@ -105,14 +112,14 @@
                 </tr>
 
                 <!-- Location here -->
-                <tr>
+                <!-- <tr>
                   <th><p class="detail-caption col">Location</p></th>
                   <td>
                     <p class="detail-value col">
                       {{ location ? location.country : "" }}
                     </p>
                   </td>
-                </tr>
+                </tr> -->
 
                 <!-- Date created here  -->
                 <tr>
@@ -154,59 +161,59 @@ export default {
     complaints: [],
     beneficiaries: [],
     details: {},
-    location: {},
+    location: {}
   }),
 
   components: {
-    beneficiaryComplaints,
+    beneficiaryComplaints
   },
 
   computed: {
     ...mapGetters("authentication", ["user"]),
     resultQuery() {
       if (this.searchQuery) {
-        return this.beneficiaries.filter((benefactor) => {
+        return this.beneficiaries.filter(benefactor => {
           return this.searchQuery
             .toLowerCase()
             .split(" ")
-            .every((v) => benefactor.first_name.toLowerCase().includes(v));
+            .every(v => benefactor.first_name.toLowerCase().includes(v));
         });
       } else {
         return this.beneficiaries;
       }
-    },
+    }
   },
 
   mounted() {
     this.id = this.$router.history.current.params.id;
-    console.log("checkRoute::", this.$router.history.current.params.id);
-    console.log("id::::::::", this.id);
     this.getDetails();
 
-    console.log("user::::::", this.user);
+    console.log("user::", this.user);
   },
 
   methods: {
     async getDetails() {
       try {
         this.loading = true;
+
         const response = await this.$axios.get(`/campaigns/${this.id}`);
 
         console.log("details:::", response);
 
         if (response.status == "success") {
-          this.details = response.data[0];
-          this.beneficiaries = response.data[0].Beneficiaries;
-          this.location = JSON.parse(response.data[0].location);
-          console.log("here", response.data[0]);
+          this.details = response.data;
+          // this.beneficiaries = response.data[0].Beneficiaries;
+          // this.location = JSON.parse(response.data[0].location);
+          console.log("here", response.data);
         }
+
         this.loading = false;
       } catch (err) {
         this.loading = false;
         console.log("campaignDeetserr:::", err);
       }
-    },
-  },
+    }
+  }
 };
 </script>
 
