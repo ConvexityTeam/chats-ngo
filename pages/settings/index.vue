@@ -9,7 +9,7 @@
         </b-tab>
 
         <!-- Notifictions here -->
-        <b-tab title="Notifications"> </b-tab>
+        <!-- <b-tab title="Notifications"> </b-tab> -->
 
         <!--Preferences Tab here -->
         <b-tab title="Security"> </b-tab>

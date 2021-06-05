@@ -1,4 +1,4 @@
-const BASE_URL = "http://api.chats.cash/v1/";
+const BASE_URL = "https://api.chats.cash/v1/";
 export default {
     // Disable server-side rendering (https://go.nuxtjs.dev/ssr-mode)
     ssr: false,
@@ -21,7 +21,12 @@ export default {
                 rel: "stylesheet",
                 href: "https://unpkg.com/element-ui/lib/theme-chalk/index.css"
             }
-        ]
+        ],
+        script: [
+            {
+            //   src: 'https://widget.freshworks.com/widgets/70000001289.js',
+            },
+          ],
     },
 
     css: ["~/assets/css/main.css", "~/assets/css/fonts.css"],
@@ -31,6 +36,7 @@ export default {
         "~/plugins/index.js",
         "~/plugins/axios.js",
         "~/plugins/element-ui",
+        // "~/plugins/freshdesk.js",
         { src: "~/plugins/vuex-persist", ssr: false }
     ],
     loading: {
@@ -51,7 +57,7 @@ export default {
     // Axios module configuration (https://go.nuxtjs.dev/config-axios)
     axios: {
         baseURL: BASE_URL,
-        https: false,
+        https: true,
         progress: true,
         retry: { retries: 2 }
     },

@@ -57,6 +57,11 @@
                   <p class="tasks">64%</p>
                 </div>
               </div>
+              <ul>
+                <li>Create Task</li>
+                      <li>View Task</li>
+             
+              </ul>
             </div>
           </div>
         </div>
@@ -78,6 +83,12 @@ export default {
 </script>
 
 <style scoped>
+ul{
+  display: inline-flex;
+  margin: 0;
+  list-style: none;
+  padding: 0;
+}
 .progress {
   border-radius: 10px;
   height: 10px;

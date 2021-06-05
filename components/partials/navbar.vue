@@ -1,5 +1,11 @@
 <template>
   <div>
+    <el-drawer
+      :visible.sync="drawer"
+      :direction="direction"
+    >
+      <span>Hi, there!</span>
+    </el-drawer>
     <nav
       class="navbar container navbar-expand-lg navbar-light align-items-center no-gutters flex-nowrap"
     >
@@ -18,43 +24,41 @@
         class="col-sm-auto d-flex ml-auto justify-content-between align-items-center"
       >
         <span>
-          <div class="d-flex px-2">
-            <a href="#" class="pt-2 mx-3">
-              <i>
-                <svg
-                  width="24"
-                  height="25"
-                  viewBox="0 0 24 25"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M14.65 21V20.65H20H20.65V20V19V18.7308L20.4596 18.5404L18.65 16.7308V12C18.65 8.87749 17.0532 6.12045 14.15 5.18696V5C14.15 3.81101 13.189 2.85 12 2.85C10.811 2.85 9.85 3.81101 9.85 5V5.18642C6.93788 6.11866 5.35 8.86819 5.35 12V16.7308L3.54038 18.5404L3.35 18.7308V19V20V20.65H4H9.35V21C9.35 21.7028 9.6292 22.3769 10.1262 22.8738C10.6231 23.3708 11.2972 23.65 12 23.65C13.459 23.65 14.65 22.459 14.65 21Z"
-                    stroke="black"
-                    stroke-width="1.3"
-                  />
-                  <circle cx="16" cy="5" r="5" fill="#D62929" />
-                </svg>
-              </i>
-            </a>
+          <div class="d-flex align-items-center px-2">
+            <el-badge
+              :is-dot="isNotification"
+              class="item mx-3"
+              style="cursor:pointer"
+            >
+              <svg
+                 @click="drawer = true"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M14.65 20V19.65H20H20.65V19V18V17.7308L20.4596 17.5404L18.65 15.7308V11C18.65 7.87749 17.0532 5.12045 14.15 4.18696V4C14.15 2.81101 13.189 1.85 12 1.85C10.811 1.85 9.85 2.81101 9.85 4V4.18642C6.93788 5.11866 5.35 7.86819 5.35 11V15.7308L3.54038 17.5404L3.35 17.7308V18V19V19.65H4H9.35V20C9.35 20.7028 9.6292 21.3769 10.1262 21.8738C10.6231 22.3708 11.2972 22.65 12 22.65C13.459 22.65 14.65 21.459 14.65 20Z"
+                  stroke="black"
+                  stroke-width="1.3"
+                /></svg
+            ></el-badge>
 
             <div class="d-flex image-holder justify-content-center mx-auto">
-              <div class="m-auto">
-                <img
-                  v-if="
-                    user.AssociatedOrganisations[0].Organisation.logo_link !=
-                    null
-                  "
-                  :src="
-                    user.AssociatedOrganisations[0]
-                      ? user.AssociatedOrganisations[0].Organisation.logo_link
-                      : ''
-                  "
-                  width="50"
-                  height="50"
-                  style="object-fit: contain"
-                />
-              </div>
+              <img
+                v-if="
+                  user.AssociatedOrganisations[0].Organisation.logo_link != null
+                "
+                :src="
+                  user.AssociatedOrganisations[0]
+                    ? user.AssociatedOrganisations[0].Organisation.logo_link
+                    : ''
+                "
+                width="50"
+                height="50"
+                style="object-fit: contain"
+              />
             </div>
           </div>
         </span>
@@ -66,14 +70,15 @@
 <script>
 import { mapGetters } from "vuex";
 export default {
-  data() {
-    return {
-      title: "",
-    };
-  },
+  data: () => ({
+    title: "",
+    isNotification: false,
+    drawer: false,
+    direction: "rtl"
+  }),
 
   computed: {
-    ...mapGetters("authentication", ["user"]),
+    ...mapGetters("authentication", ["user"])
   },
 
   watch: {
@@ -87,7 +92,7 @@ export default {
       } else {
         this.title = this.$router.history.current.name;
       }
-    },
+    }
   },
   mounted() {
     if (this.$router.history.current.name.includes("vendors")) {
@@ -103,7 +108,7 @@ export default {
       "use::",
       this.user.AssociatedOrganisations[0].Organisation.logo_link
     );
-  },
+  }
 };
 </script>
 
