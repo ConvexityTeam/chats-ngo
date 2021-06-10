@@ -136,14 +136,7 @@ export default {
           return;
         }
 
-        const encrypted = this.CryptoJS.AES.encrypt(
-          JSON.stringify(this.payload),
-          "PO#64a978c028JA68c40182#!UAOENL#c22eaSNLSJFLJFSD@#31d740239c6243+*9c62439c6b1d41d7402"
-        ).toString();
-
-        const response = await this.$axios.post("/auth/ngo-register", {
-          data: encrypted
-        });
+        const response = await this.$axios.post("/auth/ngo-register", this.payload);
 
         console.log("Register response", response);
 
@@ -171,16 +164,8 @@ export default {
           email: this.payload.email,
           password: this.payload.password
         };
-        const encrypted = this.CryptoJS.AES.encrypt(
-          JSON.stringify(data),
-          "PO#64a978c028JA68c40182#!UAOENL#c22eaSNLSJFLJFSD@#31d740239c6243+*9c62439c6b1d41d7402"
-        ).toString();
-
-        console.log("LoginEncrypt::", encrypted);
-
-        const response = await this.$axios.post("/auth/login", {
-          data: encrypted
-        });
+    
+        const response = await this.$axios.post("/auth/login", this.payload);
 
         console.log("login response", response);
 

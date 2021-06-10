@@ -107,16 +107,7 @@ export default {
           return;
         }
 
-        const encrypted = this.CryptoJS.AES.encrypt(
-          JSON.stringify(this.payload),
-          "PO#64a978c028JA68c40182#!UAOENL#c22eaSNLSJFLJFSD@#31d740239c6243+*9c62439c6b1d41d7402"
-        ).toString();
-
-        console.log("PL:::", encrypted);
-
-        const response = await this.$axios.post("/auth/login", {
-          data: encrypted
-        });
+        const response = await this.$axios.post("/auth/login", this.payload);
 
         console.log("login response", response);
 
@@ -130,6 +121,7 @@ export default {
         
         this.loading = false;
       } catch (err) {
+        console.log("here::", err.response.data.message)
         this.loading = false;
       }
     }

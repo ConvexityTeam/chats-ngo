@@ -18,7 +18,7 @@
     "core-js": "^3.6.5",
     "element-ui": "^2.15.1",
     "flutterwave-vue-v3": "^1.0.5",
-    "google-map-geofence": "^1.0.0",
+    "fs": "0.0.1-security",
     "moment": "^2.29.1",
     "nuxt": "^2.14.6",
     "vue-chartjs": "^3.5.1",

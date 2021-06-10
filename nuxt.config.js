@@ -22,11 +22,6 @@ export default {
                 href: "https://unpkg.com/element-ui/lib/theme-chalk/index.css"
             }
         ],
-        script: [
-            {
-            //   src: 'https://widget.freshworks.com/widgets/70000001289.js',
-            },
-          ],
     },
 
     css: ["~/assets/css/main.css", "~/assets/css/fonts.css"],
