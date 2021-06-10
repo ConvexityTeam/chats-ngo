@@ -4,6 +4,9 @@
     --secondary-black: #333333;
 }
 
+.primary{
+    color: var(--primary-color);
+}
 
 body {
     font-family: 'Gilroy';

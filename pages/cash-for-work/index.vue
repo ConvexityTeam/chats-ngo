@@ -2,7 +2,8 @@
   <div class="main">
     <div class="container">
       <!-- Modal here -->
-      <newCash />
+      <newCash @reload="fetchAllCampaigns" />
+
       <div class="d-flex pt-lg-4">
         <div class="d-flex">
           <!-- Search Box here -->
@@ -10,6 +11,7 @@
             type="text"
             class="form-controls"
             placeholder="Search campaigns"
+            v-model="searchQuery"
           />
         </div>
 
@@ -43,8 +45,15 @@
         >
           <div class="card__holder">
             <div class="p-3">
-              <h4 class="caption">{{campaign.title}}</h4>
-              <p class="beneficiary-count">{{campaign.beneficiaries_count}} {{campaign.beneficiaries_count == 1 ? 'beneficiary': 'beneficiaries' | capitalize }} </p>
+              <h4 class="caption">{{ campaign.title }}</h4>
+              <p class="beneficiary-count">
+                {{ campaign.beneficiaries_count }}
+                {{
+                  campaign.beneficiaries_count == 1
+                    ? "beneficiary"
+                    : "beneficiaries" | capitalize
+                }}
+              </p>
 
               <!-- Progress bar here -->
               <b-progress
@@ -63,10 +72,20 @@
                   <p class="tasks">64%</p>
                 </div>
               </div>
-              <ul>
-                <li>Create Task</li>
-                <li>View Task</li>
-              </ul>
+
+              <div class="d-flex">
+                <button
+                  class="create-task text-white border-0 rounded py-2 px-3"
+                >
+                  Create Task
+                </button>
+                <button
+                  class="ml-3 border-0 bg-transparent primary"
+                  style="font-weight: 500"
+                >
+                  View Task
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -139,17 +158,17 @@ export default {
 </script>
 
 <style scoped>
-ul {
-  display: inline-flex;
-  margin: 0;
-  list-style: none;
-  padding: 0;
+.create-task {
+  background: var(--primary-color);
+  font-weight: 500;
 }
+
 .progress {
   border-radius: 10px;
   height: 10px;
   background: #e5e5e5;
 }
+
 .tasks {
   color: var(--secondary-black);
   font-size: 0.875rem;
@@ -165,22 +184,23 @@ ul {
   font-weight: 700;
   font-size: 1.125rem;
 }
+
 .card__holder {
   background: #ffffff;
   box-shadow: 0px 4px 30px rgba(174, 174, 192, 0.2);
   border-radius: 10px;
 }
+
 .main {
   height: calc(100vh - 72px);
   overflow-y: scroll;
 }
-.create {
-  background: var(--primary-color);
-}
+
 ::placeholder {
   color: #999999;
   font-size: 1rem;
 }
+
 .form-controls {
   height: 50px;
   width: 300px;
@@ -197,6 +217,7 @@ ul {
   font-size: 1rem;
   font-weight: 500;
   height: 50px;
+  background: var(--primary-color);
 }
 
 /* width */

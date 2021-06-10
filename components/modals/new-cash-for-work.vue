@@ -220,24 +220,13 @@ export default {
         this.$v.payload.$touch();
 
         if (this.$v.payload.$error === true) {
-          if (this.$v.payload.location.coordinates.$error == true) {
-            this.$toast.error("Please Geofence a location on the map");
-          }
           return (this.loading = false);
         }
 
-        console.log("COORDINATES:::", this.payload.location.coordinates);
-
-        this.payload.location = JSON.stringify(this.payload.location);
-
-        const encrypted = this.CryptoJS.AES.encrypt(
-          JSON.stringify(this.payload),
-          "PO#64a978c028JA68c40182#!UAOENL#c22eaSNLSJFLJFSD@#31d740239c6243+*9c62439c6b1d41d7402"
-        ).toString();
-
-        const response = await this.$axios.post("/organisation/campaign", {
-          data: encrypted
-        });
+        const response = await this.$axios.post(
+          "/organisation/campaign",
+          this.payload
+        );
 
         if (response.status == "success") {
           this.$emit("reload");
@@ -253,6 +242,7 @@ export default {
       } catch (err) {
         console.log(err);
         this.loading = false;
+        this.$toast.error(err.response.data.message);
       }
     }
   }
