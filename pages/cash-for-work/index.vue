@@ -1,8 +1,9 @@
 <template>
   <div class="main">
     <div class="container">
-      <!-- Modal here -->
+      <!-- Modals here -->
       <newCash @reload="fetchAllCampaigns" />
+          <newTask @reload="fetchAllCampaigns" :id="campaignId" />
 
       <div class="d-flex pt-lg-4">
         <div class="d-flex">
@@ -75,7 +76,9 @@
 
               <div class="d-flex">
                 <button
+                v-b-modal.new-task
                   class="create-task text-white border-0 rounded py-2 px-3"
+                  @click="campaignId = campaign.id"
                 >
                   Create Task
                 </button>
@@ -97,11 +100,12 @@
 </template>
 
 <script>
-import newCash from "~/components/modals/new-cash-for-work.vue";
+import newCash from "~/components/modals/new-cash-for-work";
+import newTask from "~/components/modals/new-task"
 import { mapGetters } from "vuex";
 export default {
   layout: "dashboard",
-  components: { newCash },
+  components: { newCash , newTask},
   data() {
     return {
       loading: false,
@@ -109,6 +113,7 @@ export default {
       id: "",
       campaigns: [],
       searchQuery: "",
+      campaignId: 0,
       value: 64,
       max: 100
     };

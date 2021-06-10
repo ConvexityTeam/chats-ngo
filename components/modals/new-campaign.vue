@@ -9,7 +9,7 @@
           class="close-btn position-absolute"
           @click="closeModal"
         >
-          <add />
+          <close />
         </button>
       </div>
 
@@ -186,7 +186,7 @@ import { mapGetters } from "vuex";
 const apiKey = "AIzaSyApnZ4U1qeeHgHZuckDndNVVMIJAo-b5Vo";
 import DatePicker from "vue2-datepicker";
 import "vue2-datepicker/index.css";
-import add from "~/components/icons/add";
+import close from "~/components/icons/close";
 let geocoder;
 export default {
   head() {
@@ -247,7 +247,7 @@ export default {
       }
     }
   },
-  components: { DatePicker, add },
+  components: { DatePicker, close },
 
   computed: {
     ...mapGetters("authentication", ["user"])

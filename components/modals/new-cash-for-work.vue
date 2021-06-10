@@ -9,7 +9,7 @@
           class="close-btn position-absolute"
           @click="closeModal"
         >
-          <add />
+          <close />
         </button>
       </div>
 
@@ -120,7 +120,6 @@
               </div>
             </div>
           </div>
-          <div id="map_canvas"></div>
 
           <div class="d-flex py-3">
             <div>
@@ -155,7 +154,7 @@ import { required } from "vuelidate/lib/validators";
 import { mapGetters } from "vuex";
 import DatePicker from "vue2-datepicker";
 import "vue2-datepicker/index.css";
-import add from "~/components/icons/add.vue";
+import close from "~/components/icons/close";
 
 export default {
   data() {
@@ -197,7 +196,7 @@ export default {
       }
     }
   },
-  components: { DatePicker, add },
+  components: { DatePicker, close },
 
   computed: {
     ...mapGetters("authentication", ["user"])
