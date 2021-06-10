@@ -2,7 +2,7 @@
   <div class="main">
     <div class="container">
       <!-- Modal here -->
-
+      <newCash />
       <div class="d-flex pt-lg-4">
         <div class="d-flex">
           <!-- Search Box here -->
@@ -14,7 +14,7 @@
         </div>
 
         <div class="ml-auto">
-          <button type="button" v-b-modal.new-campaign class="create px-3">
+          <button type="button" v-b-modal.new-cash class="create px-3">
             <i>
               <svg
                 width="13"
@@ -33,12 +33,18 @@
 
       <!-- cards here -->
       <div class="row mt-5">
-        <div class="col-lg-4 mb-4" v-for="i in 3" :key="i">
+        <div v-if="loading" class="loader text-center"></div>
+
+        <div
+          v-else-if="campaigns.length"
+          class="col-lg-4 mb-4"
+          v-for="campaign in resultQuery"
+          :key="campaign.id"
+        >
           <div class="card__holder">
-            <!-- <img src="~/assets/img/dish.png" width="322" alt /> -->
             <div class="p-3">
-              <h4 class="caption">Feed The Hungry Campaign</h4>
-              <p class="beneficiary-count">284 Beneficiaries</p>
+              <h4 class="caption">{{campaign.title}}</h4>
+              <p class="beneficiary-count">{{campaign.beneficiaries_count}} {{campaign.beneficiaries_count == 1 ? 'beneficiary': 'beneficiaries' | capitalize }} </p>
 
               <!-- Progress bar here -->
               <b-progress
@@ -59,31 +65,81 @@
               </div>
               <ul>
                 <li>Create Task</li>
-                      <li>View Task</li>
-             
+                <li>View Task</li>
               </ul>
             </div>
           </div>
         </div>
+
+        <h3 v-else class="text-center no-record">NO RECORD FOUND</h3>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import newCash from "~/components/modals/new-cash-for-work.vue";
+import { mapGetters } from "vuex";
 export default {
   layout: "dashboard",
+  components: { newCash },
   data() {
     return {
+      loading: false,
+      loading: false,
+      id: "",
+      campaigns: [],
+      searchQuery: "",
       value: 64,
       max: 100
     };
+  },
+
+  computed: {
+    ...mapGetters("authentication", ["user"]),
+    resultQuery() {
+      if (this.searchQuery) {
+        return this.campaigns.filter(campaign => {
+          return this.searchQuery
+            .toLowerCase()
+            .split(" ")
+            .every(v => campaign.title.toLowerCase().includes(v));
+        });
+      } else {
+        return this.campaigns;
+      }
+    }
+  },
+
+  mounted() {
+    this.id = this.user.AssociatedOrganisations[0].OrganisationId;
+    this.fetchAllCampaigns();
+  },
+  methods: {
+    async fetchAllCampaigns() {
+      try {
+        this.loading = true;
+
+        const response = await this.$axios.get(
+          `/campaigns/organisation/${+this.id}?type=cash-for-work`
+        );
+
+        if (response.status == "success") {
+          this.campaigns = response.data.reverse();
+        }
+        this.loading = false;
+
+        console.log("All campaigns:::", response);
+      } catch (err) {
+        this.loading = false;
+      }
+    }
   }
 };
 </script>
 
 <style scoped>
-ul{
+ul {
   display: inline-flex;
   margin: 0;
   list-style: none;

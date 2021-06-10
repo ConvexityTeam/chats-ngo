@@ -63,7 +63,7 @@
 
       <!-- Table here -->
       <div class="holder">
-        <table class="table table-borderless" v-if="campaigns != ''">
+        <table class="table table-borderless" v-if="campaigns.length">
           <thead>
             <tr>
               <th scope="col">Name</th>
@@ -153,7 +153,7 @@ export default {
       id: "",
       campaigns: [],
       selected: null,
-      searchQuery: null,
+      searchQuery: "",
       options: [
         { value: null, text: "filter" },
         { value: "all", text: "All" },
