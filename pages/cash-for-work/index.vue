@@ -3,7 +3,7 @@
     <div class="container">
       <!-- Modals here -->
       <newCash @reload="fetchAllCampaigns" />
-          <newTask @reload="fetchAllCampaigns" :id="campaignId" />
+        <newTask @reload="fetchAllCampaigns" :id="campaignId" />
 
       <div class="d-flex pt-lg-4">
         <div class="d-flex">
@@ -85,6 +85,7 @@
                 <button
                   class="ml-3 border-0 bg-transparent primary"
                   style="font-weight: 500"
+                  @click="$router.push(`/cash-for-work/tasks/${campaign.id}`)"
                 >
                   View Task
                 </button>
@@ -139,6 +140,7 @@ export default {
     this.id = this.user.AssociatedOrganisations[0].OrganisationId;
     this.fetchAllCampaigns();
   },
+
   methods: {
     async fetchAllCampaigns() {
       try {
@@ -157,7 +159,8 @@ export default {
       } catch (err) {
         this.loading = false;
       }
-    }
+    },
+
   }
 };
 </script>

@@ -2,7 +2,7 @@
   <div>
     <b-modal id="new-task" hide-header hide-footer>
       <div class="text-center position-relative pt-2">
-        <h3 class="header">New Campaign</h3>
+        <h3 class="header">New Task</h3>
         <!--Close button here -->
         <button
           type="button"
@@ -157,7 +157,6 @@ export default {
         this.payload.campaign = this.id;
 
         console.log("PL.ID", this.payload.campaign);
-        debugger;
 
         const response = await this.$axios.post(
           "/cash-for-work/newTask",
