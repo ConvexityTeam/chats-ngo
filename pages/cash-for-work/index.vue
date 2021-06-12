@@ -78,7 +78,7 @@
                 <button
                   class="ml-3 border-0 bg-transparent primary"
                   style="font-weight: 500"
-                  @click="$router.push(`/cash-for-work/tasks/${campaign.id}`)"
+                  @click="$router.push(`/cash-for-work/${campaign.id}`)"
                 >
                   View Campaign
                 </button>

@@ -29,7 +29,7 @@
 
           <!-- Table here -->
           <div class="table">
-            <table class=" table-borderless" style="width: 100%">
+            <table class=" table-borderless w-100">
               <thead>
                 <tr class="border-bottom">
                   <th scope="col">Name</th>
@@ -54,7 +54,7 @@
                     {{ task.createdAt | formatDateOnly }}
                   </td>
                   <td>
-                    <el-button size="mini">View</el-button>
+                    <button class="view-btn px-3 py-1 " @click="$router.push(`/cash-for-work/tasks/${task.id}`)">View</button>
                   </td>
                 </tr>
               </tbody>
@@ -66,11 +66,11 @@
       </div>
 
       <div class="col-lg-4">
-        <!-- Personal details here -->
+        <!-- Campaign details here -->
         <div v-if="loading" class="text-center"></div>
 
         <div class="div__holder p-1" v-else>
-          <h4 class="top-header px-3 py-4">Campaign details</h4>
+          <h4 class="top-header px-3 py-4">{{ campaign.title }}</h4>
 
           <b-progress
             :value="campaign.progress"
@@ -92,16 +92,8 @@
             </div>
           </div>
 
-          <!--Vendor Details here -->
           <div>
             <table class="w-100">
-              <tr>
-                <th><p class="detail-caption col">Title</p></th>
-                <td>
-                  <p class="detail-value col">{{ campaign.title }}</p>
-                </td>
-              </tr>
-
               <tr>
                 <th><p class="detail-caption col">Description</p></th>
                 <td>
@@ -153,7 +145,6 @@
 </template>
 
 <script>
-import moment from "moment";
 export default {
   layout: "dashboard",
 
@@ -165,7 +156,8 @@ export default {
   }),
 
   mounted() {
-    this.fetchTaskDetail();
+    this.fetchTasks();
+    this.getCampaignDetails();
   },
 
   computed: {
@@ -184,11 +176,11 @@ export default {
   },
 
   methods: {
-    async fetchTaskDetail() {
+    async fetchTasks() {
       try {
         this.loading = true;
         const response = await this.$axios.get(
-          `/cash-for-work/task/${this.$route.params.id}`
+          `/cash-for-work/tasks/${this.$route.params.id}`
         );
 
         if (response.status == "success") {
@@ -202,11 +194,43 @@ export default {
       }
     },
 
+    async getCampaignDetails() {
+      try {
+        this.loading = true;
+        const response = await this.$axios.get(
+          `/cash-for-work/${this.$route.params.id}`
+        );
+
+        if (response.status == "success") {
+          this.campaign = response.data.cashForWorkDetail;
+        }
+
+        console.log("CampaignDetails::", response.data);
+        this.loading = false;
+      } catch (err) {
+        console.log(err);
+      }
+    }
   }
 };
 </script>
 
 <style scoped>
+.view-btn {
+  border: 1px solid #dcdfe6;
+  background: inherit;
+  border-radius: 3px;
+  font-size: 13px;
+
+  color: var(--secondary-black);
+}
+.view-btn:hover {
+  background: var(--primary-color);
+  border-color: var(--primary-color);
+  color: #fff;
+  font-weight: 500;
+}
+
 .table {
   background: #ffffff;
   box-shadow: 0px 4px 30px rgba(174, 174, 192, 0.2);
