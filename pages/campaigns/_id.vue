@@ -1,7 +1,7 @@
 <template>
   <div>
     <div v-if="loading">
-      <div class="loader"></div>
+      <div class=""></div>
     </div>
 
     <div class="main" v-else>
@@ -152,6 +152,7 @@
 <script>
 import { mapGetters } from "vuex";
 import beneficiaryComplaints from "~/components/tables/beneficiary-complaints";
+let screenLoading;
 export default {
   layout: "dashboard",
   data: () => ({
@@ -188,12 +189,12 @@ export default {
     this.id = this.$router.history.current.params.id;
     this.getDetails();
 
-    console.log("user::", this.user);
   },
 
   methods: {
     async getDetails() {
       try {
+        this.openScreen()
         this.loading = true;
 
         const response = await this.$axios.get(`/campaigns/${this.id}`);
@@ -201,6 +202,7 @@ export default {
         console.log("details:::", response);
 
         if (response.status == "success") {
+            screenLoading.close();
           this.details = response.data;
           // this.beneficiaries = response.data[0].Beneficiaries;
           // this.location = JSON.parse(response.data[0].location);
@@ -210,9 +212,18 @@ export default {
         this.loading = false;
       } catch (err) {
         this.loading = false;
+          screenLoading.close();
         console.log("campaignDeetserr:::", err);
       }
-    }
+    },
+
+        openScreen() {
+      screenLoading = this.$loading({
+        lock: true,
+        spinner: "el-icon-loading",
+        background: "#0000009b"
+      });
+    },
   }
 };
 </script>

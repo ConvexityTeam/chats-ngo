@@ -131,7 +131,7 @@
             </tr>
           </tbody>
         </table>
-        <div v-else-if="loading" class="loader text-center"></div>
+        <div v-else-if="loading" class=" text-center"></div>
         <h3 v-else class="text-center no-record">NO RECORD FOUND</h3>
       </div>
     </div>
@@ -142,6 +142,7 @@
 import dot from "~/components/icons/dot";
 import newCampaign from "~/components/modals/new-campaign";
 import { mapGetters } from "vuex";
+let screenLoading;
 export default {
   components: {
     dot,
@@ -188,6 +189,7 @@ export default {
   methods: {
     async fetchAllCampaigns() {
       try {
+        this.openScreen()
         this.loading = true;
 
         const response = await this.$axios.get(
@@ -195,18 +197,28 @@ export default {
         );
 
         if (response.status == "success") {
+            screenLoading.close();
           this.campaigns = response.data.reverse();
         }
         this.loading = false;
 
         console.log("All campaigns:::", response);
       } catch (err) {
+          screenLoading.close();
         this.loading = false;
       }
     },
 
     handleTempCampaign(campaign) {
       this.$router.push(`/campaigns/${campaign.id}`);
+    },
+
+      openScreen() {
+      screenLoading = this.$loading({
+        lock: true,
+        spinner: "el-icon-loading",
+        background: "#0000009b"
+      });
     },
 
   }
