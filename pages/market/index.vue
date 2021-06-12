@@ -1,5 +1,5 @@
 <template>
-  <div class="main pt-lg-4">
+  <div class="main pt-lg-4 container">
     <div class="d-flex flex-wrap no-gutters">
       <!-- Welcome message here -->
       <div class="message-div">
@@ -79,6 +79,7 @@ import productsAgeGroup from '~/components/charts/products-age-group'
 import allProducts from '~/components/tables/all-products'
 export default {
   layout: 'dashboard',
+   transition: 'page',
   components: {
     productsGenderFemale,
     productsGenderMale,

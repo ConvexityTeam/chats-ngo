@@ -255,13 +255,6 @@ export default {
 
   mounted() {
     this.payload.organisation_id = this.user.AssociatedOrganisations[0].OrganisationId;
-    console.log("user:::", this.user);
-    console.log(
-      "orgId:::",
-      this.user.AssociatedOrganisations[0].OrganisationId
-    );
-
-    // console.log("test", test)
   },
 
   methods: {
@@ -283,18 +276,9 @@ export default {
           return (this.loading = false);
         }
 
-        console.log("COORDINATES:::", this.payload.location.coordinates);
-
         this.payload.location = JSON.stringify(this.payload.location);
 
-        const encrypted = this.CryptoJS.AES.encrypt(
-          JSON.stringify(this.payload),
-          "PO#64a978c028JA68c40182#!UAOENL#c22eaSNLSJFLJFSD@#31d740239c6243+*9c62439c6b1d41d7402"
-        ).toString();
-
-        const response = await this.$axios.post("/organisation/campaign", {
-          data: encrypted
-        });
+        const response = await this.$axios.post("/organisation/campaign", this.payload);
 
         if (response.status == "success") {
           this.$emit("reload");

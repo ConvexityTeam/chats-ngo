@@ -1,5 +1,5 @@
 <template>
-  <div class="main">
+  <div class="main container">
     <div class="row no-gutters">
       <div class="col-lg-8">
         <!-- Top cards here -->

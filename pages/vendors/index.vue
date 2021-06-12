@@ -1,5 +1,5 @@
 <template>
-  <div class="main">
+  <div class="main container">
     <!-- Top cards here -->
     <div class="row no-gutters pt-lg-4">
       <!-- Beneficiaries here -->

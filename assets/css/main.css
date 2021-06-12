@@ -4,6 +4,17 @@
     --secondary-black: #333333;
 }
 
+.page-enter-active,
+.page-leave-active {
+  transition: all .9s ease;
+}
+
+.page-enter,
+.page-leave-to {
+    transform: translateY(10px);
+    /* opacity: 0; */
+}
+
 .primary{
     color: var(--primary-color);
 }

@@ -1,7 +1,5 @@
 <template>
-  <div>
-    <!-- Tabs Here -->
-    <div>
+    <div class="container">
       <b-tabs content-class="mt-3">
         <!-- Profile tab here -->
         <b-tab title="Profile" active>
@@ -15,7 +13,6 @@
         <b-tab title="Security"> </b-tab>
       </b-tabs>
     </div>
-  </div>
 </template>
 
 <script>

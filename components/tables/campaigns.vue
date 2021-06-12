@@ -1,6 +1,6 @@
 <template>
-  <div class="main">
-    <div class="container">
+  <div class="main container">
+    <div class="">
       <!-- Modal here -->
       <newCampaign @reload="fetchAllCampaigns()" />
       <div class="d-flex pt-lg-4">
@@ -68,10 +68,10 @@
             <tr>
               <th scope="col">Name</th>
               <th scope="col"> Budget</th>
-              <th scope="col">Spent</th>
+              <!-- <th scope="col">Spent</th> -->
               <th scope="col">Created</th>
               <th scope="col">Status</th>
-              <th scope="col"></th>
+              <!-- <th scope="col"></th> -->
             </tr>
           </thead>
           <tbody>
@@ -86,9 +86,9 @@
               <td @click="handleTempCampaign(campaign)">
                 $ {{ campaign.budget | formatCurrency }}
               </td>
-              <td @click="handleTempCampaign(campaign)">
+              <!-- <td @click="handleTempCampaign(campaign)">
                 {{ campaign.spent }}
-              </td>
+              </td> -->
               <td @click="handleTempCampaign(campaign)">
                 {{ campaign.createdAt | formatDateOnly }}
               </td>
@@ -114,7 +114,7 @@
               >
                 Closed
               </td>
-              <td>
+              <!-- <td>
                 <b-dropdown
                   variant="link"
                   toggle-class="text-decoration-none"
@@ -127,7 +127,7 @@
                     >View</b-dropdown-item
                   >
                 </b-dropdown>
-              </td>
+              </td> -->
             </tr>
           </tbody>
         </table>

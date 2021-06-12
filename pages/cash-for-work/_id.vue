@@ -54,7 +54,12 @@
                     {{ task.createdAt | formatDateOnly }}
                   </td>
                   <td>
-                    <button class="view-btn px-3 py-1 " @click="$router.push(`/cash-for-work/tasks/${task.id}`)">View</button>
+                    <button
+                      class="view-btn px-3 py-1 "
+                      @click="$router.push(`/cash-for-work/tasks/${task.id}`)"
+                    >
+                      View
+                    </button>
                   </td>
                 </tr>
               </tbody>
@@ -105,7 +110,7 @@
                 <th><p class="detail-caption col">Start Date</p></th>
                 <td>
                   <p class="detail-value col">
-                    {{ campaign.start_date | formatDateOnly }}
+                    {{ campaign.start_date | formatDateText }}
                   </p>
                 </td>
               </tr>
@@ -114,7 +119,7 @@
                 <th><p class="detail-caption col">End Date</p></th>
                 <td>
                   <p class="detail-value col">
-                    {{ campaign.end_date | formatDateOnly }}
+                    {{ campaign.end_date | formatDateText }}
                   </p>
                 </td>
               </tr>
@@ -132,7 +137,7 @@
                 <th><p class="detail-caption col">Created</p></th>
                 <td>
                   <p class="detail-value col">
-                    {{ campaign.createdAt | formatDateOnly }}
+                    {{ campaign.createdAt | formatDateText }}
                   </p>
                 </td>
               </tr>

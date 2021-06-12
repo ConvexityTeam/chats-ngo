@@ -52,7 +52,7 @@
           </div>
 
           <!-- complaints here -->
-          <div class="mt-5 mr-3">
+          <div class="mt-4 mr-3">
             <beneficiaryComplaints :campaignId="id" />
           </div>
         </div>
