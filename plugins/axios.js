@@ -19,7 +19,6 @@ export default async function({ $axios, app }) {
   });
 
   $axios.onResponse(response => {
-    console.log("Response:::", response);
 
     return response.data
 

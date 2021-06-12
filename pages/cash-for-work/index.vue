@@ -46,20 +46,12 @@
         >
           <div class="card__holder">
             <div class="p-3">
-              <h4 class="caption">{{ campaign.title }}</h4>
-              <p class="beneficiary-count">
-                {{ campaign.beneficiaries_count }}
-                {{
-                  campaign.beneficiaries_count == 1
-                    ? "beneficiary"
-                    : "beneficiaries" | capitalize
-                }}
-              </p>
+              <h4 class="caption pb-3">{{ campaign.title }}</h4>
 
               <!-- Progress bar here -->
               <b-progress
-                :value="value"
-                :max="max"
+                :value="campaign.progress"
+                :max="100"
                 variant="success"
                 class="mb-3"
               ></b-progress>
@@ -67,27 +59,28 @@
               <!-- Task count here -->
               <div class="d-flex">
                 <div>
-                  <p class="tasks">134/264 Tasks</p>
+                  <p class="tasks">{{campaign.completedTasks}}/{{campaign.totalTasks}} {{ campaign.totalTasks == 1 ? 'Task' : 'Tasks'}}</p>
                 </div>
                 <div class="ml-auto">
-                  <p class="tasks">64%</p>
+                  <p class="tasks">{{campaign.progress}}%</p>
                 </div>
               </div>
 
               <div class="d-flex">
                 <button
-                v-b-modal.new-task
+                  v-b-modal.new-task
                   class="create-task text-white border-0 rounded py-2 px-3"
                   @click="campaignId = campaign.id"
                 >
                   Create Task
                 </button>
+
                 <button
                   class="ml-3 border-0 bg-transparent primary"
                   style="font-weight: 500"
                   @click="$router.push(`/cash-for-work/tasks/${campaign.id}`)"
                 >
-                  View Task
+                  View Campaign
                 </button>
               </div>
             </div>
@@ -115,8 +108,6 @@ export default {
       campaigns: [],
       searchQuery: "",
       campaignId: 0,
-      value: 64,
-      max: 100
     };
   },
 
@@ -147,7 +138,7 @@ export default {
         this.loading = true;
 
         const response = await this.$axios.get(
-          `/campaigns/organisation/${+this.id}?type=cash-for-work`
+          `/cash-for-work`
         );
 
         if (response.status == "success") {
@@ -181,6 +172,7 @@ export default {
   color: var(--secondary-black);
   font-size: 0.875rem;
 }
+
 .beneficiary-count {
   letter-spacing: 0.01em;
   font-size: 1rem;

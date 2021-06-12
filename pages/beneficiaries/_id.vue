@@ -88,7 +88,7 @@
 
             <!-- Table here -->
             <div class="table">
-            <table class=" table-borderless" v-if="campaigns.length != 0">
+            <table class=" table-borderless" v-if="campaigns.length">
               <thead>
                 <tr>
                   <th scope="col">Name</th>
