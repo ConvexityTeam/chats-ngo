@@ -87,7 +87,7 @@
           </div>
         </div>
 
-        <h3 v-else class="text-center no-record">NO RECORD FOUND</h3>
+        <h3 v-else class="text-center no-record m-auto">NO RECORD FOUND</h3>
       </div>
     </div>
   </div>

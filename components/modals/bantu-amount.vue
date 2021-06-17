@@ -1,6 +1,6 @@
 <template>
   <div>
-    <b-modal id="fund-amount" hide-header hide-footer>
+    <b-modal id="fund-bantu" hide-header hide-footer>
       <div class="text-center position-relative pt-4">
         <!-- <h3 class="header">New Campaign</h3> -->
         <!--Close button here -->
@@ -83,7 +83,7 @@ export default {
   },
   methods: {
     closeModal() {
-      this.$bvModal.hide("fund-amount");
+      this.$bvModal.hide("fund-bantu");
     },
 
     sendAmount() {
@@ -91,8 +91,8 @@ export default {
       if (this.$v.amount.$error === true) {
         return;
       }
-      this.$emit("sentAmount", this.amount);
-      this.closeModal();
+      this.$emit("fundAccount", this.amount);
+            this.closeModal();
     }
   }
 };
@@ -132,9 +132,6 @@ label {
   border: 1px solid #999999;
 }
 
-textarea {
-  height: auto;
-}
 
 .create-campaign {
   background: var(--primary-color);

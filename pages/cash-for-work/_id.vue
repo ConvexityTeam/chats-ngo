@@ -163,6 +163,7 @@ export default {
   mounted() {
     this.fetchTasks();
     this.getCampaignDetails();
+    this.taskDetail()
   },
 
   computed: {
@@ -181,6 +182,17 @@ export default {
   },
 
   methods: {
+
+    async taskDetail(){
+      try{
+const response = await this.$axios.get("/cash-for-work/task/8")
+
+console.log("TAskDetail:::", response)
+      }
+      catch(err){
+        console.log("detailerr", err)
+      }
+    },
     async fetchTasks() {
       try {
         this.loading = true;

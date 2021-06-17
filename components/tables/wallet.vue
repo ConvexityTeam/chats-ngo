@@ -1,6 +1,7 @@
 <template>
   <div class="ml-2">
     <fundAmount @sentAmount="payViaService" />
+    <fundBantu @fundAccount="fundAccount" />
 
     <div class="holder p-3">
       <h4 class="header">Fund Wallet</h4>
@@ -51,10 +52,10 @@
 
       <!-- Payment options here -->
       <div class="mt-3">
-        <!-- Pay with card here -->
+        <!-- Pay with Flutterwave here -->
         <div class="option-holder p-3 mb-3">
           <div>
-            <h5 class="option-header">Pay With Card</h5>
+            <h5 class="option-header">Fund Through Flutterwave</h5>
             <p class="description">
               You can fund your NGO wallet usuing a mastercard or Visa card.
             </p>
@@ -65,6 +66,25 @@
               @click="$bvModal.show('fund-amount')"
             >
               Pay Now
+            </button>
+          </div>
+        </div>
+
+        <!-- Pay with Bantu here -->
+        <div class="option-holder p-3 mb-3">
+          <div>
+            <h5 class="option-header">Fund Through Bantu</h5>
+            <p class="description" style="word-break: break-word">
+              You can fund your NGO wallet using Bantu. Wallet Address:
+              {{ wallet.bantuAddress }}
+            </p>
+
+            <button
+              type="button"
+              class="pay-btn"
+              @click="$bvModal.show('fund-bantu')"
+            >
+              Initiate account Funding
             </button>
           </div>
         </div>
@@ -93,7 +113,7 @@
           <div>
             <h5 class="option-header">Pay Into Our Wallet</h5>
             <p class="description">
-              You can pay into out stablecoin wallet. To do so, generate a
+              You can pay into our stablecoin wallet. To do so, generate a
               payment address.
             </p>
 
@@ -108,13 +128,27 @@
 <script>
 import { mapGetters } from "vuex";
 import fundAmount from "~/components/modals/fund-amount";
+import fundBantu from "~/components/modals/bantu-amount.vue";
 export default {
+  props: {
+    wallet: {
+      type: Object
+    }
+  },
+
+  components: {
+    fundAmount,
+    fundBantu
+  },
+
   data() {
     return {
+      amount: 0,
+      organisationId: "",
       paymentData: {
         tx_ref: this.generateReference(),
         amount: 10,
-        currency: "CFA",
+        currency: "USD",
         payment_options: "card,ussd,barter,account, banktransfer,qr,paga",
         redirect_url: "",
         meta: {
@@ -129,16 +163,13 @@ export default {
         customizations: {
           title: "Fund CHATS Wallet",
           description: " Description",
-          logo: "https://convexity.s3.us-east-2.amazonaws.com/chats+transparent.png"
+          logo:
+            "https://convexity.s3.us-east-2.amazonaws.com/chats+transparent.png"
         },
         callback: this.makePaymentCallback,
         onclose: this.closedPaymentModal
       }
     };
-  },
-
-  components: {
-    fundAmount
   },
 
   computed: {
@@ -147,16 +178,18 @@ export default {
 
   mounted() {
     this.loadData();
+    console.log("Wallet::", this.wallet);
   },
 
   methods: {
     payViaService(amount) {
+      this.amount = amount;
       this.paymentData.amount = amount;
       this.payWithFlutterwave(this.paymentData);
     },
 
     makePaymentCallback(response) {
-      console.log("Pay", response);
+      console.log("PaySuccess?", response);
     },
 
     closedPaymentModal() {
@@ -168,13 +201,27 @@ export default {
       return date.getTime().toString();
     },
 
+    async fundAccount(amount) {
+      try {
+        const response = await this.$axios.post("/organisation/bantu/webhook", {
+          organisationId: +this.organisationId,
+          xbnAmount: amount
+        });
+        console.log("bantuResp::", response);
+      } catch (err) {
+        console.log("bantuerr", err);
+      }
+    },
+
     loadData() {
       (this.paymentData.customer.email = this.user.email),
         (this.paymentData.customer.name = this.user.AssociatedOrganisations[0].Organisation.name);
       this.paymentData.customer.phone_number = this.user.AssociatedOrganisations[0].Organisation.phone;
       this.paymentData.customer.id = this.user.AssociatedOrganisations[0].Organisation.id;
       this.paymentData.meta.id = this.user.AssociatedOrganisations[0].Organisation.id;
+      this.organisationId = this.user.AssociatedOrganisations[0].Organisation.id;
     },
+
     copyNumber() {
       try {
         navigator.clipboard.writeText(this.$refs.account.innerHTML);
@@ -233,6 +280,4 @@ export default {
   color: var(--secondary-black);
   font-size: 0.875rem;
 }
-
-
 </style>
