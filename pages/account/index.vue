@@ -8,7 +8,7 @@
           <div class="col-lg-4">
             <div class="card__holder px-3 pt-2 pb-2">
               <p class="text">Total Deposit</p>
-              <h4 class="funds">$125,000</h4>
+              <h4 class="funds">${{wallet.balance }}</h4>
               <!-- <p class="percentage pb-2">
                 2.5%
                 <span class="mx-1">
@@ -55,7 +55,7 @@
       </div>
 
       <div class="col-lg-4">
-        <wallet :wallet="wallet" />
+        <wallet :wallet="wallet" @reload="getWallet" />
       </div>
     </div>
   </div>

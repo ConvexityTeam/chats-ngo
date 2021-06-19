@@ -109,7 +109,7 @@
         </div>
 
         <!--Pay With Wallet here -->
-        <div class="option-holder p-3 mb-3">
+        <!-- <div class="option-holder p-3 mb-3">
           <div>
             <h5 class="option-header">Pay Into Our Wallet</h5>
             <p class="description">
@@ -119,7 +119,7 @@
 
             <button type="button" class="pay-btn">Generate address</button>
           </div>
-        </div>
+        </div> -->
       </div>
     </div>
   </div>
@@ -151,20 +151,20 @@ export default {
         currency: "USD",
         payment_options: "card,ussd,barter,account, banktransfer,qr,paga",
         redirect_url: "",
-        meta: {
-          id: ""
-        },
+        meta: [{
+          orgId: ""
+        }],
         customer: {
           name: "",
           email: "",
           phone_number: "",
-          id: ""
+          orgId: "",
         },
         customizations: {
           title: "Fund CHATS Wallet",
           description: " Description",
           logo:
-            "https://convexity.s3.us-east-2.amazonaws.com/chats+transparent.png"
+            "https://convexity.s3.us-east-2.amazonaws.com/chats+only+icon+transparent.png"
         },
         callback: this.makePaymentCallback,
         onclose: this.closedPaymentModal
@@ -183,6 +183,7 @@ export default {
 
   methods: {
     payViaService(amount) {
+      console.log("beforeSending:::", this.paymentData)
       this.amount = amount;
       this.paymentData.amount = amount;
       this.payWithFlutterwave(this.paymentData);
@@ -204,10 +205,20 @@ export default {
     async fundAccount(amount) {
       try {
         const response = await this.$axios.post("/organisation/bantu/webhook", {
-          organisationId: +this.organisationId,
+          organisation_id: +this.organisationId,
           xbnAmount: amount
         });
+
         console.log("bantuResp::", response);
+        if(response.status == "success"){
+                    this.$emit('reload')
+                    location.reload()
+          this.$toast.success(response.message)
+
+        }
+        else{
+           this.$toast.error(response.message)
+        }
       } catch (err) {
         console.log("bantuerr", err);
       }
@@ -217,8 +228,8 @@ export default {
       (this.paymentData.customer.email = this.user.email),
         (this.paymentData.customer.name = this.user.AssociatedOrganisations[0].Organisation.name);
       this.paymentData.customer.phone_number = this.user.AssociatedOrganisations[0].Organisation.phone;
-      this.paymentData.customer.id = this.user.AssociatedOrganisations[0].Organisation.id;
-      this.paymentData.meta.id = this.user.AssociatedOrganisations[0].Organisation.id;
+      this.paymentData.customer.orgId = this.user.AssociatedOrganisations[0].Organisation.id;
+      this.paymentData.meta[0].orgId = this.user.AssociatedOrganisations[0].Organisation.id;
       this.organisationId = this.user.AssociatedOrganisations[0].Organisation.id;
     },
 

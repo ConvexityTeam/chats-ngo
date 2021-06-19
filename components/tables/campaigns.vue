@@ -183,7 +183,6 @@ export default {
   mounted() {
     this.id = this.user.AssociatedOrganisations[0].OrganisationId;
     this.fetchAllCampaigns();
-
     console.log("or:::", this.user.AssociatedOrganisations[0].OrganisationId);
   },
   methods: {

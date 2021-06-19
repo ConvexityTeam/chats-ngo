@@ -3,7 +3,7 @@
     <div class="container">
       <!-- Modals here -->
       <newCash @reload="fetchAllCampaigns" />
-        <newTask @reload="fetchAllCampaigns" :id="campaignId" />
+      <newTask @reload="fetchAllCampaigns" :id="campaignId" />
 
       <div class="d-flex pt-lg-4">
         <div class="d-flex">
@@ -36,7 +36,7 @@
 
       <!-- cards here -->
       <div class="row mt-5">
-        <div v-if="loading" class="loader text-center"></div>
+        <div v-if="loading" class=" text-center"></div>
 
         <div
           v-else-if="campaigns.length"
@@ -59,10 +59,13 @@
               <!-- Task count here -->
               <div class="d-flex">
                 <div>
-                  <p class="tasks">{{campaign.completedTasks}}/{{campaign.totalTasks}} {{ campaign.totalTasks == 1 ? 'Task' : 'Tasks'}}</p>
+                  <p class="tasks">
+                    {{ campaign.completedTasks }}/{{ campaign.totalTasks }}
+                    {{ campaign.totalTasks == 1 ? "Task" : "Tasks" }}
+                  </p>
                 </div>
                 <div class="ml-auto">
-                  <p class="tasks">{{campaign.progress}}%</p>
+                  <p class="tasks">{{ campaign.progress }}%</p>
                 </div>
               </div>
 
@@ -95,11 +98,12 @@
 
 <script>
 import newCash from "~/components/modals/new-cash-for-work";
-import newTask from "~/components/modals/new-task"
+import newTask from "~/components/modals/new-task";
 import { mapGetters } from "vuex";
+let screenLoading;
 export default {
   layout: "dashboard",
-  components: { newCash , newTask},
+  components: { newCash, newTask },
   data() {
     return {
       loading: false,
@@ -107,7 +111,7 @@ export default {
       id: "",
       campaigns: [],
       searchQuery: "",
-      campaignId: 0,
+      campaignId: 0
     };
   },
 
@@ -136,22 +140,30 @@ export default {
     async fetchAllCampaigns() {
       try {
         this.loading = true;
+        this.openScreen();
 
-        const response = await this.$axios.get(
-          `/cash-for-work`
-        );
+        const response = await this.$axios.get(`/cash-for-work`);
 
         if (response.status == "success") {
           this.campaigns = response.data.reverse();
+          screenLoading.close();
         }
         this.loading = false;
 
         console.log("All campaigns:::", response);
       } catch (err) {
+        screenLoading.close();
         this.loading = false;
       }
     },
 
+    openScreen() {
+      screenLoading = this.$loading({
+        lock: true,
+        spinner: "el-icon-loading",
+        background: "#0000009b"
+      });
+    }
   }
 };
 </script>

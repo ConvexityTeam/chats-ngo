@@ -43,13 +43,13 @@ export default {
 
     components: true,
 
-    pageTransition: {
-        name: 'page',
-        mode: 'out-in',
-        beforeEnter (el) {
-          console.log('Before enter...');
-        }
-      },
+    // pageTransition: {
+    //     name: 'page',
+    //     mode: 'out-in',
+    //     beforeEnter (el) {
+    //       console.log('Before enter...');
+    //     }
+    //   },
 
     // Modules for dev and build (recommended) (https://go.nuxtjs.dev/config-modules)
     buildModules: [],
