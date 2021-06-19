@@ -27,13 +27,10 @@
       <div>
         <b-tabs content-class="mt-3">
           <!-- All complaints tab here -->
-          <b-tab title="All" active>
+          <b-tab title="All" active @click="getComplaints">
             <div>
               <div v-if="complaints != ''">
-                <p
-                  v-for="(complaint, i) in beneficiariesData.complaint"
-                  :key="i"
-                >
+                <p v-for="(complaint, i) in complaints" :key="i">
                   {{ i + 1 + "." }} {{ complaint.title }}
                 </p>
               </div>
@@ -44,7 +41,7 @@
           </b-tab>
 
           <!-- Resolved complaints here -->
-          <b-tab title="Resolved" @click="handleResolved">
+          <b-tab title="Resolved" @click="getResolvedComplaints">
             <div>
               <div v-if="resolved != ''">
                 <p v-for="(complaint, i) in resolved" :key="i">
@@ -58,7 +55,7 @@
           </b-tab>
 
           <!-- Unresolved Complaints here -->
-          <b-tab title="Unresolved" @click="handleUnresolved">
+          <b-tab title="Unresolved" @click="getUnresolvedComplaints">
             <div class=" ">
               <div v-if="unresolved != ''">
                 <p v-for="(complaint, i) in unresolved" :key="i">
@@ -79,23 +76,76 @@
 <script>
 export default {
   props: {
-    beneficiariesData: {
-       type: Object
+    campaignId: {
+      type: String,
     },
-
   },
 
   data() {
     return {
       key: 0,
-      complaints: null,
+      id: "",
+      complaints: [],
       loading: false,
       resolved: [],
       unresolved: [],
     };
   },
+  mounted() {
+    this.id = this.campaignId;
+    this.getComplaints();
+    this.getUnresolvedComplaints();
+    this.getResolvedComplaints();
+  },
 
   methods: {
+    check() {
+      console.log("chek");
+    },
+    async getComplaints() {
+      try {
+        const response = await this.$axios.get(
+          `/campaigns/complaints/${+this.id}`
+        );
+        console.log("complaints::::", response);
+        if (response.status == "success") {
+          this.complaints = response.data.complaints;
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    },
+
+    async getResolvedComplaints() {
+      try {
+        const response = await this.$axios.get(
+          `/campaigns/complaints/${+this.id}?status=resolved&page=1
+`
+        );
+        console.log("complaints::::", response);
+        // if (response.data.code == "200") {
+        //   this.resolved = response.data.data.complaints;
+        // }
+      } catch (err) {
+        console.log(err);
+      }
+    },
+
+    async getUnresolvedComplaints() {
+      try {
+        const response = await this.$axios.get(
+          `/campaigns/complaints/${+this.id}?status=unresolved&page=1
+`
+        );
+        console.log("complaints::::", response);
+        if (response.data.code == "200") {
+          this.unresolved = response.data.data.complaints;
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    },
+
     handleResolved() {
       let resolved = this.beneficiariesData.complaint.filter(
         (complaint) => complaint.status == "Clossed"

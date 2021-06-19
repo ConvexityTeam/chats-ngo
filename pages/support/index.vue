@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="container">
     SUPPORT HERE
     </div>
 </template>

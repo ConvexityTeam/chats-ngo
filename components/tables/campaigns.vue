@@ -1,8 +1,8 @@
 <template>
-  <div class="main">
-    <div class="container">
+  <div class="main container">
+    <div class="">
       <!-- Modal here -->
-      <newCampaign />
+      <newCampaign @reload="fetchAllCampaigns()" />
       <div class="d-flex pt-lg-4">
         <div class="d-flex">
           <!-- Search Box here -->
@@ -63,27 +63,58 @@
 
       <!-- Table here -->
       <div class="holder">
-        <table class="table table-borderless" v-if="campaigns != ''">
+        <table class="table table-borderless" v-if="campaigns.length">
           <thead>
             <tr>
               <th scope="col">Name</th>
-              <th scope="col">Total</th>
-              <th scope="col">Spent</th>
+              <th scope="col"> Budget</th>
+              <!-- <th scope="col">Spent</th> -->
               <th scope="col">Created</th>
               <th scope="col">Status</th>
-              <th scope="col"></th>
+              <!-- <th scope="col"></th> -->
             </tr>
           </thead>
           <tbody>
-            <tr v-for="campaign in resultQuery" :key="campaign.id">
-              <td>{{ campaign.title }}</td>
-              <td>{{ campaign.budget | formatNumber }}</td>
-              <td>{{ campaign.spent }}</td>
-              <td>{{ campaign.createdAt | formatDateOnly }}</td>
-              <td v-if="campaign.status == 0" class="pending" >Pending</td>
-              <td v-if="campaign.status == 1" class="in-progress">In Progress</td>
-              <td v-if="campaign.status == 2" class="completed">Closed</td>
-              <td>
+            <tr
+              v-for="campaign in resultQuery"
+              :key="campaign.id"
+              style="cursor: pointer"
+            >
+              <td @click="handleTempCampaign(campaign)">
+                {{ campaign.title }}
+              </td>
+              <td @click="handleTempCampaign(campaign)">
+                $ {{ campaign.budget | formatCurrency }}
+              </td>
+              <!-- <td @click="handleTempCampaign(campaign)">
+                {{ campaign.spent }}
+              </td> -->
+              <td @click="handleTempCampaign(campaign)">
+                {{ campaign.createdAt | formatDateOnly }}
+              </td>
+
+              <td
+                @click="handleTempCampaign(campaign)"
+                v-if="campaign.status == 0"
+                class="pending"
+              >
+                Pending
+              </td>
+              <td
+                @click="handleTempCampaign(campaign)"
+                v-if="campaign.status == 1"
+                class="in_progress"
+              >
+                In Progress
+              </td>
+              <td
+                @click="handleTempCampaign(campaign)"
+                v-if="campaign.status == 2"
+                class="completed"
+              >
+                Closed
+              </td>
+              <!-- <td>
                 <b-dropdown
                   variant="link"
                   toggle-class="text-decoration-none"
@@ -92,13 +123,15 @@
                   <template #button-content>
                     <dot />
                   </template>
-                  <b-dropdown-item href="#">View</b-dropdown-item>
+                  <b-dropdown-item @click="handleTempCampaign(campaign)"
+                    >View</b-dropdown-item
+                  >
                 </b-dropdown>
-              </td>
+              </td> -->
             </tr>
           </tbody>
         </table>
-        <div v-else-if="loading" class="loader text-center"></div>
+        <div v-else-if="loading" class=" text-center"></div>
         <h3 v-else class="text-center no-record">NO RECORD FOUND</h3>
       </div>
     </div>
@@ -106,66 +139,89 @@
 </template>
 
 <script>
-import dot from '~/components/icons/dot'
-import newCampaign from '~/components/modals/new-campaign'
+import dot from "~/components/icons/dot";
+import newCampaign from "~/components/modals/new-campaign";
+import { mapGetters } from "vuex";
+let screenLoading;
 export default {
   components: {
     dot,
-    newCampaign,
+    newCampaign
   },
   data() {
     return {
       loading: false,
+      id: "",
       campaigns: [],
       selected: null,
-      searchQuery: null,
+      searchQuery: "",
       options: [
-        { value: null, text: 'filter' },
-        { value: 'all', text: 'All' },
-        { value: 'inprogress', text: 'In Progress' },
-        { value: 'completed', text: 'Completed' },
-      ],
-    }
+        { value: null, text: "filter" },
+        { value: "all", text: "All" },
+        { value: "inprogress", text: "In Progress" },
+        { value: "completed", text: "Completed" }
+      ]
+    };
   },
 
   computed: {
+    ...mapGetters("authentication", ["user"]),
     resultQuery() {
       if (this.searchQuery) {
-        return this.campaigns.filter((campaign) => {
+        return this.campaigns.filter(campaign => {
           return this.searchQuery
             .toLowerCase()
-            .split(' ')
-            .every((v) => campaign.title.toLowerCase().includes(v))
-        })
+            .split(" ")
+            .every(v => campaign.title.toLowerCase().includes(v));
+        });
       } else {
-        return this.campaigns
+        return this.campaigns;
       }
-    },
+    }
   },
 
-  created() {
-    this.fetchAllCampaigns()
+  mounted() {
+    this.id = this.user.AssociatedOrganisations[0].OrganisationId;
+    this.fetchAllCampaigns();
+    console.log("or:::", this.user.AssociatedOrganisations[0].OrganisationId);
   },
   methods: {
-    filterCampaigns() {
-      console.log('filtering')
-    },
-
     async fetchAllCampaigns() {
       try {
-        this.loading = true
+        this.openScreen()
+        this.loading = true;
 
-        const response = await this.$axios.get('/campaigns')
-        this.campaigns = response.data.data
-        this.loading = false
+        const response = await this.$axios.get(
+          `/campaigns/organisation/${+this.id}?type=campaign`
+        );
 
-        console.log('All campaigns', response)
+        if (response.status == "success") {
+            screenLoading.close();
+          this.campaigns = response.data.reverse();
+        }
+        this.loading = false;
+
+        console.log("All campaigns:::", response);
       } catch (err) {
-          this.loading = false
+          screenLoading.close();
+        this.loading = false;
       }
     },
-  },
-}
+
+    handleTempCampaign(campaign) {
+      this.$router.push(`/campaigns/${campaign.id}`);
+    },
+
+      openScreen() {
+      screenLoading = this.$loading({
+        lock: true,
+        spinner: "el-icon-loading",
+        background: "#0000009b"
+      });
+    },
+
+  }
+};
 </script>
 
 <style scoped>
@@ -237,7 +293,7 @@ select.form-control {
   color: var(--secondary-black);
   font-size: 1rem;
 }
-td.in-progress {
+td.in_progress {
   color: #008cff;
 }
 td.completed {

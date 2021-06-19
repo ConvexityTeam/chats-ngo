@@ -319,10 +319,10 @@ export default {
   text-decoration: none;
 }
 
-#sidebar ul.components li a .gt-icon {
+/* #sidebar ul.components li a .gt-icon {
   margin-right: 15px;
   fill: red;
-}
+} */
 
 #sidebar ul li {
   position: relative;

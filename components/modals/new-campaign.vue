@@ -9,32 +9,7 @@
           class="close-btn position-absolute"
           @click="closeModal"
         >
-          <i>
-            <svg
-              width="23"
-              height="27"
-              viewBox="0 0 23 27"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <line
-                y1="-1.5"
-                x2="31.241"
-                y2="-1.5"
-                transform="matrix(0.640184 0.768221 -0.704167 0.710035 0 3)"
-                stroke="#333333"
-                stroke-width="3"
-              />
-              <line
-                y1="-1.5"
-                x2="21.5132"
-                y2="-1.5"
-                transform="matrix(0.673504 -0.739183 0.673504 0.739183 2.73074 22.9814)"
-                stroke="#333333"
-                stroke-width="3"
-              />
-            </svg>
-          </i>
+          <close />
         </button>
       </div>
 
@@ -46,21 +21,16 @@
             <input
               type="text"
               class="form-controls"
+              :class="{
+                error: $v.payload.title.$error
+              }"
               name="name"
               id="name"
               placeholder="Name of the campaign"
               v-model="payload.title"
-              @input.once="initMap"
+              @mouseenter.once="runMap"
               @blur="$v.payload.title.$touch()"
             />
-
-            <transition name="fade">
-              <p v-if="$v.payload.title.$error" class="form-input__error">
-                <span v-if="!$v.payload.title.required">
-                  This field is required
-                </span>
-              </p>
-            </transition>
           </div>
 
           <!--Description field  here -->
@@ -68,52 +38,41 @@
             <label for="description">Description</label>
             <textarea
               class="form-controls"
+              :class="{
+                error: $v.payload.description.$error
+              }"
               name="description"
               id="description"
               cols="30"
               rows="2"
-              v-model="payload.description"
               @blur="$v.payload.description.$touch()"
+              v-model="payload.description"
             ></textarea>
-
-            <transition name="fade">
-              <p v-if="$v.payload.description.$error" class="form-input__error">
-                <span v-if="!$v.payload.description.required">
-                  This field is required
-                </span>
-              </p>
-            </transition>
           </div>
 
           <div class="row">
-            <div class="col-lg-6">
+            <div class="col-lg-12">
               <!--Total Amount  field  here -->
               <div class="form-group">
                 <label for="total-amount">Total Wallet</label>
                 <input
-                  type="text"
+                  type="number"
                   class="form-controls"
+                  :class="{
+                    error: $v.payload.budget.$error
+                  }"
                   name="total-amount"
-                  pattern="^[-,0-9]+$"
                   id="total-amount"
                   placeholder="Amount from NGO wallet"
                   v-model="payload.budget"
                   @blur="$v.payload.budget.$touch()"
                   ref="budget"
                 />
-
-                <transition name="fade">
-                  <p v-if="$v.payload.budget.$error" class="form-input__error">
-                    <span v-if="!$v.payload.budget.required">
-                      This field is required
-                    </span>
-                  </p>
-                </transition>
               </div>
             </div>
 
             <!--Field office field  here -->
-            <div class="col-lg-6">
+            <!--<div class="col-lg-6">
               <div class="form-group">
                 <label for="field-office">Field Office</label>
                 <input
@@ -124,7 +83,7 @@
                   v-model="payload.location.field_office"
                 />
               </div>
-            </div>
+            </div> -->
 
             <!--Amount per receipient field  here -->
             <!-- <div class="col-lg-6">
@@ -147,14 +106,13 @@
               <!--start date  field  here -->
               <div class="form-group">
                 <label for="start-date">Start Date</label>
-                <input
-                  type="date"
-                  class="form-controls"
-                  name="total-amount"
-                  id="start-date"
-                  placeholder="Amount from NGO wallet"
+
+                <date-picker
                   v-model="payload.start_date"
-                />
+                  format="MM-DD-YYYY"
+                  placeholder="MM-DD-YYYY"
+                  valueType="format"
+                ></date-picker>
               </div>
             </div>
 
@@ -162,36 +120,38 @@
             <div class="col-lg-6">
               <div class="form-group">
                 <label for="end-date">End Date</label>
-                <input
-                  type="date"
-                  class="form-controls"
-                  name="total-amount"
-                  id="end-date"
-                  placeholder="Amount from NGO wallet"
+
+                <date-picker
                   v-model="payload.end_date"
-                />
+                  format="MM-DD-YYYY"
+                  placeholder="MM-DD-YYYY"
+                  valueType="format"
+                ></date-picker>
               </div>
             </div>
           </div>
 
-          <div class="row">
-            <!--Location  field  here -->
+          <!--Location  field  here -->
+          <!-- <div class="row">
             <div class="col-lg-12">
               <div class="form-group">
                 <label for="location">Location</label>
                 <input
                   type="text"
                   class="form-controls"
+                  :class="{
+                    error: $v.payload.location.country.$error
+                  }"
                   name="location"
                   id="location"
-                  v-model="payload.location.state"
+                  v-model="payload.location.country"
+                  @blur="$v.payload.location.country.$touch()"
                 />
               </div>
             </div>
-          </div>
+          </div> -->
+          <div id="map_canvas"></div>
 
-   <div id="map_canvas"></div>
-       
           <div class="d-flex py-3">
             <div>
               <button
@@ -222,16 +182,20 @@
 </template>
 <script>
 import { required } from "vuelidate/lib/validators";
+import { mapGetters } from "vuex";
 const apiKey = "AIzaSyApnZ4U1qeeHgHZuckDndNVVMIJAo-b5Vo";
+import DatePicker from "vue2-datepicker";
+import "vue2-datepicker/index.css";
+import close from "~/components/icons/close";
 let geocoder;
 export default {
   head() {
     return {
       script: [
         {
-          src: `https://maps.googleapis.com/maps/api/js?key=${apiKey}&callback=initMap&libraries=geometry&v=weekly`,
-        },
-      ],
+          src: `https://maps.googleapis.com/maps/api/js?key=${apiKey}&callback=initMap&libraries=geometry,drawing&v=weekly`
+        }
+      ]
     };
   },
 
@@ -240,53 +204,57 @@ export default {
       loading: false,
       isFired: false,
       payload: {
+        organisation_id: 0,
+        type: "campaign",
         title: "",
         description: "",
         budget: "",
         location: {
           country: "",
-          state: "",
-          field_office: "",
-          coordinates: [],
+          coordinates: []
         },
         start_date: "",
-        end_date: "",
+        end_date: ""
       },
+
+      location: {
+        coordinates: []
+      }
     };
   },
 
   validations: {
     payload: {
       title: {
-        required,
+        required
       },
       description: {
-        required,
+        required
       },
       budget: {
-        required,
+        required
       },
       location: {
-        state: {
-          required,
-        },
+        coordinates: {
+          required
+        }
       },
       start_date: {
-        required,
+        required
       },
       end_date: {
-        required,
-      },
-    },
+        required
+      }
+    }
+  },
+  components: { DatePicker, close },
+
+  computed: {
+    ...mapGetters("authentication", ["user"])
   },
 
-  watch: {
-    "payload.budget": function (newValue) {
-      const result = newValue
-        .replace(/\D/g, "")
-        .replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-      this.$nextTick(() => (this.payload.budget = result));
-    },
+  mounted() {
+    this.payload.organisation_id = this.user.AssociatedOrganisations[0].OrganisationId;
   },
 
   methods: {
@@ -295,101 +263,190 @@ export default {
     },
 
     async createCampaign() {
+      console.log("pd::", this.payload);
+
       try {
         this.loading = true;
         this.$v.payload.$touch();
 
         if (this.$v.payload.$error === true) {
-          this.loading = false;
-          this.$toast.error("Please fill in appropriately");
-          return;
+          if (this.$v.payload.location.coordinates.$error == true) {
+            this.$toast.error("Please Geofence a location on the map");
+          }
+          return (this.loading = false);
         }
 
-        let budgetString = this.payload.budget;
-        budgetString = budgetString.replaceAll(",", "");
-        this.payload.budget = budgetString;
+        this.payload.location = JSON.stringify(this.payload.location);
 
-        const response = await this.$axios.post("/campaigns", this.payload);
-        console.log({ campaignResponse: response });
+        const response = await this.$axios.post("/organisation/campaign", this.payload);
 
-        this.$toast.success(response.data.message);
+        if (response.status == "success") {
+          this.$emit("reload");
+          this.closeModal();
+          this.$toast.success(response.message);
+        } else {
+          this.$toast.error(response.message);
+        }
+
+        console.log("campaignResponse:::", response);
+
         this.loading = false;
-        this.closeModal();
-        location.reload();
       } catch (err) {
         console.log(err);
         this.loading = false;
-        this.$toast.error(err.response.data.message);
       }
     },
 
     // TODO:Try emiting fetch all campaigns method from parent and calling here
+    runMap() {
+      document.getElementById("map_canvas").style.display = "block";
 
-    initMap() {
-      document.getElementById('map_canvas').style.display = 'block'
-      //Map Constructor here
-      var map = new google.maps.Map(document.getElementById("map_canvas"), {
-        zoom: 1,
-        center: new google.maps.LatLng(35.137879, -82.836914),
-        mapTypeId: google.maps.MapTypeId.ROADMAP,
+      const map = new google.maps.Map(document.getElementById("map_canvas"), {
+        center: { lat: 17.35297042396732, lng: 8.808737500000019 },
+        zoom: 3,
+        mapTypeId: google.maps.MapTypeId.ROADMAP
       });
 
-      // Marker Constructor here
-      var myMarker = new google.maps.Marker({
-        position: new google.maps.LatLng(21.47542448391573, 15.103484999999983),
-        animation: google.maps.Animation.DROP,
-        draggable: true,
-        title: "Drag me!",
-      });
+      var all_overlays = [];
+      var selectedShape;
+      var drawingManager = new google.maps.drawing.DrawingManager({
+        drawingMode: google.maps.drawing.OverlayType.POLYGON,
+        drawingControl: true,
+        drawingControlOptions: {
+          position: google.maps.ControlPosition.TOP_CENTER,
+          drawingModes: [google.maps.drawing.OverlayType.POLYGON]
+        },
 
-      //Event listener added here
-      google.maps.event.addListener(myMarker, "dragend", (evt) => {
-        // this.payload.location.coordinates.push({long: evt.latLng.lng(), lat:evt.latLng.lat()})
-        this.payload.location.coordinates = {
-          long: evt.latLng.lng(),
-          lat: evt.latLng.lat(),
-        };
-
-        //Geocoder constructor here
-        geocoder = new google.maps.Geocoder();
-        var latlng = new google.maps.LatLng(evt.latLng.lat(), evt.latLng.lng());
-        codeLatLng((address) => {
-          this.payload.location.state = address;
-        });
-
-        // Geocoder call back function here
-        function codeLatLng(callback) {
-          var latlng = new google.maps.LatLng(
-            evt.latLng.lat(),
-            evt.latLng.lng()
-          );
-          if (geocoder) {
-            geocoder.geocode({ latLng: latlng }, function (results, status) {
-              if (status == google.maps.GeocoderStatus.OK) {
-                if (results[1]) {
-                  callback(results[1].formatted_address);
-                } else {
-                  this.$toast.error("No results found");
-                }
-              } else {
-                this.$toast.error("Geocoder failed, Please try again");
-              }
-            });
-          }
+        polygonOptions: {
+          clickable: true,
+          draggable: true,
+          editable: true,
+          fillColor: "",
+          fillOpacity: 0.35
         }
       });
-      map.setCenter(myMarker.position);
-      myMarker.setMap(map);
-    },
-  },
+
+      const clearSelection = () => {
+        if (selectedShape) {
+          selectedShape.setEditable(false);
+          selectedShape = null;
+        }
+      };
+
+      const setSelection = shape => {
+        clearSelection();
+        selectedShape = shape;
+        shape.setEditable(true);
+      };
+
+      const deleteSelectedShape = () => {
+        if (selectedShape) {
+          this.payload.location.coordinates = [];
+          selectedShape.setMap(null);
+        }
+      };
+
+      const CenterControl = (controlDiv, map) => {
+        // Set CSS for the control border.
+        var controlUI = document.createElement("div");
+        controlUI.style.backgroundColor = "#17CE89";
+        controlUI.style.border = "none";
+        controlUI.style.borderRadius = "10px";
+
+        controlUI.style.cursor = "pointer";
+        controlUI.style.marginBottom = "22px";
+        controlUI.style.textAlign = "center";
+        controlUI.title = "Select to delete the shape";
+        controlDiv.appendChild(controlUI);
+
+        // Set CSS for the control interior.
+        var controlText = document.createElement("div");
+        controlText.style.color = "#fff";
+        controlText.style.fontWeight = 500;
+        controlText.style.fontSize = "1rem";
+        controlText.style.lineHeight = "38px";
+        controlText.style.padding = "3px 15px";
+        controlText.innerHTML = "Delete Selected Area";
+        controlUI.appendChild(controlText);
+
+        // Setup the click event listeners: simply set the map to Chicago.
+        controlUI.addEventListener("click", function() {
+          deleteSelectedShape();
+        });
+      };
+
+      drawingManager.setMap(map);
+
+      google.maps.event.addListener(
+        drawingManager,
+        "polygoncomplete",
+        event => {
+          const vertices = event.getPath();
+          for (let i = 0; i < vertices.getLength(); i++) {
+            const coordinates = vertices.getAt(i).toUrlValue(6);
+            // reassign into array
+            // this.payload.location.coordinates.length = 0
+            this.payload.location.coordinates.push(coordinates);
+          }
+
+          // event.getPath().getLength();
+          google.maps.event.addListener(event.getPath(), "insert_at", () => {
+            var len = event.getPath().getLength();
+            for (var i = 0; i < len; i++) {
+              const coordinates = vertices.getAt(i).toUrlValue(6);
+              // push into array
+              this.payload.location.coordinates.push(coordinates);
+            }
+          });
+
+          google.maps.event.addListener(event.getPath(), "set_at", () => {
+            var len = event.getPath().getLength();
+            for (var i = 0; i < len; i++) {
+              const coordinates = vertices.getAt(i).toUrlValue(6);
+              // reassign into array
+              // this.payload.location.coordinates.length = 0
+              this.payload.location.coordinates.push(coordinates);
+            }
+          });
+        }
+      );
+
+      google.maps.event.addListener(drawingManager, "overlaycomplete", function(
+        event
+      ) {
+        all_overlays.push(event);
+        if (event.type !== google.maps.drawing.OverlayType.MARKER) {
+          drawingManager.setDrawingMode(null);
+          //Write code to select the newly selected object.
+
+          var newShape = event.overlay;
+          newShape.type = event.type;
+          google.maps.event.addListener(newShape, "click", function() {
+            setSelection(newShape);
+          });
+
+          setSelection(newShape);
+        }
+      });
+
+      var centerControlDiv = document.createElement("div");
+      var centerControl = new CenterControl(centerControlDiv, map);
+
+      centerControlDiv.index = 1;
+      map.controls[google.maps.ControlPosition.BOTTOM_CENTER].push(
+        centerControlDiv
+      );
+    }
+  }
 };
 </script>
 
 <style scoped>
 #map_canvas {
   height: 300px;
-  display: none
+  display: none;
 }
+
 #current {
   padding-top: 25px;
 }
@@ -443,5 +500,17 @@ label {
 }
 textarea {
   height: auto;
+}
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type="number"] {
+  -moz-appearance: textfield;
 }
 </style>

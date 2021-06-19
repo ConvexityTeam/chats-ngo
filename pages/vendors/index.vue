@@ -1,12 +1,12 @@
 <template>
-  <div class="main">
+  <div class="main container">
     <!-- Top cards here -->
     <div class="row no-gutters pt-lg-4">
       <!-- Beneficiaries here -->
       <div class="col-lg-3">
         <div class="card__holder px-3 pt-2">
           <p class="text">Vendors</p>
-          <h4 class="funds">{{ allVendors.length }}</h4>
+          <h4 class="funds">{{ loading ? "0" : allVendors }}</h4>
           <p class="pb-2">
             <nuxt-link to="/vendors/all-vendors" class="percentage">
               View all
@@ -19,7 +19,7 @@
       <div class="col-lg-3">
         <div class="card__holder px-3 pt-2">
           <p class="text">Daily Transactions</p>
-          <h4 class="funds pb-4">23</h4>
+          <h4 class="funds pb">23</h4>
         </div>
       </div>
 
@@ -27,7 +27,7 @@
       <div class="col-lg-3">
         <div class="card__holder px-3 pt-2">
           <p class="text">Transaction Value</p>
-          <h4 class="funds pb-4">$125,000/N120,000</h4>
+          <h4 class="funds pb">$125,000/N120,000</h4>
         </div>
       </div>
 
@@ -35,7 +35,7 @@
       <div class="col-lg-3">
         <div class="card__holder px-3 pt-2">
           <p class="text">Products Sold</p>
-          <h4 class="funds pb-4">2600</h4>
+          <h4 class="funds pb">2600</h4>
         </div>
       </div>
     </div>
@@ -48,31 +48,39 @@
 </template>
 
 <script>
-import vendorTransaction from '~/components/tables/vendor-transaction'
+import vendorTransaction from "~/components/tables/vendor-transaction";
 export default {
-  layout: 'dashboard',
-  data() {
-    return {
-      allVendors: '',
-    }
-  },
+  layout: "dashboard",
+
+  data: () => ({
+    loading: false,
+    allVendors: "",
+  }),
+
   components: {
     vendorTransaction,
   },
 
   created() {
-    this.fetchAllVendors()
+    this.fetchAllVendors();
   },
 
   methods: {
     async fetchAllVendors() {
       try {
-        const response = await this.$axios.get('/vendors')
-        this.allVendors = response.data.data
+        this.loading = true;
+        const response = await this.$axios.get("/vendors");
+
+        console.log("allendors:::", response)
+
+        if (response.status == "success") {
+          this.loading = false;
+          this.allVendors = response.data.length;
+        }
       } catch (error) {}
     },
   },
-}
+};
 </script>
 
 <style scoped>
@@ -104,6 +112,10 @@ export default {
   color: var(--secondary-black);
   font-size: 1.5rem;
   font-weight: 500;
+}
+
+.funds.pb {
+  padding-bottom: 35px;
 }
 .percentage {
   color: #00bf6f;

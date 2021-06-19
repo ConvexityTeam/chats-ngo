@@ -1,5 +1,5 @@
 <template>
-  <div class="main">
+  <div class="main container">
     <!-- Top cards here -->
     <div class="row no-gutters pt-lg-4">
       <!-- Wallet balance here -->
@@ -7,7 +7,7 @@
         <div class="card__holder px-3 pt-2">
           <p class="text">Wallet Balance</p>
           <h4 class="funds pb-3 d-flex">
-            {{ userLocation.currencySymbol + userLocation.convertedValue}}
+            $ {{ loading ? "0" : stats.balance | formatCurrency }}
           </h4>
           <!-- <p class="percentage pb-2">
             2.5%
@@ -35,7 +35,9 @@
       <div class="col-lg-3">
         <div class="card__holder px-3 pt-2">
           <p class="text">Total Amount Recieved</p>
-          <h4 class="funds pb-3">   {{ userLocation.currencySymbol + userLocation.convertedValue}}</h4>
+          <h4 class="funds pb-3">
+            $ {{ loading ? "0" : stats.income | formatCurrency }}
+          </h4>
         </div>
       </div>
 
@@ -43,7 +45,9 @@
       <div class="col-lg-3">
         <div class="card__holder px-3 pt-2">
           <p class="text">Total Amount Disbursed</p>
-          <h4 class="funds pb-3">   {{ userLocation.currencySymbol + userLocation.convertedValue}}</h4>
+          <h4 class="funds pb-3">
+            $ {{ loading ? "0" : stats.expense | formatCurrency }}
+          </h4>
         </div>
       </div>
 
@@ -51,7 +55,9 @@
       <div class="col-lg-3">
         <div class="card__holder px-3 pt-2">
           <p class="text">Total Balance</p>
-          <h4 class="funds pb-3"> {{ userLocation.currencySymbol + userLocation.convertedValue}}</h4>
+          <h4 class="funds pb-3">
+            $ {{ loading ? "0" : stats.balance | formatCurrency }}
+          </h4>
         </div>
       </div>
     </div>
@@ -154,9 +160,13 @@
         <div class="metric__holder mr-4 px-3 pt-3">
           <p class="total-count pb-3">Vendors</p>
 
-          <div class="d-flex pb-3" v-for="vendor in allVendors.slice(0, 5)" :key="vendor.id">
+          <div
+            class="d-flex pb-3"
+            v-for="vendor in allVendors.slice(0, 5)"
+            :key="vendor.id"
+          >
             <div>
-              <p class="vendor-name">{{vendor.first_name}}</p>
+              <p class="vendor-name">{{ vendor.first_name }}</p>
             </div>
             <div class="ml-auto">
               <button type="button" class="more-btn">
@@ -165,7 +175,11 @@
             </div>
           </div>
 
-          <div class="d-flex pb-2">
+          <div v-if="!allVendors.length">
+            <h3 class="text-center no-record">NO RECORD FOUND</h3>
+          </div>
+
+          <div class="d-flex pb-2" v-if="allVendors.length">
             <div class="mt-2">
               <nuxt-link class="viewall" to="/vendors">View all</nuxt-link>
             </div>
@@ -186,32 +200,34 @@
 </template>
 
 <script>
-import beneficiaryAge from '~/components/charts/beneficiary-age'
-import beneficiaryGender from '~/components/charts/beneficiary-gender'
-import beneficiaryVendor from '~/components/charts/beneficiary-vendor'
-import beneficiaryBalances from '~/components/charts/beneficiary-balances'
-import beneficiaryLocation from '~/components/charts/beneficiary-location'
-import dot from '~/components/icons/dot'
-import rightArrow from '~/components/icons/right-arrow'
-import leftArrow from '~/components/icons/left-arrow'
-import locateMixin from '~/components/mixins/locate'
-import countries from '~/plugins/countries'
+import beneficiaryAge from "~/components/charts/beneficiary-age";
+import beneficiaryGender from "~/components/charts/beneficiary-gender";
+import beneficiaryVendor from "~/components/charts/beneficiary-vendor";
+import beneficiaryBalances from "~/components/charts/beneficiary-balances";
+import beneficiaryLocation from "~/components/charts/beneficiary-location";
+import dot from "~/components/icons/dot";
+import rightArrow from "~/components/icons/right-arrow";
+import leftArrow from "~/components/icons/left-arrow";
+import locateMixin from "~/components/mixins/locate";
+import countries from "~/plugins/countries";
 export default {
-  layout: 'dashboard',
+  layout: "dashboard",
   mixins: [locateMixin],
   data() {
     return {
-      allVendors:[],
-      beneficiaryCount: '',
-      amount: '5000',
+      loading: false,
+      allVendors: [],
+      beneficiaryCount: "",
+      amount: "5000",
+      stats: {},
 
       userLocation: {
-        alphaCode: '',
-        currencySymbol: '',
-        currencyCode: '',
-        convertedValue: '5000',
-      },
-    }
+        alphaCode: "",
+        currencySymbol: "",
+        currencyCode: "",
+        convertedValue: "5000"
+      }
+    };
   },
 
   components: {
@@ -222,86 +238,99 @@ export default {
     beneficiaryLocation,
     dot,
     rightArrow,
-    leftArrow,
+    leftArrow
   },
 
-  created() {
+  mounted() {
     this.fetchAllVendors();
     this.fetchAllBeneficiaries();
     this.getIp();
+    this.getStats()
   },
 
   methods: {
+    async getStats() {
+      try {
+        this.loading = true;
+        const response = await this.$axios.get("/users/info/statistics");
+        if (response.status == "success") {
+          this.loading = false;
+          this.stats = response.data[0];
+        }
+        console.log("statsresponse:::", response);
+      } catch (err) {
+        this.loading = false;
+        console.log("statserr:::", err);
+      }
+    },
     getIp() {
       this.$axios
-        .get('http://ip-api.com/json')
-        .then((response) => {
-          console.log({ response: response.data.countryCode })
-          this.userLocation.alphaCode = response.data.countryCode
-          this.setCurrency()
-          this.convertCurrency()
+        .get("http://ip-api.com/json")
+        .then(response => {
+          console.log({ response: response.data.countryCode });
+          this.userLocation.alphaCode = response.data.countryCode;
+          this.setCurrency();
+          this.convertCurrency();
         })
-        .catch((err) => {
-          console.log(err)
-        })
+        .catch(err => {
+          console.log(err);
+        });
     },
 
     setCurrency() {
       const userCountry = countries.filter(
-        (countries) => countries.alpha2Code == this.userLocation.alphaCode,
-      )
+        countries => countries.alpha2Code == this.userLocation.alphaCode
+      );
 
-      this.userLocation.currencySymbol = userCountry[0].currencies[0].symbol
-      this.userLocation.currencyCode = userCountry[0].currencies[0].code
+      this.userLocation.currencySymbol = userCountry[0].currencies[0].symbol;
+      this.userLocation.currencyCode = userCountry[0].currencies[0].code;
     },
 
     convertCurrency() {
       this.$axios
         .get(`https://fixer-fixer-currency-v1.p.rapidapi.com/convert`, {
           params: {
-            from: 'USD',
+            from: "USD",
             to: this.userLocation.currencyCode,
-            amount: this.amount,
+            amount: this.amount
           },
           headers: {
-            'x-rapidapi-key':
-              '53a42b6342msha5eeed4491364b5p1c9fb1jsn357450c321a9',
-            'x-rapidapi-host': 'fixer-fixer-currency-v1.p.rapidapi.com',
-          },
+            "x-rapidapi-key":
+              "53a42b6342msha5eeed4491364b5p1c9fb1jsn357450c321a9",
+            "x-rapidapi-host": "fixer-fixer-currency-v1.p.rapidapi.com"
+          }
         })
 
-        .then((response) => {
+        .then(response => {
           // this.userLocation.convertedValue = response.data.result
         })
 
-        .catch((error) => {
-          console.log('erroo',error)
-        })
+        .catch(error => {
+          console.log("erroo", error);
+        });
     },
 
     async fetchAllBeneficiaries() {
       try {
-        const response = await this.$axios.get('/beneficiaries')
-        console.log({response:response})
-        this.beneficiaryCount = response.data.data.length
+        const response = await this.$axios.get("/beneficiaries");
+        console.log({ response: response });
+        this.beneficiaryCount = response.data.length;
       } catch (error) {
-         console.log('erroo',error)
+        console.log("erroo", error);
       }
     },
 
     async fetchAllVendors() {
       try {
-        const response = await this.$axios.get('/vendors')
-        this.allVendors = response.data.data
-
-        console.log('all', this.allVendors)
-        console.log('vendors', response)
+        const response = await this.$axios.get("/vendors");
+        this.allVendors = response.data;
+        console.log("vendors", response);
       } catch (error) {
-        console.log(error)
+        console.log(error);
       }
-    },
-  },
-}
+    }
+  }
+};
 </script>
 
 <style scoped>

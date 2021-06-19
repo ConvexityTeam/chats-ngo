@@ -1,13 +1,13 @@
 <template>
-  <div class="main">
+  <div class="main container">
     <!-- Top cards here -->
     <div class="row no-gutters pt-lg-4">
       <!-- Beneficiaries here -->
       <div class="col-lg-3">
         <div class="card__holder px-3 pt-2">
           <p class="text">Beneficiaries</p>
-          <h4 class="funds">{{  beneficiariesData.beneficiariesCount }}</h4>
-          <p class="pb-2">
+          <h4 class="funds">{{ loading ? 0 : count }}</h4>
+          <p class="pb-1">
             <nuxt-link to="/beneficiaries/all-beneficiaries" class="percentage"
               >View all</nuxt-link
             >
@@ -19,9 +19,7 @@
       <div class="col-lg-3">
         <div class="card__holder px-3 pt-2">
           <p class="text">Total Amount Recieved</p>
-          <h4 class="funds">
-            ${{ loading ? 0 : beneficiariesData.disbursed + beneficiariesData.balance }}
-          </h4>
+          <h4 class="funds pb">$ {{ loading ? 0 : stats.income | formatCurrency}}</h4>
         </div>
       </div>
 
@@ -29,7 +27,7 @@
       <div class="col-lg-3">
         <div class="card__holder px-3 pt-2">
           <p class="text">Total Amount Disbursed</p>
-          <h4 class="funds">${{ beneficiariesData.disbursed }}</h4>
+          <h4 class="funds pb">$ {{ loading ? 0 : stats.expense | formatCurrency }}</h4>
         </div>
       </div>
 
@@ -37,7 +35,7 @@
       <div class="col-lg-3">
         <div class="card__holder px-3 pt-2">
           <p class="text">Total Balance</p>
-          <h4 class="funds">${{ beneficiariesData.balance }}</h4>
+          <h4 class="funds pb">$ {{ loading ? 0 : stats.balance | formatCurrency }}</h4>
         </div>
       </div>
     </div>
@@ -90,16 +88,8 @@
       </div>
     </div>
 
-    <!-- Third Beneficiary cards here -->
-    <div class="row no-gutters pt-lg-4 mr-3">
-      <!-- Beneficiary complaints card here -->
-      <div class="w-100">
-        <beneficiaryComplaints :beneficiariesData="beneficiariesData" />
-      </div>
-    </div>
-
     <!-- Beneficiary transaction here -->
-    <beneficiaryTransaction :beneficiariesData="beneficiariesData"  /> 
+    <beneficiaryTransaction />
   </div>
 </template>
 
@@ -113,14 +103,15 @@ import beneficiaryMarital from "~/components/charts/beneficiary-marital";
 import dot from "~/components/icons/dot";
 import rightArrow from "~/components/icons/right-arrow";
 import leftArrow from "~/components/icons/left-arrow";
-import beneficiaryComplaints from "~/components/tables/beneficiary-complaints";
 import beneficiaryTransaction from "~/components/tables/beneficiary-transaction";
+import {mapActions} from "vuex"
 export default {
   layout: "dashboard",
   data() {
     return {
       loading: false,
-      beneficiariesData: {},
+      count: "",
+      stats: {},
     };
   },
   components: {
@@ -133,34 +124,61 @@ export default {
     dot,
     rightArrow,
     leftArrow,
-    beneficiaryComplaints,
     beneficiaryTransaction,
   },
 
   mounted() {
-    this.fetchBeneficiariesData();
+    this.fetchAllBeneficiaries();
+    this.getStats();
+    this.getChartData();
   },
 
   methods: {
-    async fetchBeneficiariesData() {
+    ...mapActions("authenticaion",["logout"]),
+    async fetchAllBeneficiaries() {
       try {
         this.loading = true;
 
-        const response = await this.$axios.get(
-          "/ngo/auth/dashboard",
-          this.payload
-        );
-        if (response.data.code == 200) {
+        const response = await this.$axios.get("/beneficiaries");
+        console.log("Allbeneficiaries:::", response);
+
+        if (response.status == "success") {
           this.loading = false;
-
-          this.beneficiariesData = response.data.data;
+          this.count = response.data.length;
         }
-
-        console.log("response", response);
-
       } catch (error) {
         this.loading = false;
         this.$toast.error(error.response.data.message);
+      }
+    },
+
+    async getStats() {
+      try {
+        this.loading = true;
+        const response = await this.$axios.get("/users/info/statistics");
+        if (response.status == "success") {
+          this.loading = false;
+          this.stats = response.data[0];
+        }
+        console.log("statsresponse:::", response);
+      } catch (err) {
+        this.loading = false;
+        console.log("statserr:::", err);
+      }
+    },
+
+    async getChartData() {
+      try {
+        this.loading = true;
+        const response = await this.$axios.get("/users/info/chart");
+        // if (response.data.code == 200) {
+        //   this.loading = false;
+        //   this.stats = response.data.data[0];
+        // }
+        console.log("chatresponse:::", response);
+      } catch (err) {
+        this.loading = false;
+        console.log("chsrtserr:::", err);
       }
     },
   },
@@ -229,6 +247,9 @@ export default {
   color: var(--secondary-black);
   font-size: 1.5rem;
   font-weight: 500;
+}
+.funds.pb {
+  padding-bottom: 35px;
 }
 .percentage {
   color: #00bf6f;

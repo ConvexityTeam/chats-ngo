@@ -8,14 +8,17 @@
         <input
           type="text"
           class="form-controls"
-          placeholder="Search vendors by name or ID"
+          placeholder="Search vendors by name"
           v-model="searchQuery"
         />
       </div>
 
       <div class="ml-auto">
         <button type="button" class="export-btn p-3">
-          <download-csv :data="vendors" name="All-Vendors.csv">
+           <download-csv
+            :data="vendors"
+            name="Vendors.csv"
+          >
             Export as CSV
           </download-csv>
         </button>
@@ -38,7 +41,6 @@
                   : data.length + ' ' + `vendors`
               }}
             </th>
-            <th scope="col" class="py-4">ID</th>
             <th scope="col" class="py-4">Phone Number</th>
             <th scope="col" class="py-4">Email Address</th>
             <th scope="col" class="py-4">Created</th>
@@ -70,21 +72,20 @@
                 :src="vendor.profile_pic"
                 width="30"
                 height="30"
-                class="rounded"
+                class="rounded-circle"
                 alt="Vendor"
               />
-              <p class="mx-3 pt-1">{{ vendor.first_name }}</p>
+              <p class="mx-3 pt-1">{{ vendor.first_name + " " + vendor.last_name}}</p>
             </td>
-            <td @click="handleTempVendor(vendor)">{{ vendor.id }}</td>
             <td @click="handleTempVendor(vendor)">{{ vendor.phone }}</td>
             <td @click="handleTempVendor(vendor)">{{ vendor.email }}</td>
             <td @click="handleTempVendor(vendor)">
-              {{ vendor.createdAt | formatDateOnly }}
+              {{ vendor.createdAt | formatDateText }}
             </td>
           </tr>
         </tbody>
       </table>
-      <div v-else-if="loading" class="loader text-center"></div>
+      <div v-else-if="loading" class="loader text-center my-5"></div>
       <h3 v-else class="text-center no-record">NO RECORD FOUND</h3>
     </div>
   </div>
@@ -154,9 +155,12 @@ export default {
         this.loading = true
 
         const response = await this.$axios.get('/vendors')
-        this.vendors = response.data.data
-
-        console.log('response', response)
+             if (response.status == "success") {
+          this.loading = false;
+          this.vendors = response.data
+        }
+    
+        console.log('vendors::::', response)
 
         this.loading = false
 

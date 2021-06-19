@@ -1,10 +1,13 @@
 <template>
   <div class="ml-2">
+    <fundAmount @sentAmount="payViaService" />
+    <fundBantu @fundAccount="fundAccount" />
+
     <div class="holder p-3">
       <h4 class="header">Fund Wallet</h4>
 
       <!-- Cards text here -->
-      <div class="d-flex mt-5">
+      <!-- <div class="d-flex mt-5">
         <div>
           <p class="my-cards">My cards</p>
         </div>
@@ -12,10 +15,10 @@
         <div class="ml-auto">
           <a href="#" class="see">see all</a>
         </div>
-      </div>
+      </div> -->
 
       <!-- Card here -->
-      <div>
+      <!-- <div>
         <img src="~/assets/img/vectors/Card 1.svg" alt />
 
         <div class="mt-4">
@@ -45,19 +48,44 @@
             <span class="mx-2">Add new card</span>
           </button>
         </div>
-      </div>
+      </div> -->
 
       <!-- Payment options here -->
       <div class="mt-3">
-        <!-- Pay with card here -->
+        <!-- Pay with Flutterwave here -->
         <div class="option-holder p-3 mb-3">
           <div>
-            <h5 class="option-header">Pay With Card</h5>
+            <h5 class="option-header">Fund Through Flutterwave</h5>
             <p class="description">
               You can fund your NGO wallet usuing a mastercard or Visa card.
             </p>
 
-            <button type="button" class="pay-btn">Pay Now</button>
+            <button
+              type="button"
+              class="pay-btn"
+              @click="$bvModal.show('fund-amount')"
+            >
+              Pay Now
+            </button>
+          </div>
+        </div>
+
+        <!-- Pay with Bantu here -->
+        <div class="option-holder p-3 mb-3">
+          <div>
+            <h5 class="option-header">Fund Through Bantu</h5>
+            <p class="description" style="word-break: break-word">
+              You can fund your NGO wallet using Bantu. Wallet Address:
+              {{ wallet.bantuAddress }}
+            </p>
+
+            <button
+              type="button"
+              class="pay-btn"
+              @click="$bvModal.show('fund-bantu')"
+            >
+              Initiate account Funding
+            </button>
           </div>
         </div>
 
@@ -81,38 +109,140 @@
         </div>
 
         <!--Pay With Wallet here -->
-        <div class="option-holder p-3 mb-3">
+        <!-- <div class="option-holder p-3 mb-3">
           <div>
             <h5 class="option-header">Pay Into Our Wallet</h5>
             <p class="description">
-              You can pay into out stablecoin wallet. To do so, generate a
+              You can pay into our stablecoin wallet. To do so, generate a
               payment address.
             </p>
 
             <button type="button" class="pay-btn">Generate address</button>
           </div>
-        </div>
+        </div> -->
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import { mapGetters } from "vuex";
+import fundAmount from "~/components/modals/fund-amount";
+import fundBantu from "~/components/modals/bantu-amount.vue";
 export default {
-  data() {
-    return {}
+  props: {
+    wallet: {
+      type: Object
+    }
   },
+
+  components: {
+    fundAmount,
+    fundBantu
+  },
+
+  data() {
+    return {
+      amount: 0,
+      organisationId: "",
+      paymentData: {
+        tx_ref: this.generateReference(),
+        amount: 10,
+        currency: "USD",
+        payment_options: "card,ussd,barter,account, banktransfer,qr,paga",
+        redirect_url: "",
+        meta: [{
+          orgId: ""
+        }],
+        customer: {
+          name: "",
+          email: "",
+          phone_number: "",
+          orgId: "",
+        },
+        customizations: {
+          title: "Fund CHATS Wallet",
+          description: " Description",
+          logo:
+            "https://convexity.s3.us-east-2.amazonaws.com/chats+only+icon+transparent.png"
+        },
+        callback: this.makePaymentCallback,
+        onclose: this.closedPaymentModal
+      }
+    };
+  },
+
+  computed: {
+    ...mapGetters("authentication", ["user"])
+  },
+
+  mounted() {
+    this.loadData();
+    console.log("Wallet::", this.wallet);
+  },
+
   methods: {
-    copyNumber() {
+    payViaService(amount) {
+      console.log("beforeSending:::", this.paymentData)
+      this.amount = amount;
+      this.paymentData.amount = amount;
+      this.payWithFlutterwave(this.paymentData);
+    },
+
+    makePaymentCallback(response) {
+      console.log("PaySuccess?", response);
+    },
+
+    closedPaymentModal() {
+      console.log("payment is closed");
+    },
+
+    generateReference() {
+      let date = new Date();
+      return date.getTime().toString();
+    },
+
+    async fundAccount(amount) {
       try {
-        navigator.clipboard.writeText(this.$refs.account.innerHTML)
-        this.$toast.success('copied to clipboard!')
-      } catch (error) {
-        this.$toast.error(" couldn't copy! ")
+        const response = await this.$axios.post("/organisation/bantu/webhook", {
+          organisation_id: +this.organisationId,
+          xbnAmount: amount
+        });
+
+        console.log("bantuResp::", response);
+        if(response.status == "success"){
+                    this.$emit('reload')
+                    location.reload()
+          this.$toast.success(response.message)
+
+        }
+        else{
+           this.$toast.error(response.message)
+        }
+      } catch (err) {
+        console.log("bantuerr", err);
       }
     },
-  },
-}
+
+    loadData() {
+      (this.paymentData.customer.email = this.user.email),
+        (this.paymentData.customer.name = this.user.AssociatedOrganisations[0].Organisation.name);
+      this.paymentData.customer.phone_number = this.user.AssociatedOrganisations[0].Organisation.phone;
+      this.paymentData.customer.orgId = this.user.AssociatedOrganisations[0].Organisation.id;
+      this.paymentData.meta[0].orgId = this.user.AssociatedOrganisations[0].Organisation.id;
+      this.organisationId = this.user.AssociatedOrganisations[0].Organisation.id;
+    },
+
+    copyNumber() {
+      try {
+        navigator.clipboard.writeText(this.$refs.account.innerHTML);
+        this.$toast.success("copied to clipboard!");
+      } catch (error) {
+        this.$toast.error("couldn't copy!");
+      }
+    }
+  }
+};
 </script>
 <style scoped>
 .pay-btn {

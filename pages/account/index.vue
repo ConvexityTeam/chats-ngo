@@ -1,14 +1,14 @@
 <template>
-  <div class="main">
+  <div class="main container">
     <div class="row no-gutters">
       <div class="col-lg-8">
         <!-- Top cards here -->
-        <div class="row no-gutters pt-lg-4">
+        <div class="row pt-lg-4">
           <!--Total Deposit here -->
-          <div class="col-lg-3">
+          <div class="col-lg-4">
             <div class="card__holder px-3 pt-2 pb-2">
               <p class="text">Total Deposit</p>
-              <h4 class="funds">$125,000</h4>
+              <h4 class="funds">${{wallet.balance }}</h4>
               <!-- <p class="percentage pb-2">
                 2.5%
                 <span class="mx-1">
@@ -32,18 +32,18 @@
           </div>
 
           <!-- Campaign Expenses here -->
-          <div class="col-lg-3 mx-5">
+          <div class="col-lg-4">
             <div class="card__holder px-3 pt-2 pb-2">
               <p class="text">Campaign Expenses</p>
-              <h4 class="funds">$125,000</h4>
+              <h4 class="funds">${{ financials.expense }}</h4>
             </div>
           </div>
 
           <!--  Cash Balance here -->
-          <div class="col-lg-3">
+          <div class="col-lg-4">
             <div class="card__holder px-3 pt-2 pb-2">
               <p class="text">Cash Balance</p>
-              <h4 class="funds">$125,000</h4>
+              <h4 class="funds">${{ wallet.balance }}</h4>
             </div>
           </div>
         </div>
@@ -55,22 +55,67 @@
       </div>
 
       <div class="col-lg-4">
-        <wallet/>
+        <wallet :wallet="wallet" @reload="getWallet" />
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import transactions from '~/components/tables/transactions'
-import wallet from '~/components/tables/wallet'
+import transactions from "~/components/tables/transactions";
+import wallet from "~/components/tables/wallet";
+import { mapGetters } from "vuex";
 export default {
-  layout: 'dashboard',
+  layout: "dashboard",
   components: {
     transactions,
     wallet
   },
-}
+
+  data: () => ({
+    wallet: {},
+    financials: {}
+  }),
+
+  computed: {
+    ...mapGetters("authentication", ["user"])
+  },
+
+  mounted() {
+    this.organisationId = this.user.AssociatedOrganisations[0].Organisation.id;
+    this.getWallet();
+    this.getFinancials();
+  },
+
+  methods: {
+    async getWallet() {
+      try {
+        const response = await this.$axios.get(
+          `/organisation/wallets/main/${+this.organisationId}`
+        );
+
+        if (response.status == "success") {
+          console.log("Here", response.data);
+          this.wallet = response.data.wallet;
+        }
+      } catch (err) {
+        cosole.log("Walleterr:::", err);
+      }
+    },
+
+    async getFinancials() {
+      try {
+        const response = await this.$axios.get(`/users/info/statistics`);
+        if (response.status == "success") {
+          console.log("financials::", response.data[0]);
+          this.financials = response.data[0];
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    }
+  }
+};
 </script>
 
 <style scoped>
@@ -80,9 +125,9 @@ export default {
   border-radius: 10px;
   width: 210px;
 }
-.main{
-   height: calc(100vh - 72px);
-    overflow-y: scroll;
+.main {
+  height: calc(100vh - 72px);
+  overflow-y: scroll;
 }
 /* width */
 ::-webkit-scrollbar {

@@ -1,5 +1,5 @@
 <template>
-  <div class="main pt-lg-4">
+  <div class="main pt-lg-4 container">
     <div class="d-flex flex-wrap no-gutters">
       <!-- Welcome message here -->
       <div class="message-div">
@@ -31,13 +31,13 @@
           <!-- Total products sold -->
           <div class="mb-4">
             <p class="total">Total Products Sold</p>
-            <h4 class="amount">26,000</h4>
+            <h4 class="amount"> {{data.sum_quantity == null ? "0" : data.sum_quantity | formatNumber}} </h4>
           </div>
 
           <!-- Total products sold -->
           <div class="mb-4">
             <p class="total">Total Products Value</p>
-            <h4 class="amount">$1,260,000</h4>
+            <h4 class="amount">$ {{ data.sum_value == null ? "0" : data.sum_value | formatCurrency}}</h4>
           </div>
         </div>
       </div>
@@ -79,12 +79,40 @@ import productsAgeGroup from '~/components/charts/products-age-group'
 import allProducts from '~/components/tables/all-products'
 export default {
   layout: 'dashboard',
+   transition: 'page',
   components: {
     productsGenderFemale,
     productsGenderMale,
     productsAgeGroup,
     allProducts
   },
+  data: () => ({
+    loading : false,
+    data: {}
+  }),
+
+  mounted(){
+this.getSoldProductsValue()
+  },
+
+  methods:{
+          async getSoldProductsValue() {
+      try {
+        this.loading = true;
+        const response = await this.$axios.get("/vendors/products/sold/value");
+        if ((response.status == "success")) {
+          this.loading = false;
+          this.data = response.data[0];
+        }
+        console.log("productsValue:::", response);
+      } catch (err) {
+        console.log(err);
+        this.loading = false
+      }
+    },
+  }
+
+
 }
 </script>
 

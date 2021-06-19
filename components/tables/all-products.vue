@@ -16,42 +16,69 @@
           </div>
         </div>
       </div>
-      <table class="table table-borderless">
+      <table class="table table-borderless" v-if="products.length">
         <thead>
           <tr>
-            <th scope="col"> Product Name</th>
+            <th scope="col">Product Name</th>
             <th scope="col">Vendor</th>
             <th scope="col">Sales Volume</th>
-            <th scope="col">Total Revenue </th>
+            <th scope="col">Total Revenue</th>
             <th scope="col"></th>
           </tr>
         </thead>
         <tbody>
-          <tr v-for="i in 3" :key="i">
-            <td>Cray Fish</td>
-            <td>Dangote Flour</td>
-            <td>111k</td>
-            <td>$123,476,000</td>
+          <tr v-for="product in products" :key="product.id">
+            <td>{{ product.name }}</td>
+            <td>{{ product.Vendor ? product.Vendor.store_name : " " }}</td>
+            <td>{{ product.quantity | formatCount }}</td>
+            <td>$ {{ product.value | formatCurrency }}</td>
             <td>
               <button type="button" class="more-btn"><dot /></button>
             </td>
           </tr>
         </tbody>
       </table>
+      <div v-else-if="loading" class="loader text-center"></div>
+      <h3 v-else class="text-center no-record">NO RECORD FOUND</h3>
     </div>
   </div>
 </template>
 <script>
-import dot from '~/components/icons/dot'
+import dot from "~/components/icons/dot";
 export default {
   components: {
     dot
   },
-}
+
+  data: () => ({
+    loading: false,
+    products: []
+  }),
+
+  mounted() {
+    this.fetchProducts();
+  },
+
+  methods: {
+    async fetchProducts() {
+      try {
+        this.loading = true;
+        const response = await this.$axios.get("/vendors/products/all");
+        if ((response.status == "success")) {
+          this.loading = false;
+          this.products = response.data;
+        }
+        console.log("response", response);
+      } catch (err) {
+        this.loading = false;
+        console.log(err);
+      }
+    }
+  }
+};
 </script>
 
 <style scoped>
-
 .header {
   color: var(--secondary-black);
   font-weight: 700;
@@ -88,8 +115,8 @@ select:focus {
   color: var(--secondary-black);
   font-size: 1rem;
 }
-::placeholder{
-    color: #999999;
-font-size: 1rem;
+::placeholder {
+  color: #999999;
+  font-size: 1rem;
 }
 </style>
