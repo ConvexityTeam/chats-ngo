@@ -229,24 +229,23 @@
               <a href="#" @click.prevent="logOut">
                 <span>
                   <svg
-                    width="20"
-                    height="20"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                    class="ct-icon"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
                     xmlns="http://www.w3.org/2000/svg"
                   >
                     <path
-                      d="M19.9359 8.8481C19.8934 8.74642 19.8326 8.65392 19.7551 8.57642L17.2559 6.07725C16.9301 5.75225 16.4034 5.75225 16.0776 6.07725C15.7518 6.40307 15.7518 6.93056 16.0776 7.25556L17.1551 8.33306H12.5001C12.0392 8.33306 11.6667 8.70638 11.6667 9.16638C11.6667 9.62638 12.0392 9.9997 12.5001 9.9997H17.1551L16.0776 11.0772C15.7517 11.403 15.7517 11.9305 16.0776 12.2555C16.2401 12.4188 16.4534 12.4997 16.6667 12.4997C16.8801 12.4997 17.0934 12.4189 17.2559 12.2555L19.7551 9.75634C19.8326 9.67966 19.8934 9.58716 19.9359 9.48466C20.02 9.28142 20.02 9.05142 19.9359 8.8481Z"
-                      fill="currentcolor"
+                      d="M21.9361 10.8486C21.8936 10.7469 21.8328 10.6544 21.7553 10.5769L19.2562 8.07773C18.9303 7.75273 18.4037 7.75273 18.0778 8.07773C17.752 8.40355 17.752 8.93105 18.0778 9.25605L19.1553 10.3335H14.5003C14.0395 10.3335 13.667 10.7069 13.667 11.1669C13.667 11.6269 14.0395 12.0002 14.5003 12.0002H19.1553L18.0778 13.0777C17.752 13.4035 17.752 13.931 18.0778 14.256C18.2403 14.4193 18.4536 14.5002 18.667 14.5002C18.8803 14.5002 19.0937 14.4194 19.2562 14.256L21.7553 11.7568C21.8328 11.6801 21.8936 11.5876 21.9361 11.4851C22.0203 11.2819 22.0203 11.0519 21.9361 10.8486Z"
+                      fill="#E42C66"
                     />
                     <path
-                      d="M14.1666 11.6667C13.7058 11.6667 13.3333 12.04 13.3333 12.5V16.6666H9.99998V3.33331C9.99998 2.96581 9.7583 2.64082 9.4058 2.535L6.51163 1.66668H13.3333V5.83335C13.3333 6.29335 13.7058 6.66667 14.1666 6.66667C14.6274 6.66667 14.9999 6.29335 14.9999 5.83335V0.833358C14.9999 0.37332 14.6274 0 14.1666 0H0.833319C0.803319 0 0.776639 0.0125 0.747499 0.0158203C0.708319 0.02 0.672499 0.0266406 0.634999 0.0358202C0.547499 0.0583202 0.468319 0.0924998 0.394179 0.13914C0.375859 0.15082 0.353359 0.15164 0.335859 0.164961C0.32914 0.17 0.32664 0.179179 0.31996 0.184179C0.22914 0.25582 0.15332 0.34332 0.0983201 0.447499C0.0866404 0.469999 0.0841405 0.494179 0.0749998 0.517499C0.0483202 0.580819 0.0191796 0.642499 0.00917967 0.712499C0.00499999 0.737499 0.0125 0.760819 0.0116797 0.784999C0.0108594 0.801678 0 0.816678 0 0.833319V17.5C0 17.8975 0.28082 18.2391 0.669999 18.3166L9.0033 19.9833C9.05748 19.995 9.11248 20 9.16662 20C9.35744 20 9.54494 19.9342 9.69494 19.8108C9.88744 19.6525 9.99994 19.4166 9.99994 19.1666V18.3333H14.1666C14.6274 18.3333 14.9999 17.96 14.9999 17.5V12.5C14.9999 12.04 14.6274 11.6667 14.1666 11.6667Z"
-                      fill="currentcolor"
+                      d="M16.1666 13.6667C15.7058 13.6667 15.3333 14.04 15.3333 14.5V18.6666H12V5.33331C12 4.96581 11.7583 4.64082 11.4058 4.535L8.51163 3.66668H15.3333V7.83335C15.3333 8.29335 15.7058 8.66667 16.1666 8.66667C16.6274 8.66667 16.9999 8.29335 16.9999 7.83335V2.83336C16.9999 2.37332 16.6274 2 16.1666 2H2.83332C2.80332 2 2.77664 2.0125 2.7475 2.01582C2.70832 2.02 2.6725 2.02664 2.635 2.03582C2.5475 2.05832 2.46832 2.0925 2.39418 2.13914C2.37586 2.15082 2.35336 2.15164 2.33586 2.16496C2.32914 2.17 2.32664 2.17918 2.31996 2.18418C2.22914 2.25582 2.15332 2.34332 2.09832 2.4475C2.08664 2.47 2.08414 2.49418 2.075 2.5175C2.04832 2.58082 2.01918 2.6425 2.00918 2.7125C2.005 2.7375 2.0125 2.76082 2.01168 2.785C2.01086 2.80168 2 2.81668 2 2.83332V19.5C2 19.8975 2.28082 20.2391 2.67 20.3166L11.0033 21.9833C11.0575 21.995 11.1125 22 11.1666 22C11.3574 22 11.5449 21.9342 11.6949 21.8108C11.8874 21.6525 11.9999 21.4166 11.9999 21.1666V20.3333H16.1666C16.6274 20.3333 16.9999 19.96 16.9999 19.5V14.5C16.9999 14.04 16.6274 13.6667 16.1666 13.6667Z"
+                      fill="#E42C66"
                     />
                   </svg>
                 </span>
-                <span class="mx-4 pt-1">Logout</span>
+                <span class="mx-4 pt-1" style="color: #E42C66">Logout</span>
               </a>
             </li>
           </ul>
@@ -257,29 +256,28 @@
 </template>
 
 <script>
-import { mapActions} from 'vuex'
+import { mapActions } from "vuex";
 export default {
   methods: {
     ...mapActions("authentication", ["logout"]),
 
-     async logOut() {
+    async logOut() {
       try {
         await this.logout();
         this.$router.push("/login");
-
       } catch (error) {
-        this.$toast.error(error)
+        this.$toast.error(error);
       }
-    },
-  },
-}
+    }
+  }
+};
 </script>
 
 <style scoped>
 #sidebar ul li .nuxt-link-exact-active:before,
 #sidebar ul li .nuxt-link-active:before {
   position: absolute;
-  content: '';
+  content: "";
   width: 5px;
   height: 90%;
   border-radius: 8px;
@@ -292,26 +290,20 @@ export default {
   background-color: var(--primary-color);
   color: white;
   border-radius: 0.625rem;
-  font-weight: 500;
+  font-weight: 600;
+  font-family: "Poppins", sans-serif;
 }
 .ct-icon {
-  color: black;
+  color: #7c8db5;
 }
 #sidebar ul li .nuxt-link-exact-active .ct-icon,
 #sidebar ul li .nuxt-link-active .ct-icon {
   color: white;
 }
+
 /* ---------------------------------------------------
     SIDEBAR STYLE
 ----------------------------------------------------- */
-
-#sidebar {
-  width: 19vw;
-  color: var(--secondary-black);
-  transition: all 0.3s;
-  height: 100%;
-}
-
 #sidebar ul.components li a {
   display: flex;
   align-items: center;
@@ -319,82 +311,14 @@ export default {
   text-decoration: none;
 }
 
-/* #sidebar ul.components li a .gt-icon {
-  margin-right: 15px;
-  fill: red;
-} */
-
-#sidebar ul li {
-  position: relative;
-  padding-right: 10px;
-}
-
 #sidebar ul li a {
   padding: 10px;
   display: block;
-  color: var(--secondary-black);
+  color: #25396f;
   font-size: 1.125rem;
   letter-spacing: 0.15px;
   margin-right: 20px;
   margin-bottom: 5px;
   font-weight: 500;
-}
-
-.sidebar-footer {
-  margin-top: auto;
-}
-
-a[data-toggle='collapse'] {
-  position: relative;
-}
-
-/* ---------------------------------------------------
-    CONTENT STYLE
------------------------------------------------------ */
-#content {
-  width: calc(100% - 250px);
-  min-height: 100vh;
-  transition: all 0.3s;
-  position: absolute;
-  top: 0;
-  right: 0;
-  background: #fafafb;
-}
-
-#content.active {
-  width: 100%;
-}
-
-/* ---------------------------------------------------
-    MEDIAQUERIES
------------------------------------------------------ */
-
-@media (max-width: 768px) {
-  #sidebar {
-    /* margin-left: -250px; */
-  }
-  #sidebar.active {
-    margin-left: 0;
-  }
-  #content {
-    width: 100%;
-  }
-  #content.active {
-    width: calc(100% - 250px);
-  }
-  #sidebarCollapse span {
-    /* display: none; */
-  }
-  #sidebar ul.components li a span:last-child {
-    /* display: none; */
-  }
-}
-@media screen and (max-width: 991px) {
-  .mini_sidebar {
-    display: none;
-  }
-  .main_sidebar {
-    display: block;
-  }
 }
 </style>

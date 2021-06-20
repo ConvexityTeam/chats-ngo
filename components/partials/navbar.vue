@@ -7,7 +7,7 @@
       <span>Hi, there!</span>
     </el-drawer>
     <nav
-      class="navbar container navbar-expand-lg navbar-light align-items-center no-gutters flex-nowrap"
+      class="navbar  "
     >
       <div class="col-lg-2 col-sm-4 mx-1">
         <a class="navbar-brand" href="#">
@@ -114,15 +114,15 @@ export default {
 
 <style scoped>
 .logo {
-  height: 5vh;
+  height: 30px;
 }
 .navbar {
   padding: 1rem;
 }
 .title {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: var(--secondary-black);
+  font-size: 1.75rem;
+  font-weight: bold;
+  color: var(--tertiary-black);
 }
 
 .image-holder {
