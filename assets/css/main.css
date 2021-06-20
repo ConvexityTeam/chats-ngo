@@ -1,5 +1,6 @@
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap");
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;700&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Inconsolata:wght@200;300;400;500;600&display=swap');
 :root {
   --primary-color: #17ce89;
   --primary-black: #222222;
@@ -15,7 +16,6 @@
 .page-enter,
 .page-leave-to {
   transform: translateY(10px);
-
 }
 
 .primary {
@@ -55,14 +55,13 @@ p.form-input__error span {
   display: flex;
   justify-content: center;
   align-items: center;
-height: 52px;
+  height: 52px;
   color: #ffffff;
   width: 100%;
   border: none;
   font-weight: 600;
   box-shadow: 0px 2px 4px rgba(23, 206, 137, 0.07);
   font-family: "Poppins", sans-serif;
-
 }
 
 .onboarding-btn:focus {
@@ -74,18 +73,16 @@ height: 52px;
   position: relative;
 }
 
-.icon-left{
-    bottom: 14px;
-    left: 14px;
-    }
+.icon-left {
+  bottom: 14px;
+  left: 14px;
+}
 
-    .icon-right{
-        bottom: 14px;
-        right: 14px;
-        cursor: pointer;
-        }
-
-    
+.icon-right {
+  bottom: 14px;
+  right: 14px;
+  cursor: pointer;
+}
 
 .form-controls {
   width: 100%;

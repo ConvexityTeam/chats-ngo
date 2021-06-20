@@ -133,12 +133,7 @@ export default {
   border: none;
 }
 
-.container,
-main nav {
-  max-width: 1330px;
-  margin-left: auto;
-  margin-right: auto;
-}
+
 @media screen and (max-width: 991px) {
   .toggler {
     display: none;
