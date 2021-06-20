@@ -2,15 +2,36 @@
   <div class="main pb-5">
     <div class="text-center">
       <!-- Logo here -->
-      <div class="logo-div">
+      <div class="logo-div pt-5">
         <img src="~/assets/img/logo.svg" class="img-fluid" alt="Chats" />
       </div>
-      <h3 class="text-white welcome py-4">Hi, welcome back</h3>
+      <h3 class="text-white welcome pt-4">Welcome To CHATS</h3>
     </div>
 
-    <div class="d-flex justify-content-center align-items-center">
+    <div class="d-flex justify-content-center align-items-center pt-4">
       <div class="card__holder">
-        <form @submit.prevent="loginUser">
+        <form @submit.prevent="registerUser">
+          <!-- Organisation name here -->
+          <div class="form-group">
+            <label for="name">Name of organization</label>
+            <input
+              type="text"
+              class="form-controls"
+              placeholder="Enter organization"
+              :class="{
+                form__input__error: $v.payload.organisation_name.$error
+              }"
+              id="name"
+              v-model="payload.organisation_name"
+              @focus="orgActive = true"
+              @blur="$v.payload.organisation_name.$touch()"
+            />
+
+            <div class="position-absolute icon-left">
+              <organisation-icon :active="orgActive" />
+            </div>
+          </div>
+
           <!-- Organisation email here -->
           <div class="form-group">
             <label for="email">Email</label>
@@ -29,8 +50,26 @@
             </div>
           </div>
 
-          <!-- Password here -->
+          <!-- website here -->
           <div class="form-group">
+            <label for="email">Website</label>
+            <input
+              type="website"
+              class="form-controls"
+              placeholder="http://www.example.com"
+              :class="{ form__input__error: $v.payload.website_url.$error }"
+              id="website"
+              v-model="payload.website_url"
+              @focus="webActive = true"
+              @blur="$v.payload.website_url.$touch()"
+            />
+            <div class="position-absolute icon-left">
+              <globe-icon :active="webActive" />
+            </div>
+          </div>
+
+          <!-- Password here -->
+          <div class="form-group ">
             <label for="password">Password</label>
             <input
               :type="showpassword ? 'text' : 'password'"
@@ -55,7 +94,21 @@
             </div>
           </div>
 
-          <div class="mt-4 pt-2 text-center">
+          <!-- Terms here -->
+          <!-- <div class="form-group d-flex" style="align-items: flex-end">
+            <checkbox id="terms" @input="checkTerms" />
+
+            <div class="ml-3">
+              <label for="terms" class="terms"
+                >By creating an account, you agree to our
+                <span> <a href="#"> Terms of use</a></span> and acknowledge our
+                <span> <a href="#"> Privacy Policy.</a></span>
+              </label>
+            </div>
+          </div> -->
+
+          <!-- Submit button here -->
+          <div class=" text-center mt-3">
             <button class="onboarding-btn">
               <span v-if="loading">
                 <img
@@ -63,22 +116,15 @@
                   class="btn-spinner"
                 />
               </span>
-              <span v-else>Log in</span>
+              <span v-else>Create account</span>
             </button>
           </div>
         </form>
 
-        <div class="mt-4 ot-2 text-center">
+        <div class="mt-4 text-center">
           <p class="account">
-            Don’t have an account?
-            <nuxt-link class="font-bold login" to="/sign-up"
-              >Create one</nuxt-link
-            >
-          </p>
-          <p class="">
-            <nuxt-link class="forgot" to="/forgot-password"
-              >Forgot password?</nuxt-link
-            >
+            Have an account?
+            <nuxt-link class="font-bold login" to="/">Login</nuxt-link>
           </p>
         </div>
       </div>
@@ -89,17 +135,23 @@
 <script>
 import { required, email } from "vuelidate/lib/validators";
 import { mapActions } from "vuex";
+import organisationIcon from "~/components/icons/organisation-icon.vue";
 import emailIcon from "~/components/icons/email-icon.vue";
+import globeIcon from "~/components/icons/globe-icon.vue";
 import lockIcon from "~/components/icons/lock-icon.vue";
 import eyeClosed from "~/components/icons/eye-closed.vue";
 import eyeOpen from "~/components/icons/eye-open.vue";
+import checkbox from "~/components/generic/checkbox.vue";
 
 export default {
   layout: "default",
 
   components: {
+    organisationIcon,
     emailIcon,
+    globeIcon,
     lockIcon,
+    checkbox,
     eyeClosed,
     eyeOpen
   },
@@ -107,11 +159,16 @@ export default {
   data() {
     return {
       loading: false,
+      orgActive: false,
       emailActive: false,
+      webActive: false,
       passActive: false,
       showpassword: false,
       payload: {
+        organisation_name: "",
         email: "",
+        website_url: "",
+        // terms: false,
         password: ""
       }
     };
@@ -119,45 +176,89 @@ export default {
 
   validations: {
     payload: {
+      organisation_name: {
+        required
+      },
       email: {
         required,
         email
       },
+      website_url: {
+        required
+      },
+      // terms: {
+      //   required
+      // },
       password: {
         required
       }
     }
   },
 
-
-
   methods: {
     ...mapActions("authentication", ["commitToken", "commitUser"]),
 
-    async loginUser() {
+    checkTerms(value) {
+      this.payload.terms = value;
+      console.log("PLS:::", this.payload.terms);
+    },
+    async registerUser() {
       try {
         this.loading = true;
         this.$v.payload.$touch();
 
         if (this.$v.payload.$error === true) {
           this.loading = false;
-          this.$toast.error("Please fill in appropriately");
+          // this.$toast.error("Please fill in appropriately");
           return;
         }
 
-        const response = await this.$axios.post("/auth/login", this.payload);
+        const response = await this.$axios.post(
+          "/auth/ngo-register",
+          this.payload
+        );
+
+        console.log("Register response", response);
+
+        if (response.status == "success") {
+          this.$toast.success(response.message);
+          this.loginUser();
+        }
+
+        this.loading = false;
+      } catch (err) {
+        this.$toast.error(err.response.data.message);
+
+        if (
+          err.response.data.message ==
+          "Email Already Exists, Recover Your Account"
+        ) {
+          this.$router.push("/");
+        }
+
+        this.loading = false;
+      }
+    },
+
+    async loginUser() {
+      try {
+        const data = {
+          email: this.payload.email,
+          password: this.payload.password
+        };
+
+        const response = await this.$axios.post("/auth/login", data);
 
         console.log("login response", response);
 
         if (response.status == "success") {
           this.commitToken(response.data.token);
           this.commitUser(response.data.user);
-          this.$router.push("/dashboard");
+          this.$router.push("/settings");
         }
-
-        this.loading = false;
       } catch (err) {
         this.loading = false;
+        this.$toast.error(err.response.data.message);
       }
     }
   }
@@ -165,13 +266,6 @@ export default {
 </script>
 
 <style scoped>
-.forgot {
-  color: #277ef0;
-  font-size: 0.75rem;
-  font-weight: 600;
-  font-family: "Noto Sans", sans-serif;
-}
-
 .account {
   color: #0b0b0b;
   font-size: 0.875rem;
@@ -187,10 +281,6 @@ export default {
 .welcome {
   font-size: 2.25rem;
   font-weight: 500;
-}
-
-.logo-div {
-  padding: 50px 15px 0px 15px;
 }
 
 .main {
@@ -214,6 +304,16 @@ label {
   font-size: 0.875rem;
   font-weight: 400;
   font-family: "Poppins", sans-serif;
+}
+label.terms {
+  font-size: 0.75rem;
+  color: #0b0b0b;
+}
+
+label > span > a {
+  color: #277ef0;
+  font-weight: 500;
+  text-decoration: none;
 }
 
 @media (max-width: 575.98px) {

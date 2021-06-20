@@ -79,6 +79,12 @@ height: 52px;
     left: 14px;
     }
 
+    .icon-right{
+        bottom: 14px;
+        right: 14px;
+        cursor: pointer;
+        }
+
     
 
 .form-controls {

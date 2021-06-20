@@ -264,7 +264,7 @@ export default {
     async logOut() {
       try {
         await this.logout();
-        this.$router.push("/login");
+        this.$router.push("/");
       } catch (error) {
         this.$toast.error(error);
       }
