@@ -166,7 +166,7 @@
         </div>
 
         <!--Pay With Wallet here -->
-        <div class="option-holder py-4 px-3 mb-3">
+        <!-- <div class="option-holder py-4 px-3 mb-3">
           <div>
             <h5 class="option-header">Pay into our wallet</h5>
             <p class="description">
@@ -198,7 +198,7 @@
               Generate new address
             </button>
           </div>
-        </div>
+        </div> -->
       </div>
     </div>
   </div>

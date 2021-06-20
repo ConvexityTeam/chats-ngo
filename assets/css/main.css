@@ -44,6 +44,17 @@ p.form-input__error span {
   font-size: 1rem;
 }
 
+.filter {
+    top: 12px;
+    left: 11px;
+  }
+  select {
+    border-left: 0px;
+    padding-left: 40px;
+    box-shadow: none;
+  }
+  
+
 .btn-spinner {
   width: 26px;
 }
@@ -99,6 +110,20 @@ p.form-input__error span {
   outline: none;
 }
 
+.form-controls.search{
+    border: 1px solid #7C8DB5;
+    border-radius: 8px;
+    height: 50px;
+}
+.search-icon{
+    top: 13px;
+    left: 11px;
+}
+
+.form-controls.search::placeholder{
+    color: #7C8DB5;
+}
+
 .form-controls::placeholder {
   color: #646a86;
   font-size: 0.875rem;
@@ -121,13 +146,18 @@ p.form-input__error span {
 }
 
 .export-btn {
-  background: var(--primary-color);
-  border-radius: 10px;
-  color: white;
+  background: white;
+  border-radius: 8px;
+  color: #17CE89;
+  font-weight: 600;
   font-size: 1rem;
-  border: none;
+   border: 1px solid var(--primary-color);
   text-align: center;
-  vertical-align: middle;
+  height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: "Poppins", sans-serif;
 }
 
 select.form-control {
