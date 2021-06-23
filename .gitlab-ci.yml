@@ -5,3 +5,4 @@ variables:
   CI_AWS_ECS_CLUSTER: ngo-frontend
   CI_AWS_ECS_SERVICE: NGO-Frontend
   CI_AWS_ECS_TASK_DEFINITION: NGO-Frontend
+  CI_AWS_DEFAULT_REGION: us-east-2
