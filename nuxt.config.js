@@ -40,11 +40,6 @@ export default {
     continuous: true,
     duration: 1200
   },
-  build: {
-    babel: {
-      compact: true
-    }
-  },
 
   components: true,
 
@@ -77,6 +72,7 @@ export default {
 
   // Build Configuration (https://go.nuxtjs.dev/config-build)
   build: {
-    transpile: [/^element-ui/]
+    transpile: [/^element-ui/],
+    babel: { compact: true }
   }
 };
