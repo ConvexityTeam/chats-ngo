@@ -1,0 +1,36 @@
+version: "3.9"
+
+services:
+  webserver:
+    image: nginx:mainline-alpine
+    container_name: webserver
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    volumes:
+      - web-root:/var/www/html
+      - ./nginx:/etc/nginx/conf.d
+    depends_on:
+      - dashboard
+    networks:
+      - gateway
+
+  dashboard:
+    container_name: dashboard
+    build:
+      context: .
+      dockerfile: Dockerfile
+    networks:
+      - gateway
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+
+networks:
+  gateway:
+    driver: bridge
+    name: gateway
+
+volumes:
+  web-root:
+    driver: local
