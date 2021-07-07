@@ -45,5 +45,11 @@ networks:
     name: gateway
 
 volumes:
+  certbot-etc:
+  certbot-var:
   web-root:
     driver: local
+    driver_opts:
+      type: none
+      device: /home/ubuntu/frontend-ngo-web/views/
+      o: bind
