@@ -20,7 +20,7 @@
 
         <div class="collapse navbar-collapse" id="navbarNavDropdown">
           <ul
-            class="list-unstyled components navbar-nav flex-column pt-lg-4 w-100"
+            class="list-unstyled components navbar-nav flex-column pt-lg-3 w-100"
           >
             <li class="mt-2 mb-2">
               <nuxt-link to="/dashboard" class="active" exact>

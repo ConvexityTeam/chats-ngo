@@ -1,148 +1,111 @@
 <template>
-  <div>
-    <div v-if="loading">
-      <div class=""></div>
-    </div>
+  <div class="pb-5">
+    <div v-if="loading"></div>
 
-    <div class="main" v-else>
-      <div class="row no-gutters pt-lg-4">
+    <div class="main container transparent pt-4 mt-2 pb-5" v-else>
+      <back text="Go Back" @click="$router.go(-1)" />
+
+      <!-- search region here -->
+      <div class="row pt-4">
         <div class="col-lg-8">
-          <!-- Campaigns here -->
-          <div>
-            <h4 class="top-header">Beneficiaries</h4>
-            <div class="d-flex pt-lg-4">
-              <div class="d-flex">
-                <!-- Search Box here -->
+          <div class="row">
+            <div class="col-lg-5">
+              <!-- Search Box here -->
+              <div class="position-relative">
                 <input
                   type="text"
-                  class="form-controls"
-                  placeholder="Search Beneficiaries"
+                  class="form-controls search"
+                  placeholder="Search beneficiaries..."
                   v-model="searchQuery"
+                />
+                <img
+                  src="~/assets/img/vectors/search.svg"
+                  class="search-icon position-absolute"
+                  alt="search"
                 />
               </div>
             </div>
+          </div>
+        </div>
 
-            <!-- Table here -->
-            <div class="table">
-              <table class="table-borderless" v-if="beneficiaries.length != 0">
+        <div class=" ml-auto mx-3">
+          <Button
+            text="Public Funding"
+            :has-icon="false"
+            custom-styles="height:50px"
+          />
+        </div>
+      </div>
+
+      <div class="row pt-lg-4">
+        <div class="col-lg-8">
+          <!-- Campaign beneficiaries here -->
+          <div>
+            <div class="table-holder mt-2">
+              <div
+                v-if="beneficiaries.length"
+                class="flex align-items-center table-title"
+              >
+                <h4>Campaign beneficiaries</h4>
+                <div class="ml-auto"></div>
+              </div>
+
+              <table v-if="resultQuery.length" class="table table-borderless">
                 <thead>
                   <tr>
-                    <th scope="col">Name</th>
+                    <th scope="col">Beneficiary</th>
                     <th scope="col">Phone Number</th>
                     <th scope="col">Email Address</th>
-                    <th scope="col">Created</th>
+                    <th scope="col"></th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr v-for="benefactor in beneficiaries" :key="benefactor.id">
+                  <tr v-for="benefactor in resultQuery" :key="benefactor.id">
                     <td>
                       {{
-                        benefactor.first_name + " " + benefactor.last_name
-                      }}cjjc
+                        benefactor.User
+                          ? benefactor.User.first_name +
+                            " " +
+                            benefactor.User.last_name
+                          : ""
+                      }}
                     </td>
-                    <td>{{ benefactor.phone }}</td>
-                    <td>{{ benefactor.email }}</td>
-                    <td>{{ benefactor.createdAt | formatDateText }}</td>
+                    <td>{{ benefactor.User ? benefactor.User.phone : "" }}</td>
+                    <td>{{ benefactor.User ? benefactor.User.email : "" }}</td>
+                    <td>
+                      <div>
+                        <Button
+                          text="View"
+                          :has-icon="false"
+                          :has-border="true"
+                          custom-styles="border: 1px solid #17CE89 !important; border-radius: 5px !important; font-size: 0.875rem !important; height: 33px !important"
+                          @click="
+                            $router.push(`/beneficiaries/${benefactor.UserId}`)
+                          "
+                        />
+                      </div>
+                    </td>
                   </tr>
                 </tbody>
               </table>
-
+              <div v-else-if="loading" class=" text-center"></div>
               <h3 v-else class="text-center no-record">NO RECORD FOUND</h3>
             </div>
           </div>
 
           <!-- complaints here -->
-          <div class="mt-4 mr-3">
-            <beneficiaryComplaints :campaignId="id" />
+          <div class="mt-4 pt-2">
+            <beneficiary-complaints :campaignId="id" />
           </div>
         </div>
 
         <!-- Campaign details here -->
         <div class="col-lg-4">
-          <div class="div__holder p-3">
-            <h4 class="top-header">Campaign details</h4>
-
-            <div
-              class="text-center d-flex justify-content-center mx-auto align-items-center logo-holder my-5"
-            >
-              <img
-                v-if="
-                  user.AssociatedOrganisations[0].Organisation.logo_link != null
-                "
-                :src="
-                  user.AssociatedOrganisations
-                    ? user.AssociatedOrganisations[0].Organisation.logo_link
-                    : ''
-                "
-                width="100"
-                height="100"
-                alt=""
-                class="rounded-circle"
-                style="object-fit: contain"
-              />
-            </div>
-
-            <!-- Campaign Details here -->
-            <div>
-              <table class="w-100">
-                <!-- Title here -->
-                <tr>
-                  <th><p class="detail-caption col">Title</p></th>
-                  <td>
-                    <p class="detail-value col">{{ details.title }}</p>
-                  </td>
-                </tr>
-
-                <!-- Description here -->
-                <tr>
-                  <th><p class="detail-caption col">Description</p></th>
-                  <td>
-                    <p class="detail-value col">{{ details.description }}</p>
-                  </td>
-                </tr>
-
-                <!-- Budget here -->
-                <tr>
-                  <th><p class="detail-caption col">Budget</p></th>
-                  <td>
-                    <p class="detail-value col">
-                      $ {{ details.budget | formatCurrency }}
-                    </p>
-                  </td>
-                </tr>
-
-                <!-- Location here -->
-                <!-- <tr>
-                  <th><p class="detail-caption col">Location</p></th>
-                  <td>
-                    <p class="detail-value col">
-                      {{ location ? location.country : "" }}
-                    </p>
-                  </td>
-                </tr> -->
-
-                <!-- Date created here  -->
-                <tr>
-                  <th><p class="detail-caption col">Start Date</p></th>
-                  <td>
-                    <p class="detail-value col">
-                      {{ details.start_date | formatDateText }}
-                    </p>
-                  </td>
-                </tr>
-
-                <!-- End Date here  -->
-                <tr>
-                  <th><p class="detail-caption col">End Date</p></th>
-                  <td>
-                    <p class="detail-value col">
-                      {{ details.end_date | formatDateText }}
-                    </p>
-                  </td>
-                </tr>
-              </table>
-            </div>
-          </div>
+          <campaign-details
+            :details="details"
+            :count="details.Beneficiaries ? details.Beneficiaries.length : 0"
+            :location="location"
+          />
         </div>
       </div>
     </div>
@@ -151,7 +114,10 @@
 
 <script>
 import { mapGetters } from "vuex";
-import beneficiaryComplaints from "~/components/tables/beneficiary-complaints";
+import beneficiaryComplaints from "~/components/tables/campaigns/beneficiary-complaints";
+import campaignDetails from "~/components/tables/campaigns/campaign-details";
+import back from "~/components/generic/go-back.vue";
+
 let screenLoading;
 export default {
   layout: "dashboard",
@@ -162,11 +128,13 @@ export default {
     complaints: [],
     beneficiaries: [],
     details: {},
-    location: {}
+    location: ""
   }),
 
   components: {
-    beneficiaryComplaints
+    beneficiaryComplaints,
+    campaignDetails,
+    back
   },
 
   computed: {
@@ -177,7 +145,7 @@ export default {
           return this.searchQuery
             .toLowerCase()
             .split(" ")
-            .every(v => benefactor.first_name.toLowerCase().includes(v));
+            .every(v => benefactor.User.first_name.toLowerCase().includes(v));
         });
       } else {
         return this.beneficiaries;
@@ -188,13 +156,12 @@ export default {
   mounted() {
     this.id = this.$router.history.current.params.id;
     this.getDetails();
-
   },
 
   methods: {
     async getDetails() {
       try {
-        this.openScreen()
+        this.openScreen();
         this.loading = true;
 
         const response = await this.$axios.get(`/campaigns/${this.id}`);
@@ -202,28 +169,29 @@ export default {
         console.log("details:::", response);
 
         if (response.status == "success") {
-            screenLoading.close();
+          screenLoading.close();
           this.details = response.data;
-          // this.beneficiaries = response.data[0].Beneficiaries;
-          // this.location = JSON.parse(response.data[0].location);
+          this.beneficiaries = response.data.Beneficiaries;
+          this.location = JSON.parse(response.data.location.country);
+          console.log("loc::", this.location);
           console.log("here", response.data);
         }
 
         this.loading = false;
       } catch (err) {
         this.loading = false;
-          screenLoading.close();
+        screenLoading.close();
         console.log("campaignDeetserr:::", err);
       }
     },
 
-        openScreen() {
+    openScreen() {
       screenLoading = this.$loading({
         lock: true,
         spinner: "el-icon-loading",
         background: "#0000009b"
       });
-    },
+    }
   }
 };
 </script>
@@ -256,102 +224,14 @@ export default {
   height: calc(100vh - 72px);
   overflow-y: scroll;
 }
-.top-header {
-  color: var(--secondary-black);
-  font-weight: 700;
-  font-size: 1.125rem;
-}
-.card__holder {
-  background: #ffffff;
-  box-shadow: 0px 4px 30px rgba(174, 174, 192, 0.2);
-  border-radius: 10px;
-  width: 200px;
-}
-.text {
-  color: var(--secondary-black);
-  font-size: 1rem;
-  font-weight: 400;
-  line-height: 1.188rem;
-}
-.filter {
-  top: 12px;
-  left: 11px;
-}
-select {
-  border-left: 0px;
-  padding-left: 40px;
-  box-shadow: none;
-}
-select.form-control {
-  -moz-appearance: none;
-  -webkit-appearance: none;
-  appearance: none;
-  height: 50px;
-  border-radius: 10px;
+
+.col-lg-8 {
+  flex: 0 0 63.666667%;
+  max-width: 63.666667%;
 }
 
-.funds {
-  color: var(--secondary-black);
-  font-size: 1.5rem;
-  font-weight: 500;
-}
-::placeholder {
-  color: #999999;
-  font-size: 1rem;
-}
-.form-controls {
-  height: 50px;
-}
-.form-control {
-  border: 1px solid #999999;
-  color: black;
-}
-.form-control:focus {
-  box-shadow: none;
-}
-.table {
-  background: #ffffff;
-  box-shadow: 0px 4px 30px rgba(174, 174, 192, 0.2);
-  border-radius: 10px;
-  margin-top: 30px;
-  width: 98%;
-}
-.table thead th {
-  color: #555555;
-  letter-spacing: 0.01em;
-  font-size: 1rem;
-  font-weight: 700;
-}
-.table th,
-.table td {
-  color: red;
-  padding: 0.75rem 2rem;
-  color: var(--secondary-black);
-  font-size: 0.7rem;
-}
-td.in-progress {
-  color: #008cff;
-}
-td.completed {
-  color: #24b29f;
-}
-/* width */
-::-webkit-scrollbar {
-  width: 5px;
-}
-
-/* Track */
-::-webkit-scrollbar-track {
-  background: #f1f1f1;
-}
-
-/* Handle */
-::-webkit-scrollbar-thumb {
-  background: #888;
-}
-
-/* Handle on hover */
-::-webkit-scrollbar-thumb:hover {
-  background: #555;
+.col-lg-4 {
+  flex: 0 0 36.333333%;
+  max-width: 36.333333%;
 }
 </style>

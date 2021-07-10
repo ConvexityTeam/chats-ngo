@@ -1,10 +1,10 @@
 <template>
-  <div class="main container">
+  <div class="main container transparent pb-5">
     <div class="">
       <!-- Modal here -->
       <newCampaign @reload="fetchAllCampaigns()" />
 
-      <div class="row pt-4">
+      <div class="row pt-4 mt-2">
         <div class="col-lg-8">
           <div class="row">
             <div class="col-lg-5">
@@ -56,7 +56,7 @@
           <h4>Campaigns</h4>
           <div class="ml-auto"></div>
         </div>
-        <table class="table table-borderless" v-if="campaigns.length">
+        <table class="table table-borderless" v-if="resultQuery.length">
           <thead>
             <tr>
               <th scope="col">Name</th>
@@ -311,7 +311,9 @@ select.form-control {
   font-weight: 500;
   height: 50px;
 }
+</style>
 
+<style>
 .table-holder {
   background: #ffffff;
   box-shadow: 0px 4px 30px rgba(174, 174, 192, 0.2);
@@ -343,25 +345,5 @@ select.form-control {
   padding: 1rem 1.5rem;
   font-size: 1rem;
   vertical-align: middle;
-}
-
-/* width */
-::-webkit-scrollbar {
-  width: 5px;
-}
-
-/* Track */
-::-webkit-scrollbar-track {
-  background: #f1f1f1;
-}
-
-/* Handle */
-::-webkit-scrollbar-thumb {
-  background: #888;
-}
-
-/* Handle on hover */
-::-webkit-scrollbar-thumb:hover {
-  background: #555;
 }
 </style>
