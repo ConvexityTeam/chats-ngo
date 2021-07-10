@@ -7,19 +7,8 @@
     :style="customStyles"
   >
     <i v-if="hasIcon">
-      <svg
-        width="16"
-        height="16"
-        viewBox="0 0 16 16"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path
-          d="M14 7V8H8V14H7V8H1V7H7V1H8V7H14Z"
-          :fill="fill"
-          :stroke="fill"
-        />
-      </svg>
+      <img v-if="hasEye" src="~/assets/img/vectors/eye.svg" alt="eye" />
+      <img v-else src="~/assets/img/vectors/add.svg" alt="add" />
     </i>
     <span class="ml-2">{{ text }}</span>
   </button>
@@ -52,6 +41,10 @@ export default {
     customStyles: {
       type: String,
       default: ""
+    },
+    hasEye: {
+      type: Boolean,
+      default: false
     }
   }
 };
@@ -65,9 +58,11 @@ button {
   font-weight: 600;
   font-family: "Poppins", sans-serif;
   border: none;
+  font-size: 1rem;
 }
 button.border {
-  border: 1px solid #17ce89;
   color: #17ce89;
+  background: white;
+  font-weight: 500 !important;
 }
 </style>

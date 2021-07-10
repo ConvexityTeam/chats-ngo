@@ -118,6 +118,7 @@ select {
 .form-control.filter {
   border: 1px solid var(--primary-gray) !important;
   color: var(--primary-gray) !important;
+  width: 99px;
 }
 
 .form-controls {
