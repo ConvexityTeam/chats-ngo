@@ -333,9 +333,13 @@ select.form-control {
 }
 
 /* Calendar styles here */
+.mx-icon-calendar,
+.mx-icon-clear {
+  color: #7c8db5 !important;
+}
 
 .mx-datepicker {
-  width: inherit !important;
+  width: 100% !important;
 }
 
 .mx-calendar {
@@ -354,10 +358,10 @@ select.form-control {
 }
 
 .mx-input {
-  height: calc(1.5em + 0.75rem + 2px) !important;
+  height: 41px !important;
   color: #495057 !important;
   background-color: #fff !important;
-  border: 1px solid #999999 !important;
+  border: 1px solid #7c8db5 !important;
   border-radius: 5px !important;
   color: inherit !important;
   font-size: 0.875rem !important;

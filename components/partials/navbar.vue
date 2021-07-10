@@ -1,17 +1,12 @@
 <template>
   <div>
-    <el-drawer
-      :visible.sync="drawer"
-      :direction="direction"
-    >
+    <el-drawer :visible.sync="drawer" :direction="direction">
       <span>Hi, there!</span>
     </el-drawer>
-    <nav
-      class="navbar  "
-    >
+    <nav class="navbar  ">
       <div class="col-lg-2 col-sm-4 mx-1">
         <a class="navbar-brand" href="#">
-          <img src="~/assets/img/logo.png" class="logo" alt />
+          <img src="~/assets/img/logo-2.svg" alt="Chats" />
         </a>
       </div>
 
@@ -31,7 +26,7 @@
               style="cursor:pointer"
             >
               <svg
-                 @click="drawer = true"
+                @click="drawer = true"
                 width="24"
                 height="24"
                 viewBox="0 0 24 24"
@@ -132,7 +127,6 @@ export default {
   background: #e7e7e7;
   border: none;
 }
-
 
 @media screen and (max-width: 991px) {
   .toggler {

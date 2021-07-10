@@ -113,7 +113,7 @@
                     :hasBorder="true"
                     :hasIcon="false"
                     text="Fund campaign"
-                    custom-styles="height:40px;  border: 1px solid #17ce89 !important; font-size: 0.875rem !important; padding:0px 10px !important"
+                    custom-styles="height:40px; border: 1px solid #17ce89 !important; font-size: 0.875rem !important; padding:0px 10px !important"
                   />
                 </div>
               </td>

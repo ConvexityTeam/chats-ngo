@@ -13,20 +13,19 @@
         </button>
       </div>
 
-      <div class="mt-5 px-3">
+      <div class="mt-4 px-3">
         <form @submit.prevent="createCampaign">
           <!-- Name field  here -->
           <div class="form-group">
-            <label for="name">Name</label>
+            <label for="name">Campaign name</label>
             <input
+              id="name"
               type="text"
               class="form-controls"
               :class="{
                 error: $v.payload.title.$error
               }"
-              name="name"
-              id="name"
-              placeholder="Name of the campaign"
+              placeholder="Enter name of campaign"
               v-model="payload.title"
               @mouseenter.once="runMap"
               @blur="$v.payload.title.$touch()"
@@ -37,68 +36,37 @@
           <div class="form-group">
             <label for="description">Description</label>
             <textarea
+              id="description"
               class="form-controls"
               :class="{
                 error: $v.payload.description.$error
               }"
-              name="description"
-              id="description"
               cols="30"
-              rows="2"
+              rows="3"
               @blur="$v.payload.description.$touch()"
               v-model="payload.description"
             ></textarea>
           </div>
 
-          <div class="row">
+          <div class="row form-group">
             <div class="col-lg-12">
               <!--Total Amount  field  here -->
-              <div class="form-group">
-                <label for="total-amount">Total Wallet</label>
+              <div class="">
+                <label for="total-amount">Budget</label>
                 <input
                   type="number"
                   class="form-controls"
                   :class="{
                     error: $v.payload.budget.$error
                   }"
-                  name="total-amount"
                   id="total-amount"
-                  placeholder="Amount from NGO wallet"
+                  placeholder="0.00"
                   v-model="payload.budget"
                   @blur="$v.payload.budget.$touch()"
                   ref="budget"
                 />
               </div>
             </div>
-
-            <!--Field office field  here -->
-            <!--<div class="col-lg-6">
-              <div class="form-group">
-                <label for="field-office">Field Office</label>
-                <input
-                  type="text"
-                  class="form-controls"
-                  name="field-office"
-                  id="field-office"
-                  v-model="payload.location.field_office"
-                />
-              </div>
-            </div> -->
-
-            <!--Amount per receipient field  here -->
-            <!-- <div class="col-lg-6">
-              <div class="form-group">
-                <label for="receipient-amount">Amount Per Recipient</label>
-                <input
-                  type="text"
-                  class="form-controls"
-                  name="receipient-amount"
-                  pattern="^[0-9]*$"
-                  id="receipient-amount"
-                  placeholder="Amount for each recipient"
-                />
-              </div>
-            </div> -->
           </div>
 
           <div class="row">
@@ -106,7 +74,6 @@
               <!--start date  field  here -->
               <div class="form-group">
                 <label for="start-date">Start Date</label>
-
                 <date-picker
                   v-model="payload.start_date"
                   format="MM-DD-YYYY"
@@ -131,7 +98,7 @@
             </div>
           </div>
 
-          <!--Location  field  here -->
+          <!--Location   here -->
           <!-- <div class="row">
             <div class="col-lg-12">
               <div class="form-group">
@@ -152,8 +119,29 @@
           </div> -->
           <div id="map_canvas"></div>
 
-          <div class="d-flex py-3">
+          <!-- button area here -->
+          <div class="d-flex pb-2 pt-3">
             <div>
+              <Button
+                text="Create campaign"
+                type="submit"
+                :has-icon="false"
+                :loading="loading"
+                custom-styles="height: 41px; border-radius:5px !important; font-size: 14px !important"
+              />
+            </div>
+
+            <div class="ml-3">
+              <Button
+                text="Cancel"
+                :has-icon="false"
+                :has-border="true"
+                custom-styles="height: 41px; border-radius:5px !important; font-size: 14px !important;  border: 1px solid #17CE89 !important"
+                @click="closeModal"
+              />
+            </div>
+
+            <!-- <div>
               <button
                 type="button"
                 class="cancel px-4 py-2"
@@ -161,9 +149,9 @@
               >
                 Cancel
               </button>
-            </div>
+            </div> -->
 
-            <div class="ml-auto">
+            <!-- <div class="ml-auto">
               <button class="create-campaign px-4 py-2">
                 <span v-if="loading">
                   <img
@@ -173,7 +161,7 @@
                 </span>
                 <span v-else>Create</span>
               </button>
-            </div>
+            </div> -->
           </div>
         </form>
       </div>
@@ -187,6 +175,7 @@ const apiKey = "AIzaSyApnZ4U1qeeHgHZuckDndNVVMIJAo-b5Vo";
 import DatePicker from "vue2-datepicker";
 import "vue2-datepicker/index.css";
 import close from "~/components/icons/close";
+// import Button from "../generic/button.vue";
 let geocoder;
 export default {
   head() {
@@ -278,7 +267,10 @@ export default {
 
         this.payload.location = JSON.stringify(this.payload.location);
 
-        const response = await this.$axios.post("/organisation/campaign", this.payload);
+        const response = await this.$axios.post(
+          "/organisation/campaign",
+          this.payload
+        );
 
         if (response.status == "success") {
           this.$emit("reload");
@@ -467,8 +459,8 @@ export default {
   border: none;
 }
 .header {
-  color: var(--secondary-black);
-  font-weight: 700;
+  color: var(--tertiary-black);
+  font-weight: bold;
   font-size: 1.5rem;
 }
 .modal-body {
@@ -478,8 +470,8 @@ export default {
 .close-btn {
   border: none;
   background: inherit;
-  bottom: -3px;
-  right: 10px;
+  bottom: 15px;
+  right: 0px;
 }
 ::placeholder {
   color: #999999;
@@ -488,18 +480,29 @@ export default {
   opacity: 0.7;
 }
 label {
-  color: var(--secondary-black);
+  color: var(--tertiary-black);
   font-size: 1rem;
   font-weight: 500;
 }
+
 .form-group {
   margin-bottom: 1.5rem;
 }
+
 .form-controls {
-  border: 1px solid #999999;
+  border: 1px solid #7c8db5;
+  background: white;
+  height: 41px;
+  padding: 0rem 0.75rem;
 }
-textarea {
+.form-controls::placeholder {
+  color: #646a86;
+  font-size: 0.875rem;
+}
+
+textarea.form-controls {
   height: auto;
+  resize: none;
 }
 
 /* Chrome, Safari, Edge, Opera */

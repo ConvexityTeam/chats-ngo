@@ -10,7 +10,13 @@
       <img v-if="hasEye" src="~/assets/img/vectors/eye.svg" alt="eye" />
       <img v-else src="~/assets/img/vectors/add.svg" alt="add" />
     </i>
-    <span class="ml-2">{{ text }}</span>
+
+    <img
+      v-if="loading"
+      src="~/assets/img/vectors/spinner.svg"
+      class="btn-spinner"
+    />
+    <span :class="{ 'ml-2': hasIcon }">{{ loading ? "" : text }}</span>
   </button>
 </template>
 
@@ -45,6 +51,10 @@ export default {
     hasEye: {
       type: Boolean,
       default: false
+    },
+    loading: {
+      type: Boolean,
+      default: false
     }
   }
 };
@@ -59,6 +69,7 @@ button {
   font-family: "Poppins", sans-serif;
   border: none;
   font-size: 1rem;
+  justify-content: center;
 }
 button.border {
   color: #17ce89;
