@@ -115,6 +115,11 @@ select {
   cursor: pointer;
 }
 
+.form-control.filter {
+  border: 1px solid var(--primary-gray) !important;
+  color: var(--primary-gray) !important;
+}
+
 .form-controls {
   width: 100%;
   height: 52px;
@@ -132,12 +137,13 @@ select {
 
 .form-controls.search {
   border: 1px solid #7c8db5;
+  padding: 0rem 3rem;
   border-radius: 8px;
   height: 50px;
 }
 .search-icon {
   top: 13px;
-  left: 11px;
+  left: 13px;
 }
 
 .form-controls.search::placeholder {
