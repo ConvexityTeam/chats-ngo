@@ -317,7 +317,14 @@ select.form-control {
   border-top: none;
   border-left: none;
   border-right: none;
+  color: #17ce89;
+  font-weight: bold;
+
   /* border-color: #dee2e6 #dee2e6 #fff; */
+}
+
+.nav-tabs {
+  padding: 0px 25px;
 }
 
 .nav-link:hover {
@@ -326,10 +333,8 @@ select.form-control {
 }
 
 .nav-link {
-  color: var(--secondary-black);
+  color: var(--tertiary-black);
   font-size: 1rem;
-  line-height: 19px;
-  letter-spacing: 0.496657px;
 }
 
 .nav-tabs {
@@ -372,6 +377,11 @@ select.form-control {
 }
 
 /* Loaders here */
+
+.no-complaints {
+  color: var(--tertiary-black);
+  font-size: 1rem;
+}
 
 .no-record {
   font-size: 18px;

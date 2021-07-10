@@ -44,7 +44,7 @@
             <div class="table-holder mt-2">
               <div
                 v-if="beneficiaries.length"
-                class="flex align-items-center table-title"
+                class="d-flex align-items-center table-title"
               >
                 <h4>Campaign beneficiaries</h4>
                 <div class="ml-auto"></div>

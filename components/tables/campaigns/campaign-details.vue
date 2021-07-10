@@ -132,7 +132,7 @@ export default {
 };
 </script>
 
-<style scoped>
+<style>
 .campaign-details-holder {
   background: #ffffff;
   box-shadow: 0px 4px 25px rgba(174, 174, 192, 0.15);

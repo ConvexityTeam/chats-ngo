@@ -1,71 +1,32 @@
 <template>
   <div>
-    <div class="card__holder p-3">
-      <div class="d-flex">
-        <div>
-          <h5 class="complaints">Beneficiary Complaints</h5>
-        </div>
-
-        <div class="ml-auto filter d-flex mb-4">
-          <p>Filter by:</p>
-          <div class="mx-2">
-            <select name="" id="">
-              <option value="gender">Gender</option>
-            </select>
-          </div>
-
-          <div>
-            <select name="" id="">
-              <option value="female">Female</option>
-              <option value="female">Male</option>
-            </select>
-          </div>
-        </div>
+    <div class="table-holder ">
+      <div class="d-flex align-items-center table-title ">
+        <h4 class="pt-2">Beneficiary Complaints</h4>
+        <div class="ml-auto"></div>
       </div>
 
       <!-- Tabs Here -->
-      <div>
+      <div class="">
         <b-tabs content-class="mt-3">
+          <hr class="divider" />
+
           <!-- All complaints tab here -->
           <b-tab title="All" active @click="getComplaints">
-            <div>
-              <div v-if="complaints != ''">
-                <p v-for="(complaint, i) in complaints" :key="i">
-                  {{ i + 1 + "." }} {{ complaint.title }}
-                </p>
-              </div>
-
-              <div v-else-if="loading" class="loader text-center"></div>
-              <p v-else class="no-complaints text-center mt-5">No Complaints</p>
-            </div>
+            <all-complaints :complaints="complaints" :loading="loading" />
           </b-tab>
 
           <!-- Resolved complaints here -->
           <b-tab title="Resolved" @click="getResolvedComplaints">
-            <div>
-              <div v-if="resolved != ''">
-                <p v-for="(complaint, i) in resolved" :key="i">
-                  {{ i + 1 + "." }} {{ complaint.title }}
-                </p>
-              </div>
-
-              <div v-else-if="loading" class="loader text-center"></div>
-              <p v-else class="no-complaints text-center mt-5">No Complaints</p>
-            </div>
+            <resolved-complaints :complaints="resolved" :loading="loading" />
           </b-tab>
 
           <!-- Unresolved Complaints here -->
           <b-tab title="Unresolved" @click="getUnresolvedComplaints">
-            <div class=" ">
-              <div v-if="unresolved != ''">
-                <p v-for="(complaint, i) in unresolved" :key="i">
-                  {{ i + 1 + "." }} {{ complaint.title }}
-                </p>
-              </div>
-
-              <div v-else-if="loading" class="loader text-center"></div>
-              <p v-else class="no-complaints text-center mt-5">No Complaints</p>
-            </div>
+            <unresolved-complaints
+              :complaints="unresolved"
+              :loading="loading"
+            />
           </b-tab>
         </b-tabs>
       </div>
@@ -74,25 +35,36 @@
 </template>
 
 <script>
+import allComplaints from "./all-complaints.vue";
+import resolvedComplaints from "./resolved-complaints.vue";
+import unresolvedComplaints from "./unresolved-complaints.vue";
+
 export default {
   props: {
     campaignId: {
-      type: String,
-    },
+      type: String
+    }
+  },
+
+  components: {
+    allComplaints,
+    resolvedComplaints,
+    unresolvedComplaints
   },
 
   data() {
     return {
+      loading: false,
       key: 0,
-      id: "",
+
       complaints: [],
       loading: false,
       resolved: [],
-      unresolved: [],
+      unresolved: []
     };
   },
+
   mounted() {
-    this.id = this.campaignId;
     this.getComplaints();
     this.getUnresolvedComplaints();
     this.getResolvedComplaints();
@@ -104,122 +76,68 @@ export default {
     },
     async getComplaints() {
       try {
+        this.loading = true;
         const response = await this.$axios.get(
-          `/campaigns/complaints/${+this.id}`
+          `/campaigns/complaints/${+this.campaignId}`
         );
-        console.log("complaints::::", response);
+        console.log("ALlcomplaints::::", response);
         if (response.status == "success") {
+          this.loading = false;
           this.complaints = response.data.complaints;
         }
       } catch (err) {
+        this.loading = false;
         console.log(err);
       }
     },
 
     async getResolvedComplaints() {
       try {
+        this.loading = true;
         const response = await this.$axios.get(
-          `/campaigns/complaints/${+this.id}?status=resolved&page=1
+          `/campaigns/complaints/${+this.campaignId}?status=resolved&page=1
 `
         );
-        console.log("complaints::::", response);
-        // if (response.data.code == "200") {
-        //   this.resolved = response.data.data.complaints;
-        // }
+        console.log("Resolvedcomplaints::::", response);
+        if (response.status == "success") {
+          this.resolved = response.data.complaints;
+          this.loading = false;
+        }
       } catch (err) {
+        this.loading = false;
         console.log(err);
       }
     },
 
     async getUnresolvedComplaints() {
       try {
+        this.loading = true;
         const response = await this.$axios.get(
-          `/campaigns/complaints/${+this.id}?status=unresolved&page=1
+          `/campaigns/complaints/${+this.campaignId}?status=unresolved&page=1
 `
         );
-        console.log("complaints::::", response);
-        if (response.data.code == "200") {
-          this.unresolved = response.data.data.complaints;
+        console.log("unResolvedcomplaints::::", response);
+        if (response.status == "success") {
+          this.loading = false;
+          this.unresolved = response.data.complaints;
         }
       } catch (err) {
+        this.loading = false;
         console.log(err);
       }
-    },
-
-    handleResolved() {
-      let resolved = this.beneficiariesData.complaint.filter(
-        (complaint) => complaint.status == "Clossed"
-      );
-      this.resolved = resolved;
-    },
-    handleUnresolved() {
-      let unresolved = this.beneficiariesData.complaint.filter(
-        (complaint) => complaint.status == "Pending"
-      );
-      this.unresolved = unresolved;
-    },
-  },
+    }
+  }
 };
 </script>
 
 <style scoped>
-.no-complaints {
-  color: var(--secondary-black);
-  font-size: 0.875rem;
+.table-title {
+  padding: 0.5rem 1.5rem;
 }
-.tabs li {
-  list-style: none;
-  font-size: 13px;
-  line-height: 16px;
-  color: #767676;
-  position: relative;
-  cursor: pointer;
+.divider {
+  border-top: 1px solid #f5f6f8;
 }
 
-li.selected {
-  color: green;
-}
-
-li.selected:after {
-  content: "";
-  width: 100%;
-  height: 4px;
-  background: red;
-  position: absolute;
-  left: 0;
-  bottom: -17px;
-}
-
-.card__holder {
-  background: #ffffff;
-  box-shadow: 0px 4px 30px rgba(174, 174, 192, 0.2);
-  border-radius: 10px;
-}
-.complaints {
-  color: var(--secondary-black);
-  font-weight: 700;
-  font-size: 1.125rem;
-}
-.filter {
-  color: var(--secondary-black);
-  font-size: 1rem;
-  font-weight: 500;
-}
-select {
-  border: none;
-}
-select:focus {
-  outline: none;
-}
-.nav-tabs .nav-link.active,
-.nav-tabs .nav-item.show .nav-link {
-  border-bottom: 1px solid red !important;
-  color: var(--secondary-black);
-  background-color: #fff;
-}
-.nav-tabs .nav-link {
-  border: none !important;
-}
 .nav-tabs {
   border: none !important;
 }
