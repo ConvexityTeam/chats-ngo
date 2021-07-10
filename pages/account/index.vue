@@ -36,7 +36,7 @@
           <div class="col-lg-4">
             <div class="card__holder d-flex  p-3">
               <div>
-                <img src="~/assets/img/vectors/balance.svg" alt="deposit" />
+                <wallet-balance />
               </div>
               <div class="ml-3">
                 <p class="text">Cash Balance</p>
@@ -62,12 +62,14 @@
 <script>
 import transactions from "~/components/tables/transactions";
 import wallet from "~/components/tables/wallet";
+import walletBalance from "~/components/icons/wallet-balance.vue";
 import { mapGetters } from "vuex";
 export default {
   layout: "dashboard",
   components: {
     transactions,
-    wallet
+    wallet,
+    walletBalance
   },
 
   data: () => ({
@@ -104,15 +106,15 @@ export default {
 
     async getFinancials() {
       try {
-        this.loading = true
+        this.loading = true;
         const response = await this.$axios.get(`/users/info/statistics`);
         if (response.status == "success") {
           console.log("financials::", response.data[0]);
           this.financials = response.data[0];
         }
-        this.loading = false
+        this.loading = false;
       } catch (err) {
-        this.loading = false
+        this.loading = false;
         console.log(err);
       }
     }

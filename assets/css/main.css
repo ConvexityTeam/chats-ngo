@@ -1,11 +1,32 @@
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;700&display=swap");
-@import url('https://fonts.googleapis.com/css2?family=Inconsolata:wght@200;300;400;500;600&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Inconsolata:wght@200;300;400;500;600&display=swap");
 :root {
   --primary-color: #17ce89;
   --primary-black: #222222;
   --secondary-black: #333333;
   --tertiary-black: #25396f;
+  --primary-gray: #7c8db5;
+}
+
+/* width */
+.transparent::-webkit-scrollbar {
+  width: 5px;
+}
+
+/* Track */
+.transparent::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Handle */
+.transparent::-webkit-scrollbar-thumb {
+  background: transparent;
+}
+
+/* Handle on hover */
+.transparent::-webkit-scrollbar-thumb:hover {
+  background: transparent;
 }
 
 .page-enter-active,
@@ -45,15 +66,14 @@ p.form-input__error span {
 }
 
 .filter {
-    top: 12px;
-    left: 11px;
-  }
-  select {
-    border-left: 0px;
-    padding-left: 40px;
-    box-shadow: none;
-  }
-  
+  top: 12px;
+  left: 11px;
+}
+select {
+  border-left: 0px;
+  padding-left: 40px;
+  box-shadow: none;
+}
 
 .btn-spinner {
   width: 26px;
@@ -110,18 +130,18 @@ p.form-input__error span {
   outline: none;
 }
 
-.form-controls.search{
-    border: 1px solid #7C8DB5;
-    border-radius: 8px;
-    height: 50px;
+.form-controls.search {
+  border: 1px solid #7c8db5;
+  border-radius: 8px;
+  height: 50px;
 }
-.search-icon{
-    top: 13px;
-    left: 11px;
+.search-icon {
+  top: 13px;
+  left: 11px;
 }
 
-.form-controls.search::placeholder{
-    color: #7C8DB5;
+.form-controls.search::placeholder {
+  color: #7c8db5;
 }
 
 .form-controls::placeholder {
@@ -148,10 +168,10 @@ p.form-input__error span {
 .export-btn {
   background: white;
   border-radius: 8px;
-  color: #17CE89;
+  color: #17ce89;
   font-weight: 600;
   font-size: 1rem;
-   border: 1px solid var(--primary-color);
+  border: 1px solid var(--primary-color);
   text-align: center;
   height: 50px;
   display: flex;
