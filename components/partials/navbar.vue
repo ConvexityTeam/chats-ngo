@@ -52,6 +52,7 @@
                 "
                 width="50"
                 height="50"
+                class="p-1"
                 style="object-fit: contain"
               />
             </div>

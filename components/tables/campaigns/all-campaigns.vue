@@ -90,19 +90,15 @@
                 <div
                   class="status px-1"
                   :class="{
-                    pending: campaign.status == 0,
-                    progress: campaign.status == 1,
-                    completed: campaign.status == 2
+                    pending: campaign.status == 'pending',
+                    progress: campaign.status == 'in_progress',
+                    completed: campaign.status == 'completed'
                   }"
                 >
                   {{
-                    campaign.status == 0
-                      ? "Pending"
-                      : campaign.status == 1
-                      ? "In Progress"
-                      : campaign.status == 2
-                      ? "Completed"
-                      : "Paused"
+                    campaign.status == "in_progress"
+                      ? "in progress"
+                      : campaign.status | capitalize
                   }}
                 </div>
               </td>
@@ -149,6 +145,8 @@ export default {
     dot,
     newCampaign
   },
+
+  // pending, paused, in_progress (campaign statuses)
   data() {
     return {
       loading: false,

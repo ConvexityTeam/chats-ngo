@@ -129,11 +129,8 @@ export default {
     }
   },
 
-
-
   methods: {
     ...mapActions("authentication", ["commitToken", "commitUser"]),
-
     async loginUser() {
       try {
         this.loading = true;
@@ -158,6 +155,7 @@ export default {
         this.loading = false;
       } catch (err) {
         this.loading = false;
+        this.$toast.error(err.response.data.message);
       }
     }
   }

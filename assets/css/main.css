@@ -294,6 +294,7 @@ select.form-control {
   color: #47d664 !important;
   padding: 1rem !important;
   font-size: 1rem;
+  font-weight: 500;
 }
 
 .toasted-container .toasted-primary.error {
@@ -302,6 +303,7 @@ select.form-control {
   color: #ee3934 !important;
   padding: 1rem !important;
   font-size: 1rem;
+  font-weight: 500;
 }
 
 .bg-success {

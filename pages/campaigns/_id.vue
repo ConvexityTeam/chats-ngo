@@ -6,7 +6,7 @@
       <back text="Go Back" @click="$router.go(-1)" />
 
       <!-- search region here -->
-      <div class="row pt-4">
+      <div class="row py-4">
         <div class="col-lg-8">
           <div class="row">
             <div class="col-lg-5">
@@ -35,6 +35,10 @@
             custom-styles="height:50px"
           />
         </div>
+      </div>
+
+      <div class="">
+        <banner />
       </div>
 
       <div class="row pt-lg-4">
@@ -105,6 +109,7 @@
             :details="details"
             :count="details.Beneficiaries ? details.Beneficiaries.length : 0"
             :location="location"
+            :user="user"
           />
         </div>
       </div>
@@ -117,6 +122,7 @@ import { mapGetters } from "vuex";
 import beneficiaryComplaints from "~/components/tables/campaigns/beneficiary-complaints";
 import campaignDetails from "~/components/tables/campaigns/campaign-details";
 import back from "~/components/generic/go-back.vue";
+import banner from "~/components/generic/banner.vue";
 
 let screenLoading;
 export default {
@@ -134,7 +140,8 @@ export default {
   components: {
     beneficiaryComplaints,
     campaignDetails,
-    back
+    back,
+    banner
   },
 
   computed: {

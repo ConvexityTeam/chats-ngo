@@ -1,10 +1,16 @@
 <template>
   <div class="campaign-details-holder p-4">
+    <campaign-prompt
+      @handleCampaign="handleCampaign"
+      :status="status"
+      :title="details.title"
+    />
+
     <h4 class="campaign-details-header  poppins pt-2">Campaign Summary</h4>
 
     <!-- details region here -->
     <div class="campaign-details-inner  mt-4 p-4">
-      <h4 class="campaign-details-header pt-2">Feed The Hungry Campaign</h4>
+      <h4 class="campaign-details-header pt-2">{{ details.title }}</h4>
 
       <div class="d-flex mt-3">
         <svg
@@ -90,11 +96,13 @@
     <div class="mt-3">
       <div class="d-flex">
         <Button
-          text="Pause campaign"
+          :text="
+            details.status == 'paused' ? 'Resume campaign' : 'Pause campaign'
+          "
           :has-icon="false"
           :has-border="true"
           custom-styles=" height: 41px !important; border: 1px solid #17CE89 !important; border-radius: 5px !important; font-size: 0.875rem !important; padding: 0px 8px !important; font-weight: 600 !important"
-          @click="pauseCampaign"
+          @click="handleModal('Pause')"
         />
 
         <div class="ml-3">
@@ -103,7 +111,7 @@
             :has-icon="false"
             :has-border="true"
             custom-styles=" height: 41px !important; border: 1px solid #E42C66 !important; color: #E42C66 !important; border-radius: 5px !important; font-size: 0.875rem !important; padding: 0px 8px !important; font-weight: 600 !important"
-            @click="deleteCampaign"
+            @click="handleModal('Delete')"
           />
         </div>
       </div>
@@ -112,6 +120,9 @@
 </template>
 
 <script>
+import campaignPrompt from "~/components/modals/campaign-prompts.vue";
+let screenLoading;
+
 export default {
   props: {
     details: {
@@ -122,12 +133,80 @@ export default {
     },
     location: {
       type: String
+    },
+    user: {
+      type: Object
     }
   },
 
+  data: () => ({
+    campaignStatus: "",
+    status: ""
+  }),
+
+  components: {
+    campaignPrompt
+  },
+
   methods: {
-    pauseCampaign() {},
-    deleteCampaign() {}
+    handleModal(value) {
+      if (value == "Pause" || value == "Delete") {
+        this.status = value;
+        this.toggleModal(true);
+        return;
+      }
+      return this.handleCampaign("in_progress");
+    },
+    toggleModal(value) {
+      if (value) {
+        return this.$bvModal.show("campaign-prompt");
+      }
+      return this.$bvModal.hide("campaign-prompt");
+    },
+
+    async handleCampaign(status) {
+      try {
+        this.toggleModal(false);
+        this.openScreen();
+
+        status == "Pause"
+          ? (this.campaignStatus = "paused")
+          : status == "Delete"
+          ? (this.campaignStatus = "deleted")
+          : (this.campaignStatus = "pending");
+
+        console.log("status::", this.campaignStatus);
+
+        const response = await this.$axios.put("organisation/campaign", {
+          organisation_id: this.user.AssociatedOrganisations[0].OrganisationId,
+          campaignId: this.details.id,
+          budget: this.details.budget,
+          description: this.details.description,
+          status: this.campaignStatus
+        });
+
+        if (response.status == "success") {
+          screenLoading.close();
+
+          this.$toast.success(response.message);
+        }
+
+        console.log("pauseResponse::", response);
+      } catch (err) {
+        screenLoading.close();
+
+        this.$toast.error(err.message);
+        console.log("pauseErr::", { err: err });
+      }
+    },
+
+    openScreen() {
+      screenLoading = this.$loading({
+        lock: true,
+        spinner: "el-icon-loading",
+        background: "#0000009b"
+      });
+    }
   }
 };
 </script>
