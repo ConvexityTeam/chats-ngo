@@ -1,5 +1,5 @@
 <template>
-  <div class="banner-holder d-flex px-4 py-1">
+  <div class="banner-holder d-flex px-4 ">
     <div class="d-flex align-items-center">
       <div>
         <img src="~/assets/img/vectors/info-button.svg" alt="icon" />

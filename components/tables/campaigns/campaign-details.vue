@@ -102,7 +102,7 @@
           :has-icon="false"
           :has-border="true"
           custom-styles=" height: 41px !important; border: 1px solid #17CE89 !important; border-radius: 5px !important; font-size: 0.875rem !important; padding: 0px 8px !important; font-weight: 600 !important"
-          @click="handleModal('Pause')"
+          @click="handleModal(details.status == 'paused' ? 'resume' : 'Pause')"
         />
 
         <div class="ml-3">
@@ -175,6 +175,10 @@ export default {
           ? (this.campaignStatus = "deleted")
           : (this.campaignStatus = "pending");
 
+        if (this.details.status == "pending") {
+          this.campaignStatus = "paused";
+        }
+
         console.log("status::", this.campaignStatus);
 
         const response = await this.$axios.put("organisation/campaign", {
@@ -187,8 +191,8 @@ export default {
 
         if (response.status == "success") {
           screenLoading.close();
-
           this.$toast.success(response.message);
+          this.$emit("reload");
         }
 
         console.log("pauseResponse::", response);

@@ -37,7 +37,7 @@
         </div>
       </div>
 
-      <div class="">
+      <div v-if="details.status == 'paused'" class="">
         <banner />
       </div>
 
@@ -110,6 +110,7 @@
             :count="details.Beneficiaries ? details.Beneficiaries.length : 0"
             :location="location"
             :user="user"
+            @reload="getDetails"
           />
         </div>
       </div>
