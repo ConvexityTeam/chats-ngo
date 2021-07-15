@@ -3,6 +3,7 @@
     <div class="">
       <!-- Modal here -->
       <newCampaign @reload="fetchAllCampaigns()" />
+      <fund-amount :fundAmount="amount" @fundWallet="fundWallet" />
 
       <div class="row pt-4 mt-2">
         <div class="col-lg-8">
@@ -108,8 +109,12 @@
                   <Button
                     :hasBorder="true"
                     :hasIcon="false"
-                    text="Fund campaign"
-                    custom-styles="height:40px; border: 1px solid #17ce89 !important; font-size: 0.875rem !important; padding:0px 10px !important"
+                    text="Fund
+                  campaign"
+                    custom-styles=" border-radius: 5px !important;
+                  height:33px; border: 1px solid #17ce89 !important; font-size:
+                  0.875rem !important; padding:0px 15px !important"
+                    @click="handleModal(campaign)"
                   />
                 </div>
               </td>
@@ -136,14 +141,15 @@
 </template>
 
 <script>
-import dot from "~/components/icons/dot";
 import newCampaign from "~/components/modals/new-campaign";
+import fundAmount from "~/components/modals/fund-amount.vue";
 import { mapGetters } from "vuex";
 let screenLoading;
+
 export default {
   components: {
-    dot,
-    newCampaign
+    newCampaign,
+    fundAmount
   },
 
   // pending, paused, in_progress (campaign statuses)
@@ -151,6 +157,8 @@ export default {
     return {
       loading: false,
       id: "",
+      amount: 0,
+      campaignId: "",
       campaigns: [],
       selected: null,
       searchQuery: "",
@@ -184,7 +192,32 @@ export default {
     this.fetchAllCampaigns();
     console.log("or:::", this.user.AssociatedOrganisations[0].OrganisationId);
   },
+
   methods: {
+    handleModal(campaign) {
+      this.$bvModal.show("fund-amount");
+      this.amount = campaign.budget;
+      this.campaignId = campaign.id;
+    },
+
+    async fundWallet(data) {
+      try {
+        this.openScreen();
+        const response = await this.$axios.post("organisation/transfer/token", {
+          campaign: this.campaignId,
+          amount: data.amount,
+          organisation_id: this.id
+        });
+        screenLoading.close();
+
+        console.log("FundResponse", response);
+      } catch (err) {
+        screenLoading.close();
+        this.$toast.error(err.response.data.message.errors.amount[0]);
+        console.log(err.response.data.message);
+      }
+    },
+
     openModal() {
       this.$bvModal.show("new-campaign");
     },
