@@ -79,24 +79,6 @@ export default {
 </script>
 
 <style scoped>
-.header {
-  color: var(--tertiary-black);
-  font-weight: bold;
-  font-size: 1.5rem;
-}
-
-.modal-body {
-  border-radius: 10px;
-  background: white;
-}
-
-.close-btn {
-  border: none;
-  background: inherit;
-  bottom: 20px;
-  right: 0px;
-}
-
 label {
   color: var(--tertiary-black);
   font-size: 1rem;

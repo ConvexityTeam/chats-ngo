@@ -92,7 +92,7 @@
         </div>
 
         <div class="ml-2">
-          <label for="geofence">Geofence an Area</label>
+          <label for="geofence">Geofence an area</label>
         </div>
       </div>
 
