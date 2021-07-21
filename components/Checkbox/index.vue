@@ -1,7 +1,6 @@
 <template>
   <label>
     <input
-      :id="id"
       type="checkbox"
       class="focus:outline-none"
       @change="$emit('input', $event.target.checked)"
@@ -11,15 +10,7 @@
 </template>
 <script>
 export default {
-  name: "c-checkbox",
-
-  props: {
-    id: {
-      type: String,
-      default: "",
-      required: true
-    }
-  }
+  name: "c-checkbox"
 };
 </script>
 <style scoped>
@@ -27,8 +18,8 @@ label {
   position: relative;
 }
 span {
-  width: 24px;
-  height: 24px;
+  width: 20px;
+  height: 20px;
   border: 1px solid #17ce89;
   display: inline-block;
   border-radius: 5px;
@@ -37,8 +28,8 @@ span {
 span:after {
   content: "";
   position: absolute;
-  top: 5px;
-  left: 9px;
+  top: 3px;
+  left: 7px;
   border-bottom: 2px solid white;
   border-right: 2px solid white;
   height: 11px;

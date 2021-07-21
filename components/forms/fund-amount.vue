@@ -1,50 +1,35 @@
 <template>
-  <div>
-    <b-modal id="fund-amount" hide-header hide-footer>
-      <div class="text-center position-relative pt-4">
-        <h3 class="header">Fund wallet</h3>
-        <!--Close button here -->
-        <button
-          type="button"
-          class="close-btn position-absolute"
-          @click="closeModal"
-        >
-          <close />
-        </button>
-      </div>
+  <form @submit.prevent="sendAmount" class="mt-4 px-3">
+    <!-- Name field  here -->
+    <div class="form-group">
+      <label for="amount">Amount to fund</label>
+      <input
+        type="number"
+        class="form-controls "
+        :class="{
+          error: $v.amount.$error
+        }"
+        id="amount"
+        placeholder="0.00"
+        v-model="amount"
+        @blur="$v.amount.$touch()"
+      />
+    </div>
 
-      <form @submit.prevent="sendAmount" class="mt-4 px-3">
-        <!-- Name field  here -->
-        <div class="form-group">
-          <label for="amount">Amount to fund</label>
-          <input
-            type="number"
-            class="form-controls "
-            :class="{
-              error: $v.amount.$error
-            }"
-            id="amount"
-            placeholder="0.00"
-            v-model="amount"
-            @blur="$v.amount.$touch()"
-          />
-        </div>
-
-        <div class="d-flex py-3">
-          <Button
-            type="submit"
-            :has-icon="false"
-            text="Fund wallet"
-            custom-styles="height:41px; border-radius: 5px; width: 100%"
-          />
-        </div>
-      </form>
-    </b-modal>
-  </div>
+    <div class="d-flex py-3">
+      <Button
+        type="submit"
+        :has-icon="false"
+        text="Fund wallet"
+        custom-styles="height:41px; border-radius: 5px; width: 100%"
+      />
+    </div>
+  </form>
 </template>
+
 <script>
 import { required } from "vuelidate/lib/validators";
-import close from "~/components/icons/close";
+
 export default {
   props: {
     fundAmount: {
@@ -64,13 +49,9 @@ export default {
     }
   },
 
-  watch: {
-    fundAmount(value) {
-      this.amount = value;
-    }
+  mounted() {
+    this.amount = this.fundAmount;
   },
-
-  components: { close },
 
   methods: {
     closeModal() {

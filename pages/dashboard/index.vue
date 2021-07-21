@@ -30,11 +30,11 @@
         </div>
       </div>
 
-      <!-- Total Amount Disbursed here -->
+      <!--  Amount Disbursed here -->
       <div class="col-lg-3">
         <div class="card__holder d-flex p-3">
           <div>
-            <img src="~/assets/img/vectors/disbursed.svg" alt="disbursed" />
+            <disbursed />
           </div>
           <div class="ml-3">
             <p class="text">Amount Disbursed</p>
@@ -49,7 +49,7 @@
       <div class="col-lg-3">
         <div class="card__holder d-flex p-3">
           <div>
-            <img src="~/assets/img/vectors/total-balance.svg" alt="balance" />
+            <totalBalance />
           </div>
           <div class="ml-3">
             <p class="text">Total Balance</p>
@@ -238,6 +238,8 @@ import rightArrow from "~/components/icons/right-arrow";
 import leftArrow from "~/components/icons/left-arrow";
 import locateMixin from "~/components/mixins/locate";
 import walletBalance from "~/components/icons/wallet-balance.vue";
+import totalBalance from "~/components/icons/total-balance.vue";
+import disbursed from "~/components/icons/disbursed.vue";
 import countries from "~/plugins/countries";
 
 export default {
@@ -269,7 +271,9 @@ export default {
     dot,
     rightArrow,
     leftArrow,
-    walletBalance
+    walletBalance,
+    totalBalance,
+    disbursed
   },
 
   mounted() {

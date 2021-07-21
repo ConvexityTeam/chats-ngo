@@ -1,182 +1,139 @@
 <template>
-  <div>
-    <b-modal id="new-campaign" hide-header hide-footer>
-      <div class="text-center position-relative pt-2">
-        <h3 class="header">New Campaign</h3>
-        <!--Close button here -->
-        <button
-          type="button"
-          class="close-btn position-absolute"
-          @click="closeModal"
-        >
-          <close />
-        </button>
+  <div class="mt-4 px-3">
+    <form @submit.prevent="createCampaign">
+      <!-- Name field  here -->
+      <div class="form-group">
+        <label for="name">Campaign name</label>
+        <input
+          id="name"
+          type="text"
+          class="form-controls"
+          :class="{
+            error: $v.payload.title.$error
+          }"
+          placeholder="Enter name of campaign"
+          v-model="payload.title"
+          @mouseenter.once="runMap"
+          @blur="$v.payload.title.$touch()"
+        />
       </div>
 
-      <div class="mt-4 px-3">
-        <form @submit.prevent="createCampaign">
-          <!-- Name field  here -->
-          <div class="form-group">
-            <label for="name">Campaign name</label>
+      <!--Description field  here -->
+      <div class="form-group">
+        <label for="description">Description</label>
+        <textarea
+          id="description"
+          class="form-controls"
+          :class="{
+            error: $v.payload.description.$error
+          }"
+          cols="30"
+          rows="3"
+          @blur="$v.payload.description.$touch()"
+          v-model="payload.description"
+        ></textarea>
+      </div>
+
+      <div class="row form-group">
+        <div class="col-lg-12">
+          <!--Total Amount  field  here -->
+          <div class="">
+            <label for="total-amount">Budget</label>
             <input
-              id="name"
-              type="text"
+              type="number"
               class="form-controls"
               :class="{
-                error: $v.payload.title.$error
+                error: $v.payload.budget.$error
               }"
-              placeholder="Enter name of campaign"
-              v-model="payload.title"
-              @mouseenter.once="runMap"
-              @blur="$v.payload.title.$touch()"
+              id="total-amount"
+              placeholder="0.00"
+              v-model="payload.budget"
+              @blur="$v.payload.budget.$touch()"
+              ref="budget"
             />
           </div>
-
-          <!--Description field  here -->
-          <div class="form-group">
-            <label for="description">Description</label>
-            <textarea
-              id="description"
-              class="form-controls"
-              :class="{
-                error: $v.payload.description.$error
-              }"
-              cols="30"
-              rows="3"
-              @blur="$v.payload.description.$touch()"
-              v-model="payload.description"
-            ></textarea>
-          </div>
-
-          <div class="row form-group">
-            <div class="col-lg-12">
-              <!--Total Amount  field  here -->
-              <div class="">
-                <label for="total-amount">Budget</label>
-                <input
-                  type="number"
-                  class="form-controls"
-                  :class="{
-                    error: $v.payload.budget.$error
-                  }"
-                  id="total-amount"
-                  placeholder="0.00"
-                  v-model="payload.budget"
-                  @blur="$v.payload.budget.$touch()"
-                  ref="budget"
-                />
-              </div>
-            </div>
-          </div>
-
-          <div class="row">
-            <div class="col-lg-6">
-              <!--start date  field  here -->
-              <div class="form-group">
-                <label for="start-date">Start Date</label>
-                <date-picker
-                  v-model="payload.start_date"
-                  format="MM-DD-YYYY"
-                  placeholder="MM-DD-YYYY"
-                  valueType="format"
-                ></date-picker>
-              </div>
-            </div>
-
-            <!--end date field  here -->
-            <div class="col-lg-6">
-              <div class="form-group">
-                <label for="end-date">End Date</label>
-
-                <date-picker
-                  v-model="payload.end_date"
-                  format="MM-DD-YYYY"
-                  placeholder="MM-DD-YYYY"
-                  valueType="format"
-                ></date-picker>
-              </div>
-            </div>
-          </div>
-
-          <!--Location   here -->
-          <!-- <div class="row">
-            <div class="col-lg-12">
-              <div class="form-group">
-                <label for="location">Location</label>
-                <input
-                  type="text"
-                  class="form-controls"
-                  :class="{
-                    error: $v.payload.location.country.$error
-                  }"
-                  name="location"
-                  id="location"
-                  v-model="payload.location.country"
-                  @blur="$v.payload.location.country.$touch()"
-                />
-              </div>
-            </div>
-          </div> -->
-          <div id="map_canvas"></div>
-
-          <!-- button area here -->
-          <div class="d-flex pb-2 pt-3">
-            <div>
-              <Button
-                text="Create campaign"
-                type="submit"
-                :has-icon="false"
-                :loading="loading"
-                custom-styles="height: 41px; border-radius:5px !important; font-size: 14px !important"
-              />
-            </div>
-
-            <div class="ml-3">
-              <Button
-                text="Cancel"
-                :has-icon="false"
-                :has-border="true"
-                custom-styles="height: 41px; border-radius:5px !important; font-size: 14px !important;  border: 1px solid #17CE89 !important"
-                @click="closeModal"
-              />
-            </div>
-
-            <!-- <div>
-              <button
-                type="button"
-                class="cancel px-4 py-2"
-                @click="closeModal"
-              >
-                Cancel
-              </button>
-            </div> -->
-
-            <!-- <div class="ml-auto">
-              <button class="create-campaign px-4 py-2">
-                <span v-if="loading">
-                  <img
-                    src="~/assets/img/vectors/spinner.svg"
-                    class="btn-spinner"
-                  />
-                </span>
-                <span v-else>Create</span>
-              </button>
-            </div> -->
-          </div>
-        </form>
+        </div>
       </div>
-    </b-modal>
+
+      <div class="row ">
+        <div class="col-lg-6">
+          <!--start date  field  here -->
+          <div class="form-group">
+            <label for="start-date">Start Date</label>
+            <date-picker
+              v-model="payload.start_date"
+              format="MM-DD-YYYY"
+              placeholder="MM-DD-YYYY"
+              valueType="format"
+            ></date-picker>
+          </div>
+        </div>
+
+        <!--end date field  here -->
+        <div class="col-lg-6">
+          <div class="form-group">
+            <label for="end-date">End Date</label>
+
+            <date-picker
+              v-model="payload.end_date"
+              format="MM-DD-YYYY"
+              placeholder="MM-DD-YYYY"
+              valueType="format"
+            ></date-picker>
+          </div>
+        </div>
+      </div>
+
+      <div class="row form-group mt-2 px-3">
+        <!--start date  field  here -->
+        <div class="">
+          <checkbox id="geofence" @input="checkValue" />
+          <!-- <input type="checkbox" id="geofence" /> -->
+        </div>
+
+        <div class="ml-2">
+          <label for="geofence">Geofence an Area</label>
+        </div>
+      </div>
+
+      <div :class="isGeofence ? 'd-block' : 'd-none'" id="map_canvas"></div>
+
+      <!-- button area here -->
+      <div class="d-flex pb-2 " :class="isGeofence ? 'pt-3' : 'pt-1'">
+        <div>
+          <Button
+            text="Create campaign"
+            type="submit"
+            :has-icon="false"
+            :loading="loading"
+            custom-styles="height: 41px; border-radius:5px !important; font-size: 14px !important"
+          />
+        </div>
+
+        <div class="ml-3">
+          <Button
+            text="Cancel"
+            :has-icon="false"
+            :has-border="true"
+            custom-styles="height: 41px; border-radius:5px !important; font-size: 14px !important;  border: 1px solid #17CE89 !important"
+            @click="closeModal"
+          />
+        </div>
+      </div>
+    </form>
   </div>
 </template>
+
 <script>
 import { required } from "vuelidate/lib/validators";
 import { mapGetters } from "vuex";
 const apiKey = "AIzaSyApnZ4U1qeeHgHZuckDndNVVMIJAo-b5Vo";
 import DatePicker from "vue2-datepicker";
 import "vue2-datepicker/index.css";
-import close from "~/components/icons/close";
-// import Button from "../generic/button.vue";
+// import Checkbox from "../generic/checkbox.vue";
+
 let geocoder;
+
 export default {
   head() {
     return {
@@ -191,7 +148,7 @@ export default {
   data() {
     return {
       loading: false,
-      isFired: false,
+      isGeofence: false,
       payload: {
         organisation_id: 0,
         type: "campaign",
@@ -223,11 +180,11 @@ export default {
       budget: {
         required
       },
-      location: {
-        coordinates: {
-          required
-        }
-      },
+      //   location: {
+      //     coordinates: {
+      //       required
+      //     }
+      //   },
       start_date: {
         required
       },
@@ -236,7 +193,7 @@ export default {
       }
     }
   },
-  components: { DatePicker, close },
+  components: { DatePicker },
 
   computed: {
     ...mapGetters("authentication", ["user"])
@@ -251,6 +208,10 @@ export default {
       this.$bvModal.hide("new-campaign");
     },
 
+    checkValue(value) {
+      this.isGeofence = value;
+    },
+
     async createCampaign() {
       console.log("pd::", this.payload);
 
@@ -259,13 +220,10 @@ export default {
         this.$v.payload.$touch();
 
         if (this.$v.payload.$error === true) {
-          if (this.$v.payload.location.coordinates.$error == true) {
-            this.$toast.error("Please Geofence a location on the map");
-          }
           return (this.loading = false);
         }
 
-        this.payload.location = JSON.stringify(this.payload.location);
+        this.payload.location ? JSON.stringify(this.payload.location) : "";
 
         const response = await this.$axios.post(
           "/organisation/campaign",
@@ -291,8 +249,6 @@ export default {
 
     // TODO:Try emiting fetch all campaigns method from parent and calling here
     runMap() {
-      document.getElementById("map_canvas").style.display = "block";
-
       const map = new google.maps.Map(document.getElementById("map_canvas"), {
         center: { lat: 17.35297042396732, lng: 8.808737500000019 },
         zoom: 3,
@@ -436,7 +392,6 @@ export default {
 <style scoped>
 #map_canvas {
   height: 300px;
-  display: none;
 }
 
 #current {
@@ -463,16 +418,7 @@ export default {
   font-weight: bold;
   font-size: 1.5rem;
 }
-.modal-body {
-  border-radius: 10px;
-  background: white;
-}
-.close-btn {
-  border: none;
-  background: inherit;
-  bottom: 15px;
-  right: 0px;
-}
+
 ::placeholder {
   color: #999999;
   letter-spacing: 0.01em;

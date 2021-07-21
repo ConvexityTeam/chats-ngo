@@ -1,9 +1,16 @@
 <template>
   <div class="main container transparent pb-5">
     <div class="">
-      <!-- Modal here -->
-      <newCampaign @reload="fetchAllCampaigns()" />
-      <fund-amount :fundAmount="amount" @fundWallet="fundWallet" />
+      <!-- Modals here -->
+      <!-- <fund-amount :fundAmount="amount" @fundWallet="fundWallet" /> -->
+
+      <Modal id="new-campaign" title="new campaign">
+        <new-campaign @reload="fetchAllCampaigns" />
+      </Modal>
+
+      <Modal id="fund-amount" title="fund wallet">
+        <fund-amount :fundAmount="amount" @fundWallet="fundWallet" />
+      </Modal>
 
       <div class="row pt-4 mt-2">
         <div class="col-lg-8">
@@ -141,8 +148,8 @@
 </template>
 
 <script>
-import newCampaign from "~/components/modals/new-campaign";
-import fundAmount from "~/components/modals/fund-amount.vue";
+import fundAmount from "~/components/forms/fund-amount.vue";
+import newCampaign from "~/components/forms/new-campaign.vue";
 import { mapGetters } from "vuex";
 let screenLoading;
 
@@ -195,6 +202,7 @@ export default {
 
   methods: {
     handleModal(campaign) {
+      console.log("campaign::", campaign);
       this.$bvModal.show("fund-amount");
       this.amount = campaign.budget;
       this.campaignId = campaign.id;
