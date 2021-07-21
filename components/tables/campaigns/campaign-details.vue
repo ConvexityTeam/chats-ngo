@@ -1,10 +1,12 @@
 <template>
   <div class="campaign-details-holder p-4">
-    <campaign-prompt
-      @handleCampaign="handleCampaign"
-      :status="status"
-      :title="details.title"
-    />
+    <Modal id="campaign-prompt" :title="status + ' ' + 'campaign'">
+      <campaign-prompt
+        @handleCampaign="handleCampaign"
+        :status="status"
+        :title="details.title"
+      />
+    </Modal>
 
     <h4 class="campaign-details-header  poppins pt-2">Campaign Summary</h4>
 
@@ -120,7 +122,7 @@
 </template>
 
 <script>
-import campaignPrompt from "~/components/modals/campaign-prompts.vue";
+import campaignPrompt from "~/components/forms/campaign-prompts.vue";
 let screenLoading;
 
 export default {

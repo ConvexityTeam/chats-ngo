@@ -38,7 +38,7 @@
       </div>
 
       <div v-if="details.status == 'paused'" class="">
-        <banner />
+        <banner :date="details.updatedAt" />
       </div>
 
       <div class="row pt-lg-4">

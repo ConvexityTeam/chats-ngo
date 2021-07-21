@@ -7,7 +7,8 @@
 
       <div class="ml-3">
         <p class="pt-2">
-          This campaign was paused on April 3, 2021. You may want to <br />
+          This campaign was paused on {{ date | formatDate }}.You may want to
+          <br />
         </p>
 
         <span class="resume-btn" @click="$emit('click')">
@@ -20,7 +21,11 @@
 
 <script>
 export default {
-  props: {}
+  props: {
+    date: {
+      type: String
+    }
+  }
 };
 </script>
 
