@@ -16,6 +16,11 @@
       />
     </div>
 
+    <!-- Crypto markers here -->
+    <div v-if="!$route.path.includes('campaigns')">
+      <token-outlets />
+    </div>
+
     <div class="d-flex py-3">
       <Button
         type="submit"
@@ -29,6 +34,7 @@
 
 <script>
 import { required } from "vuelidate/lib/validators";
+import tokenOutlets from "~/components/generic/token-outlets.vue";
 
 export default {
   props: {
@@ -36,6 +42,8 @@ export default {
       type: Number
     }
   },
+
+  components: { tokenOutlets },
 
   data() {
     return {
