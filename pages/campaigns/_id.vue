@@ -3,6 +3,10 @@
     <div v-if="loading"></div>
 
     <div class="main container transparent pt-4 mt-2 pb-5" v-else>
+      <Modal id="funding" title="Fund through Crypto">
+        <funding />
+      </Modal>
+
       <back text="Go Back" @click="$router.go(-1)" />
 
       <!-- search region here -->
@@ -33,6 +37,7 @@
             text="Public Funding"
             :has-icon="false"
             custom-styles="height:50px"
+            @click="showModal"
           />
         </div>
       </div>
@@ -124,6 +129,7 @@ import beneficiaryComplaints from "~/components/tables/campaigns/beneficiary-com
 import campaignDetails from "~/components/tables/campaigns/campaign-details";
 import back from "~/components/generic/go-back.vue";
 import banner from "~/components/generic/banner.vue";
+import funding from "~/components/forms/funding.vue";
 
 let screenLoading;
 export default {
@@ -142,7 +148,8 @@ export default {
     beneficiaryComplaints,
     campaignDetails,
     back,
-    banner
+    banner,
+    funding
   },
 
   computed: {
@@ -167,6 +174,9 @@ export default {
   },
 
   methods: {
+    showModal() {
+      this.$bvModal.show("funding");
+    },
     async getDetails() {
       try {
         this.openScreen();

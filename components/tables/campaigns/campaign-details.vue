@@ -188,7 +188,8 @@ export default {
           campaignId: this.details.id,
           budget: this.details.budget,
           description: this.details.description,
-          status: this.campaignStatus
+          // status: this.campaignStatus
+          status: "in-progress"
         });
 
         if (response.status == "success") {
