@@ -1,7 +1,7 @@
 <template>
   <div>
     <b-modal :id="id" hide-header hide-footer>
-      <div class="text-center position-relative pt-2">
+      <div class="text-center position-relative pt-3">
         <h3 class="header">{{ title | capitalize }}</h3>
         <!--Close button here -->
         <button
@@ -63,7 +63,7 @@ export default {
 .close-btn {
   border: none;
   background: inherit;
-  bottom: 15px;
-  right: 0px;
+  bottom: 25px;
+  right: -5px;
 }
 </style>

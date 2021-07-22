@@ -57,7 +57,7 @@ export default {
     },
 
     handleCampaign() {
-      this.$emit("handleCampaign", status);
+      this.$emit("handleCampaign", this.status);
       this.closeModal();
     }
   }

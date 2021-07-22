@@ -99,12 +99,12 @@
                   class="status px-1"
                   :class="{
                     pending: campaign.status == 'pending',
-                    progress: campaign.status == 'in_progress',
+                    progress: campaign.status == 'in-progress',
                     completed: campaign.status == 'completed'
                   }"
                 >
                   {{
-                    campaign.status == "in_progress"
+                    campaign.status == "in-progress"
                       ? "in progress"
                       : campaign.status | capitalize
                   }}

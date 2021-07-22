@@ -95,7 +95,10 @@
     </div>
 
     <!-- button region here -->
-    <div class="mt-3">
+    <div
+      v-if="details.status != 'pending' || details.status == 'deleted'"
+      class="mt-3"
+    >
       <div class="d-flex">
         <Button
           :text="
@@ -157,7 +160,7 @@ export default {
         this.toggleModal(true);
         return;
       }
-      return this.handleCampaign("in_progress");
+      return this.handleCampaign("in-progress");
     },
     toggleModal(value) {
       if (value) {
@@ -171,15 +174,13 @@ export default {
         this.toggleModal(false);
         this.openScreen();
 
-        status == "Pause"
+        status == "Pause" || status == "paused"
           ? (this.campaignStatus = "paused")
           : status == "Delete"
           ? (this.campaignStatus = "deleted")
-          : (this.campaignStatus = "pending");
-
-        if (this.details.status == "pending") {
-          this.campaignStatus = "paused";
-        }
+          : (status = "in-progress"
+              ? (this.campaignStatus = "in-progress")
+              : " ");
 
         console.log("status::", this.campaignStatus);
 
@@ -188,8 +189,7 @@ export default {
           campaignId: this.details.id,
           budget: this.details.budget,
           description: this.details.description,
-          // status: this.campaignStatus
-          status: "in-progress"
+          status: this.campaignStatus
         });
 
         if (response.status == "success") {

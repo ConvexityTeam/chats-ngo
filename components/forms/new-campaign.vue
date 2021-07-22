@@ -23,7 +23,7 @@
         <label for="description">Description</label>
         <textarea
           id="description"
-          class="form-controls"
+          class="form-controls p-2"
           :class="{
             error: $v.payload.description.$error
           }"
@@ -223,7 +223,9 @@ export default {
           return (this.loading = false);
         }
 
-        this.payload.location ? JSON.stringify(this.payload.location) : "";
+        this.payload.location
+          ? (this.payload.location = JSON.stringify(this.payload.location))
+          : "";
 
         const response = await this.$axios.post(
           "/organisation/campaign",

@@ -21,11 +21,11 @@
       <token-outlets />
     </div>
 
-    <div class="d-flex py-3">
+    <div class="d-flex pb-3 pt-1">
       <Button
         type="submit"
         :has-icon="false"
-        text="Fund wallet"
+        :text="text"
         custom-styles="height:41px; border-radius: 5px; width: 100%"
       />
     </div>
@@ -40,6 +40,10 @@ export default {
   props: {
     fundAmount: {
       type: Number
+    },
+    text: {
+      type: String,
+      default: "Fund wallet"
     }
   },
 
