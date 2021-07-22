@@ -1,51 +1,88 @@
 <template>
-  <div class="main container">
+  <div class="main container transparent pb-5">
     <!-- Top cards here -->
-    <div class="row no-gutters pt-lg-4">
+    <div class="row pt-4">
       <!-- Beneficiaries here -->
       <div class="col-lg-3">
-        <div class="card__holder px-3 pt-2">
-          <p class="text">Beneficiaries</p>
-          <h4 class="funds">{{ loading ? 0 : count }}</h4>
-          <p class="pb-1">
-            <nuxt-link to="/beneficiaries/all-beneficiaries" class="percentage"
-              >View all</nuxt-link
-            >
-          </p>
+        <div class="card__holder  p-3">
+          <div class="d-flex">
+            <img
+              src="~/assets/img/vectors/group-beneficiaries.svg"
+              alt="beneficiaries"
+            />
+            <div class="ml-3">
+              <p class="text">Beneficiaries</p>
+              <h4 class="funds">
+                {{ count }}
+              </h4>
+            </div>
+            <div class="ml-auto d-flex align-items-end">
+              <button
+                type="button"
+                @click="$router.push('/beneficiaries/all-beneficiaries')"
+                class="d-flex viewall align-items-center"
+              >
+                <img src="~/assets/img/vectors/eye.svg" alt="see" />
+                <span class="ml-2 pt-1">View </span>
+              </button>
+            </div>
+            <!-- <button class="viewall d-flex ">kk</button> -->
+          </div>
         </div>
       </div>
 
       <!-- Total amount Received here -->
       <div class="col-lg-3">
-        <div class="card__holder px-3 pt-2">
-          <p class="text">Total Amount Recieved</p>
-          <h4 class="funds pb">$ {{ loading ? 0 : stats.income | formatCurrency}}</h4>
+        <div class="card__holder d-flex p-3">
+          <div>
+            <img src="~/assets/img/vectors/deposit.svg" alt="deposit" />
+          </div>
+          <div class="ml-3">
+            <p class="text">Amount Recieved</p>
+            <h4 class="funds">
+              $ {{ loading ? 0 : stats.income || 0 | formatCurrency }}
+            </h4>
+          </div>
         </div>
       </div>
 
-      <!-- Total Amount Disbursed here -->
+      <!--  Amount Disbursed here -->
       <div class="col-lg-3">
-        <div class="card__holder px-3 pt-2">
-          <p class="text">Total Amount Disbursed</p>
-          <h4 class="funds pb">$ {{ loading ? 0 : stats.expense | formatCurrency }}</h4>
+        <div class="card__holder d-flex p-3">
+          <div>
+            <disbursed />
+          </div>
+          <div class="ml-3">
+            <p class="text">Amount Disbursed</p>
+            <h4 class="funds">
+              $ {{ loading ? 0 : stats.expense || 0 | formatCurrency }}
+            </h4>
+          </div>
         </div>
       </div>
 
       <!-- Total Balance -->
       <div class="col-lg-3">
-        <div class="card__holder px-3 pt-2">
-          <p class="text">Total Balance</p>
-          <h4 class="funds pb">$ {{ loading ? 0 : stats.balance | formatCurrency }}</h4>
+        <div class="card__holder d-flex p-3">
+          <div>
+            <total-balance />
+          </div>
+          <div class="ml-3">
+            <p class="text">Total Balance</p>
+            <h4 class="funds">
+              $ {{ loading ? 0 : stats.balance || 0 | formatCurrency }}
+            </h4>
+          </div>
         </div>
       </div>
     </div>
 
     <!-- First Beneficiary cards here -->
-    <div class="row no-gutters pt-lg-4">
+    <div class="row pt-4">
       <!-- Beneficiary By Gender  Cards here -->
       <div class="col-lg-4 pb-3">
         <div class="cards__holder px-3 pt-3">
-          <beneficiaryGender />
+          <beneficiary-gender />
         </div>
       </div>
 
@@ -65,11 +102,11 @@
     </div>
 
     <!-- Second Beneficiary cards here -->
-    <div class="row no-gutters pt-lg-4">
+    <div class="row  pt-lg-4">
       <!-- Beneficiary Marital card here -->
       <div class="col-lg-4 pb-3">
         <div class="cards__holder px-3 pt-3">
-          <beneficiaryMarital />
+          <beneficiary-marital />
         </div>
       </div>
 
@@ -89,7 +126,7 @@
     </div>
 
     <!-- Beneficiary transaction here -->
-    <beneficiaryTransaction />
+    <beneficiary-transaction />
   </div>
 </template>
 
@@ -103,15 +140,17 @@ import beneficiaryMarital from "~/components/charts/beneficiary-marital";
 import dot from "~/components/icons/dot";
 import rightArrow from "~/components/icons/right-arrow";
 import leftArrow from "~/components/icons/left-arrow";
+import totalBalance from "~/components/icons/total-balance.vue";
+import disbursed from "~/components/icons/disbursed.vue";
 import beneficiaryTransaction from "~/components/tables/beneficiary-transaction";
-import {mapActions} from "vuex"
+import { mapActions } from "vuex";
 export default {
   layout: "dashboard",
   data() {
     return {
       loading: false,
       count: "",
-      stats: {},
+      stats: {}
     };
   },
   components: {
@@ -125,6 +164,8 @@ export default {
     rightArrow,
     leftArrow,
     beneficiaryTransaction,
+    disbursed,
+    totalBalance
   },
 
   mounted() {
@@ -134,7 +175,7 @@ export default {
   },
 
   methods: {
-    ...mapActions("authenticaion",["logout"]),
+    ...mapActions("authenticaion", ["logout"]),
     async fetchAllBeneficiaries() {
       try {
         this.loading = true;
@@ -180,8 +221,8 @@ export default {
         this.loading = false;
         console.log("chsrtserr:::", err);
       }
-    },
-  },
+    }
+  }
 };
 </script>
 
@@ -199,6 +240,9 @@ export default {
   color: var(--primary-color);
   font-size: 0.875rem;
   text-decoration: none;
+  margin-left: auto;
+  display: flex;
+  align-items: flex-end;
 }
 .vendor-name {
   color: var(--secondary-black);
@@ -220,33 +264,30 @@ export default {
   font-weight: 500;
   line-height: 35px;
 }
+
 .card__holder {
   background: #ffffff;
-  box-shadow: 0px 4px 30px rgba(174, 174, 192, 0.2);
-  border-radius: 10px;
-  width: 246px;
-}
-.metric__holder {
-  background: #ffffff;
-  box-shadow: 0px 4px 30px rgba(174, 174, 192, 0.2);
+  box-shadow: 0px 4px 25px rgba(174, 174, 192, 0.15);
   border-radius: 10px;
 }
+
 .cards__holder {
   background: #ffffff;
-  box-shadow: 0px 4px 30px rgba(174, 174, 192, 0.2);
+  box-shadow: 0px 4px 25px rgba(174, 174, 192, 0.15);
   border-radius: 10px;
-  width: 340px;
+  height: 300px;
 }
+
 .text {
-  color: var(--secondary-black);
-  font-size: 1rem;
-  font-weight: 400;
-  line-height: 1.188rem;
+  color: #7c8db5;
+  font-size: 0.875rem;
+  font-weight: 500;
 }
 .funds {
-  color: var(--secondary-black);
+  color: var(--tertiary-black);
   font-size: 1.5rem;
   font-weight: 500;
+  line-height: 0.563rem;
 }
 .funds.pb {
   padding-bottom: 35px;
@@ -259,24 +300,5 @@ export default {
   color: var(--secondary-black);
   font-weight: 700;
   font-size: 1.125rem;
-}
-/* width */
-::-webkit-scrollbar {
-  width: 5px;
-}
-
-/* Track */
-::-webkit-scrollbar-track {
-  background: #f1f1f1;
-}
-
-/* Handle */
-::-webkit-scrollbar-thumb {
-  background: #888;
-}
-
-/* Handle on hover */
-::-webkit-scrollbar-thumb:hover {
-  background: #555;
 }
 </style>

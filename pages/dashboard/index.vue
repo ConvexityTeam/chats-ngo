@@ -49,7 +49,7 @@
       <div class="col-lg-3">
         <div class="card__holder d-flex p-3">
           <div>
-            <totalBalance />
+            <total-balance />
           </div>
           <div class="ml-3">
             <p class="text">Total Balance</p>
@@ -121,7 +121,7 @@
       <!-- Beneficiary By Location card here -->
       <div class="col-lg-4 pb-3">
         <div class="cards__holder px-3 pt-3">
-          <beneficiaryLocation />
+          <beneficiary-location />
         </div>
       </div>
 
@@ -377,15 +377,6 @@ export default {
   color: var(--secondary-black);
   font-size: 0.875rem;
   font-weight: 500;
-}
-
-.viewall {
-  color: var(--primary-color);
-  font-size: 0.875rem;
-  font-weight: 500;
-  border: none;
-  letter-spacing: 0.01em;
-  background: inherit;
 }
 
 .vendor-name {
