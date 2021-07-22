@@ -35,12 +35,6 @@
       </div>
 
       <div class=" ml-auto mx-3">
-        <!-- <Button
-          text="Create campaign"
-          custom-styles="height:50px"
-          @click="openModal"
-        /> -->
-
         <csv :data="transactions" name="beneficiary-transactions" />
       </div>
     </div>
@@ -106,11 +100,6 @@ export default {
       { value: "completed", text: "Completed" }
     ]
   }),
-
-  mounted() {
-    // console.log('test',this.beneficiariesData.transactions)
-    // this.transactions = this.beneficiariesData.transactions
-  },
 
   computed: {
     resultQuery() {

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <download-csv :data="data" :name="name">
+    <download-csv :data="data" :name="`${name}.csv`">
       <Button text="Export" :csv="true" custom-styles="height: 3.125rem">
       </Button>
     </download-csv>
