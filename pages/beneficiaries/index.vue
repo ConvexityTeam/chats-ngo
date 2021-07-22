@@ -289,16 +289,4 @@ export default {
   font-weight: 500;
   line-height: 0.563rem;
 }
-.funds.pb {
-  padding-bottom: 35px;
-}
-.percentage {
-  color: #00bf6f;
-  font-size: 0.8 75rem;
-}
-.total-count {
-  color: var(--secondary-black);
-  font-weight: 700;
-  font-size: 1.125rem;
-}
 </style>

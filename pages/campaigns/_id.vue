@@ -127,7 +127,7 @@
 import { mapGetters } from "vuex";
 import beneficiaryComplaints from "~/components/tables/campaigns/beneficiary-complaints";
 import campaignDetails from "~/components/tables/campaigns/campaign-details";
-import back from "~/components/generic/go-back.vue";
+
 import banner from "~/components/generic/banner.vue";
 import funding from "~/components/forms/funding.vue";
 
@@ -147,7 +147,6 @@ export default {
   components: {
     beneficiaryComplaints,
     campaignDetails,
-    back,
     banner,
     funding
   },

@@ -1,42 +1,61 @@
 <template>
   <div>
-    <div v-if="loading">
-      <div class="loader"></div>
-    </div>
+    <div v-if="loading"></div>
 
-    <div class="main" v-else>
-      <h4 class="top-header">Beneficiary Financials</h4>
-      <div class="row no-gutters pt-lg-4">
+    <div class="main container transparent pb-5" v-else>
+      <div class="pt-4 mt-2">
+        <back text="Go Back" @click="$router.go(-1)" />
+      </div>
+
+      <div class="row pt-4">
         <div class="col-lg-8">
           <!-- Top cards here -->
           <div class="row">
-            <!-- Total amount received  here -->
+            <!-- Total amount Received here -->
             <div class="col-lg-4">
-              <div class="card__holder px-3 pt-2">
-                <p class="text">Total Recieved</p>
-                <h4 class="funds pb-2">
-                  $ {{ user.Wallet ? user.Wallet.balance : "0" }}
-                </h4>
+              <div class="card__holder d-flex p-3">
+                <div>
+                  <img src="~/assets/img/vectors/deposit.svg" alt="deposit" />
+                </div>
+                <div class="ml-3">
+                  <p class="text">Total Recieved</p>
+                  <h4 class="funds">
+                    $
+                    {{ user.wallet ? user.wallet.balance : 0 | formatCurrency }}
+                  </h4>
+                </div>
               </div>
             </div>
 
-            <!-- Total Spent  here -->
+            <!--  Amount Disbursed here -->
             <div class="col-lg-4">
-              <div class="card__holder px-3 pt-2">
-                <p class="text">Total Spent</p>
-                <h4 class="funds pb-2">
-                  $ {{ user.Wallet ? user.Wallet.balance : "0" }}
-                </h4>
+              <div class="card__holder d-flex p-3">
+                <div>
+                  <img src="~/assets/img/vectors/spent.svg" alt="spent" />
+                </div>
+                <div class="ml-3">
+                  <p class="text">Total Spent</p>
+                  <h4 class="funds">
+                    $
+                    {{ user.wallet ? user.wallet.balance : 0 | formatCurrency }}
+                  </h4>
+                </div>
               </div>
             </div>
 
-            <!-- Total Remaining here -->
+            <!-- Total Balance -->
             <div class="col-lg-4">
-              <div class="card__holder px-3 pt-2">
-                <p class="text">Total Remaining</p>
-                <h4 class="funds pb-2">
-                  $ {{ user.Wallet ? user.Wallet.balance : "0" }}
-                </h4>
+              <div class="card__holder d-flex p-3">
+                <div>
+                  <total-balance />
+                </div>
+                <div class="ml-3">
+                  <p class="text">Total Remaining</p>
+                  <h4 class="funds">
+                    $
+                    {{ user.wallet ? user.wallet.balance : 0 | formatCurrency }}
+                  </h4>
+                </div>
               </div>
             </div>
           </div>
@@ -88,127 +107,64 @@
 
             <!-- Table here -->
             <div class="table">
-            <table class=" table-borderless" v-if="campaigns.length">
-              <thead>
-                <tr>
-                  <th scope="col">Name</th>
-                  <th scope="col">Total</th>
-                  <th scope="col">Spent</th>
-                  <th scope="col">Created</th>
-                  <th scope="col">Status</th>
-                  <!-- <th scope="col"></th> -->
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="campaign in resultQuery" :key="campaign.id">
-                  <td>Project Mppape</td>
-                  <td>$123,476,000</td>
-                  <td>$123,476,000</td>
-                  <td>12 Sep, 2020</td>
-                  <td class="in-progress">In Progress</td>
-                </tr>
-              </tbody>
-            </table>
-           
-             <h3 v-else class="text-center no-record">NO RECORD FOUND</h3>
-              </div>
+              <table class=" table-borderless" v-if="campaigns.length">
+                <thead>
+                  <tr>
+                    <th scope="col">Name</th>
+                    <th scope="col">Total</th>
+                    <th scope="col">Spent</th>
+                    <th scope="col">Created</th>
+                    <th scope="col">Status</th>
+                    <!-- <th scope="col"></th> -->
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="campaign in resultQuery" :key="campaign.id">
+                    <td>Project Mppape</td>
+                    <td>$123,476,000</td>
+                    <td>$123,476,000</td>
+                    <td>12 Sep, 2020</td>
+                    <td class="in-progress">In Progress</td>
+                  </tr>
+                </tbody>
+              </table>
+
+              <h3 v-else class="text-center no-record">NO RECORD FOUND</h3>
+            </div>
           </div>
         </div>
-
 
         <!-- Personal details here -->
         <div class="col-lg-4">
-          <div class="div__holder p-3">
-            <h4 class="top-header">Personal details</h4>
-
-             <div
-              class="text-center d-flex justify-content-center mx-auto align-items-center logo-holder my-5"
-            >
-              <img
-                v-if="user.profile_pic != null"
-                :src="user.profile_pic"
-                width="100"
-                height="100"
-                alt=""
-                class="rounded-circle"
-              />
-            </div>
-
-            <!--Vendor Details here -->
-            <div>
-              <table class="w-100">
-                <!-- name here -->
-                <tr>
-                  <th><p class="detail-caption col">Name</p></th>
-                  <td>
-                    <p class="detail-value col">{{ user.first_name + " " + user.last_name }}</p>
-                  </td>
-                </tr>
-
-                <!-- id here -->
-                <tr>
-                  <th><p class="detail-caption col">User ID</p></th>
-                  <td>
-                    <p class="detail-value col">{{ user.id }}</p>
-                  </td>
-                </tr>
-
-                <!-- Phone here -->
-                <tr>
-                  <th><p class="detail-caption col">Phone Number</p></th>
-                  <td>
-                    <p class="detail-value col">
-                       {{ user.phone }}
-                    </p>
-                  </td>
-                </tr>
-
-                <!-- email here -->
-                <tr>
-                  <th><p class="detail-caption col">Email Address</p></th>
-                  <td>
-                    <p class="detail-value col">
-                      {{ user.email}}
-                    </p>
-                  </td>
-                </tr>
-
-                <!-- Date created here  -->
-                <tr>
-                  <th><p class="detail-caption col">Created</p></th>
-                  <td>
-                    <p class="detail-value col">
-                      {{ user.createdAt | formatDateText }}
-                    </p>
-                  </td>
-                </tr>
-
-
-              </table>
-            </div>
-          </div>
+          <beneficiary-details :user="user" />
         </div>
-          </div>
-
- 
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 import { mapGetters } from "vuex";
+import totalBalance from "~/components/icons/total-balance.vue";
+import disbursed from "~/components/icons/disbursed.vue";
+import beneficiaryDetails from "~/components/tables/beneficiaries/beneficiary-details.vue";
+
+let screenLoading;
+
 export default {
   layout: "dashboard",
 
+  components: { disbursed, totalBalance, beneficiaryDetails },
+
   data: () => ({
     loading: false,
-    selected: null,    
-      searchQuery: "",
+    selected: null,
+    searchQuery: "",
     options: [
       { value: null, text: "filter" },
       { value: "all", text: "All" },
       { value: "inprogress", text: "In Progress" },
-      { value: "completed", text: "Completed" },
+      { value: "completed", text: "Completed" }
     ],
     user: {},
     campaigns: []
@@ -222,23 +178,24 @@ export default {
   computed: {
     ...mapGetters("beneficiaries", ["BENEFACTOR"]),
 
-        resultQuery() {
+    resultQuery() {
       if (this.searchQuery) {
-        return this.campaigns.filter((campaign) => {
+        return this.campaigns.filter(campaign => {
           return this.searchQuery
             .toLowerCase()
-            .split(' ')
-            .every((v) => campaign.title.toLowerCase().includes(v))
-        })
+            .split(" ")
+            .every(v => campaign.title.toLowerCase().includes(v));
+        });
       } else {
-        return this.campaigns
+        return this.campaigns;
       }
-    },
+    }
   },
 
   methods: {
     async getDetails() {
       try {
+        this.openScreen();
         this.loading = true;
 
         const response = await this.$axios.get(
@@ -247,43 +204,31 @@ export default {
 
         this.loading = false;
         if (response.status == "success") {
+          screenLoading.close();
           this.loading = false;
           this.user = response.data.user;
-          this.campaigns = response.data.associatedCampaigns
+          this.campaigns = response.data.associatedCampaigns;
           console.log("beneficiaryDetail:::", response);
         }
       } catch (err) {
+        screenLoading.close();
         this.loading = false;
         console.log(err);
       }
     },
-  },
+
+    openScreen() {
+      screenLoading = this.$loading({
+        lock: true,
+        spinner: "el-icon-loading",
+        background: "#0000009b"
+      });
+    }
+  }
 };
 </script>
 
 <style scoped>
-.logo-holder {
-  background: #eef0f4;
-  border-radius: 50%;
-  width: 96px;
-  height: 96px;
-}
-.detail-caption {
-  color: #4f4f4f;
-  font-size: 0.845rem;
-  opacity: 0.9;
-  display: table-cell;
-    padding: 10px 0px;
-}
-.detail-value {
-  color: var(--secondary-black);
-  font-size: 0.9rem;
-  display: table-cell;
-}
-.div__holder {
-  background: #ffffff;
-  border-radius: 10px;
-}
 .main {
   height: calc(100vh - 72px);
   overflow-y: scroll;
@@ -295,9 +240,8 @@ export default {
 }
 .card__holder {
   background: #ffffff;
-  box-shadow: 0px 4px 30px rgba(174, 174, 192, 0.2);
+  box-shadow: 0px 4px 25px rgba(174, 174, 192, 0.15);
   border-radius: 10px;
-  width: 200px;
 }
 .text {
   color: var(--secondary-black);
@@ -322,68 +266,23 @@ select.form-control {
   border-radius: 10px;
 }
 
-.funds {
-  color: var(--secondary-black);
-  font-size: 1.5rem;
+.text {
+  color: #7c8db5;
+  font-size: 0.875rem;
   font-weight: 500;
 }
-::placeholder {
-  color: #999999;
-  font-size: 1rem;
+.funds {
+  color: var(--tertiary-black);
+  font-size: 1.5rem;
+  font-weight: 500;
+  line-height: 0.563rem;
 }
+
 .form-controls {
   height: 50px;
 }
 .form-control {
   border: 1px solid #999999;
   color: black;
-}
-.form-control:focus {
-  box-shadow: none;
-}
-.table {
-  background: #ffffff;
-  box-shadow: 0px 4px 30px rgba(174, 174, 192, 0.2);
-  border-radius: 10px;
-  margin-top: 30px;
-  width: 98%;
-}
-.table thead th {
-  color: #555555;
-  letter-spacing: 0.01em;
-  font-size: 1rem;
-  font-weight: 700;
-}
-.table th,
-.table td {
-  color: red;
-  padding: 0.75rem 2rem;
-  color: var(--secondary-black);
-  font-size: 0.7rem;
-}
-td.in-progress {
-  color: #008cff;
-}
-td.completed {
-  color: #24b29f;
-}
-/* width */
-::-webkit-scrollbar {
-  width: 5px;
-}
-
-/* Track */
-::-webkit-scrollbar-track {
-  background: #f1f1f1;
-}
-
-/* Handle */
-::-webkit-scrollbar-thumb {
-  background: #888;
-}
-
-/* Handle on hover */
-::-webkit-scrollbar-thumb:hover {
-  background: #555;
 }
 </style>

@@ -1,6 +1,9 @@
 <template>
   <div class="main container transparent pb-5">
-    <div class="row pt-4 mt-2">
+    <div class="pt-4 mt-2">
+      <back text="Go Back" @click="$router.push('/beneficiaries')" />
+    </div>
+    <div class="row pt-4">
       <div class="col-lg-8">
         <div class="row">
           <div class="col-lg-5">
@@ -28,7 +31,7 @@
     </div>
 
     <!-- Table here -->
-    <div class="table-holder mt-5">
+    <div class="table-holder mt-4">
       <div
         v-if="beneficiaries.length"
         class="flex align-items-center table-title"
