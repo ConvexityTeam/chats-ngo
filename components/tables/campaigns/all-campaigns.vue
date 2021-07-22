@@ -267,9 +267,6 @@ export default {
 </script>
 
 <style scoped>
-.input-group-addon {
-  background: none;
-}
 .filter {
   top: 12px;
   left: 11px;
@@ -296,15 +293,6 @@ select {
 
 .form-controls {
   height: 50px;
-}
-
-.form-control {
-  border: 1px solid #999999;
-  color: black;
-}
-
-.form-control:focus {
-  box-shadow: none;
 }
 
 select.form-control {

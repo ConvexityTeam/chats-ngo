@@ -8,6 +8,7 @@
   >
     <i v-if="hasIcon">
       <img v-if="hasEye" src="~/assets/img/vectors/eye.svg" alt="eye" />
+      <img v-else-if="csv" src="~/assets/img/vectors/csv.svg" alt="csv" />
       <img v-else src="~/assets/img/vectors/add.svg" alt="add" />
     </i>
 
@@ -49,6 +50,10 @@ export default {
       default: ""
     },
     hasEye: {
+      type: Boolean,
+      default: false
+    },
+    csv: {
       type: Boolean,
       default: false
     },

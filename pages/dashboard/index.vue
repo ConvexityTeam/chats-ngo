@@ -190,7 +190,7 @@
             </div>
 
             <div class="ml-auto">
-              <button type="button" class="more-btn">
+              <button type="button">
                 <i><dot /></i>
               </button>
             </div>

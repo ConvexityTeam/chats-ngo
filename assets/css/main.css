@@ -83,12 +83,9 @@ p.form-input__error span {
   top: 12px;
   left: 11px;
 }
-select {
-  border-left: 0px;
-  padding-left: 40px;
+.form-control:focus {
   box-shadow: none;
 }
-
 .btn-spinner {
   width: 26px;
 }
