@@ -40,7 +40,7 @@
     </div>
 
     <!-- Table here -->
-    <div class="table-holder mt-3">
+    <div class="table-holder mt-4">
       <div v-if="campaigns.length" class="flex align-items-center table-title">
         <h4>Campaigns</h4>
         <div class="ml-auto"></div>
