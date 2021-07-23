@@ -21,7 +21,7 @@
                 <input
                   type="text"
                   class="form-controls search"
-                  placeholder="Search campaigns"
+                  placeholder="Search campaigns..."
                   v-model="searchQuery"
                 />
                 <img

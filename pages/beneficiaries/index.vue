@@ -13,7 +13,7 @@
             <div class="ml-3">
               <p class="text">Beneficiaries</p>
               <h4 class="funds">
-                {{ count }}
+                {{ count || 0 }}
               </h4>
             </div>
             <div class="ml-auto d-flex align-items-end">

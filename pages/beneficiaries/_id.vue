@@ -68,7 +68,7 @@
 
         <!-- Personal details here -->
         <div class="col-lg-4">
-          <beneficiary-details :user="user" />
+          <beneficiary-details :user="user" :loading="loading" />
         </div>
       </div>
     </div>
