@@ -117,7 +117,7 @@ export default {
       img: require("~/assets/img/user.png"),
       isCheckAll: false,
       loading: false,
-      searchQuery: null,
+      searchQuery: "",
       data: [],
       beneficiaries: []
     };
