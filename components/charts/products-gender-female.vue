@@ -4,7 +4,7 @@
       <doughnut-chart
         :data="doughnutChartData"
         :options="doughnutChartOptions"
-        :height="250"
+        :height="220"
         :width="250"
       />
     </div>
@@ -12,52 +12,57 @@
 </template>
 
 <script>
-import doughnutChart from '~/plugins/charts/doughnutchart'
+import doughnutChart from "~/plugins/charts/doughnutchart";
 export default {
   components: {
-    doughnutChart,
+    doughnutChart
   },
   data() {
     return {
       doughnutChartData: {
-        labels: ['Rice', 'Beans', 'Yam', 'Crayfish', 'Others'],
+        labels: ["Rice", "Beans", "Yam", "Crayfish", "Others"],
         datasets: [
           {
-            label:['Rice', 'Beans', 'Yam', 'Crayfish', 'Others'],
+            label: ["Rice", "Beans", "Yam", "Crayfish", "Others"],
             data: [10, 15, 30, 10, 5],
-            backgroundColor: ['#855CF8', '#E289F2', '#263238', '#B085FF', '#503795'],
-          },
-        ],
+            backgroundColor: [
+              "#E8FCCF",
+              "#96E072",
+              "#3DA35D",
+              "#3E8914",
+              "#134611"
+            ]
+          }
+        ]
       },
       doughnutChartOptions: {
         responsive: true,
         legend: {
           display: true,
-          position: 'right',
+          position: "right",
 
           labels: {
-            fontColor: '#263238',
-            usePointStyle: true,
-          },
-        
+            fontColor: "#25396F",
+            usePointStyle: true
+          }
         },
-        title: {
-          display: true,
-          text: 'Female',
-          fontSize: 16,
-          fontColor: '#333333',
-            position: 'top',
-        },
+        // title: {
+        //   display: true,
+        //   text: "Female",
+        //   fontSize: 16,
+        //   fontColor: "#333333",
+        //   position: "top"
+        // },
         cutoutPercentage: 70,
         rotation: Math.PI * 1,
         animation: {
-          animateScale: true,
+          animateScale: true
         },
         tooltips: {
-          backgroundColor: '#17BF62',
-        },
-      },
-    }
-  },
-}
+          backgroundColor: "#17BF62"
+        }
+      }
+    };
+  }
+};
 </script>
