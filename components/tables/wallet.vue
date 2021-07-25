@@ -1,5 +1,5 @@
 <template>
-  <div class="ml-2">
+  <div>
     <fundAmount @sentAmount="payViaService" />
     <fundBantu @fundAccount="fundAccount" />
 

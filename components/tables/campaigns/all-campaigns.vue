@@ -78,9 +78,10 @@
           </thead>
           <tbody>
             <tr
-              v-for="campaign in resultQuery"
-              :key="campaign.id"
+              v-for="(campaign, i) in resultQuery"
+              :key="i"
               style="cursor: pointer"
+              :class="{ selected: i % 2 == 0 }"
             >
               <td>
                 {{ campaign.title }}
@@ -277,6 +278,14 @@ select {
   box-shadow: none;
 }
 
+select.form-control {
+  -moz-appearance: none;
+  -webkit-appearance: none;
+  appearance: none;
+  height: 50px;
+  border-radius: 10px;
+}
+
 .main {
   height: calc(100vh - 72px);
   overflow-y: scroll;
@@ -293,14 +302,6 @@ select {
 
 .form-controls {
   height: 50px;
-}
-
-select.form-control {
-  -moz-appearance: none;
-  -webkit-appearance: none;
-  appearance: none;
-  height: 50px;
-  border-radius: 10px;
 }
 
 .status {
@@ -372,5 +373,8 @@ select.form-control {
   padding: 1rem 1.5rem;
   font-size: 1rem;
   vertical-align: middle;
+}
+.selected {
+  background: #fcfcfe;
 }
 </style>

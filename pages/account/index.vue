@@ -1,6 +1,6 @@
 <template>
-  <div class="main container">
-    <div class="row no-gutters py-4">
+  <div class="main container transparent pb-5">
+    <div class="row py-4">
       <div class="col-lg-8">
         <!-- Top cards here -->
         <div class="row">
@@ -22,7 +22,7 @@
           <div class="col-lg-4">
             <div class="card__holder d-flex  p-3">
               <div>
-                <img src="~/assets/img/vectors/expenses.svg" alt="deposit" />
+                <disbursed />
               </div>
               <div class="ml-3">
                 <p class="text">Expenses</p>
@@ -36,7 +36,7 @@
           <div class="col-lg-4">
             <div class="card__holder d-flex  p-3">
               <div>
-                <wallet-balance />
+                <total-balance />
               </div>
               <div class="ml-3">
                 <p class="text">Cash Balance</p>
@@ -62,14 +62,17 @@
 <script>
 import transactions from "~/components/tables/transactions";
 import wallet from "~/components/tables/wallet";
-import walletBalance from "~/components/icons/wallet-balance.vue";
 import { mapGetters } from "vuex";
+import disbursed from "~/components/icons/disbursed.vue";
+import totalBalance from "~/components/icons/total-balance.vue";
 export default {
   layout: "dashboard",
   components: {
     transactions,
     wallet,
-    walletBalance
+
+    disbursed,
+    totalBalance
   },
 
   data: () => ({
@@ -144,24 +147,5 @@ export default {
 .main {
   height: calc(100vh - 72px);
   overflow-y: scroll;
-}
-/* width */
-::-webkit-scrollbar {
-  width: 5px;
-}
-
-/* Track */
-::-webkit-scrollbar-track {
-  background: #f1f1f1;
-}
-
-/* Handle */
-::-webkit-scrollbar-thumb {
-  background: #888;
-}
-
-/* Handle on hover */
-::-webkit-scrollbar-thumb:hover {
-  background: #555;
 }
 </style>

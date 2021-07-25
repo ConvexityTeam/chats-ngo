@@ -78,7 +78,7 @@ button {
 }
 button.border {
   color: #17ce89;
-  background: white;
+  background: inherit;
   font-weight: 500;
 }
 </style>

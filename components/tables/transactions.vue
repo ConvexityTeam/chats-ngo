@@ -1,53 +1,50 @@
 <template>
   <div>
-    <div class="d-flex pt-lg-4 mr-2">
-      <div class="position-relative d-flex">
-        <!-- Search Box here -->
-        <input
-          type="text"
-          class="form-controls search"
-          placeholder="Search transactions"
-        />
-        <div class="position-absolute search-icon">
-          <img src="~/assets/img/vectors/search.svg" alt="search" />
-        </div>
-
-        <div class="ml-3 position-relative">
-          <div>
-            <el-select v-model="value" filterable placeholder="Select" >
-              <el-option
-                v-for="item in options"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-              >
-              </el-option>
-            </el-select>
+    <div class="row pt-4 mt-2">
+      <div class="col-lg-8">
+        <div class="row">
+          <div class="col-lg-8">
+            <!-- Search Box here -->
+            <div class="position-relative">
+              <input
+                type="text"
+                class="form-controls search"
+                placeholder="Search transactions..."
+                v-model="searchQuery"
+              />
+              <img
+                src="~/assets/img/vectors/search.svg"
+                class="search-icon position-absolute"
+                alt="search"
+              />
+            </div>
           </div>
+
+          <!-- <div class=" position-relative">
+            <span class="filter position-absolute">
+              <img src="~/assets/img/vectors/filter.svg" alt="filter" />
+            </span>
+            <b-form-select
+              v-model="selected"
+              :options="options"
+              class="filter"
+              plain
+            ></b-form-select>
+          </div> -->
         </div>
       </div>
 
-      <div class="ml-auto">
-        <button type="button" class="export-btn px-3">Export as CSV</button>
+      <div class=" ml-auto mx-3">
+        <csv :data="computedData" name="beneficiaries" />
       </div>
     </div>
 
-    <!-- Transactions Table here -->
-    <div class="holder mr-2">
-      <!-- <div class="d-flex px-4 pt-3">
-        <div>
-          <h4 class="header">Transactions</h4>
-        </div>
-
-        <div class="ml-auto d-flex filter">
-          <p>Filter by:</p>
-          <div class="mx-2">
-            <select name="" id="">
-              <option value="gender">Today</option>
-            </select>
-          </div>
-        </div>
-      </div> -->
+    <!-- Table here -->
+    <div class="table-holder mt-4">
+      <div class="flex align-items-center table-title">
+        <h4>Transactions</h4>
+        <div class="ml-auto"></div>
+      </div>
       <table class="table table-borderless">
         <thead>
           <tr>
@@ -79,6 +76,8 @@
           </tr>
         </tbody>
       </table>
+      <!-- <div v-else-if="loading" class=" text-center"></div>
+        <h3 v-else class="text-center no-record">NO RECORD FOUND</h3> -->
     </div>
   </div>
 </template>
@@ -90,41 +89,53 @@ export default {
   },
 
   data: () => ({
+    searchQuery: "",
     options: [
       {
         value: "Option1",
         label: "Option1"
       },
-         {
+      {
         value: "Option2",
         label: "Option2"
-      },
+      }
     ]
-  })
+  }),
+
+  computed: {
+    resultQuery() {
+      // if (this.searchQuery) {
+      //   return this.campaigns.filter(campaign => {
+      //     return this.searchQuery
+      //       .toLowerCase()
+      //       .split(" ")
+      //       .every(v => campaign.title.toLowerCase().includes(v));
+      //   });
+      // } else {
+      //   return this.campaigns;
+      // }
+    }
+  }
 };
 </script>
 
 <style scoped>
-.form-controls {
-  height: 50px;
-  width: 150%;
-}
-.header {
-  color: var(--secondary-black);
-  font-weight: 700;
-  font-size: 1.125rem;
-}
 .filter {
-  color: #4f4f4f;
-  font-size: 1rem;
-  font-weight: 500;
+  top: 12px;
+  left: 11px;
 }
 select {
-  border: none;
-  color: var(--secondary-black);
+  border-left: 0px;
+  padding-left: 40px;
+  box-shadow: none;
 }
-select:focus {
-  outline: none;
+
+select.form-control {
+  -moz-appearance: none;
+  -webkit-appearance: none;
+  appearance: none;
+  height: 50px;
+  border-radius: 10px;
 }
 .holder {
   background: #ffffff;
@@ -161,13 +172,5 @@ select:focus {
 .table td {
   color: #25396f;
   padding: 1rem 1.25rem;
-}
-.selected {
-  background: #fcfcfe;
-}
-
-::placeholder {
-  color: #999999;
-  font-size: 1rem;
 }
 </style>
