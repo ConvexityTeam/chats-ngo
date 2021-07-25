@@ -130,8 +130,8 @@ export default {
   background: #ffffff;
   box-shadow: 0px 4px 25px rgba(174, 174, 192, 0.15);
   border-radius: 10px;
-  /* width: 240px; */
 }
+
 .text {
   color: #7c8db5;
   font-size: 0.875rem;
