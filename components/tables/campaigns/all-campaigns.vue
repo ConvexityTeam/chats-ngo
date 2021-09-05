@@ -2,14 +2,16 @@
   <div class="main container transparent pb-5">
     <div class="">
       <!-- Modals here -->
-      <!-- <fund-amount :fundAmount="amount" @fundWallet="fundWallet" /> -->
 
       <Modal id="new-campaign" title="new campaign">
         <new-campaign @reload="fetchAllCampaigns" />
       </Modal>
 
-      <Modal id="fund-amount" title="fund wallet">
-        <fund-amount :fundAmount="amount" @fundWallet="fundWallet" />
+      <Modal id="fund-campaign" title="fund Campaign">
+        <fund-campaign
+          :campaign="SelectedCampaign"
+          @fundCampaign="fundCampaign"
+        />
       </Modal>
 
       <div class="row pt-4 mt-2">
@@ -83,7 +85,7 @@
               style="cursor: pointer"
               :class="{ selected: i % 2 == 0 }"
             >
-              <td>
+              <td class="campaign-title">
                 {{ campaign.title }}
               </td>
 
@@ -149,7 +151,7 @@
 </template>
 
 <script>
-import fundAmount from "~/components/forms/fund-amount.vue";
+import fundCampaign from "~/components/forms/fund-campaign.vue";
 import newCampaign from "~/components/forms/new-campaign.vue";
 import { mapGetters } from "vuex";
 let screenLoading;
@@ -157,7 +159,7 @@ let screenLoading;
 export default {
   components: {
     newCampaign,
-    fundAmount
+    fundCampaign
   },
 
   // pending, paused, in_progress (campaign statuses)
@@ -166,7 +168,7 @@ export default {
       loading: false,
       id: "",
       amount: 0,
-      campaignId: "",
+      SelectedCampaign: {},
       campaigns: [],
       selected: null,
       searchQuery: "",
@@ -204,26 +206,52 @@ export default {
   methods: {
     handleModal(campaign) {
       console.log("campaign::", campaign);
-      this.$bvModal.show("fund-amount");
+      this.$bvModal.show("fund-campaign");
       this.amount = campaign.budget;
-      this.campaignId = campaign.id;
+      this.SelectedCampaign = campaign;
     },
 
-    async fundWallet(data) {
+    async fundCampaign() {
       try {
         this.openScreen();
         const response = await this.$axios.post("organisation/transfer/token", {
-          campaign: this.campaignId,
-          amount: data.amount,
+          campaign: this.SelectedCampaign.id,
+          amount: this.SelectedCampaign.budget,
           organisation_id: this.id
         });
         screenLoading.close();
 
         console.log("FundResponse", response);
+
+        if (response.status == "success") {
+          this.$toast.success(response.message);
+          if (this.SelectedCampaign.status == "pending") {
+            return this.activateCampaign();
+          }
+        }
       } catch (err) {
         screenLoading.close();
-        this.$toast.error(err.response.data.message.errors.amount[0]);
-        console.log(err.response.data.message);
+        this.$toast.error(err.response.data.message.errors.amount);
+        console.log({ err: err });
+      }
+    },
+    async activateCampaign() {
+      try {
+        const response = await this.$axios.put("organisation/campaign", {
+          organisation_id: this.user.AssociatedOrganisations[0].OrganisationId,
+          campaignId: this.SelectedCampaign.id,
+          budget: this.SelectedCampaign.budget,
+          description: this.SelectedCampaign.description,
+          status: "in-progress"
+        });
+
+        if (response.status == "success") {
+          this.fetchAllCampaigns();
+        }
+
+        console.log("ACTIVATED", response);
+      } catch (err) {
+        console.log(err);
       }
     },
 
@@ -241,7 +269,7 @@ export default {
 
         if (response.status == "success") {
           screenLoading.close();
-          this.campaigns = response.data.reverse();
+          this.campaigns = response.data;
         }
         this.loading = false;
 
@@ -268,6 +296,10 @@ export default {
 </script>
 
 <style scoped>
+.campaign-title {
+  max-width: 9rem;
+}
+
 .filter {
   top: 12px;
   left: 11px;

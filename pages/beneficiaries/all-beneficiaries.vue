@@ -138,7 +138,8 @@ export default {
     },
 
     computedData() {
-      return this.beneficiaries.map(benefactor => {
+      const data = this.beneficiaries || [];
+      return data.map(benefactor => {
         return {
           Name: benefactor.first_name + " " + benefactor.last_name,
           Phone_Number: benefactor.phone,

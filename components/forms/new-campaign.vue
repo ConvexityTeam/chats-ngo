@@ -36,7 +36,7 @@
 
       <div class="row form-group">
         <div class="col-lg-12">
-          <!--Total Amount  field  here -->
+          <!--Budget field  here -->
           <div class="">
             <label for="total-amount">Budget</label>
             <input
@@ -125,12 +125,14 @@
 </template>
 
 <script>
-import { required } from "vuelidate/lib/validators";
+import { required, minValue } from "vuelidate/lib/validators";
 import { mapGetters } from "vuex";
-const apiKey = "AIzaSyApnZ4U1qeeHgHZuckDndNVVMIJAo-b5Vo";
+// const apiKey = "AIzaSyApnZ4U1qeeHgHZuckDndNVVMIJAo-b5Vo";
+// const apiKey = process.env.GOOGLE_API;
 import DatePicker from "vue2-datepicker";
 import "vue2-datepicker/index.css";
 // import Checkbox from "../generic/checkbox.vue";
+const greaterThanZero = value => value >= 100;
 
 let geocoder;
 
@@ -139,7 +141,7 @@ export default {
     return {
       script: [
         {
-          src: `https://maps.googleapis.com/maps/api/js?key=${apiKey}&callback=initMap&libraries=geometry,drawing&v=weekly`
+          // src: `https://maps.googleapis.com/maps/api/js?key=${apiKey}&callback=initMap&libraries=geometry,drawing&v=weekly`
         }
       ]
     };
@@ -178,7 +180,8 @@ export default {
         required
       },
       budget: {
-        required
+        required,
+        greaterThanZero
       },
       //   location: {
       //     coordinates: {
@@ -201,6 +204,7 @@ export default {
 
   mounted() {
     this.payload.organisation_id = this.user.AssociatedOrganisations[0].OrganisationId;
+    // this.formatCurrency(100000);
   },
 
   methods: {
@@ -210,6 +214,17 @@ export default {
 
     checkValue(value) {
       this.isGeofence = value;
+    },
+
+    formatCurrency(value) {
+      let x = value
+        .toString()
+        .replace(/\D/g, "")
+        .replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
+      console.log("formatter", x);
+
+      return x;
     },
 
     async createCampaign() {
@@ -236,16 +251,14 @@ export default {
           this.$emit("reload");
           this.closeModal();
           this.$toast.success(response.message);
-        } else {
-          this.$toast.error(response.message);
         }
-
         console.log("campaignResponse:::", response);
 
         this.loading = false;
       } catch (err) {
-        console.log(err);
+        console.log({ err });
         this.loading = false;
+        this.$toast.error(err.response.data.message);
       }
     },
 

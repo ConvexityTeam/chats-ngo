@@ -24,7 +24,7 @@ const formatDate = value => {
 };
 
 const formatNumber = value => {
-  if (value !== null) {
+  if (value) {
     return value
       .toString()
       .replace(/\D/g, "")

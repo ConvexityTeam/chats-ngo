@@ -7,6 +7,15 @@
         <funding />
       </Modal>
 
+      <el-drawer
+        :visible.sync="drawer"
+        size="75%"
+        :with-header="false"
+        :direction="direction"
+      >
+        <add-product @close="drawer = false" />
+      </el-drawer>
+
       <back text="Go Back" @click="$router.go(-1)" />
 
       <!-- search region here -->
@@ -32,18 +41,33 @@
           </div>
         </div>
 
-        <div class=" ml-auto mx-3">
-          <Button
-            text="Public Funding"
-            :has-icon="false"
-            custom-styles="height:50px"
-            @click="showModal"
-          />
+        <div class=" d-flex ml-auto mx-3">
+          <div>
+            <Button
+              text="Add Products"
+              custom-styles="height:50px; border: 1px solid #17ce89 !important;"
+              :has-border="true"
+              :is-green="true"
+              @click="drawer = true"
+            />
+          </div>
+
+          <div class="ml-3">
+            <Button
+              text="Public Funding"
+              :has-icon="false"
+              custom-styles="height:50px"
+              @click="showModal"
+            />
+          </div>
         </div>
       </div>
 
       <div v-if="details.status == 'paused'" class="">
-        <banner :date="details.updatedAt" />
+        <banner
+          :date="details.updatedAt"
+          @resumeCampaign="resumeCampaign = true"
+        />
       </div>
 
       <div class="row pt-lg-4">
@@ -51,10 +75,7 @@
           <!-- Campaign beneficiaries here -->
           <div>
             <div class="table-holder mt-2">
-              <div
-                v-if="beneficiaries.length"
-                class="d-flex align-items-center table-title"
-              >
+              <div class="d-flex align-items-center table-title">
                 <h4>Campaign beneficiaries</h4>
                 <div class="ml-auto"></div>
               </div>
@@ -104,7 +125,9 @@
 
           <!-- complaints here -->
           <div class="mt-4 pt-2">
-            <beneficiary-complaints :campaignId="id" />
+            <beneficiary-complaints
+              :campaignId="$router.history.current.params.id"
+            />
           </div>
         </div>
 
@@ -116,6 +139,7 @@
             :location="location"
             :user="user"
             @reload="getDetails"
+            :resumeCampaign="resumeCampaign"
           />
         </div>
       </div>
@@ -127,9 +151,9 @@
 import { mapGetters } from "vuex";
 import beneficiaryComplaints from "~/components/tables/campaigns/beneficiary-complaints";
 import campaignDetails from "~/components/tables/campaigns/campaign-details";
-
 import banner from "~/components/generic/banner.vue";
 import funding from "~/components/forms/funding.vue";
+import addProduct from "~/components/forms/add-product.vue";
 
 let screenLoading;
 export default {
@@ -141,14 +165,20 @@ export default {
     complaints: [],
     beneficiaries: [],
     details: {},
-    location: ""
+    location: "",
+    resumeCampaign: false,
+
+    title: "",
+    drawer: false,
+    direction: "rtl"
   }),
 
   components: {
     beneficiaryComplaints,
     campaignDetails,
     banner,
-    funding
+    funding,
+    addProduct
   },
 
   computed: {

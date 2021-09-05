@@ -1,14 +1,6 @@
 <template>
   <div>
-    <!-- <fund-amount @sentAmount="payViaService" /> -->
-    <Modal id="fund-amount" title="fund wallet">
-      <fund-amount
-        :fundAmount="amount"
-        @fundWallet="fundWallet"
-        :showCrypto="false"
-      />
-    </Modal>
-
+    <fundAmount @sentAmount="payViaService" />
     <fundBantu @fundAccount="fundAccount" />
 
     <div class="holder px-3 py-4">
@@ -19,7 +11,7 @@
         <!-- Pay with Flutterwave here -->
         <div class="option-holder py-4 px-3 mb-3">
           <div>
-            <h5 class="option-header">Fund Through Paystack</h5>
+            <h5 class="option-header">Fund Through Flutterwave</h5>
             <p class="description">
               You can fund your NGO wallet using a Mastercard or Visa card
             </p>
@@ -36,19 +28,6 @@
               @click="$bvModal.show('fund-amount')"
             />
           </div>
-
-          <paystack
-            id="paystack"
-            class="d-none"
-            :amount="amount * 100"
-            :email="paystackData.email"
-            :paystackkey="paystackData.key"
-            :reference="reference"
-            :callback="processPayment"
-            :close="close"
-            :channels="channels"
-          >
-          </paystack>
         </div>
 
         <!-- Pay with Crypto here -->
@@ -91,9 +70,8 @@
                   type="button"
                   class="pay-btn text poppins"
                   @click="$bvModal.show('fund-bantu')"
-                  style="height: 40px"
                 >
-                  Initiate funding
+                  Initiate account funding
                 </button>
               </div>
             </div>
@@ -101,7 +79,7 @@
         </div>
 
         <!--Pay With Bank Transfer here -->
-        <!-- <div class="option-holder py-4 px-3 mb-3">
+        <div class="option-holder py-4 px-3 mb-3">
           <div>
             <h5 class="option-header">Pay with bank transfer</h5>
             <p class="description">
@@ -152,7 +130,7 @@
               </div>
             </div>
           </div>
-        </div> -->
+        </div>
       </div>
     </div>
   </div>
@@ -160,46 +138,53 @@
 
 <script>
 import { mapGetters } from "vuex";
-import fundAmount from "~/components/forms/fund-amount.vue";
+import fundAmount from "~/components/modals/fund-amount";
 import fundBantu from "~/components/modals/bantu-amount.vue";
-import paystack from "vue-paystack";
 export default {
   components: {
     fundAmount,
-    fundBantu,
-    paystack
+    fundBantu
   },
 
   data() {
     return {
       amount: 0,
       wallet: {},
-      organisationId: ""
+      organisationId: "",
+      accountNumber: "0909029389",
+      bankName: "Zenith Bank",
+      walletAddress: "bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0",
+
+      paymentData: {
+        tx_ref: this.generateReference(),
+        amount: 10,
+        currency: "USD",
+        payment_options: "card,ussd,barter,account, banktransfer,qr,paga",
+        redirect_url: "",
+        meta: [
+          {
+            orgId: ""
+          }
+        ],
+        customer: {
+          name: "",
+          email: "",
+          phone_number: ""
+        },
+        customizations: {
+          title: "Fund CHATS Wallet",
+          description: " Description",
+          logo:
+            "https://convexity.s3.us-east-2.amazonaws.com/chats+only+icon+transparent.png"
+        },
+        callback: this.makePaymentCallback,
+        onclose: this.closedPaymentModal
+      }
     };
   },
 
   computed: {
     ...mapGetters("authentication", ["user"]),
-
-    channels() {
-      return ["card", "bank", "ussd"];
-    },
-
-    paystackData() {
-      return {
-        email: this.user.email,
-        key: process.env.PAYSTACK_KEY
-      };
-    },
-
-    reference() {
-      let text = "";
-      let possible =
-        "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-      for (let i = 0; i < 10; i++)
-        text += possible.charAt(Math.floor(Math.random() * possible.length));
-      return text;
-    },
 
     custom() {
       return "border-radius:5px !important; height: 41px; font-size: 0.875rem; ";
@@ -210,25 +195,27 @@ export default {
     this.loadData();
     this.getWallet();
     console.log("Wallet::", this.wallet);
-
-    console.log("KEY", this.reference);
   },
 
   methods: {
-    fundWallet(data) {
-      this.amount = data.amount;
-      if (data.amount != 0) {
-        return document.getElementById("paystack").click();
-      }
+    payViaService(amount) {
+      console.log("beforeSending:::", this.paymentData);
+      this.amount = amount;
+      this.paymentData.amount = amount;
+      this.payWithFlutterwave(this.paymentData);
     },
 
-    processPayment() {
-      console.log("Payment recieved");
-      this.getWallet();
+    makePaymentCallback(response) {
+      console.log("PaySuccess?", response);
     },
 
-    close() {
-      console.log("You closed checkout page");
+    closedPaymentModal() {
+      console.log("payment is closed");
+    },
+
+    generateReference() {
+      let date = new Date();
+      return date.getTime().toString();
     },
 
     async fundAccount(amount) {
@@ -252,6 +239,10 @@ export default {
     },
 
     loadData() {
+      (this.paymentData.customer.email = this.user.email),
+        (this.paymentData.customer.name = this.user.AssociatedOrganisations[0].Organisation.name);
+      this.paymentData.customer.phone_number = this.user.AssociatedOrganisations[0].Organisation.phone;
+      this.paymentData.meta[0].orgId = this.user.AssociatedOrganisations[0].Organisation.id;
       this.organisationId = this.user.AssociatedOrganisations[0].Organisation.id;
     },
 
@@ -266,7 +257,7 @@ export default {
           this.wallet = response.data.wallet;
         }
       } catch (err) {
-        console.log("Walleterr:::", err);
+        cosole.log("Walleterr:::", err);
       }
     },
     copy(value) {
@@ -279,10 +270,9 @@ export default {
   }
 };
 </script>
-
 <style scoped>
 .pay-btn.text {
-  color: var(--primary-color);
+  color: #17ce89;
   font-size: 0.75rem;
   font-weight: 600;
   background: inherit;

@@ -114,6 +114,10 @@ export default {
       // } else {
       //   return this.campaigns;
       // }
+    },
+
+    computedData() {
+      return [];
     }
   }
 };

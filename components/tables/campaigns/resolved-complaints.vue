@@ -1,5 +1,11 @@
 <template>
   <div>
+    <Modal id="beneficiary-complaint" title="Beneficiary complaint">
+      <beneficiary-complaint
+        :complaint="activeComplaint"
+        :complaintStatus="complaintStatus"
+      />
+    </Modal>
     <table v-if="complaints.length" class="table table-borderless">
       <thead>
         <tr>
@@ -34,6 +40,8 @@
 </template>
 
 <script>
+import beneficiaryComplaint from "~/components/forms/beneficiary-complaint.vue";
+
 export default {
   props: {
     complaints: {
@@ -46,8 +54,21 @@ export default {
     }
   },
 
+  components: { beneficiaryComplaint },
+
+  data: () => ({
+    activeComplaint: {},
+    complaintStatus: ""
+  }),
+
   methods: {
-    viewComplaint() {}
+    viewComplaint(complaint) {
+      this.$bvModal.show("beneficiary-complaint");
+
+      // correct this to the right status
+      this.complaintStatus = complaint.xxxxxx;
+      this.activeComplaint = complaint;
+    }
   }
 };
 </script>

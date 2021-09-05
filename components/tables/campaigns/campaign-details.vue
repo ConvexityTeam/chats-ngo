@@ -131,16 +131,28 @@ let screenLoading;
 export default {
   props: {
     details: {
-      type: Object
+      type: Object,
+      default: () => {}
     },
+
     count: {
-      type: Number
+      type: Number,
+      default: null
     },
+
     location: {
-      type: String
+      type: String,
+      default: ""
     },
+
     user: {
-      type: Object
+      type: Object,
+      default: () => {}
+    },
+
+    resumeCampaign: {
+      type: Boolean,
+      default: false
     }
   },
 
@@ -148,6 +160,14 @@ export default {
     campaignStatus: "",
     status: ""
   }),
+
+  watch: {
+    resumeCampaign(value) {
+      if (value) {
+        this.handleCampaign("in-progress");
+      }
+    }
+  },
 
   components: {
     campaignPrompt

@@ -1,10 +1,10 @@
 <template>
-    <div>
+  <div>
     RESET HERE
-    </div>
+  </div>
 </template>
 <script>
 export default {
-     layout: "default"
-}
+  layout: "default"
+};
 </script>

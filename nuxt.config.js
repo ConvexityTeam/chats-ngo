@@ -1,4 +1,5 @@
 const BASE_URL = "https://api.chats.cash/v1/";
+const apiKey = process.env.GOOGLE_API;
 export default {
   // Disable server-side rendering (https://go.nuxtjs.dev/ssr-mode)
   ssr: false,
@@ -16,6 +17,11 @@ export default {
       {
         rel: "stylesheet",
         href: "https://unpkg.com/element-ui/lib/theme-chalk/index.css"
+      }
+    ],
+    script: [
+      {
+        src: `https://maps.googleapis.com/maps/api/js?key=${apiKey}&callback=initMap&libraries=geometry,drawing&v=weekly`
       }
     ]
   },
@@ -44,7 +50,7 @@ export default {
   buildModules: [],
 
   // Modules (https://go.nuxtjs.dev/config-modules)
-  modules: ["bootstrap-vue/nuxt", "@nuxtjs/axios", "@nuxtjs/toast"],
+  modules: ["bootstrap-vue/nuxt", "@nuxtjs/axios", "@nuxtjs/toast", '@nuxtjs/dotenv'],
 
   // Axios module configuration (https://go.nuxtjs.dev/config-axios)
   axios: {

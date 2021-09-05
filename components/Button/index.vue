@@ -5,10 +5,12 @@
     @click="$emit('click')"
     :class="{ border: hasBorder }"
     :style="customStyles"
+    :disabled="disabled"
   >
     <i v-if="hasIcon">
       <img v-if="hasEye" src="~/assets/img/vectors/eye.svg" alt="eye" />
       <img v-else-if="csv" src="~/assets/img/vectors/csv.svg" alt="csv" />
+      <img v-else-if="isGreen" src="~/assets/img/vectors/add2.svg" alt="add" />
       <img v-else src="~/assets/img/vectors/add.svg" alt="add" />
     </i>
 
@@ -57,6 +59,14 @@ export default {
       type: Boolean,
       default: false
     },
+    isGreen: {
+      type: Boolean,
+      default: false
+    },
+    disabled: {
+      type: Boolean,
+      default: false
+    },
     loading: {
       type: Boolean,
       default: false
@@ -67,7 +77,7 @@ export default {
 
 <style scoped>
 button {
-  background: #17ce89;
+  background: var(--primary-color);
   border-radius: 8px;
   color: white;
   font-weight: 600;
@@ -77,8 +87,16 @@ button {
   justify-content: center;
 }
 button.border {
-  color: #17ce89;
+  color: var(--primary-color);
   background: inherit;
   font-weight: 500;
+}
+
+button:disabled {
+  background: #17ce89;
+  opacity: 0.5;
+  border: 1px solid #17ce89;
+  box-shadow: 0px 2px 4px rgba(23, 206, 137, 0.07);
+  cursor: not-allowed;
 }
 </style>

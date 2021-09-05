@@ -14,7 +14,7 @@ export default {
   data() {
     return {
       barChartData: {
-        labels: ["1", "2", "3", "4", "5", "6"],
+        labels: ["Ade", "Ope", "Obi", "Test", "Doe", "Jane"],
         datasets: [
           {
             label: "Visits",

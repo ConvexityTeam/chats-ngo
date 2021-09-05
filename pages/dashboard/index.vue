@@ -22,9 +22,9 @@
             <img src="~/assets/img/vectors/deposit.svg" alt="deposit" />
           </div>
           <div class="ml-3">
-            <p class="text">Amount Recieved</p>
+            <p class="text">Campaign Budget</p>
             <h4 class="funds">
-              $ {{ loading ? 0 : stats.income || 0 | formatCurrency }}
+              $ {{ loading ? 0 : stats.income | formatCurrency }}
             </h4>
           </div>
         </div>
@@ -39,7 +39,7 @@
           <div class="ml-3">
             <p class="text">Amount Disbursed</p>
             <h4 class="funds">
-              $ {{ loading ? 0 : stats.expense || 0 | formatCurrency }}
+              $ {{ loading ? 0 : stats.expense | formatCurrency }}
             </h4>
           </div>
         </div>
@@ -52,9 +52,12 @@
             <total-balance />
           </div>
           <div class="ml-3">
-            <p class="text">Total Balance</p>
+            <p class="text">Campaign Balance</p>
             <h4 class="funds">
-              $ {{ loading ? 0 : stats.balance || 0 | formatCurrency }}
+              $
+              {{
+                loading ? 0 : (stats.income - stats.expense) | formatCurrency
+              }}
             </h4>
           </div>
         </div>

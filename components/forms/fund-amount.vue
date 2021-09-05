@@ -17,7 +17,7 @@
     </div>
 
     <!-- Crypto markers here -->
-    <div v-if="!$route.path.includes('campaigns')">
+    <div v-if="showCrypto">
       <token-outlets />
     </div>
 
@@ -39,11 +39,18 @@ import tokenOutlets from "~/components/generic/token-outlets.vue";
 export default {
   props: {
     fundAmount: {
-      type: Number
+      required: true,
+      default: ""
     },
+
     text: {
       type: String,
       default: "Fund wallet"
+    },
+
+    showCrypto: {
+      type: Boolean,
+      default: true
     }
   },
 
@@ -72,7 +79,7 @@ export default {
 
     sendAmount() {
       this.$v.$touch();
-      if (this.$v.amount.$error === true) {
+      if (this.$v.amount.$error === true || this.amount == 0) {
         return;
       }
       this.$emit("fundWallet", { amount: this.amount });

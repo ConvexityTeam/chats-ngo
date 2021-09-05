@@ -33,6 +33,7 @@ Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem
         :has-icon="false"
         text="Resolve complaint"
         custom-styles="height:41px; border-radius: 5px; "
+        @click="$emit('resolveComplaint')"
       />
     </div>
   </form>
@@ -43,7 +44,15 @@ let screenLoading;
 export default {
   props: {
     complaint: {
-      type: Object
+      type: Object,
+      required: true,
+      default: () => {}
+    },
+
+    complaintStatus: {
+      type: String,
+      required: true,
+      default: ""
     }
   },
 

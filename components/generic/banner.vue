@@ -11,7 +11,7 @@
           <br />
         </p>
 
-        <span class="resume-btn" @click="$emit('click')">
+        <span class="resume-btn" @click="$emit('resumeCampaign')">
           Resume Campaign
         </span>
       </div>
