@@ -1,62 +1,82 @@
 <template>
   <div class="main pb-5">
-    <div class="text-center">
+    <div class="text-center ">
       <!-- Logo here -->
       <div class="logo-div">
         <img src="~/assets/img/logo.svg" class="img-fluid" alt="Chats" />
       </div>
-      <h3 v-if="!isSuccess" class="text-white welcome py-4">
+
+      <h3 class="text-white welcome py-4">
         Password Recovery
       </h3>
 
-      <div class="banner  mx-auto  my-4" v-if="isSuccess">
-        An email has been sent to the provided email address, kindly login to
-        your email address to continue.
-      </div>
+      <!-- banner here -->
+      <!-- <div class=" position-relative banner mx-auto" v-if="isSuccess">
+        An email with verification code has been sent to {{ payload.email }}
+      </div> -->
     </div>
 
     <div class="d-flex justify-content-center align-items-center">
       <div class="card__holder">
-        <p class="font-bold primar-black ">
-          Forgot your password? that’s not a problem.
-        </p>
-        <p class="forgot">
-          Kindly enter your registered email and we’ll send you a verification
-          code to reset your password.
-        </p>
-        <form @submit.prevent="recoverPassword">
-          <!-- Organisation email here -->
-          <div class="form-group">
-            <label for="email">Email Address</label>
-            <input
-              type="email"
-              class="form-controls"
-              placeholder="example@gmail.com"
-              :class="{ form__input__error: $v.payload.email.$error }"
-              id="email"
-              v-model="payload.email"
-              @focus="emailActive = true"
-              @blur="$v.payload.email.$touch()"
-            />
-            <div class="position-absolute icon-left">
-              <email-icon :active="emailActive" />
-            </div>
-          </div>
+        <!-- Message for step 1 here -->
+        <div v-if="!isSuccess && step === 1">
+          <p class="font-bold primary-black">
+            Forgot your password? that’s not a problem.
+          </p>
 
-          <div class="mt-4 pt-2 text-center">
-            <button class="onboarding-btn">
-              <span v-if="loading">
-                <img
-                  src="~/assets/img/vectors/spinner.svg"
-                  class="btn-spinner"
-                />
-              </span>
-              <span v-else>Send me a new password</span>
-            </button>
-          </div>
-        </form>
+          <p class="forgot">
+            Kindly enter your registered email and we’ll send you a verification
+            code to reset your password.
+          </p>
+        </div>
 
-        <div class="mt-4 ot-2 text-center">
+        <!-- Message for step 2 here -->
+        <div v-if="isSuccess && step === 2">
+          <p class="font-bold primary-black">
+            Confirm verification code
+          </p>
+
+          <p class="forgot">
+            Kindly enter the verification code sent to <br />
+            {{ payload.email }}
+          </p>
+        </div>
+
+        <!-- Message for step 3 here -->
+        <div v-if="isSuccess && step === 3">
+          <p class="font-bold primary-black">
+            Set a new password
+          </p>
+
+          <p class="forgot">
+            Choose a new password, something easy to remember.
+          </p>
+        </div>
+
+        <!-- Step 1 form here -->
+        <div v-if="!isSuccess">
+          <step-1
+            v-if="step === 1"
+            @recoverPassword="recoverPassword"
+            :loading="loading"
+          />
+        </div>
+
+        <div v-if="isSuccess">
+          <step-2
+            v-if="step === 2"
+            @handleCode="handleCode"
+            :loading="loading"
+          />
+
+          <step-3
+            v-if="step === 3"
+            @resetPassword="resetPassword"
+            :loading="loading"
+          />
+        </div>
+
+        <div v-if="!isSuccess" class="mt-4 ot-2 text-center">
           <p class="account">
             <nuxt-link class="font-bold login" to="/">Log in</nuxt-link>
             instead
@@ -68,69 +88,93 @@
 </template>
 
 <script>
-import { required, email } from "vuelidate/lib/validators";
+import step1 from "~/components/forms/password-recovery/step-1.vue";
+import step2 from "~/components/forms/password-recovery/step-2.vue";
+import step3 from "~/components/forms/password-recovery/step-3.vue";
+
 import { mapActions } from "vuex";
-import emailIcon from "~/components/icons/email-icon.vue";
+import email from "vuelidate/lib/validators/email";
 
 export default {
   layout: "default",
 
   components: {
-    emailIcon
+    step1,
+    step2,
+    step3
   },
 
-  data() {
-    return {
-      loading: false,
-      emailActive: false,
-      isSuccess: false,
-
-      payload: {
-        email: ""
-      }
-    };
-  },
-
-  validations: {
+  data: () => ({
+    loading: false,
+    isSuccess: false,
+    step: 1,
+    email: "",
     payload: {
-      email: {
-        required,
-        email
-      }
+      email: ""
+      // ref: "",
+      // otp: "",
+      // password: "",
+      // confirm_password: ""
     }
-  },
+  }),
 
   methods: {
     ...mapActions("authentication", ["commitToken", "commitUser"]),
-    async recoverPassword() {
+    async recoverPassword(value) {
       try {
+        this.payload.email = value;
         this.loading = true;
         this.isSuccess = false;
-        this.$v.payload.$touch();
 
-        if (this.$v.payload.$error === true) {
-          this.loading = false;
-          this.$toast.error("Please fill in appropriately");
-          return;
-        }
-
-        const response = await this.$axios.post(
-          "/users/reset-password",
-          this.payload
-        );
+        const response = await this.$axios.post("/auth/password/reset", {
+          email: value
+        });
 
         console.log("recover response", response);
 
         if (response.status == "success") {
-          //   this.$toast.success(response.message);
-
+          this.$toast.success(
+            `An email with verification code has been sent to ${this.payload.email}`
+          );
+          this.payload.ref = response.data.ref;
           this.isSuccess = true;
+          this.step = 2;
         }
 
         this.loading = false;
       } catch (err) {
         this.loading = false;
-        this.$toast.error(err.response.data.message);
+        console.log(err);
+        this.$toast.error(err.response?.data?.message);
+      }
+    },
+
+    handleCode(value) {
+      this.payload.otp = value;
+      this.step = 3;
+    },
+    async resetPassword(payload) {
+      try {
+        this.loading = true;
+        this.payload.password = payload.password;
+        this.payload.confirm_password = payload.confirm_password;
+
+        const response = await this.$axios.put(
+          "/auth/password/reset",
+          this.payload
+        );
+
+        if (response.status == "success") {
+          this.$toast.success(response.message);
+          this.$router.push("/");
+        }
+
+        console.log("REset response", response);
+        this.loading = false;
+      } catch (err) {
+        this.loading = false;
+        console.log("RESET PASSWORD::", err);
+        this.$toast.error(err.response?.data?.message);
       }
     }
   }
@@ -148,6 +192,7 @@ export default {
   justify-content: center;
   width: 450px;
   border-radius: 5px;
+  bottom: 80px;
 }
 
 .account {

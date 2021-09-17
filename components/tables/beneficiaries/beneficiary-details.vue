@@ -123,6 +123,9 @@ export default {
 .campaign-answers {
   color: #25396f;
   font-size: 0.875rem;
+  max-width: 7rem;
+  word-break: break-all;
+  width: 7rem;
 }
 
 .campaign-divider {

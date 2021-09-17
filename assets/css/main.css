@@ -22,6 +22,10 @@
   color: var(--primary-black);
 }
 
+.not-allowed {
+  cursor: not-allowed;
+}
+
 .primary-gray {
   color: var(--primary-gray);
 }

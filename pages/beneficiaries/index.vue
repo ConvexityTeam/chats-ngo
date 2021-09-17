@@ -40,7 +40,7 @@
           <div class="ml-3">
             <p class="text">Amount Recieved</p>
             <h4 class="funds">
-              $ {{ loading ? 0 : stats.income || 0 | formatCurrency }}
+              $ {{ loading ? 0 : stats.income | formatCurrency }}
             </h4>
           </div>
         </div>
@@ -55,7 +55,7 @@
           <div class="ml-3">
             <p class="text">Amount Disbursed</p>
             <h4 class="funds">
-              $ {{ loading ? 0 : stats.expense || 0 | formatCurrency }}
+              $ {{ loading ? 0 : stats.expense | formatCurrency }}
             </h4>
           </div>
         </div>
@@ -70,7 +70,10 @@
           <div class="ml-3">
             <p class="text">Total Balance</p>
             <h4 class="funds">
-              $ {{ loading ? 0 : stats.balance || 0 | formatCurrency }}
+              $
+              {{
+                loading ? 0 : (stats.income - stats.expense) | formatCurrency
+              }}
             </h4>
           </div>
         </div>
