@@ -34,6 +34,7 @@
         ></textarea>
       </div>
 
+      <!--Budget field  here -->
       <div class="row form-group">
         <div class="col-lg-12">
           <!--Budget field  here -->
@@ -55,6 +56,7 @@
         </div>
       </div>
 
+      <!-- Date fields here -->
       <div class="row ">
         <div class="col-lg-6">
           <!--start date  field  here -->
@@ -62,8 +64,8 @@
             <label for="start-date">Start Date</label>
             <date-picker
               v-model="payload.start_date"
-              format="MM-DD-YYYY"
-              placeholder="MM-DD-YYYY"
+              format="DD-MM-YYYY"
+              placeholder="DD-MM-YYYY"
               valueType="format"
             ></date-picker>
           </div>
@@ -76,8 +78,8 @@
 
             <date-picker
               v-model="payload.end_date"
-              format="MM-DD-YYYY"
-              placeholder="MM-DD-YYYY"
+              format="DD-MM-YYYY"
+              placeholder="DD-MM-YYYY"
               valueType="format"
             ></date-picker>
           </div>
@@ -85,7 +87,7 @@
       </div>
 
       <div class="row form-group mt-2 px-3">
-        <!--start date  field  here -->
+        <!--Allow geofence   here -->
         <div class="">
           <checkbox id="geofence" @input="checkValue" />
           <!-- <input type="checkbox" id="geofence" /> -->
@@ -151,16 +153,17 @@ export default {
     return {
       loading: false,
       isGeofence: false,
+      id: 0,
       payload: {
-        organisation_id: 0,
         type: "campaign",
         title: "",
         description: "",
         budget: "",
-        location: {
-          country: "",
-          coordinates: []
-        },
+        // location: {
+        //   country: "",
+        //   coordinates: []
+        // },
+        location: [],
         start_date: "",
         end_date: ""
       },
@@ -203,7 +206,7 @@ export default {
   },
 
   mounted() {
-    this.payload.organisation_id = this.user.AssociatedOrganisations[0].OrganisationId;
+    this.id = this.user.AssociatedOrganisations[0].OrganisationId;
     // this.formatCurrency(100000);
   },
 
@@ -229,6 +232,7 @@ export default {
 
     async createCampaign() {
       console.log("pd::", this.payload);
+      console.log("COORD", this.payload.location.coordinates);
 
       try {
         this.loading = true;
@@ -238,12 +242,12 @@ export default {
           return (this.loading = false);
         }
 
-        this.payload.location
-          ? (this.payload.location = JSON.stringify(this.payload.location))
-          : "";
+        // this.payload.location
+        //   ? (this.payload.location = JSON.stringify(this.payload.location))
+        //   : "";
 
         const response = await this.$axios.post(
-          "/organisation/campaign",
+          `/organisations/${+this.id}/campaigns`,
           this.payload
         );
 

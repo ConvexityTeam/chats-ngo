@@ -92,7 +92,8 @@ export default {
 
   computed: {
     share() {
-      const result = this.campaign.budget / this.campaign.beneficiaries_count;
+      const result =
+        this.campaign.budget / this.campaign.beneficiaries_count || 0;
 
       if (result == Infinity) {
         return 0;
@@ -101,21 +102,13 @@ export default {
     }
   },
 
-  mounted() {
-    console.log("camp:::", this.campaign);
-  },
-
   methods: {
     closeModal() {
       this.$bvModal.hide("fund-campaign");
     },
 
     sendAmount() {
-      this.$v.$touch();
-      if (this.$v.amount.$error === true || this.amount == 0) {
-        return;
-      }
-      this.$emit("fundWallet", { amount: this.amount });
+      this.$emit("fundCampaign");
       this.closeModal();
     }
   }

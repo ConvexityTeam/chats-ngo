@@ -70,7 +70,7 @@
         />
       </div>
 
-      <div class="row pt-lg-4">
+      <div class="row ">
         <div class="col-lg-8">
           <!-- Campaign beneficiaries here -->
           <div>

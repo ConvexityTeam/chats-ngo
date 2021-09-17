@@ -91,14 +91,15 @@ body {
   background: transparent;
 }
 
+/* transition styles here */
 .page-enter-active,
 .page-leave-active {
-  transition: all 0.9s ease;
+  /* transition: all 0.9s ease; */
 }
 
 .page-enter,
 .page-leave-to {
-  transform: translateY(10px);
+  /* transform: translateY(10px); */
 }
 
 button:focus {

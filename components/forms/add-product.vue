@@ -339,7 +339,7 @@ button {
 }
 div.vl {
   border-left: 1px solid #7c8db5;
-  height: auto;
+  height: 100vh;
 }
 
 .word-content {

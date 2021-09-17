@@ -93,9 +93,9 @@ button.border {
 }
 
 button:disabled {
-  background: #17ce89;
+  background: inherit;
   opacity: 0.5;
-  border: 1px solid #17ce89;
+  border: inherit;
   box-shadow: 0px 2px 4px rgba(23, 206, 137, 0.07);
   cursor: not-allowed;
 }

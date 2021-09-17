@@ -193,8 +193,8 @@
             </div>
 
             <div class="ml-auto">
-              <button type="button">
-                <i><dot /></i>
+              <button type="button" class="more-btn">
+                <dot />
               </button>
             </div>
           </div>
@@ -217,10 +217,10 @@
             <div class="ml-auto d-flex">
               <p class="pt-3 paginate">1 - 10 of 24</p>
               <button type="button" class="more-btn">
-                <i><leftArrow /></i>
+                <leftArrow />
               </button>
               <button type="button" class="more-btn">
-                <i><rightArrow /></i>
+                <rightArrow />
               </button>
             </div>
           </div>

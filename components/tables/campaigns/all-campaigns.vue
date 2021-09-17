@@ -119,6 +119,7 @@
                   <Button
                     :hasBorder="true"
                     :hasIcon="false"
+                    :disabled="campaign.is_funded"
                     text="Fund
                   campaign"
                     custom-styles=" border-radius: 5px !important;
@@ -264,7 +265,7 @@ export default {
         this.loading = true;
 
         const response = await this.$axios.get(
-          `/campaigns/organisation/${+this.id}?type=campaign`
+          `/organisations/${+this.id}/campaigns?type=campaign`
         );
 
         if (response.status == "success") {
