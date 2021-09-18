@@ -48,7 +48,7 @@
 
           <div class="ml-auto">
             <p class="campaign-answers">
-              {{ user.createdAt | formatDateText }}
+              {{ user.createdAt | formatDateOnly }}
             </p>
           </div>
         </div>

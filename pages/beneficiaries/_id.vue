@@ -62,7 +62,7 @@
 
           <!-- Campaigns here -->
           <div class="mt-3">
-            <beneficiary-campaign :campaigns="campaigns" />
+            <beneficiary-campaign :campaigns="campaigns" :user="user" />
           </div>
         </div>
 

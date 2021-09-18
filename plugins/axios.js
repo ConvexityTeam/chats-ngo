@@ -56,8 +56,8 @@ export default async function({ $axios, app }) {
     // const data = JSON.parse(decrypted);
 
     if (err.response.status == "401") {
-      // app.$toast.error(err.response.data.message);
-      // app.router.push('/')
+      app.$toast.error(err.response.data.message);
+      app.router.push('/')
     }
 
     // return data;

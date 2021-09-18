@@ -61,7 +61,7 @@
 
           <div class="ml-auto">
             <p class="campaign-answers">
-              {{ details.start_date | formatDate }}
+              {{ details.start_date | formatDateOnly }}
             </p>
           </div>
         </div>
@@ -70,7 +70,9 @@
           <p class="campaign-captions">End date:</p>
 
           <div class="ml-auto">
-            <p class="campaign-answers">{{ details.end_date | formatDate }}</p>
+            <p class="campaign-answers">
+              {{ details.end_date | formatDateOnly }}
+            </p>
           </div>
         </div>
 
@@ -88,7 +90,9 @@
           <p class="campaign-captions">Created:</p>
 
           <div class="ml-auto">
-            <p class="campaign-answers">{{ details.createdAt | formatDate }}</p>
+            <p class="campaign-answers">
+              {{ details.createdAt | formatDateOnly }}
+            </p>
           </div>
         </div>
       </div>

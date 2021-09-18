@@ -35,7 +35,12 @@
       </div>
 
       <div class=" ml-auto mx-3">
-        <csv :data="computedData" name="beneficiaries" />
+        <csv
+          :data="computedData"
+          :name="
+            `${user.first_name + ' ' + user.last_name} Associated-Campaigns`
+          "
+        />
       </div>
     </div>
 
@@ -49,8 +54,8 @@
         <thead>
           <tr>
             <th scope="col">Name</th>
-            <th scope="col">Total amount</th>
-            <th scope="col">Amount spent</th>
+            <th scope="col">Budget</th>
+            <!-- <th scope="col">Amount spent</th> -->
             <th scope="col">Date created</th>
             <th scope="col">Status</th>
 
@@ -64,30 +69,28 @@
             style="cursor: pointer"
           >
             <td>
-              {{ campaign.title }}
+              {{ campaign.Campaign.title }}
             </td>
 
-            <td>$ {{ campaign.budget | formatCurrency }}</td>
-
-            <td>$ {{ 0 | formatCurrency }}</td>
+            <td>$ {{ campaign.Campaign.budget | formatCurrency }}</td>
 
             <td>
-              {{ campaign.createdAt | formatDate }}
+              {{ campaign.Campaign.createdAt | formatDateOnly }}
             </td>
 
             <td>
               <div
                 class="status px-1"
                 :class="{
-                  pending: campaign.status == 'pending',
-                  progress: campaign.status == 'in-progress',
-                  completed: campaign.status == 'completed'
+                  pending: campaign.Campaign.status == 'pending',
+                  progress: campaign.Campaign.status == 'in-progress',
+                  completed: campaign.Campaign.status == 'completed'
                 }"
               >
                 {{
-                  campaign.status == "in-progress"
+                  campaign.Campaign.status == "in-progress"
                     ? "in progress"
-                    : campaign.status | capitalize
+                    : campaign.Campaign.status | capitalize
                 }}
               </div>
             </td>
@@ -113,14 +116,25 @@
 </template>
 
 <script>
+import moment from "moment";
 export default {
   props: {
     campaigns: {
-      type: Array
+      type: Array,
+      default: () => []
+    },
+    user: {
+      type: Object,
+      default: () => {}
     },
     loading: {
-      type: Boolean
+      type: Boolean,
+      default: false
     }
+  },
+
+  mounted() {
+    console.log("TESTUSER", this.user);
   },
 
   data: () => ({
@@ -141,7 +155,7 @@ export default {
           return this.searchQuery
             .toLowerCase()
             .split(" ")
-            .every(v => campaign.title.toLowerCase().includes(v));
+            .every(v => campaign.Campaign.title.toLowerCase().includes(v));
         });
       } else {
         return this.campaigns;
@@ -151,10 +165,15 @@ export default {
     computedData() {
       return this.campaigns.map(campaign => {
         return {
-          Name: campaign.title,
-          Start_Date: moment(campaign.start_date).format("dddd, MMMM DD, YYYY"),
-          End_Date: moment(campaign.end_date).format("dddd, MMMM DD, YYYY"),
-          Status: campaign.status
+          Name: campaign.Campaign.title,
+          Budget: campaign.Campaign.budget,
+          Start_Date: moment(campaign.Campaign.start_date).format(
+            "dddd, MMMM DD, YYYY"
+          ),
+          End_Date: moment(campaign.Campaign.end_date).format(
+            "dddd, MMMM DD, YYYY"
+          ),
+          Status: campaign.Campaign.status
         };
       });
     }
@@ -162,7 +181,7 @@ export default {
 
   methods: {
     handleTempCampaign(campaign) {
-      this.$router.push(`/campaigns/${campaign.id}`);
+      this.$router.push(`/campaigns/${campaign.Campaign.id}`);
     }
   }
 };

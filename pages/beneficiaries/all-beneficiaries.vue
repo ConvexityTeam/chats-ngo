@@ -195,7 +195,7 @@ export default {
         if (response.status == "success") {
           screenLoading.close();
           this.loading = false;
-          this.beneficiaries = response.data;
+          this.beneficiaries = response.data.reverse();
           console.log("beneficiaries000000", this.beneficiaries);
         }
       } catch (error) {
