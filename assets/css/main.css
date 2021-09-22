@@ -10,6 +10,15 @@
   --primary-gray: #7c8db5;
 }
 
+/* GENERAL STYLES */
+
+body,
+html {
+  font-family: "Gilroy";
+  background: #fafafa;
+  scroll-behavior: smooth;
+}
+
 .poppins {
   font-family: "Poppins", sans-serif;
 }
@@ -50,11 +59,6 @@
   font-size: 0.875rem;
 }
 
-body {
-  font-family: "Gilroy";
-  background: #fafafa;
-}
-
 .viewall {
   color: var(--primary-color);
   font-size: 0.875rem;
@@ -62,6 +66,34 @@ body {
   border: none;
   letter-spacing: 0.01em;
   background: inherit;
+}
+
+/* STATUS STYLES */
+.status {
+  height: 24px;
+  border-radius: 30px;
+  background: #ffcdc7;
+  color: #5e0e03;
+  font-size: 0.75rem;
+  letter-spacing: 0.01em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.status.pending {
+  background: #ffcdc7;
+  color: #5e0e03;
+}
+
+.status.progress {
+  background: #d0f0fd;
+  color: #335f71;
+}
+
+.status.completed {
+  background: #d1f7c4;
+  color: #337138;
 }
 
 /* DRAWER STYLES HERE */

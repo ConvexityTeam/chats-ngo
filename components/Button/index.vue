@@ -93,7 +93,7 @@ button.border {
 }
 
 button:disabled {
-  background: inherit;
+  /* background: initial; */
   opacity: 0.5;
   border: inherit;
   box-shadow: 0px 2px 4px rgba(23, 206, 137, 0.07);

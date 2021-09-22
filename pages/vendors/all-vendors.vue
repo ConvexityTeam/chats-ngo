@@ -105,17 +105,18 @@
 </template>
 
 <script>
-import { mapActions } from "vuex";
+import { mapActions, mapGetters } from "vuex";
 let screenLoading;
 export default {
   layout: "dashboard",
   data() {
     return {
+      id: "",
       isCheckAll: false,
       img: require("~/assets/img/user.png"),
       data: [],
       vendors: [],
-      searchQuery: null,
+      searchQuery: "",
       loading: false
     };
   },
@@ -132,15 +133,23 @@ export default {
       } else {
         return this.vendors;
       }
-    }
+    },
+
+    computedData() {
+      return [];
+    },
+
+    ...mapGetters("authentication", ["user"])
   },
 
-  created() {
+  mounted() {
+    this.id = this.user.AssociatedOrganisations[0].OrganisationId;
     this.fetchAllVendors();
   },
 
   methods: {
     ...mapActions("beneficiaries", ["SAVE_TEMP_VENDOR"]),
+    ...mapActions("vendors", ["getallVendors"]),
     checkAll() {
       this.isCheckAll = !this.isCheckAll;
       this.data = [];
@@ -162,13 +171,13 @@ export default {
       this.SAVE_TEMP_VENDOR(vendor);
       this.$router.push(`/vendors/${vendor.id}`);
     },
-
     async fetchAllVendors() {
       try {
         this.openScreen();
         this.loading = true;
 
-        const response = await this.$axios.get("/vendors");
+        // const response = await this.$axios.get("/vendors");
+        const response = await this.$axios.get(`/organisations/2/vendors`);
 
         if (response.status == "success") {
           screenLoading.close();

@@ -337,33 +337,6 @@ select.form-control {
   height: 50px;
 }
 
-.status {
-  height: 24px;
-  border-radius: 30px;
-  background: #ffcdc7;
-  color: #5e0e03;
-  font-size: 0.75rem;
-  letter-spacing: 0.01em;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.status.pending {
-  background: #ffcdc7;
-  color: #5e0e03;
-}
-
-.status.progress {
-  background: #d0f0fd;
-  color: #335f71;
-}
-
-.status.completed {
-  background: #d1f7c4;
-  color: #337138;
-}
-
 .create {
   border-radius: 10px;
   color: white;

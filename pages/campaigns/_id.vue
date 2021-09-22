@@ -58,6 +58,7 @@
               :has-icon="false"
               custom-styles="height:50px"
               @click="showModal"
+              :disabled="true"
             />
           </div>
         </div>
