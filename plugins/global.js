@@ -1,7 +1,11 @@
 import Vue from "vue";
 import moment from "moment";
 const capitalize = value => {
-  if (!value) return "";
+  
+  if (!value) {
+    return
+  } 
+
   return value
     .split(" ")
     .map(val => val.charAt(0).toUpperCase() + val.slice(1))

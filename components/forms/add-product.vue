@@ -1,5 +1,6 @@
 <template>
   <div class="d-flex ">
+    <!-- form here -->
     <div class="w-50 p-5">
       <div class="mt-2 mb-4">
         <h3 class="tertiary-black font-bold">Add Product / Service</h3>
@@ -13,14 +14,14 @@
         <label for="product">Product / Service</label>
         <div id="product" class="w-100">
           <el-select
-            v-model="payload.product"
+            v-model="payload.type"
             id="product"
             placeholder="—Select — "
           >
             <el-option
               v-for="item in options"
               :key="item"
-              :label="item"
+              :label="item | capitalize"
               :value="item"
             >
             </el-option>
@@ -39,7 +40,7 @@
             id="tag"
             :placeholder="
               `Enter ${
-                !payload.product ? 'product or service' : payload.product
+                !payload.type ? 'product or service' : payload.type
               }  name`
             "
             v-model="payload.tag"
@@ -69,7 +70,7 @@
         <label for="vendor">Vendor</label>
         <div id="product" class="w-100">
           <el-select
-            v-model="payload.vendor"
+            v-model="payload.vendor_id"
             id="vendor"
             placeholder="—Select — "
             multiple
@@ -78,7 +79,7 @@
               v-for="vendor in vendors"
               :key="vendor.id"
               :label="vendor.first_name + ' ' + vendor.last_name"
-              :value="vendor.first_name + ' ' + vendor.last_name"
+              :value="vendor.id"
             >
             </el-option>
           </el-select>
@@ -88,7 +89,11 @@
       <!-- Create button here -->
       <div class="mt-4 pt-2">
         <Button
-          :text="`Create ${!payload.product ? 'Product' : payload.product}`"
+          :text="
+            ` ${isEdit ? 'Update' : 'Create'}  ${
+              !payload.type ? 'Product' : payload.type
+            }`
+          "
           custom-styles="height:41px; border-radius: 5px; padding: 0px 20px !important"
           :has-border="false"
           :has-icon="false"
@@ -108,16 +113,18 @@
 
       <div class="main transparent" v-if="products.length">
         <!--Save button here -->
+
         <div class="my-4">
           <Button
-            :text="`Save ${!payload.product ? 'Product' : payload.product}`"
+            :text="`Save ${products.length == 1 ? 'Tag' : 'Tags'}`"
             custom-styles="height:41px; border-radius: 5px; padding: 0px 25px !important"
             :has-border="false"
             :has-icon="false"
-            @click="saveProduct"
+            @click="saveProductTags"
           />
         </div>
 
+        <!-- Added Product tags Here -->
         <div
           v-for="(product, i) in products"
           :key="i"
@@ -132,7 +139,7 @@
                   class="primary-gray text-xs"
                   style="text-transform: uppercase"
                 >
-                  {{ product.product }} TAG</span
+                  {{ product.type }} TAG</span
                 >
                 <h6 class="word-content tertiary-black font-bold">
                   {{ product.tag | capitalize }}
@@ -158,10 +165,10 @@
                 <span class="primary-gray text-xs">VENDOR(s)</span>
                 <h6
                   class="word-content tertiary-black font-bold"
-                  v-for="(vendor, i) in product.vendor"
+                  v-for="(vendor, i) in product.vendor_id"
                   :key="i + 'vendor'"
                 >
-                  {{ vendor | capitalize }}
+                  {{ findVendor(vendor) }}
                 </h6>
               </div>
             </div>
@@ -212,28 +219,31 @@
 <script>
 import { required } from "vuelidate/lib/validators";
 import noProducts from "~/components/icons/no-products.vue";
+import { mapGetters } from "vuex";
+let screenLoading;
 
 const greaterThanZero = value => value >= 0;
 
 export default {
   data: () => ({
-    products: [],
     isEdit: false,
+    products: [],
+    orgId: "",
 
     payload: {
-      product: "",
+      type: "",
       tag: "",
       cost: "",
-      vendor: []
+      vendor_id: []
     },
 
     vendors: [],
-    options: ["Product", "Service"]
+    options: ["product", "service"]
   }),
 
   validations: {
     payload: {
-      product: {
+      type: {
         required
       },
 
@@ -246,7 +256,7 @@ export default {
         greaterThanZero
       },
 
-      vendor: {
+      vendor_id: {
         required
       }
     }
@@ -255,24 +265,32 @@ export default {
   components: { noProducts },
 
   mounted() {
-    this.fetchVendors();
+    (this.orgId = this.user.AssociatedOrganisations[0].OrganisationId),
+      this.fetchVendors();
   },
 
   computed: {
     isComplete() {
       return (
-        this.payload.product &&
+        this.payload.type &&
         this.payload.tag &&
         this.payload.cost &&
-        this.payload.vendor.length
+        this.payload.vendor_id.length
       );
-    }
+    },
+
+    ...mapGetters("authentication", ["user"])
   },
 
   methods: {
+    findVendor(id) {
+      const vendors = this.vendors.length ? this.vendors : [];
+      const foundVendor = vendors.filter(vendor => vendor.id === id);
+      return foundVendor[0].first_name + " " + foundVendor[0].last_name;
+    },
     createProduct() {
       this.$v.payload.$touch();
-
+      console.log("PL:", this.payload);
       if (this.$v.payload.$error === true) {
         this.$toast.error("Please fill in appropriately");
         return;
@@ -284,7 +302,7 @@ export default {
           product: "",
           tag: "",
           cost: "",
-          vendor: []
+          vendor_id: []
         };
         this.isEdit = false;
         return;
@@ -295,12 +313,32 @@ export default {
         product: "",
         tag: "",
         cost: "",
-        vendor: []
+        vendor_id: []
       };
       this.isEdit = false;
     },
 
-    async saveProduct() {},
+    async saveProductTags() {
+      try {
+        console.log("PRODUCTS::", this.products);
+        this.openScreen();
+        this.loading = true;
+
+        for (let i = 0; i < this.products.length; i++) {}
+
+        const response = await this.$axios.post(
+          `/organisations/${this.orgId}/campaigns/${this.$route.params.id}/products`,
+
+          this.products
+        );
+
+        screenLoading.close();
+        console.log("SAVE TAG RESPONSE::", response);
+      } catch (err) {
+        console.log("SAVE TAG ERR::", err);
+        screenLoading.close();
+      }
+    },
 
     editProduct(product) {
       this.isEdit = true;
@@ -323,6 +361,14 @@ export default {
       } catch (err) {
         console.log(err);
       }
+    },
+
+    openScreen() {
+      screenLoading = this.$loading({
+        lock: true,
+        spinner: "el-icon-loading",
+        background: "#0000009b"
+      });
     }
   }
 };

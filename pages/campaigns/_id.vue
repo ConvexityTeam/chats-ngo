@@ -71,7 +71,7 @@
         />
       </div>
 
-      <div class="row ">
+      <div class="row" :class="{ 'mt-3': details.status == 'paused' }">
         <div class="col-lg-8">
           <!-- Campaign beneficiaries here -->
           <div>
@@ -162,7 +162,7 @@ export default {
   data: () => ({
     loading: false,
     searchQuery: "",
-    id: "",
+
     complaints: [],
     beneficiaries: [],
     details: {},
@@ -199,7 +199,6 @@ export default {
   },
 
   mounted() {
-    this.id = this.$router.history.current.params.id;
     this.getDetails();
   },
 
@@ -212,7 +211,9 @@ export default {
         this.openScreen();
         this.loading = true;
 
-        const response = await this.$axios.get(`/campaigns/${this.id}`);
+        const response = await this.$axios.get(
+          `/campaigns/${this.$route.params.id}`
+        );
 
         console.log("details:::", response);
 

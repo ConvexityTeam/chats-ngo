@@ -232,7 +232,7 @@ export default {
         }
       } catch (err) {
         screenLoading.close();
-        this.$toast.error(err.response.data.message.errors.amount);
+        this.$toast.error(err.response.data.message);
         console.log({ err: err });
       }
     },
@@ -243,7 +243,7 @@ export default {
           campaignId: this.SelectedCampaign.id,
           budget: this.SelectedCampaign.budget,
           description: this.SelectedCampaign.description,
-          status: "in-progress"
+          status: "active"
         });
 
         if (response.status == "success") {

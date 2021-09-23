@@ -130,6 +130,7 @@
 
 <script>
 import campaignPrompt from "~/components/forms/campaign-prompts.vue";
+
 let screenLoading;
 
 export default {
@@ -162,19 +163,24 @@ export default {
 
   data: () => ({
     campaignStatus: "",
-    status: ""
+    status: "",
+    orgId: 0
   }),
 
   watch: {
     resumeCampaign(value) {
       if (value) {
-        this.handleCampaign("in-progress");
+        this.handleCampaign("active");
       }
     }
   },
 
   components: {
     campaignPrompt
+  },
+
+  mounted() {
+    this.orgId = this.user.AssociatedOrganisations[0].OrganisationId;
   },
 
   methods: {
@@ -184,7 +190,7 @@ export default {
         this.toggleModal(true);
         return;
       }
-      return this.handleCampaign("in-progress");
+      return this.handleCampaign("active");
     },
     toggleModal(value) {
       if (value) {
@@ -202,19 +208,21 @@ export default {
           ? (this.campaignStatus = "paused")
           : status == "Delete"
           ? (this.campaignStatus = "deleted")
-          : (status = "in-progress"
-              ? (this.campaignStatus = "in-progress")
-              : " ");
+          : (status = "active" ? (this.campaignStatus = "active") : " ");
 
         console.log("status::", this.campaignStatus);
 
-        const response = await this.$axios.put("organisation/campaign", {
-          organisation_id: this.user.AssociatedOrganisations[0].OrganisationId,
-          campaignId: this.details.id,
-          budget: this.details.budget,
-          description: this.details.description,
-          status: this.campaignStatus
-        });
+        const response = await this.$axios.put(
+          `organisations/${this.orgId}/campaigns/${this.$route.params.id}`,
+          {
+            organisation_id: this.user.AssociatedOrganisations[0]
+              .OrganisationId,
+            campaignId: this.details.id,
+            budget: this.details.budget,
+            description: this.details.description,
+            status: this.campaignStatus
+          }
+        );
 
         if (response.status == "success") {
           screenLoading.close();

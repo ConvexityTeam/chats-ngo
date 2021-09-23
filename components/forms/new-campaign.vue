@@ -139,16 +139,6 @@ const greaterThanZero = value => value >= 100;
 let geocoder;
 
 export default {
-  head() {
-    return {
-      script: [
-        {
-          // src: `https://maps.googleapis.com/maps/api/js?key=${apiKey}&callback=initMap&libraries=geometry,drawing&v=weekly`
-        }
-      ]
-    };
-  },
-
   data() {
     return {
       loading: false,
@@ -262,7 +252,7 @@ export default {
       } catch (err) {
         console.log({ err });
         this.loading = false;
-        this.$toast.error(err.response.data.message);
+        this.$toast.error(err.response.data?.message);
       }
     },
 
