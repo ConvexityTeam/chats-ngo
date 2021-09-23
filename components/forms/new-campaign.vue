@@ -129,11 +129,8 @@
 <script>
 import { required, minValue } from "vuelidate/lib/validators";
 import { mapGetters } from "vuex";
-// const apiKey = "AIzaSyApnZ4U1qeeHgHZuckDndNVVMIJAo-b5Vo";
-// const apiKey = process.env.GOOGLE_API;
 import DatePicker from "vue2-datepicker";
 import "vue2-datepicker/index.css";
-// import Checkbox from "../generic/checkbox.vue";
 const greaterThanZero = value => value >= 100;
 
 let geocoder;
@@ -228,7 +225,9 @@ export default {
           return (this.loading = false);
         }
 
-        this.payload.location =  this.payload.location ? JSON.stringify(this.payload.location) : "";
+        this.payload.location = this.payload.location
+          ? JSON.stringify(this.payload.location)
+          : "";
 
         const response = await this.$axios.post(
           `/organisations/${+this.id}/campaigns`,

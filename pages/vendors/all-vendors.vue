@@ -33,15 +33,16 @@
 
     <!-- Table here -->
     <div class="table-holder mt-4">
-      <div v-if="vendors.length" class="flex align-items-center table-title">
+      <div class="flex align-items-center table-title">
         <h4>Vendor list</h4>
         <div class="ml-auto"></div>
       </div>
       <table class="table table-borderless" v-if="resultQuery.length">
         <thead>
           <tr>
-            <th scope="col">Vendor</th>
-            <th scope="col">Vendor ID</th>
+            <th scope="col">
+              {{ this.allVendors.length == 1 ? "Vendor" : "Vendors" }}
+            </th>
             <th scope="col">Phone Number</th>
             <th scope="col">Email Address</th>
             <th scope="col">Account Created</th>
@@ -69,17 +70,9 @@
               </span>
             </td>
 
-            <td>
-              {{ vendor.phone }}
-            </td>
-
-            <td>
-              {{ vendor.email }}
-            </td>
-
-            <td>
-              {{ vendor.createdAt | formatDate }}
-            </td>
+            <td>{{ vendor.phone }}</td>
+            <td class="truncate">{{ vendor.email }}</td>
+            <td>{{ vendor.createdAt | formatDate }}</td>
 
             <td>
               <div>
@@ -106,101 +99,52 @@
 
 <script>
 import { mapActions, mapGetters } from "vuex";
-let screenLoading;
+
 export default {
   layout: "dashboard",
   data() {
     return {
-      id: "",
       isCheckAll: false,
       img: require("~/assets/img/user.png"),
       data: [],
-      vendors: [],
       searchQuery: "",
       loading: false
     };
   },
 
   computed: {
+    ...mapGetters("authentication", ["user"]),
+    ...mapGetters("vendors", ["allVendors"]),
     resultQuery() {
       if (this.searchQuery) {
-        return this.vendors.filter(vendor => {
+        return this.allVendors.filter(vendor => {
           return this.searchQuery
             .toLowerCase()
             .split(" ")
             .every(v => vendor.first_name.toLowerCase().includes(v));
         });
       } else {
-        return this.vendors;
+        return this.allVendors;
       }
     },
 
     computedData() {
       return [];
-    },
-
-    ...mapGetters("authentication", ["user"])
+    }
   },
 
   mounted() {
-    this.id = this.user.AssociatedOrganisations[0].OrganisationId;
-    this.fetchAllVendors();
-    this.getallVendors();
+    console.log("ALL VENDOE:::", this.allVendors);
+    this.getallVendors(this.user.AssociatedOrganisations[0].OrganisationId);
   },
 
   methods: {
     ...mapActions("beneficiaries", ["SAVE_TEMP_VENDOR"]),
     ...mapActions("vendors", ["getallVendors"]),
-    checkAll() {
-      this.isCheckAll = !this.isCheckAll;
-      this.data = [];
-      if (this.isCheckAll) {
-        // Check all
-        for (var key in this.vendors) {
-          this.data.push(this.vendors[key].id);
-        }
-      }
-    },
-
-    updateCheckall() {
-      this.data.length === this.vendors.length
-        ? (this.isCheckAll = true)
-        : (this.isCheckAll = false);
-    },
 
     handleTempVendor(vendor) {
       this.SAVE_TEMP_VENDOR(vendor);
       this.$router.push(`/vendors/${vendor.id}`);
-    },
-    async fetchAllVendors() {
-      try {
-        this.openScreen();
-        this.loading = true;
-
-        // const response = await this.$axios.get("/vendors");
-        const response = await this.$axios.get(`/organisations/2/vendors`);
-
-        if (response.status == "success") {
-          screenLoading.close();
-          this.loading = false;
-          this.vendors = response.data;
-        }
-
-        console.log("vendors::::", response);
-
-        this.loading = false;
-      } catch (error) {
-        screenLoading.close();
-        this.loading = false;
-      }
-    },
-
-    openScreen() {
-      screenLoading = this.$loading({
-        lock: true,
-        spinner: "el-icon-loading",
-        background: "#0000009b"
-      });
     }
   }
 };

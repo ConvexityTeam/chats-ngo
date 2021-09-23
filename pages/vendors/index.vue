@@ -10,7 +10,7 @@
             <div class="ml-3">
               <p class="text">Vendors</p>
               <h4 class="funds">
-                {{ loading ? 0 : allVendors.length }}
+                {{ allVendors.length || 0 }}
               </h4>
             </div>
             <div class="ml-auto d-flex align-items-end">
@@ -79,7 +79,7 @@
 
     <!-- Vendor Transactions Table here -->
     <div>
-      <vendor-transaction />
+      <vendor-transaction @reload="handleReload" />
     </div>
   </div>
 </template>
@@ -87,43 +87,31 @@
 <script>
 import vendorTransaction from "~/components/tables/vendor-transaction";
 import totalBalance from "~/components/icons/total-balance.vue";
+import { mapActions, mapGetters } from "vuex";
 let screenLoading;
 
 export default {
   layout: "dashboard",
-
-  data: () => ({
-    loading: false,
-    allVendors: []
-  }),
 
   components: {
     vendorTransaction,
     totalBalance
   },
 
-  created() {
-    this.fetchAllVendors();
+  computed: {
+    ...mapGetters("authentication", ["user"]),
+    ...mapGetters("vendors", ["allVendors"])
+  },
+
+  mounted() {
+    this.getallVendors(this.user.AssociatedOrganisations[0].OrganisationId);
   },
 
   methods: {
-    async fetchAllVendors() {
-      try {
-        this.openScreen();
-        this.loading = true;
-        const response = await this.$axios.get("/vendors");
+    ...mapActions("vendors", ["getallVendors"]),
 
-        console.log("allendors:::", response);
-
-        if (response.status == "success") {
-          screenLoading.close();
-          this.loading = false;
-          this.allVendors = response.data;
-        }
-      } catch (error) {
-        this.loading = false;
-        screenLoading.close();
-      }
+    handleReload() {
+      this.getallVendors(this.user.AssociatedOrganisations[0].OrganisationId);
     },
 
     openScreen() {

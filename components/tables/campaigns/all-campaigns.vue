@@ -102,15 +102,11 @@
                   class="status px-1"
                   :class="{
                     pending: campaign.status == 'pending',
-                    progress: campaign.status == 'in-progress',
+                    progress: campaign.status == 'active',
                     completed: campaign.status == 'completed'
                   }"
                 >
-                  {{
-                    campaign.status == "in-progress"
-                      ? "in progress"
-                      : campaign.status | capitalize
-                  }}
+                  {{ campaign.status | capitalize }}
                 </div>
               </td>
 

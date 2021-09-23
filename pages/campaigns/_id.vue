@@ -161,6 +161,7 @@ export default {
   layout: "dashboard",
   data: () => ({
     loading: false,
+    orgId: "",
     searchQuery: "",
 
     complaints: [],
@@ -199,6 +200,7 @@ export default {
   },
 
   mounted() {
+    this.orgId = this.user.AssociatedOrganisations[0].OrganisationId;
     this.getDetails();
   },
 
@@ -212,7 +214,7 @@ export default {
         this.loading = true;
 
         const response = await this.$axios.get(
-          `/campaigns/${this.$route.params.id}`
+          `/organisations/${this.orgId}/campaigns/${this.$route.params.id}`
         );
 
         console.log("details:::", response);

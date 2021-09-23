@@ -1,6 +1,6 @@
 <template>
   <div>
-    <b-modal :id="id" hide-header hide-footer>
+    <b-modal :size="size" :id="id" hide-header hide-footer>
       <div class="text-center position-relative pt-3">
         <h3 class="header">{{ title | capitalize }}</h3>
         <!--Close button here -->
@@ -33,8 +33,13 @@ export default {
 
     title: {
       type: String,
-      defaault: "",
+      default: "",
       required: true
+    },
+
+    size: {
+      type: String,
+      default: "md"
     }
   },
 

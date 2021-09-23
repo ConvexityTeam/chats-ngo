@@ -1,6 +1,12 @@
 <template>
   <div>
-    <div class="row pt-4">
+    <!-- Modal here -->
+
+    <Modal id="add-vendor" size="lg" title="Add Vendor">
+      <add-vendor @reload="$emit('reload')" />
+    </Modal>
+
+    <div class="row mt-4 pt-1">
       <div class="col-lg-8">
         <div class="row">
           <div class="col-lg-5">
@@ -22,8 +28,23 @@
         </div>
       </div>
 
-      <div class=" ml-auto mx-3">
-        <csv :data="computedData" name="beneficiaries" />
+      <div class=" ml-auto d-flex mx-3">
+        <csv
+          :has-border="true"
+          :data="computedData"
+          :green-csv="true"
+          name="beneficiaries"
+        />
+
+        <div class="ml-3">
+          <Button
+            text="Add Vendor"
+            custom-styles="height:50px; border: 1px solid #17ce89 !important;"
+            :has-border="false"
+            :is-green="false"
+            @click="$bvModal.show('add-vendor')"
+          />
+        </div>
       </div>
     </div>
 
@@ -62,11 +83,15 @@
     </div>
   </div>
 </template>
+
 <script>
 import dot from "~/components/icons/dot";
+import addVendor from "~/components/forms/add-vendor.vue";
+
 export default {
   components: {
-    dot
+    dot,
+    addVendor
   },
 
   data: () => ({
@@ -100,6 +125,8 @@ export default {
       //   };
       // });
     }
-  }
+  },
+
+  methods: {}
 };
 </script>

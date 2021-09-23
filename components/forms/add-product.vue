@@ -348,6 +348,7 @@ export default {
 
         if (response.status == "success") {
           if (this.isSuccessful) {
+            this.emit("close");
             screenLoading.close();
             this.$toast.success(response.message);
           }

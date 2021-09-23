@@ -10,6 +10,7 @@
     <i v-if="hasIcon">
       <img v-if="hasEye" src="~/assets/img/vectors/eye.svg" alt="eye" />
       <img v-else-if="csv" src="~/assets/img/vectors/csv.svg" alt="csv" />
+      <img v-else-if="greenCsv" src="~/assets/img/vectors/csv2.svg" alt="csv" />
       <img v-else-if="isGreen" src="~/assets/img/vectors/add2.svg" alt="add" />
       <img v-else src="~/assets/img/vectors/add.svg" alt="add" />
     </i>
@@ -59,6 +60,10 @@ export default {
       type: Boolean,
       default: false
     },
+    greenCsv: {
+      type: Boolean,
+      default: false
+    },
     isGreen: {
       type: Boolean,
       default: false
@@ -86,10 +91,12 @@ button {
   font-size: 1rem;
   justify-content: center;
 }
+
 button.border {
   color: var(--primary-color);
   background: inherit;
   font-weight: 500;
+  border: 1px solid var(--primary-color) !important;
 }
 
 button:disabled {
