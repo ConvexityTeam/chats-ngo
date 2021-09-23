@@ -120,7 +120,7 @@
             custom-styles="height:41px; border-radius: 5px; padding: 0px 25px !important"
             :has-border="false"
             :has-icon="false"
-            @click="saveProductTags"
+            @click="handleTags"
           />
         </div>
 
@@ -227,6 +227,7 @@ const greaterThanZero = value => value >= 0;
 export default {
   data: () => ({
     isEdit: false,
+    isSuccessful: false,
     products: [],
     orgId: "",
 
@@ -299,7 +300,7 @@ export default {
       if (this.isEdit) {
         this.products[this.payload] = this.payload;
         this.payload = {
-          product: "",
+          type: "",
           tag: "",
           cost: "",
           vendor_id: []
@@ -310,7 +311,7 @@ export default {
 
       this.products.push(this.payload);
       this.payload = {
-        product: "",
+        type: "",
         tag: "",
         cost: "",
         vendor_id: []
@@ -318,25 +319,45 @@ export default {
       this.isEdit = false;
     },
 
-    async saveProductTags() {
+    handleTags() {
+      this.isSuccessful = false;
+
+      // This is to loop through all tags and add solely
+      for (let i = 0; i < this.products.length; i++) {
+        const productTag = this.products[i];
+        this.saveProductTags(productTag);
+
+        // check if loop is done and throw success message
+        if (i === this.products.length - 1) {
+          this.isSuccessful = true;
+          console.log("I::", i == this.products.length - 1);
+        }
+      }
+    },
+    async saveProductTags(productTag) {
       try {
         console.log("PRODUCTS::", this.products);
         this.openScreen();
         this.loading = true;
 
-        for (let i = 0; i < this.products.length; i++) {}
-
         const response = await this.$axios.post(
           `/organisations/${this.orgId}/campaigns/${this.$route.params.id}/products`,
 
-          this.products
+          productTag
         );
 
-        screenLoading.close();
+        if (response.status == "success") {
+          if (this.isSuccessful) {
+            screenLoading.close();
+            this.$toast.success(response.message);
+          }
+        }
+
         console.log("SAVE TAG RESPONSE::", response);
       } catch (err) {
         console.log("SAVE TAG ERR::", err);
         screenLoading.close();
+        this.$toast.error(err.response.data?.message);
       }
     },
 

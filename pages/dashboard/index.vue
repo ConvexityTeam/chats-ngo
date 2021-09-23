@@ -203,7 +203,7 @@
             <h3 class="text-center no-record">NO RECORD FOUND</h3>
           </div>
 
-          <div class="d-flex pt-5" v-if="allVendors.length">
+          <div class="d-flex " v-if="allVendors.length">
             <div class="mt-2">
               <button
                 type="button"

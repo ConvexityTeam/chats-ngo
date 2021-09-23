@@ -72,8 +72,8 @@ export default {
 
   methods: {
     viewComplaint(complaint) {
-      this.$bvModal.show("beneficiary-complaint");
       this.activeComplaint = complaint;
+      this.$bvModal.show("beneficiary-complaint");
     }
   }
 };

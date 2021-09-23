@@ -15,10 +15,14 @@
     <!-- Complaint  here -->
     <div class="form-group">
       <label>Complaint</label>
-      <textarea class="form-controls" rows="7" disabled cols="30">
-Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
- </textarea
+      <textarea
+        class="form-controls"
+        v-model="report"
+        rows="7"
+        disabled
+        cols="30"
       >
+      </textarea>
     </div>
 
     <div class="d-flex pt-2 pb-3 button-holder">
@@ -44,11 +48,20 @@ export default {
     }
   },
 
+  computed: {
+    report() {
+      return this.complaint.report;
+    }
+  },
+
+  mounted() {
+    console.log("SINGLE COMPLAINT::", this.complaint);
+  },
+
   methods: {
     closeModal() {
       this.$bvModal.hide("beneficiary-complaint");
     },
-
     async resolveComplaint() {
       try {
         this.openScreen();

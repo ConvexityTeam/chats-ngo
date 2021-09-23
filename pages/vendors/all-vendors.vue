@@ -145,6 +145,7 @@ export default {
   mounted() {
     this.id = this.user.AssociatedOrganisations[0].OrganisationId;
     this.fetchAllVendors();
+    this.getallVendors();
   },
 
   methods: {

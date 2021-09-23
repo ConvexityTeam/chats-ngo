@@ -31,19 +31,21 @@ export default {
     },
     actions: {
         async getallVendors({ commit }, id) {
-            try {
-                console.log("ID::", id)
-                // debugger
-                const response = await axios.get(`/organisations/2/vendors`)
-                console.log("VENDOR RESPONSE::", response)
-                // if (response.status == "success") {
-                //     commit('SAVE_ALL_VENDORS', response.data)
-                // }
+            // try {
+            //     console.log("ID::", id)
+            //     // debugger
+            //     const response = await axios.get(`/organisations/2/vendors`)
+            //     console.log("VENDOR RESPONSE::", response)
+            //     // if (response.status == "success") {
+            //     //     commit('SAVE_ALL_VENDORS', response.data)
+            //     // }
 
-            }
-            catch (err) {
-                console.log("ALL VENDORS::", err)
-            }
+            // }
+            // catch (err) {
+            //     console.log("ALL VENDORS::", err)
+            // }
+
+            console.log("GOT HERE OOOO")
         }
 
     }
