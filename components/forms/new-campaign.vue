@@ -149,10 +149,6 @@ export default {
         title: "",
         description: "",
         budget: "",
-        // location: {
-        //   country: "",
-        //   coordinates: []
-        // },
         location: [],
         start_date: "",
         end_date: ""
@@ -232,9 +228,7 @@ export default {
           return (this.loading = false);
         }
 
-        // this.payload.location
-        //   ? (this.payload.location = JSON.stringify(this.payload.location))
-        //   : "";
+        this.payload.location =  this.payload.location ? JSON.stringify(this.payload.location) : "";
 
         const response = await this.$axios.post(
           `/organisations/${+this.id}/campaigns`,

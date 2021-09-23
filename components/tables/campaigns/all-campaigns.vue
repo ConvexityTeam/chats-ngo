@@ -265,7 +265,7 @@ export default {
         this.loading = true;
 
         const response = await this.$axios.get(
-          `/organisations/${+this.id}/campaigns?type=campaign`
+          `/organisations/${+this.id}/campaigns/all?type=campaign`
         );
 
         if (response.status == "success") {
