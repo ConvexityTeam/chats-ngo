@@ -79,7 +79,7 @@
 
     <!-- Vendor Transactions Table here -->
     <div>
-      <vendor-transaction @reload="handleReload" />
+      <vendor-transaction @reload="getVendors" />
     </div>
   </div>
 </template>
@@ -104,13 +104,13 @@ export default {
   },
 
   mounted() {
-    this.getallVendors(this.user.AssociatedOrganisations[0].OrganisationId);
+    this.getVendors();
   },
 
   methods: {
     ...mapActions("vendors", ["getallVendors"]),
 
-    handleReload() {
+    getVendors() {
       this.getallVendors(this.user.AssociatedOrganisations[0].OrganisationId);
     },
 

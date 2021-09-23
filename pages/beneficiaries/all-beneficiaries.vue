@@ -136,7 +136,6 @@ export default {
         return this.beneficiaries;
       }
     },
-
     computedData() {
       const data = this.beneficiaries || [];
       return data.map(benefactor => {

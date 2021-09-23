@@ -27,7 +27,7 @@
       </div>
 
       <div class=" ml-auto mx-3">
-        <csv :data="computedData" name="beneficiaries" />
+        <csv :data="computedData" name="vendors" />
       </div>
     </div>
 
@@ -99,6 +99,7 @@
 
 <script>
 import { mapActions, mapGetters } from "vuex";
+import moment from "moment";
 
 export default {
   layout: "dashboard",
@@ -129,7 +130,20 @@ export default {
     },
 
     computedData() {
-      return [];
+      const data = this.allVendors || [];
+      return data.map(vendor => {
+        return {
+          Name: vendor.first_name + " " + vendor.last_name,
+          Phone_Number: vendor.phone,
+          Store: vendor.Store ? vendor.Store.store_name : "",
+          Email_Address: vendor.email,
+          // location: vendor.Store
+          //   ? JSON.parse(vendor.Store.location.country)
+          //   : "",
+          Address: vendor.Store ? vendor.Store.address : "",
+          Created: moment(vendor.createdAt).format("DD MMMM, YYYY")
+        };
+      });
     }
   },
 

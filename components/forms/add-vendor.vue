@@ -165,7 +165,8 @@ export default {
       store_name: "",
       location: {
         country: "",
-        coordinates: [9.081999, 8.675277]
+        coordinates: []
+        // coordinates: [9.081999, 8.675277]
       },
       address: "",
       phone: ""
@@ -206,7 +207,6 @@ export default {
   },
 
   mounted() {
-    console.log("PROCESS", process.env.NODE_ENV);
     this.countries = countries;
     this.orgId = this.user.AssociatedOrganisations[0].OrganisationId;
   },
@@ -230,10 +230,16 @@ export default {
             response.results[0].geometry.location
           );
 
-          this.payload.location.coordinates = coordinates;
+          // Check if in development and if the geocoding request wasnt blocked by CORS
+          if (process.env.NODE_ENV === "development") {
+            return (this.payload.location.coordinates = coordinates.length
+              ? coordinates
+              : [9.081999, 8.675277]);
+          }
 
-          console.log("GEOCODED COORD::", this.payload.location.coordinates);
+          this.payload.location.coordinates = coordinates;
         }
+        console.log("GEOCODED COORD::", this.payload.location.coordinates);
       } catch (err) {
         console.log("LOCATION ERR::", err);
       }
@@ -260,12 +266,11 @@ export default {
         );
 
         if (response.status == "success") {
+          this.loading = false;
           this.$emit("reload");
           this.closeModal();
           this.$toast.success(response.message);
         }
-
-        this.loading = false;
 
         console.log("ADD VENDOR RESPONSE", response);
       } catch (err) {
