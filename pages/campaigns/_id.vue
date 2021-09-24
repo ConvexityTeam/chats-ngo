@@ -122,7 +122,6 @@
           <div class="mt-4 pt-2">
             <beneficiary-complaints
               :campaignId="$router.history.current.params.id"
-              :orgId="orgId"
             />
           </div>
         </div>
