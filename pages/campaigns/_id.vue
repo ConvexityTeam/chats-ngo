@@ -93,16 +93,10 @@
                 <tbody>
                   <tr v-for="benefactor in resultQuery" :key="benefactor.id">
                     <td>
-                      {{
-                        benefactor.User
-                          ? benefactor.User.first_name +
-                            " " +
-                            benefactor.User.last_name
-                          : ""
-                      }}
+                      {{ benefactor.first_name + " " + benefactor.last_name }}
                     </td>
                     <td>{{ benefactor.User ? benefactor.User.phone : "" }}</td>
-                    <td>{{ benefactor.User ? benefactor.User.email : "" }}</td>
+                    <td>{{ benefactor.email }}</td>
                     <td>
                       <div>
                         <Button
@@ -128,6 +122,7 @@
           <div class="mt-4 pt-2">
             <beneficiary-complaints
               :campaignId="$router.history.current.params.id"
+              :orgId="orgId"
             />
           </div>
         </div>
@@ -223,7 +218,7 @@ export default {
           screenLoading.close();
           this.details = response.data;
           this.beneficiaries = response.data.Beneficiaries;
-          this.location = JSON.parse(response.data.location.country);
+          this.location = JSON.parse(response.data.location?.country);
           console.log("loc::", this.location);
           console.log("here", response.data);
         }

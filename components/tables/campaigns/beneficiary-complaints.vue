@@ -38,11 +38,13 @@
 import allComplaints from "./all-complaints.vue";
 import resolvedComplaints from "./resolved-complaints.vue";
 import unresolvedComplaints from "./unresolved-complaints.vue";
+import { mapGetters } from "vuex";
 
 export default {
   props: {
     campaignId: {
-      type: String
+      type: String,
+      default: ""
     }
   },
 
@@ -55,6 +57,7 @@ export default {
   data() {
     return {
       loading: false,
+      orgId: "",
       key: 0,
 
       complaints: [],
@@ -64,7 +67,12 @@ export default {
     };
   },
 
+  computed: {
+    ...mapGetters("authentication", ["user"])
+  },
+
   mounted() {
+    this.orgId = this.user.AssociatedOrganisations[0].OrganisationId;
     this.getComplaints();
     this.getUnresolvedComplaints();
     this.getResolvedComplaints();
@@ -77,13 +85,16 @@ export default {
     async getComplaints() {
       try {
         this.loading = true;
+
         const response = await this.$axios.get(
-          `/campaigns/complaints/${+this.campaignId}`
+          `/organisations/${this.orgId}/campaigns/${+this
+            .campaignId}/complaints`
         );
+
         console.log("ALlcomplaints::::", response);
         if (response.status == "success") {
           this.loading = false;
-          this.complaints = response.data.complaints;
+          this.complaints = response.data.Complaints;
         }
       } catch (err) {
         this.loading = false;
@@ -94,13 +105,15 @@ export default {
     async getResolvedComplaints() {
       try {
         this.loading = true;
+
         const response = await this.$axios.get(
-          `/campaigns/complaints/${+this.campaignId}?status=resolved&page=1
-`
+          `/organisations/${this.orgId}/campaigns/${+this
+            .campaignId}/complaints?status=resolved&page=1`
         );
+
         console.log("Resolvedcomplaints::::", response);
         if (response.status == "success") {
-          this.resolved = response.data.complaints;
+          this.resolved = response.data.Complaints;
           this.loading = false;
         }
       } catch (err) {
@@ -112,14 +125,16 @@ export default {
     async getUnresolvedComplaints() {
       try {
         this.loading = true;
+
         const response = await this.$axios.get(
-          `/campaigns/complaints/${+this.campaignId}?status=unresolved&page=1
-`
+          `/organisations/${this.orgId}/campaigns/${+this
+            .campaignId}/complaints?status=unresolved&page=1`
         );
+
         console.log("unResolvedcomplaints::::", response);
         if (response.status == "success") {
           this.loading = false;
-          this.unresolved = response.data.complaints;
+          this.unresolved = response.data.Complaints;
         }
       } catch (err) {
         this.loading = false;
