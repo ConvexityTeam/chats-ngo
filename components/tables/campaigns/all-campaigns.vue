@@ -94,7 +94,7 @@
               <td>$ {{ 0 | formatCurrency }}</td>
 
               <td>
-                {{ campaign.createdAt | formatDate }}
+                {{ campaign.createdAt | formatDateOnly }}
               </td>
 
               <td>
@@ -294,7 +294,7 @@ export default {
 
 <style scoped>
 .campaign-title {
-  max-width: 9rem;
+  max-width: 12rem;
 }
 
 .filter {

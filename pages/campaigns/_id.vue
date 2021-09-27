@@ -95,7 +95,7 @@
                     <td>
                       {{ benefactor.first_name + " " + benefactor.last_name }}
                     </td>
-                    <td>{{ benefactor.User ? benefactor.User.phone : "" }}</td>
+                    <td>{{ benefactor.phone }}</td>
                     <td>{{ benefactor.email }}</td>
                     <td>
                       <div>

@@ -76,7 +76,7 @@
             multiple
           >
             <el-option
-              v-for="vendor in vendors"
+              v-for="vendor in allVendors"
               :key="vendor.id"
               :label="vendor.first_name + ' ' + vendor.last_name"
               :value="vendor.id"
@@ -219,13 +219,14 @@
 <script>
 import { required } from "vuelidate/lib/validators";
 import noProducts from "~/components/icons/no-products.vue";
-import { mapGetters } from "vuex";
+import { mapActions, mapGetters } from "vuex";
 let screenLoading;
 
 const greaterThanZero = value => value >= 0;
 
 export default {
   data: () => ({
+    options: ["product", "service"],
     isEdit: false,
     isSuccessful: false,
     products: [],
@@ -236,10 +237,7 @@ export default {
       tag: "",
       cost: "",
       vendor_id: []
-    },
-
-    vendors: [],
-    options: ["product", "service"]
+    }
   }),
 
   validations: {
@@ -267,10 +265,12 @@ export default {
 
   mounted() {
     (this.orgId = this.user.AssociatedOrganisations[0].OrganisationId),
-      this.fetchVendors();
+      this.getallVendors(this.orgId);
   },
 
   computed: {
+    ...mapGetters("authentication", ["user"]),
+    ...mapGetters("vendors", ["allVendors"]),
     isComplete() {
       return (
         this.payload.type &&
@@ -278,12 +278,11 @@ export default {
         this.payload.cost &&
         this.payload.vendor_id.length
       );
-    },
-
-    ...mapGetters("authentication", ["user"])
+    }
   },
 
   methods: {
+    ...mapActions("vendors", ["getallVendors"]),
     findVendor(id) {
       const vendors = this.vendors.length ? this.vendors : [];
       const foundVendor = vendors.filter(vendor => vendor.id === id);
@@ -371,17 +370,6 @@ export default {
       const index = this.products.indexOf(product);
       if (index > -1) {
         this.products.splice(index, 1);
-      }
-    },
-    async fetchVendors() {
-      try {
-        const response = await this.$axios.get("/vendors");
-
-        if (response.status == "success") {
-          this.vendors = response.data;
-        }
-      } catch (err) {
-        console.log(err);
       }
     },
 
