@@ -9,9 +9,9 @@
       >
         <img
           :src="
-            userDetails.profile_pic == null || !userDetails.profile_pic
+            user.profile_pic == null || !user.profile_pic
               ? img
-              : userDetails.profile_pic
+              : user.profile_pic
           "
           width="100"
           height="100"
@@ -22,9 +22,9 @@
 
       <div class="text-center my-4">
         <h4 class="name">
-          {{ userDetails.first_name + " " + userDetails.last_name }}
+          {{ user.first_name ? user.first_name + " " + user.last_name : "" }}
         </h4>
-        <h4 class="id p">ID: {{ userDetails.id }}</h4>
+        <h4 class="id p">ID: {{ user.id }}</h4>
       </div>
 
       <!-- Details -->
@@ -33,7 +33,7 @@
           <p class="campaign-captions">Phone number:</p>
 
           <div class="ml-auto">
-            <p class="campaign-answers">{{ userDetails.phone }}</p>
+            <p class="campaign-answers">{{ user.phone }}</p>
           </div>
         </div>
 
@@ -41,7 +41,7 @@
           <p class="campaign-captions">Email address:</p>
 
           <div class="ml-auto">
-            <p class="campaign-answers">{{ userDetails.email }}</p>
+            <p class="campaign-answers">{{ user.email }}</p>
           </div>
         </div>
 
@@ -50,7 +50,7 @@
 
           <div class="ml-auto">
             <p class="campaign-answers">
-              {{ userDetails.createdAt | formatDateOnly }}
+              {{ user.createdAt | formatDateOnly }}
             </p>
           </div>
         </div>
@@ -62,7 +62,7 @@
 <script>
 export default {
   props: {
-    userDetails: {
+    user: {
       type: Object,
       default: () => {}
     }

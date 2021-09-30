@@ -19,7 +19,7 @@
               />
             </div>
           </div>
-
+          <!-- 
           <div class=" position-relative">
             <span class="filter position-absolute">
               <img src="~/assets/img/vectors/filter.svg" alt="filter" />
@@ -30,12 +30,12 @@
               class="filter"
               plain
             ></b-form-select>
-          </div>
+          </div> -->
         </div>
       </div>
 
       <div class=" ml-auto mx-3">
-        <csv :data="computedData" />
+        <csv :data="computedData" :name="`${name} campaigns`" />
       </div>
     </div>
 
@@ -45,29 +45,29 @@
         <h4>Campaigns</h4>
         <div class="ml-auto"></div>
       </div>
+
       <table class="table table-borderless" v-if="resultQuery.length">
         <thead>
           <tr>
             <th scope="col">Name</th>
-            <th scope="col">Budget</th>
-            <!-- <th scope="col">Amount spent</th> -->
-            <th scope="col">Date created</th>
+            <th scope="col">Total</th>
+            <th scope="col">created</th>
             <th scope="col">Status</th>
-
             <th scope="col"></th>
           </tr>
         </thead>
+
         <tbody>
           <tr
             v-for="campaign in resultQuery"
             :key="campaign.id"
             style="cursor: pointer"
           >
-            <td>
-              {{ campaign.Campaign.title }}
+            <td class="campaign-title">
+              {{ campaign.title }}
             </td>
 
-            <td>$ {{ campaign.Campaign.budget | formatCurrency }}</td>
+            <td>$ {{ campaign.budget | formatCurrency }}</td>
 
             <td>
               {{ campaign.Campaign.createdAt | formatDateOnly }}
@@ -77,16 +77,12 @@
               <div
                 class="status px-1"
                 :class="{
-                  pending: campaign.Campaign.status == 'pending',
-                  progress: campaign.Campaign.status == 'in-progress',
-                  completed: campaign.Campaign.status == 'completed'
+                  pending: campaign.status == 'pending',
+                  progress: campaign.status == 'active',
+                  completed: campaign.status == 'completed'
                 }"
               >
-                {{
-                  campaign.Campaign.status == "in-progress"
-                    ? "in progress"
-                    : campaign.Campaign.status | capitalize
-                }}
+                {{ campaign.status | capitalize }}
               </div>
             </td>
 
@@ -94,9 +90,9 @@
               <div>
                 <Button
                   :hasBorder="true"
-                  :hasEye="true"
                   text="View"
-                  custom-styles=" border: none !important; font-size: 0.875rem !important"
+                  :has-icon="false"
+                  custom-styles=" border-radius: 5px!important; font-size: 0.875rem !important; height:33px !important"
                   @click="handleTempCampaign(campaign)"
                 />
               </div>
@@ -104,7 +100,7 @@
           </tr>
         </tbody>
       </table>
-      <div v-else-if="loading" class=" text-center"></div>
+
       <h3 v-else class="text-center no-record">NO RECORD FOUND</h3>
     </div>
   </div>
@@ -112,16 +108,18 @@
 
 <script>
 import moment from "moment";
+
 export default {
   props: {
-    userDetails: {
-      type: Object,
-      default: () => {}
-    }
-  },
+    campaigns: {
+      type: Array,
+      default: () => []
+    },
 
-  mounted() {
-    console.log("TESTuserDetails", this.userDetails);
+    name: {
+      type: String,
+      default: ""
+    }
   },
 
   data: () => ({
@@ -138,7 +136,7 @@ export default {
   computed: {
     resultQuery() {
       if (this.searchQuery) {
-        const data = this.userDetails ? this.userDetails.Campaigns : [];
+        const data = this.campaigns ? this.campaigns : [];
         return data.filter(campaign => {
           return this.searchQuery
             .toLowerCase()
@@ -146,35 +144,34 @@ export default {
             .every(v => campaign.title.toLowerCase().includes(v));
         });
       } else {
-        return this.userDetails?.Campaigns;
+        return this.campaigns;
       }
+    },
+    computedData() {
+      return this.campaigns.map(campaign => {
+        return {
+          Name: campaign.title,
+          Budget: campaign.budget,
+          Start_Date: moment(campaign.start_date).format(" MMMM DD, YYYY"),
+          End_Date: moment(campaign.end_date).format(" MMMM DD, YYYY"),
+          Status: campaign.status
+        };
+      });
     }
-    // computedData() {
-    //   return this.campaigns.map(campaign => {
-    //     return {
-    //       Name: campaign.Campaign.title,
-    //       Budget: campaign.Campaign.budget,
-    //       Start_Date: moment(campaign.Campaign.start_date).format(
-    //         "dddd, MMMM DD, YYYY"
-    //       ),
-    //       End_Date: moment(campaign.Campaign.end_date).format(
-    //         "dddd, MMMM DD, YYYY"
-    //       ),
-    //       Status: campaign.Campaign.status
-    //     };
-    //   });
-    // }
   },
 
   methods: {
     handleTempCampaign(campaign) {
-      this.$router.push(`/campaigns/${campaign.Campaign.id}`);
+      this.$router.push(`/campaigns/${campaign.id}`);
     }
   }
 };
 </script>
 
 <style scoped>
+.campaign-title {
+  max-width: 10rem;
+}
 .filter {
   top: 12px;
   left: 11px;
@@ -221,21 +218,6 @@ select.form-control {
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-.status.pending {
-  background: #ffcdc7;
-  color: #5e0e03;
-}
-
-.status.progress {
-  background: #d0f0fd;
-  color: #335f71;
-}
-
-.status.completed {
-  background: #d1f7c4;
-  color: #337138;
 }
 
 .create {

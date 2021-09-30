@@ -80,7 +80,7 @@ import { mapGetters } from "vuex";
 import totalBalance from "~/components/icons/total-balance.vue";
 import disbursed from "~/components/icons/disbursed.vue";
 import beneficiaryDetails from "~/components/tables/beneficiaries/beneficiary-details.vue";
-import beneficiaryCampaign from "~/components/tables/beneficiaries/baneficiary-campaign.vue";
+import beneficiaryCampaign from "~/components/tables/beneficiaries/beneficiary-campaign.vue";
 
 let screenLoading;
 

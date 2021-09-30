@@ -63,7 +63,10 @@
 
           <!-- Campaigns here -->
           <div class="mt-3">
-            <beneficiary-campaign :campaigns="userDetails" />
+            <beneficiary-campaign
+              :campaigns="userDetails.Campaigns"
+              :name="userDetails.first_name + ' ' + userDetails.last_name"
+            />
           </div>
         </div>
 
@@ -82,7 +85,6 @@ import totalBalance from "~/components/icons/total-balance.vue";
 import disbursed from "~/components/icons/disbursed.vue";
 import beneficiaryDetails from "~/components/tables/beneficiaries/beneficiary-details.vue";
 import beneficiaryCampaign from "~/components/tables/beneficiaries/beneficiary-campaign.vue";
-
 let screenLoading;
 
 export default {
@@ -96,8 +98,8 @@ export default {
   },
 
   data: () => ({
-    loading: false,
     id: "",
+    loading: false,
     userDetails: {}
   }),
 
