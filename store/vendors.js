@@ -22,7 +22,7 @@ export default {
             
                 const response = await this.$axios.get(`/organisations/${id}/vendors`)
                 if (response.status == "success") {
-                    commit('SAVE_ALL_VENDORS', response.data)
+                    commit('SAVE_ALL_VENDORS', response.data.reverse())
                 }
             }
             catch (_err) {}

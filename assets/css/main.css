@@ -103,6 +103,11 @@ button:focus {
   color: #5e0e03;
 }
 
+.status.withdrawal {
+  background: #FCDEFF;
+  color: #4A0051;
+}
+
 .status.progress {
   background: #d0f0fd;
   color: #335f71;
@@ -111,6 +116,11 @@ button:focus {
 .status.completed {
   background: #d1f7c4;
   color: #337138;
+}
+
+.status.approval {
+  background: #CFF5F0;
+  color: #24B29F;
 }
 
 /* DRAWER STYLES HERE */

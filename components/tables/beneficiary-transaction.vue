@@ -62,9 +62,17 @@
             <td>{{ transaction.TransactionalId }}</td>
             <td>${{ transaction.amount }}</td>
             <td class="">
-              <span class="badge badge-pill py-2">{{
-                transaction.TransactionalType
-              }}</span>
+              <div
+                class="status px-1"
+                :class="{
+                  approval: transaction.TransactionalType == 'approval',
+                  pending: transaction.TransactionalType == 'spent',
+                  withdrawal: transaction.TransactionalType == 'withdrawal',
+                  progress: transaction.TransactionalType == 'transfer'
+                }"
+              >
+                {{ transaction.TransactionalType | capitalize }}
+              </div>
             </td>
             <td>
               {{
