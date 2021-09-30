@@ -35,44 +35,52 @@
       </div>
 
       <div class=" ml-auto mx-3">
-        <csv :data="transactions" name="beneficiary-transactions" />
+        <csv :data="computedData" name="beneficiary-transactions" />
       </div>
     </div>
 
     <!-- Table here -->
     <div class="table-holder mt-4">
-      <div
-        v-if="transactions.length"
-        class="flex align-items-center table-title"
-      >
+      <div class="flex align-items-center table-title">
         <h4>Transactions</h4>
         <div class="ml-auto"></div>
       </div>
+
       <table class="table table-borderless" v-if="resultQuery.length">
         <thead>
           <tr>
-            <th scope="col">Reference</th>
+            <th scope="col">Reference ID</th>
             <th scope="col">Amount</th>
             <th scope="col">Type</th>
             <th scope="col">Beneficiary</th>
             <th scope="col">Date</th>
-            <th scope="col">Actions</th>
+            <!-- <th scope="col">Actions</th> -->
           </tr>
         </thead>
         <tbody>
           <tr v-for="(transaction, index) in resultQuery" :key="index">
-            <td>{{ transaction.transactionId }}</td>
+            <td>{{ transaction.TransactionalId }}</td>
             <td>${{ transaction.amount }}</td>
             <td class="">
-              <span class="badge badge-pill py-2">{{ transaction.type }}</span>
+              <span class="badge badge-pill py-2">{{
+                transaction.TransactionalType
+              }}</span>
             </td>
-            <td>{{ transaction.status }}</td>
-            <td>{{ transaction.createdAt | formatDateOnly }}</td>
             <td>
+              {{
+                transaction.User
+                  ? transaction.User.first_name +
+                    " " +
+                    transaction.User.last_name
+                  : ""
+              }}
+            </td>
+            <td>{{ transaction.createdAt | formatDateOnly }}</td>
+            <!-- <td>
               <button type="button" class="more-btn">
                 <i><dot /></i>
               </button>
-            </td>
+            </td> -->
           </tr>
         </tbody>
       </table>
@@ -84,39 +92,84 @@
 </template>
 <script>
 import dot from "~/components/icons/dot";
+import { mapGetters } from "vuex";
+let screenLoading;
 
 export default {
   layout: "dashboard",
+  components: { dot },
 
   data: () => ({
     loading: false,
-    transactions: [],
-    selected: null,
+    id: "",
     searchQuery: "",
-    options: [
-      { value: null, text: "Filter" },
-      { value: "all", text: "All" },
-      { value: "inprogress", text: "In Progress" },
-      { value: "completed", text: "Completed" }
-    ]
+    transactions: []
   }),
 
   computed: {
+    ...mapGetters("authentication", ["user"]),
     resultQuery() {
       if (this.searchQuery) {
         return this.transactions.filter(data => {
           return this.searchQuery
             .toLowerCase()
             .split(" ")
-            .every(v => data.transactionId.toLowerCase().includes(v));
+            .every(v =>
+              data.transaction.User.first_name.toLowerCase().includes(v)
+            );
         });
       } else {
         return this.transactions;
       }
+    },
+    computedData() {
+      const data = this.transactions || [];
+      return data.map(transaction => {
+        return {
+          Reference: transaction.TransactionalId,
+          Beneficiary:
+            transaction.User.first_name + " " + transaction.User.last_name,
+          Amount: transaction.amount,
+          Type: transaction.TransactionalType,
+          Created: moment(transaction.createdAt).format("dddd, MMMM DD, YYYY")
+        };
+      });
     }
   },
 
-  components: { dot }
+  mounted() {
+    this.id = this.user.AssociatedOrganisations[0].OrganisationId;
+    this.getTransactions();
+  },
+
+  methods: {
+    async getTransactions() {
+      try {
+        this.openScreen();
+
+        const response = await this.$axios.get(
+          `/organisation/${this.id}/beneficiaries/transactions`
+        );
+
+        console.log("BEN. TRANSACTIONS", response);
+        if (response.status == "success") {
+          screenLoading.close();
+          this.transactions = response.data;
+        }
+      } catch (err) {
+        screenLoading.close();
+        console.log("TRANSACTIONS ERR::", err);
+      }
+    },
+
+    openScreen() {
+      screenLoading = this.$loading({
+        lock: true,
+        spinner: "el-icon-loading",
+        background: "#0000009b"
+      });
+    }
+  }
 };
 </script>
 

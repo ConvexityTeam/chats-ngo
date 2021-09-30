@@ -56,7 +56,7 @@
           </div>
 
           <div class="mt-4 pt-2 text-center">
-            <button class="onboarding-btn">
+            <button :disabled="loading" class="onboarding-btn">
               <span v-if="loading">
                 <img
                   src="~/assets/img/vectors/spinner.svg"

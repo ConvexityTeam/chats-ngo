@@ -13,7 +13,7 @@
             <div class="ml-3">
               <p class="text">Beneficiaries</p>
               <h4 class="funds">
-                {{ count || 0 }}
+                {{ beneficiaries.length || 0 }}
               </h4>
             </div>
             <div class="ml-auto d-flex align-items-end">
@@ -146,16 +146,18 @@ import leftArrow from "~/components/icons/left-arrow";
 import totalBalance from "~/components/icons/total-balance.vue";
 import disbursed from "~/components/icons/disbursed.vue";
 import beneficiaryTransaction from "~/components/tables/beneficiary-transaction";
-import { mapActions } from "vuex";
+import { mapActions, mapGetters } from "vuex";
+
 export default {
   layout: "dashboard",
   data() {
     return {
       loading: false,
-      count: "",
+      id: "",
       stats: {}
     };
   },
+
   components: {
     beneficiaryAge,
     beneficiaryGender,
@@ -172,29 +174,19 @@ export default {
   },
 
   mounted() {
-    this.fetchAllBeneficiaries();
+    this.id = this.user.AssociatedOrganisations[0].OrganisationId;
+    this.getallBeneficiaries(this.id);
     this.getStats();
     this.getChartData();
   },
 
+  computed: {
+    ...mapGetters("authentication", ["user"]),
+    ...mapGetters("beneficiaries", ["beneficiaries"])
+  },
+
   methods: {
-    ...mapActions("authenticaion", ["logout"]),
-    async fetchAllBeneficiaries() {
-      try {
-        this.loading = true;
-
-        const response = await this.$axios.get("/beneficiaries");
-        console.log("Allbeneficiaries:::", response);
-
-        if (response.status == "success") {
-          this.loading = false;
-          this.count = response.data.length;
-        }
-      } catch (error) {
-        this.loading = false;
-        this.$toast.error(error.response.data.message);
-      }
-    },
+    ...mapActions("beneficiaries", ["getallBeneficiaries"]),
 
     async getStats() {
       try {
@@ -210,7 +202,6 @@ export default {
         console.log("statserr:::", err);
       }
     },
-
     async getChartData() {
       try {
         this.loading = true;

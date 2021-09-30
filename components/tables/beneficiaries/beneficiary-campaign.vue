@@ -35,18 +35,13 @@
       </div>
 
       <div class=" ml-auto mx-3">
-        <csv
-          :data="computedData"
-          :name="
-            `${user.first_name + ' ' + user.last_name} Associated-Campaigns`
-          "
-        />
+        <csv :data="computedData" />
       </div>
     </div>
 
     <!-- Table here -->
     <div class="table-holder mt-4">
-      <div v-if="campaigns.length" class="flex align-items-center table-title">
+      <div class="flex align-items-center table-title">
         <h4>Campaigns</h4>
         <div class="ml-auto"></div>
       </div>
@@ -119,22 +114,14 @@
 import moment from "moment";
 export default {
   props: {
-    campaigns: {
-      type: Array,
-      default: () => []
-    },
-    user: {
+    userDetails: {
       type: Object,
       default: () => {}
-    },
-    loading: {
-      type: Boolean,
-      default: false
     }
   },
 
   mounted() {
-    console.log("TESTUSER", this.user);
+    console.log("TESTuserDetails", this.userDetails);
   },
 
   data: () => ({
@@ -151,32 +138,32 @@ export default {
   computed: {
     resultQuery() {
       if (this.searchQuery) {
-        return this.campaigns.filter(campaign => {
+        const data = this.userDetails ? this.userDetails.Campaigns : [];
+        return data.filter(campaign => {
           return this.searchQuery
             .toLowerCase()
             .split(" ")
-            .every(v => campaign.Campaign.title.toLowerCase().includes(v));
+            .every(v => campaign.title.toLowerCase().includes(v));
         });
       } else {
-        return this.campaigns;
+        return this.userDetails?.Campaigns;
       }
-    },
-
-    computedData() {
-      return this.campaigns.map(campaign => {
-        return {
-          Name: campaign.Campaign.title,
-          Budget: campaign.Campaign.budget,
-          Start_Date: moment(campaign.Campaign.start_date).format(
-            "dddd, MMMM DD, YYYY"
-          ),
-          End_Date: moment(campaign.Campaign.end_date).format(
-            "dddd, MMMM DD, YYYY"
-          ),
-          Status: campaign.Campaign.status
-        };
-      });
     }
+    // computedData() {
+    //   return this.campaigns.map(campaign => {
+    //     return {
+    //       Name: campaign.Campaign.title,
+    //       Budget: campaign.Campaign.budget,
+    //       Start_Date: moment(campaign.Campaign.start_date).format(
+    //         "dddd, MMMM DD, YYYY"
+    //       ),
+    //       End_Date: moment(campaign.Campaign.end_date).format(
+    //         "dddd, MMMM DD, YYYY"
+    //       ),
+    //       Status: campaign.Campaign.status
+    //     };
+    //   });
+    // }
   },
 
   methods: {

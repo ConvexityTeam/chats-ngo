@@ -20,8 +20,9 @@
                 <div class="ml-3">
                   <p class="text">Total Recieved</p>
                   <h4 class="funds">
-                    $
-                    {{ user.wallet ? user.wallet.balance : 0 | formatCurrency }}
+                    ${{
+                      userDetails.total_wallet_received || 0 | formatCurrency
+                    }}
                   </h4>
                 </div>
               </div>
@@ -36,8 +37,7 @@
                 <div class="ml-3">
                   <p class="text">Total Spent</p>
                   <h4 class="funds">
-                    $
-                    {{ user.wallet ? user.wallet.balance : 0 | formatCurrency }}
+                    ${{ userDetails.total_wallet_spent || 0 | formatCurrency }}
                   </h4>
                 </div>
               </div>
@@ -52,8 +52,9 @@
                 <div class="ml-3">
                   <p class="text">Total Remaining</p>
                   <h4 class="funds">
-                    $
-                    {{ user.wallet ? user.wallet.balance : 0 | formatCurrency }}
+                    ${{
+                      userDetails.total_wallet_balance || 0 | formatCurrency
+                    }}
                   </h4>
                 </div>
               </div>
@@ -62,13 +63,13 @@
 
           <!-- Campaigns here -->
           <div class="mt-3">
-            <beneficiary-campaign :campaigns="campaigns" :user="user" />
+            <beneficiary-campaign :campaigns="userDetails" />
           </div>
         </div>
 
         <!-- Personal details here -->
         <div class="col-lg-4">
-          <beneficiary-details :user="user" :loading="loading" />
+          <beneficiary-details :user="userDetails" />
         </div>
       </div>
     </div>
@@ -80,7 +81,7 @@ import { mapGetters } from "vuex";
 import totalBalance from "~/components/icons/total-balance.vue";
 import disbursed from "~/components/icons/disbursed.vue";
 import beneficiaryDetails from "~/components/tables/beneficiaries/beneficiary-details.vue";
-import beneficiaryCampaign from "~/components/tables/beneficiaries/baneficiary-campaign.vue";
+import beneficiaryCampaign from "~/components/tables/beneficiaries/beneficiary-campaign.vue";
 
 let screenLoading;
 
@@ -96,30 +97,17 @@ export default {
 
   data: () => ({
     loading: false,
-    user: {},
-    campaigns: []
+    id: "",
+    userDetails: {}
   }),
 
   mounted() {
-    console.log("BEnEfacor", this.BENEFACTOR);
+    this.id = this.user.AssociatedOrganisations[0].OrganisationId;
     this.getDetails();
   },
 
   computed: {
-    ...mapGetters("beneficiaries", ["BENEFACTOR"]),
-
-    resultQuery() {
-      if (this.searchQuery) {
-        return this.campaigns.filter(campaign => {
-          return this.searchQuery
-            .toLowerCase()
-            .split(" ")
-            .every(v => campaign.title.toLowerCase().includes(v));
-        });
-      } else {
-        return this.campaigns;
-      }
-    }
+    ...mapGetters("authentication", ["user"])
   },
 
   methods: {
@@ -129,16 +117,14 @@ export default {
         this.loading = true;
 
         const response = await this.$axios.get(
-          `beneficiaries/user/${this.BENEFACTOR.id}`
+          `/organisation/${this.id}/beneficiaries/${this.$route.params.id}`
         );
+        console.log(" BEN DETAILS::", response);
 
-        this.loading = false;
         if (response.status == "success") {
           screenLoading.close();
           this.loading = false;
-          this.user = response.data.user;
-          this.campaigns = response.data.associatedCampaigns;
-          console.log("beneficiaryDetail:::", response);
+          this.userDetails = response.data;
         }
       } catch (err) {
         screenLoading.close();

@@ -45,7 +45,7 @@
             <th scope="col">Beneficiary</th>
             <th scope="col">Phone Number</th>
             <th scope="col">Email Address</th>
-            <th scope="col">Account Created</th>
+            <th scope="col">Date Of Birth</th>
             <th scope="col"></th>
           </tr>
         </thead>
@@ -70,17 +70,9 @@
               </span>
             </td>
 
-            <td>
-              {{ benefactor.phone }}
-            </td>
-
-            <td>
-              {{ benefactor.email }}
-            </td>
-
-            <td>
-              {{ benefactor.createdAt | formatDate }}
-            </td>
+            <td>{{ benefactor.phone }}</td>
+            <td>{{ benefactor.email }}</td>
+            <td>{{ benefactor.dob | formatDate }}</td>
 
             <td>
               <div>
@@ -99,7 +91,7 @@
           </tr>
         </tbody>
       </table>
-      <div v-else-if="loading" class=" text-center"></div>
+
       <h3 v-else class="text-center no-record">NO RECORD FOUND</h3>
     </div>
   </div>
@@ -107,7 +99,7 @@
 
 <script>
 import moment from "moment";
-import { mapActions } from "vuex";
+import { mapGetters, mapActions } from "vuex";
 let screenLoading;
 
 export default {
@@ -115,15 +107,15 @@ export default {
   data() {
     return {
       img: require("~/assets/img/user.png"),
-      isCheckAll: false,
-      loading: false,
-      searchQuery: "",
-      data: [],
-      beneficiaries: []
+      id: "",
+
+      searchQuery: ""
     };
   },
 
   computed: {
+    ...mapGetters("authentication", ["user"]),
+    ...mapGetters("beneficiaries", ["beneficiaries"]),
     resultQuery() {
       if (this.searchQuery) {
         return this.beneficiaries.filter(benefactor => {
@@ -153,55 +145,34 @@ export default {
   },
 
   mounted() {
-    this.fetchAllBeneficiaries();
+    this.id = this.user.AssociatedOrganisations[0].OrganisationId;
+    this.getallBeneficiaries(this.id);
+    console.log("HEREs", this.allBeneficiaries);
   },
 
   methods: {
-    ...mapActions("beneficiaries", ["SAVE_TEMP_BENEFACTOR"]),
-    ...mapActions("authentication", ["logout"]),
-    checkAll() {
-      this.isCheckAll = !this.isCheckAll;
-      this.data = [];
-      if (this.isCheckAll) {
-        // Check all
-        for (var key in this.beneficiaries) {
-          this.data.push(this.beneficiaries[key].id);
-        }
-        console.log(this.data);
-      }
-    },
+    ...mapActions("beneficiaries", ["getallBeneficiaries"]),
+    // async fetchAllBeneficiaries() {
+    //   try {
+    //     this.openScreen();
 
-    updateCheckall() {
-      this.data.length === this.beneficiaries.length
-        ? (this.isCheckAll = true)
-        : (this.isCheckAll = false);
-    },
+    //     const response = await this.$axios.get(
+    //       `organisation/${this.id}/beneficiaries`
+    //     );
+    //     console.log("Allbeneficiaries:::", response);
+
+    //     if (response.status == "success") {
+    //       this.beneficiaries = response.data;
+    //       screenLoading.close();
+    //     }
+    //   } catch (error) {
+    //     screenLoading.close();
+    //     this.$toast.error(error.response.data.message);
+    //   }
+    // },
 
     handleTempBenefactor(benefactor) {
-      //Dynamic page throws error, try to make the call to get details here and save it to the store then use getter yo pick on dynamic page
-      this.SAVE_TEMP_BENEFACTOR(benefactor);
       this.$router.push(`/beneficiaries/${benefactor.id}`);
-    },
-
-    async fetchAllBeneficiaries() {
-      try {
-        this.openScreen();
-        this.loading = true;
-
-        const response = await this.$axios.get("/beneficiaries");
-        console.log("Allbeneficiaries:::", response);
-
-        if (response.status == "success") {
-          screenLoading.close();
-          this.loading = false;
-          this.beneficiaries = response.data.reverse();
-          console.log("beneficiaries000000", this.beneficiaries);
-        }
-      } catch (error) {
-        screenLoading.close();
-        this.loading = false;
-        this.$toast.error(error.response.data.message);
-      }
     },
 
     openScreen() {

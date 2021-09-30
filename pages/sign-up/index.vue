@@ -109,7 +109,7 @@
 
           <!-- Submit button here -->
           <div class=" text-center mt-3">
-            <button class="onboarding-btn">
+            <button :disabled="loading" class="onboarding-btn">
               <span v-if="loading">
                 <img
                   src="~/assets/img/vectors/spinner.svg"
