@@ -242,29 +242,6 @@ export default {
 </script>
 
 <style scoped>
-.logo-holder {
-  background: #eef0f4;
-  border-radius: 50%;
-  width: 96px;
-  height: 96px;
-}
-
-.detail-caption {
-  color: #4f4f4f;
-  font-size: 0.845rem;
-  opacity: 0.9;
-  display: table-cell;
-  padding: 10px 0px;
-}
-.detail-value {
-  color: var(--secondary-black);
-  font-size: 0.9rem;
-  display: table-cell;
-}
-.div__holder {
-  background: #ffffff;
-  border-radius: 10px;
-}
 .main {
   height: calc(100vh - 72px);
   overflow-y: scroll;

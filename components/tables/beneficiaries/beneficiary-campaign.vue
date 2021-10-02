@@ -70,7 +70,7 @@
             <td>$ {{ campaign.budget | formatCurrency }}</td>
 
             <td>
-              {{ campaign.Campaign.createdAt | formatDateOnly }}
+              {{ campaign.createdAt | formatDateOnly }}
             </td>
 
             <td>

@@ -265,11 +265,6 @@ export default {
   border: 1px solid #17ce89;
   border-radius: 10px;
 }
-.campaign-beneficiary-count {
-  color: #7c8db5;
-  font-size: 1rem;
-  font-weight: 500;
-}
 
 .campaign-captions {
   color: #25396f;

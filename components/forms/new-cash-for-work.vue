@@ -13,7 +13,6 @@
           }"
           placeholder="Enter name of campaign"
           v-model="payload.title"
-          @mouseenter.once="runMap"
           @blur="$v.payload.title.$touch()"
         />
       </div>
@@ -87,22 +86,8 @@
         </div>
       </div>
 
-      <div class="row form-group mt-2 px-3">
-        <!--Allow geofence   here -->
-        <div class="">
-          <checkbox id="geofence" @input="checkValue" />
-          <!-- <input type="checkbox" id="geofence" /> -->
-        </div>
-
-        <div class="ml-2">
-          <label for="geofence">Geofence an area</label>
-        </div>
-      </div>
-
-      <div :class="isGeofence ? 'd-block' : 'd-none'" id="map_canvas"></div>
-
       <!-- button area here -->
-      <div class="d-flex pb-2 " :class="isGeofence ? 'pt-3' : 'pt-1'">
+      <div class="d-flex my-3 ">
         <div>
           <Button
             text="Create campaign"
@@ -135,16 +120,13 @@ import DatePicker from "vue2-datepicker";
 import "vue2-datepicker/index.css";
 const greaterThanZero = value => value >= 100;
 
-let geocoder;
-
 export default {
   data() {
     return {
       loading: false,
-      isGeofence: false,
       id: 0,
       payload: {
-        type: "campaign",
+        type: "cash-for-work",
         title: "",
         description: "",
         budget: "",
@@ -197,24 +179,8 @@ export default {
 
   methods: {
     closeModal() {
-      this.$bvModal.hide("new-campaign");
+      this.$bvModal.hide("new-cash");
     },
-
-    checkValue(value) {
-      this.isGeofence = value;
-    },
-
-    formatCurrency(value) {
-      let x = value
-        .toString()
-        .replace(/\D/g, "")
-        .replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-
-      console.log("formatter", x);
-
-      return x;
-    },
-
     async createCampaign() {
       console.log("pd::", this.payload);
       console.log("COORD", this.payload.location.coordinates);
@@ -241,7 +207,7 @@ export default {
           this.closeModal();
           this.$toast.success(response.message);
         }
-        console.log("campaignResponse:::", response);
+        console.log("C4W:::", response);
 
         this.loading = false;
       } catch (err) {
@@ -249,155 +215,14 @@ export default {
         this.loading = false;
         this.$toast.error(err.response.data?.message);
       }
-    },
+    }
 
     // TODO:Try emiting fetch all campaigns method from parent and calling here
-    runMap() {
-      const map = new google.maps.Map(document.getElementById("map_canvas"), {
-        center: { lat: 17.35297042396732, lng: 8.808737500000019 },
-        zoom: 3,
-        mapTypeId: google.maps.MapTypeId.ROADMAP
-      });
-
-      var all_overlays = [];
-      var selectedShape;
-      var drawingManager = new google.maps.drawing.DrawingManager({
-        drawingMode: google.maps.drawing.OverlayType.POLYGON,
-        drawingControl: true,
-        drawingControlOptions: {
-          position: google.maps.ControlPosition.TOP_CENTER,
-          drawingModes: [google.maps.drawing.OverlayType.POLYGON]
-        },
-
-        polygonOptions: {
-          clickable: true,
-          draggable: true,
-          editable: true,
-          fillColor: "",
-          fillOpacity: 0.35
-        }
-      });
-
-      const clearSelection = () => {
-        if (selectedShape) {
-          selectedShape.setEditable(false);
-          selectedShape = null;
-        }
-      };
-
-      const setSelection = shape => {
-        clearSelection();
-        selectedShape = shape;
-        shape.setEditable(true);
-      };
-
-      const deleteSelectedShape = () => {
-        if (selectedShape) {
-          this.payload.location.coordinates = [];
-          selectedShape.setMap(null);
-        }
-      };
-
-      const CenterControl = (controlDiv, map) => {
-        // Set CSS for the control border.
-        var controlUI = document.createElement("div");
-        controlUI.style.backgroundColor = "#17CE89";
-        controlUI.style.border = "none";
-        controlUI.style.borderRadius = "10px";
-
-        controlUI.style.cursor = "pointer";
-        controlUI.style.marginBottom = "22px";
-        controlUI.style.textAlign = "center";
-        controlUI.title = "Select to delete the shape";
-        controlDiv.appendChild(controlUI);
-
-        // Set CSS for the control interior.
-        var controlText = document.createElement("div");
-        controlText.style.color = "#fff";
-        controlText.style.fontWeight = 500;
-        controlText.style.fontSize = "1rem";
-        controlText.style.lineHeight = "38px";
-        controlText.style.padding = "3px 15px";
-        controlText.innerHTML = "Delete Selected Area";
-        controlUI.appendChild(controlText);
-
-        // Setup the click event listeners: simply set the map to Chicago.
-        controlUI.addEventListener("click", function() {
-          deleteSelectedShape();
-        });
-      };
-
-      drawingManager.setMap(map);
-
-      google.maps.event.addListener(
-        drawingManager,
-        "polygoncomplete",
-        event => {
-          const vertices = event.getPath();
-          for (let i = 0; i < vertices.getLength(); i++) {
-            const coordinates = vertices.getAt(i).toUrlValue(6);
-            // reassign into array
-            // this.payload.location.coordinates.length = 0
-            this.payload.location.coordinates.push(coordinates);
-          }
-
-          // event.getPath().getLength();
-          google.maps.event.addListener(event.getPath(), "insert_at", () => {
-            var len = event.getPath().getLength();
-            for (var i = 0; i < len; i++) {
-              const coordinates = vertices.getAt(i).toUrlValue(6);
-              // push into array
-              this.payload.location.coordinates.push(coordinates);
-            }
-          });
-
-          google.maps.event.addListener(event.getPath(), "set_at", () => {
-            var len = event.getPath().getLength();
-            for (var i = 0; i < len; i++) {
-              const coordinates = vertices.getAt(i).toUrlValue(6);
-              // reassign into array
-              // this.payload.location.coordinates.length = 0
-              this.payload.location.coordinates.push(coordinates);
-            }
-          });
-        }
-      );
-
-      google.maps.event.addListener(drawingManager, "overlaycomplete", function(
-        event
-      ) {
-        all_overlays.push(event);
-        if (event.type !== google.maps.drawing.OverlayType.MARKER) {
-          drawingManager.setDrawingMode(null);
-          //Write code to select the newly selected object.
-
-          var newShape = event.overlay;
-          newShape.type = event.type;
-          google.maps.event.addListener(newShape, "click", function() {
-            setSelection(newShape);
-          });
-
-          setSelection(newShape);
-        }
-      });
-
-      var centerControlDiv = document.createElement("div");
-      var centerControl = new CenterControl(centerControlDiv, map);
-
-      centerControlDiv.index = 1;
-      map.controls[google.maps.ControlPosition.BOTTOM_CENTER].push(
-        centerControlDiv
-      );
-    }
   }
 };
 </script>
 
 <style scoped>
-#map_canvas {
-  height: 300px;
-}
-
 label {
   color: var(--tertiary-black);
   font-size: 1rem;

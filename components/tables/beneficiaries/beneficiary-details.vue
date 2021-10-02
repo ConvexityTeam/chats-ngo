@@ -33,7 +33,9 @@
           <p class="campaign-captions">Phone number:</p>
 
           <div class="ml-auto">
-            <p class="campaign-answers">{{ user.phone }}</p>
+            <p class="campaign-answers">
+              <a :href="`tel:${user.phone}`">{{ user.phone }}</a>
+            </p>
           </div>
         </div>
 
@@ -41,11 +43,13 @@
           <p class="campaign-captions">Email address:</p>
 
           <div class="ml-auto">
-            <p class="campaign-answers">{{ user.email }}</p>
+            <p class="campaign-answers">
+              <a :href="`mailto:${user.email}`">{{ user.email }}</a>
+            </p>
           </div>
         </div>
 
-        <div class="d-flex campaign-divider mb-3">
+        <!-- <div class="d-flex campaign-divider mb-3">
           <p class="campaign-captions">Created:</p>
 
           <div class="ml-auto">
@@ -53,7 +57,7 @@
               {{ user.createdAt | formatDateOnly }}
             </p>
           </div>
-        </div>
+        </div> -->
       </div>
     </div>
   </div>
@@ -129,6 +133,10 @@ export default {
   max-width: 7rem;
   word-break: break-all;
   width: 7rem;
+}
+.campaign-answers > a {
+  color: #25396f;
+  text-decoration: unset;
 }
 
 .campaign-divider {

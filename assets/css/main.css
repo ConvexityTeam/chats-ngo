@@ -85,6 +85,12 @@ button:focus {
   background: inherit;
 }
 
+.campaign-beneficiary-count {
+  color: #7c8db5;
+  font-size: 1rem;
+  font-weight: 500;
+}
+
 /* STATUS STYLES */
 .status {
   height: 24px;

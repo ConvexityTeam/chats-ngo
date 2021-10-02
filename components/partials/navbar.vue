@@ -85,6 +85,16 @@ export default {
         this.title = "Beneficiaries";
       } else if (this.$router.history.current.name.includes("campaigns")) {
         this.title = "campaigns";
+      } else if (
+        this.$router.history.current.name.includes("cash") &&
+        !this.$router.history.current.params.id
+      ) {
+        this.title = "Cash for work";
+      } else if (
+        this.$router.history.current.params.id &&
+        this.$router.history.current.name.includes("cash")
+      ) {
+        this.title = "Cash for work - Tasks";
       } else {
         this.title = this.$router.history.current.name;
       }
@@ -97,6 +107,16 @@ export default {
       this.title = "Beneficiaries";
     } else if (this.$router.history.current.name.includes("campaigns")) {
       this.title = "campaigns";
+    } else if (
+      this.$router.history.current.name.includes("cash") &&
+      !this.$router.history.current.params.id
+    ) {
+      this.title = "Cash for work";
+    } else if (
+      this.$router.history.current.params.id &&
+      this.$router.history.current.name.includes("cash")
+    ) {
+      this.title = "Cash for work - Tasks";
     } else {
       this.title = this.$router.history.current.name;
     }
