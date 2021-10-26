@@ -129,6 +129,7 @@
         </div>
       </div>
     </div>
+    //TODO:Add Length Validation and sort for Password on registration
   </div>
 </template>
 

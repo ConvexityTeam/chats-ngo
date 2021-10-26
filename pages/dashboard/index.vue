@@ -207,7 +207,7 @@
             <div class="mt-2">
               <button
                 type="button"
-                @click="$router.push('/vendors')"
+                @click="$router.push('vendors/all-vendors')"
                 class="d-flex viewall align-items-center"
               >
                 <img src="~/assets/img/vectors/eye.svg" alt="see" />

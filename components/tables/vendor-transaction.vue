@@ -62,7 +62,7 @@
             <th scope="col">Vendor</th>
             <th scope="col">Beneficiary</th>
             <th scope="col">Date</th>
-            <th scope="col">Actions</th>
+            <!-- <th scope="col">Actions</th> -->
           </tr>
         </thead>
         <tbody>
@@ -72,9 +72,9 @@
             <td>Dangote</td>
             <td>Funke</td>
             <td>12 Dec, 2020</td>
-            <td>
+            <!-- <td>
               <button type="button" class="more-btn"><dot /></button>
-            </td>
+            </td> -->
           </tr>
         </tbody>
       </table>
@@ -89,6 +89,13 @@ import dot from "~/components/icons/dot";
 import addVendor from "~/components/forms/add-vendor.vue";
 
 export default {
+  props: {
+    transactions: {
+      type: Array,
+      default: () => []
+    }
+  },
+
   components: {
     dot,
     addVendor

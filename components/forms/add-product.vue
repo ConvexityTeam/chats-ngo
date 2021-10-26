@@ -70,7 +70,7 @@
         <label for="vendor">Vendor</label>
         <div id="product" class="w-100">
           <el-select
-            v-model="payload.vendor_id"
+            v-model="payload.vendors"
             id="vendor"
             placeholder="—Select — "
             multiple
@@ -120,7 +120,7 @@
             custom-styles="height:41px; border-radius: 5px; padding: 0px 25px !important"
             :has-border="false"
             :has-icon="false"
-            @click="handleTags"
+            @click="saveProductTags"
           />
         </div>
 
@@ -165,7 +165,7 @@
                 <span class="primary-gray text-xs">VENDOR(s)</span>
                 <h6
                   class="word-content tertiary-black font-bold"
-                  v-for="(vendor, i) in product.vendor_id"
+                  v-for="(vendor, i) in product.vendors"
                   :key="i + 'vendor'"
                 >
                   {{ findVendor(vendor) }}
@@ -178,14 +178,22 @@
               <div class="mb-3 d-flex">
                 <!-- Edit button here -->
                 <div>
-                  <button type="button" @click="editProduct(product)">
+                  <button
+                    class="actions"
+                    type="button"
+                    @click="editProduct(product)"
+                  >
                     <img src="~/assets/img/vectors/prod-edit.svg" alt="edit" />
                   </button>
                 </div>
 
                 <!-- Delete button here -->
                 <div class="ml-2">
-                  <button type="button" @click="deleteProduct(product)">
+                  <button
+                    class="actions"
+                    type="button"
+                    @click="deleteProduct(product)"
+                  >
                     <img src="~/assets/img/vectors/red-bin.svg" alt="bin" />
                   </button>
                 </div>
@@ -236,7 +244,7 @@ export default {
       type: "",
       tag: "",
       cost: "",
-      vendor_id: []
+      vendors: []
     }
   }),
 
@@ -255,7 +263,7 @@ export default {
         greaterThanZero
       },
 
-      vendor_id: {
+      vendors: {
         required
       }
     }
@@ -276,7 +284,7 @@ export default {
         this.payload.type &&
         this.payload.tag &&
         this.payload.cost &&
-        this.payload.vendor_id.length
+        this.payload.vendors.length
       );
     }
   },
@@ -284,7 +292,7 @@ export default {
   methods: {
     ...mapActions("vendors", ["getallVendors"]),
     findVendor(id) {
-      const vendors = this.vendors.length ? this.vendors : [];
+      const vendors = this.allVendors.length ? this.allVendors : [];
       const foundVendor = vendors.filter(vendor => vendor.id === id);
       return foundVendor[0].first_name + " " + foundVendor[0].last_name;
     },
@@ -292,8 +300,7 @@ export default {
       this.$v.payload.$touch();
       console.log("PL:", this.payload);
       if (this.$v.payload.$error === true) {
-        this.$toast.error("Please fill in appropriately");
-        return;
+        return this.$toast.error("Please fill in appropriately");
       }
 
       if (this.isEdit) {
@@ -302,10 +309,9 @@ export default {
           type: "",
           tag: "",
           cost: "",
-          vendor_id: []
+          vendors: []
         };
-        this.isEdit = false;
-        return;
+        return (this.isEdit = false);
       }
 
       this.products.push(this.payload);
@@ -313,27 +319,11 @@ export default {
         type: "",
         tag: "",
         cost: "",
-        vendor_id: []
+        vendors: []
       };
       this.isEdit = false;
     },
-
-    handleTags() {
-      this.isSuccessful = false;
-
-      // This is to loop through all tags and add solely
-      for (let i = 0; i < this.products.length; i++) {
-        const productTag = this.products[i];
-        this.saveProductTags(productTag);
-
-        // check if loop is done and throw success message
-        if (i === this.products.length - 1) {
-          this.isSuccessful = true;
-          console.log("I::", i == this.products.length - 1);
-        }
-      }
-    },
-    async saveProductTags(productTag) {
+    async saveProductTags() {
       try {
         console.log("PRODUCTS::", this.products);
         this.openScreen();
@@ -342,15 +332,13 @@ export default {
         const response = await this.$axios.post(
           `/organisations/${this.orgId}/campaigns/${this.$route.params.id}/products`,
 
-          productTag
+          this.products
         );
 
         if (response.status == "success") {
-          if (this.isSuccessful) {
-            this.emit("close");
-            screenLoading.close();
-            this.$toast.success(response.message);
-          }
+          this.$emit("close");
+          screenLoading.close();
+          this.$toast.success(response.message);
         }
 
         console.log("SAVE TAG RESPONSE::", response);
@@ -365,10 +353,18 @@ export default {
       this.isEdit = true;
       this.payload = product;
     },
-
     deleteProduct(product) {
       const index = this.products.indexOf(product);
       if (index > -1) {
+        if (this.isEdit) {
+          this.payload = {
+            type: "",
+            tag: "",
+            cost: "",
+            vendors: []
+          };
+        }
+        this.isEdit = false;
         this.products.splice(index, 1);
       }
     },
@@ -389,10 +385,12 @@ export default {
   height: calc(100vh - 72px);
   overflow-y: scroll;
 }
-button {
+
+button.actions {
   background: inherit;
   border: none;
 }
+
 div.vl {
   border-left: 1px solid #7c8db5;
   height: 100vh;

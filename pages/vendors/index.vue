@@ -10,7 +10,7 @@
             <div class="ml-3">
               <p class="text">Vendors</p>
               <h4 class="funds">
-                {{ allVendors.length || 0 }}
+                {{ count || 0 }}
               </h4>
             </div>
             <div class="ml-auto d-flex align-items-end">
@@ -40,7 +40,7 @@
           <div class="ml-3">
             <p class="text">Daily transactions</p>
             <h4 class="funds">
-              401
+              {{ summary.transactions_count || 0 }}
             </h4>
           </div>
         </div>
@@ -55,7 +55,8 @@
           <div class="ml-3">
             <p class="text">Transaction value</p>
             <h4 class="funds">
-              $125,000
+              $
+              {{ summary.transactions_value || 0 | formatCurrency }}
             </h4>
           </div>
         </div>
@@ -70,7 +71,7 @@
           <div class="ml-3">
             <p class="text">Products sold</p>
             <h4 class="funds">
-              2600
+              {{ summary.products_count || 0 }}
             </h4>
           </div>
         </div>
@@ -79,7 +80,7 @@
 
     <!-- Vendor Transactions Table here -->
     <div>
-      <vendor-transaction @reload="getVendors" />
+      <vendor-transaction :transactions="transactions" />
     </div>
   </div>
 </template>
@@ -87,7 +88,7 @@
 <script>
 import vendorTransaction from "~/components/tables/vendor-transaction";
 import totalBalance from "~/components/icons/total-balance.vue";
-import { mapActions, mapGetters } from "vuex";
+import { mapGetters } from "vuex";
 let screenLoading;
 
 export default {
@@ -98,20 +99,41 @@ export default {
     totalBalance
   },
 
+  data: () => ({
+    id: "",
+    count: "",
+    summary: {},
+    transactions: []
+  }),
+
   computed: {
-    ...mapGetters("authentication", ["user"]),
-    ...mapGetters("vendors", ["allVendors"])
+    ...mapGetters("authentication", ["user"])
   },
 
   mounted() {
-    this.getVendors();
+    this.id = this.user?.AssociatedOrganisations[0]?.OrganisationId;
+    this.getSummary();
   },
 
   methods: {
-    ...mapActions("vendors", ["getallVendors"]),
+    async getSummary() {
+      try {
+        this.openScreen();
+        const response = await this.$axios.get(
+          `organisations/${this.id}/vendors/summary`
+        );
 
-    getVendors() {
-      this.getallVendors(this.user.AssociatedOrganisations[0].OrganisationId);
+        console.log("Vendor Summary", response);
+
+        if (response.status == "success") {
+          screenLoading.close();
+          this.summary = response.data?.today_stat;
+          this.count = response.data?.vendors_count;
+          this.transactions = response.data?.Transactions;
+        }
+      } catch (err) {
+        screenLoading.close();
+      }
     },
 
     openScreen() {

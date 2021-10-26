@@ -20,6 +20,7 @@ export default {
             state.allBeneficiaries = payload
         },
     },
+    
     actions: {
 
         SAVE_TEMP_BENEFACTOR({ commit }, payload) {

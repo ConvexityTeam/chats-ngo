@@ -2,21 +2,7 @@
   <form @submit.prevent="sendCode">
     <div class="d-flex">
       <div>
-        <PincodeInput v-model="code" :length="6" placeholder="" />
-      </div>
-
-      <div>
-        <button
-          :disabled="isResending"
-          type="button"
-          class="resend-btn"
-          :class="{
-            resending: isResending
-          }"
-          @click="handleResend"
-        >
-          Resend {{ isResending ? `in ${timeout}s` : "code" }}
-        </button>
+        <PincodeInput v-model="code" :length="6" placeholder="-" />
       </div>
     </div>
 
@@ -30,6 +16,20 @@
           <img src="~/assets/img/vectors/spinner.svg" class="btn-spinner" />
         </span>
         <span v-else>Continue</span>
+      </button>
+    </div>
+
+    <div class="d-flex justify-content-center mb-2">
+      <button
+        :disabled="isResending"
+        type="button"
+        class="resend-btn"
+        :class="{
+          resending: isResending
+        }"
+        @click="handleResend"
+      >
+        Resend {{ isResending ? `in ${timeout}s` : "code" }}
       </button>
     </div>
   </form>
@@ -88,13 +88,9 @@ export default {
 .resend-btn {
   color: #17ce89;
   font-weight: 500;
-  font-size: 14px;
-  height: 52px;
-  display: flex;
-  align-items: center;
-  border: 1px solid #17ce89;
-  background: white;
-  border-radius: 5px;
+  font-size: 0.875rem;
+  border: none;
+  background: inherit;
 }
 
 .resend-btn.resending {

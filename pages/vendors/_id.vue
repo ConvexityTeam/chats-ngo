@@ -62,13 +62,16 @@
 
           <!-- Campaigns here -->
           <div class="mt-3">
-            <beneficiary-campaign :campaigns="campaigns" :user="user" />
+            <Vendor-Products
+              :products="products"
+              :name="vendor.first_name + ' ' + vendor.last_name"
+            />
           </div>
         </div>
 
         <!-- Personal details here -->
         <div class="col-lg-4">
-          <beneficiary-details :user="user" :loading="loading" />
+          <Vendor-Details :user="vendor" />
         </div>
       </div>
     </div>
@@ -79,8 +82,8 @@
 import { mapGetters } from "vuex";
 import totalBalance from "~/components/icons/total-balance.vue";
 import disbursed from "~/components/icons/disbursed.vue";
-import beneficiaryDetails from "~/components/tables/beneficiaries/beneficiary-details.vue";
-import beneficiaryCampaign from "~/components/tables/beneficiaries/beneficiary-campaign.vue";
+import VendorDetails from "~/components/tables/vendors/vendor-details.vue";
+import VendorProducts from "~/components/tables/vendors/vendor-products.vue";
 
 let screenLoading;
 
@@ -90,36 +93,25 @@ export default {
   components: {
     disbursed,
     totalBalance,
-    beneficiaryDetails,
-    beneficiaryCampaign
+    VendorDetails,
+    VendorProducts
   },
 
   data: () => ({
+    id: "",
     loading: false,
-    user: {},
-    campaigns: []
+    vendor: {},
+    products: []
   }),
 
   mounted() {
-    console.log("BEnEfacor", this.BENEFACTOR);
+    this.id = this.user?.AssociatedOrganisations[0]?.OrganisationId;
     this.getDetails();
+    console.log("USER:", this.user);
   },
 
   computed: {
-    ...mapGetters("beneficiaries", ["BENEFACTOR"]),
-
-    resultQuery() {
-      if (this.searchQuery) {
-        return this.campaigns.filter(campaign => {
-          return this.searchQuery
-            .toLowerCase()
-            .split(" ")
-            .every(v => campaign.title.toLowerCase().includes(v));
-        });
-      } else {
-        return this.campaigns;
-      }
-    }
+    ...mapGetters("authentication", ["user"])
   },
 
   methods: {
@@ -129,16 +121,17 @@ export default {
         this.loading = true;
 
         const response = await this.$axios.get(
-          `beneficiaries/user/${this.BENEFACTOR.id}`
+          `organisations/${this.id}/vendors/${this.$route.params.id}`
         );
+
+        console.log("VENDOR DETAIl::", response);
 
         this.loading = false;
         if (response.status == "success") {
           screenLoading.close();
           this.loading = false;
-          this.user = response.data.user;
-          this.campaigns = response.data.associatedCampaigns;
-          console.log("beneficiaryDetail:::", response);
+          this.vendor = response.data;
+          this.products = response.data.Store?.Products;
         }
       } catch (err) {
         screenLoading.close();
