@@ -1,17 +1,34 @@
-FROM node:14.16.0-alpine
+FROM node:lts as builder
 
 WORKDIR /app
 
 COPY . .
 
-RUN npm install
+RUN yarn install \
+  --prefer-offline \
+  --frozen-lockfile \
+  --non-interactive \
+  --production=false
 
-EXPOSE 3000
+RUN yarn build
 
-ENV HOST=0.0.0.0
-ENV NODE_ENV=production
-ENV PORT=3000
+RUN rm -rf node_modules && \
+  NODE_ENV=production yarn install \
+  --prefer-offline \
+  --pure-lockfile \
+  --non-interactive \
+  --production=true
 
-RUN npm run build
+FROM node:lts
 
-CMD [ "npm", "run", "start" ]
+WORKDIR /app
+
+COPY --from=builder /app  .
+
+ENV HOST 0.0.0.0
+
+ENV PORT 3000
+
+EXPOSE ${PORT}
+
+CMD [ "yarn", "start" ]
