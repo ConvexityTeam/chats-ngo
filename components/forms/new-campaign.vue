@@ -68,6 +68,7 @@
               format="DD-MM-YYYY"
               placeholder="DD-MM-YYYY"
               valueType="format"
+              :disabled-date="present => present <= new Date()"
             ></date-picker>
           </div>
         </div>
@@ -82,6 +83,7 @@
               format="DD-MM-YYYY"
               placeholder="DD-MM-YYYY"
               valueType="format"
+              :disabled-date="present => present <= new Date()"
             ></date-picker>
           </div>
         </div>
@@ -140,6 +142,7 @@ let geocoder;
 export default {
   data() {
     return {
+      present: new Date(),
       loading: false,
       isGeofence: false,
       id: 0,

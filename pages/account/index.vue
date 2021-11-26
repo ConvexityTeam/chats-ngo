@@ -103,7 +103,7 @@ export default {
           this.wallet = response.data.wallet;
         }
       } catch (err) {
-        cosole.log("Walleterr:::", err);
+        console.log("Walleterr:::", err);
       }
     },
 
