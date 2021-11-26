@@ -1,0 +1,343 @@
+<template>
+  <div>
+    <fundAmount @sentAmount="payViaService" />
+    <fundBantu @fundAccount="fundAccount" />
+
+    <div class="holder px-3 py-4">
+      <h4 class="header">Fund Wallet</h4>
+
+      <!-- Payment options here -->
+      <div class="mt-4">
+        <!-- Pay with Flutterwave here -->
+        <div class="option-holder py-4 px-3 mb-3">
+          <div>
+            <h5 class="option-header">Fund Through Flutterwave</h5>
+            <p class="description">
+              You can fund your NGO wallet using a Mastercard or Visa card
+            </p>
+
+            <div class="my-2">
+              <img src="~/assets/img/vectors/cards.svg" alt="cards" />
+            </div>
+
+            <Button
+              class="mt-3"
+              text="Pay Now"
+              :has-icon="false"
+              :custom-styles="custom"
+              @click="$bvModal.show('fund-amount')"
+            />
+          </div>
+        </div>
+
+        <!-- Pay with Crypto here -->
+        <div class="option-holder py-4 px-3 mb-3">
+          <div>
+            <h5 class="option-header">Fund through Crypto</h5>
+            <p class="description">
+              You can fund your NGO wallet using cryptocurrencies.
+            </p>
+
+            <div class="my-1">
+              <!-- <div class="position-relative">
+                <input
+                  type="text"
+                  class="wallet-control"
+                  v-model="wallet.bantuAddress"
+                  ref="wallet"
+                  disabled
+                />
+
+                <div
+                  class="position-absolute copy-btn"
+                  @click="copy(wallet.bantuAddress)"
+                >
+                  <img src="~/assets/img/vectors/copy-btn.svg" alt="copy" />
+                </div>
+              </div> -->
+            </div>
+
+            <div class="d-flex mt-3">
+              <Button
+                text="Generate address"
+                :has-icon="false"
+                :custom-styles="custom"
+                @click="$bvModal.show('fund-amount')"
+              />
+
+              <div class="ml-3">
+                <button
+                  type="button"
+                  class="pay-btn text poppins"
+                  @click="$bvModal.show('fund-bantu')"
+                >
+                  Initiate account funding
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!--Pay With Bank Transfer here -->
+        <div class="option-holder py-4 px-3 mb-3">
+          <div>
+            <h5 class="option-header">Pay with bank transfer</h5>
+            <p class="description">
+              You can fund your account by paying into the below bank account.
+            </p>
+
+            <div class="my-1">
+              <div class="row">
+                <div class="col-lg-6">
+                  <div class="position-relative">
+                    <label class="wallet-header">Bank Name</label>
+                    <input
+                      type="text"
+                      class="wallet-control"
+                      v-model="bankName"
+                      ref="wallet"
+                      disabled
+                    />
+
+                    <div
+                      class="position-absolute copy-btn"
+                      @click="copy(bankName)"
+                    >
+                      <img src="~/assets/img/vectors/copy-btn.svg" alt="copy" />
+                    </div>
+                  </div>
+                </div>
+
+                <div class="col-lg-6">
+                  <div class="position-relative">
+                    <label class="wallet-header">Account Number </label>
+                    <input
+                      type="text"
+                      class="wallet-control"
+                      v-model="accountNumber"
+                      ref="wallet"
+                      disabled
+                    />
+
+                    <div
+                      class="position-absolute copy-btn"
+                      @click="copy(accountNumber)"
+                    >
+                      <img src="~/assets/img/vectors/copy-btn.svg" alt="copy" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+import { mapGetters } from "vuex";
+import fundAmount from "~/components/modals/fund-amount";
+import fundBantu from "~/components/modals/bantu-amount.vue";
+export default {
+  components: {
+    fundAmount,
+    fundBantu
+  },
+
+  data() {
+    return {
+      amount: 0,
+      wallet: {},
+      organisationId: "",
+      accountNumber: "0909029389",
+      bankName: "Zenith Bank",
+      walletAddress: "bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0",
+
+      paymentData: {
+        tx_ref: this.generateReference(),
+        amount: 10,
+        currency: "USD",
+        payment_options: "card,ussd,barter,account, banktransfer,qr,paga",
+        redirect_url: "",
+        meta: [
+          {
+            orgId: ""
+          }
+        ],
+        customer: {
+          name: "",
+          email: "",
+          phone_number: ""
+        },
+        customizations: {
+          title: "Fund CHATS Wallet",
+          description: " Description",
+          logo:
+            "https://convexity.s3.us-east-2.amazonaws.com/chats+only+icon+transparent.png"
+        },
+        callback: this.makePaymentCallback,
+        onclose: this.closedPaymentModal
+      }
+    };
+  },
+
+  computed: {
+    ...mapGetters("authentication", ["user"]),
+
+    custom() {
+      return "border-radius:5px !important; height: 41px; font-size: 0.875rem; ";
+    }
+  },
+
+  mounted() {
+    this.loadData();
+    this.getWallet();
+    console.log("Wallet::", this.wallet);
+  },
+
+  methods: {
+    payViaService(amount) {
+      console.log("beforeSending:::", this.paymentData);
+      this.amount = amount;
+      this.paymentData.amount = amount;
+      this.payWithFlutterwave(this.paymentData);
+    },
+
+    makePaymentCallback(response) {
+      console.log("PaySuccess?", response);
+    },
+
+    closedPaymentModal() {
+      console.log("payment is closed");
+    },
+
+    generateReference() {
+      let date = new Date();
+      return date.getTime().toString();
+    },
+
+    async fundAccount(amount) {
+      try {
+        const response = await this.$axios.post("/organisation/bantu/webhook", {
+          organisation_id: +this.organisationId,
+          xbnAmount: amount
+        });
+
+        console.log("bantuResp::", response);
+        if (response.status == "success") {
+          this.$emit("reload");
+          location.reload();
+          this.$toast.success(response.message);
+        } else {
+          this.$toast.error(response.message);
+        }
+      } catch (err) {
+        console.log("bantuerr", err);
+      }
+    },
+
+    loadData() {
+      (this.paymentData.customer.email = this.user.email),
+        (this.paymentData.customer.name = this.user.AssociatedOrganisations[0].Organisation.name);
+      this.paymentData.customer.phone_number = this.user.AssociatedOrganisations[0].Organisation.phone;
+      this.paymentData.meta[0].orgId = this.user.AssociatedOrganisations[0].Organisation.id;
+      this.organisationId = this.user.AssociatedOrganisations[0].Organisation.id;
+    },
+
+    async getWallet() {
+      try {
+        const response = await this.$axios.get(
+          `/organisation/wallets/main/${+this.organisationId}`
+        );
+
+        if (response.status == "success") {
+          console.log("Here", response.data);
+          this.wallet = response.data.wallet;
+        }
+      } catch (err) {
+        cosole.log("Walleterr:::", err);
+      }
+    },
+    copy(value) {
+      if (value.length) {
+        navigator.clipboard.writeText(value);
+        this.$toast.success("copied to clipboard!");
+      }
+      return;
+    }
+  }
+};
+</script>
+<style scoped>
+.pay-btn.text {
+  color: #17ce89;
+  font-size: 0.75rem;
+  font-weight: 600;
+  background: inherit;
+  border: none;
+}
+
+.option-header {
+  color: var(--tertiary-black);
+  font-weight: 600;
+  font-size: 1rem;
+  font-family: "Poppins", sans-serif;
+}
+
+.option-holder {
+  border: 1px solid #42c18e;
+  box-sizing: border-box;
+  border-radius: 10px;
+}
+
+.wallet-header {
+  color: #25396f;
+  opacity: 0.7;
+  font-size: 0.875rem;
+  font-family: "Poppins", sans-serif;
+}
+
+.wallet-control {
+  width: 100%;
+  border: 0.5px dashed #7a809b;
+  background: #fafafa;
+  border-radius: 5px;
+  height: 36px;
+  outline: 0;
+  color: #7a809b;
+  padding: 0px 10px;
+  font-size: 0.813rem;
+  font-family: "Inconsolata", monospace;
+}
+
+.copy-btn {
+  height: 36px;
+  bottom: 0px;
+  right: 0;
+  background: #dfe1ea;
+  border-radius: 0px 5px 5px 0px;
+  padding: 6px 12px;
+  width: 44px;
+  cursor: pointer;
+}
+
+.holder {
+  background: #ffffff;
+  box-shadow: 0px 4px 25px rgba(174, 174, 192, 0.15);
+  border-radius: 10px;
+}
+
+.header {
+  color: var(--tertiary-black);
+  font-weight: bold;
+  font-size: 1.125rem;
+  font-family: "Poppins", sans-serif;
+}
+
+.description {
+  color: #7c8db5;
+  font-size: 0.875rem;
+}
+</style>

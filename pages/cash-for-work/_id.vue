@@ -1,148 +1,100 @@
 <template>
-  <div class="container">
-    <el-button
-      type="primary"
-      icon="el-icon-arrow-left"
-      @click="$router.go(-1)"
-      class="my-5"
-      >Previous Page</el-button
-    >
+  <div class="pb-5">
+    <div v-if="loading"></div>
 
-    <div class="row">
-      <div class="col-lg-8">
-        <div v-if="loading" class="loader text-center"></div>
-        <!-- Campaigns here -->
-        <div class="" v-else-if="tasks.length">
-          <h4 class="top-header">Tasks</h4>
+    <div class="main container transparent pt-4 mt-2 pb-5" v-else>
+      <back text="Go Back" @click="$router.go(-1)" />
 
-          <div class="d-flex pt-3">
-            <div class="d-flex">
+      <!-- search region here -->
+      <div class="row py-4">
+        <div class="col-lg-8">
+          <div class="row">
+            <div class="col-lg-5">
               <!-- Search Box here -->
-              <input
-                type="text"
-                class="form-controls"
-                placeholder="Search Tasks"
-                v-model="searchQuery"
-              />
+              <div class="position-relative">
+                <input
+                  type="text"
+                  class="form-controls search"
+                  placeholder="Search tasks..."
+                  v-model="searchQuery"
+                />
+                <img
+                  src="~/assets/img/vectors/search.svg"
+                  class="search-icon position-absolute"
+                  alt="search"
+                />
+              </div>
             </div>
           </div>
+        </div>
+      </div>
 
-          <!-- Table here -->
-          <div class="table">
-            <table class=" table-borderless w-100">
-              <thead>
-                <tr class="border-bottom">
-                  <th scope="col">Name</th>
-                  <th scope="col">Description</th>
-                  <th scope="col">Amount</th>
-                  <th scope="col">Created</th>
-                  <th scope="col"></th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr
-                  v-for="(task, i) in resultQuery"
-                  :key="i"
-                  :class="{ 'border-bottom': i != tasks.length - 1 }"
-                >
-                  <td>{{ task.name }}</td>
-                  <td>{{ task.description }}</td>
-                  <td>
-                    {{ task.amount | formatCurrency }}
-                  </td>
-                  <td>
-                    {{ task.createdAt | formatDateOnly }}
-                  </td>
-                  <td>
-                    <button
-                      class="view-btn px-3 py-1 "
-                      @click="$router.push(`/cash-for-work/tasks/${task.id}`)"
-                    >
-                      View
-                    </button>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+      <div v-if="details.status == 'paused'" class="">
+        <banner
+          :date="details.updatedAt"
+          @resumeCampaign="resumeCampaign = true"
+        />
+      </div>
+
+      <div class="row" :class="{ 'mt-3': details.status == 'paused' }">
+        <div class="col-lg-8">
+          <!-- Campaign beneficiaries here -->
+          <div>
+            <div class="table-holder mt-2">
+              <div class="d-flex align-items-center table-title">
+                <div class="ml-auto"></div>
+              </div>
+
+              <table v-if="resultQuery.length" class="table table-borderless">
+                <thead>
+                  <tr>
+                    <th scope="col">Name</th>
+                    <th scope="col">Description</th>
+                    <th scope="col">Amount</th>
+                    <th scope="col">Created</th>
+                    <th scope="col"></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="benefactor in resultQuery" :key="benefactor.id">
+                    <td>
+                      {{ benefactor.first_name + " " + benefactor.last_name }}
+                    </td>
+                    <td>{{ benefactor.phone }}</td>
+                    <td>{{ benefactor.email }}</td>
+                    <td>{{ benefactor.email }}</td>
+                    <td>
+                      <div>
+                        <Button
+                          text="View"
+                          :has-icon="false"
+                          :has-border="true"
+                          custom-styles="border: 1px solid #17CE89 !important; border-radius: 5px !important; font-size: 0.875rem !important; height: 33px !important"
+                          @click="
+                            $router.push(`/beneficiaries/${benefactor.UserId}`)
+                          "
+                        />
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+              <div v-else-if="loading" class=" text-center"></div>
+              <h3 v-else class="text-center no-record">NO RECORD FOUND</h3>
+            </div>
           </div>
         </div>
 
-        <h3 v-else class="text-center no-record">NO RECORD FOUND</h3>
-      </div>
-
-      <div class="col-lg-4">
         <!-- Campaign details here -->
-        <div v-if="loading" class="text-center"></div>
-
-        <div class="div__holder p-1" v-else>
-          <h4 class="top-header px-3 py-4">{{ campaign.title }}</h4>
-
-          <b-progress
-            :value="campaign.progress"
-            :max="100"
-            variant="success"
-            class="mx-3 mb-2"
-          ></b-progress>
-
-          <!-- Task count here -->
-          <div class="d-flex mx-3 mb-3">
-            <div>
-              <p class="tasks">
-                {{ campaign.completedTasks }}/{{ campaign.totalTasks }}
-                {{ campaign.totalTasks == 1 ? "Task" : "Tasks" }}
-              </p>
-            </div>
-            <div class="ml-auto">
-              <p class="tasks">{{ campaign.progress }}%</p>
-            </div>
-          </div>
-
-          <div>
-            <table class="w-100">
-              <tr>
-                <th><p class="detail-caption col">Description</p></th>
-                <td>
-                  <p class="detail-value col">{{ campaign.description }}</p>
-                </td>
-              </tr>
-
-              <tr>
-                <th><p class="detail-caption col">Start Date</p></th>
-                <td>
-                  <p class="detail-value col">
-                    {{ campaign.start_date | formatDateText }}
-                  </p>
-                </td>
-              </tr>
-
-              <tr>
-                <th><p class="detail-caption col">End Date</p></th>
-                <td>
-                  <p class="detail-value col">
-                    {{ campaign.end_date | formatDateText }}
-                  </p>
-                </td>
-              </tr>
-
-              <tr>
-                <th><p class="detail-caption col">Location</p></th>
-                <td>
-                  <p class="detail-value col">
-                    {{ campaign.location }}
-                  </p>
-                </td>
-              </tr>
-
-              <tr>
-                <th><p class="detail-caption col">Created</p></th>
-                <td>
-                  <p class="detail-value col">
-                    {{ campaign.createdAt | formatDateText }}
-                  </p>
-                </td>
-              </tr>
-            </table>
-          </div>
+        <div class="col-lg-4">
+          <campaign-details
+            :details="details"
+            :count="details.Beneficiaries ? details.Beneficiaries.length : 0"
+            :location="location"
+            :user="user"
+            @reload="getDetails"
+            :resumeCampaign="resumeCampaign"
+          />
         </div>
       </div>
     </div>
@@ -150,155 +102,109 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
+
+import campaignDetails from "~/components/tables/campaigns/campaign-details";
+import banner from "~/components/generic/banner.vue";
+
+let screenLoading;
 export default {
   layout: "dashboard",
-
   data: () => ({
     loading: false,
-    tasks: [],
-    campaign: {},
-    searchQuery: ""
+    orgId: "",
+    searchQuery: "",
+
+    complaints: [],
+    beneficiaries: [],
+    details: {},
+    location: "",
+    resumeCampaign: false,
+
+    title: "",
+    drawer: false,
+    direction: "rtl"
   }),
 
-  mounted() {
-    this.fetchTasks();
-    this.getCampaignDetails();
-    this.taskDetail();
+  components: {
+    campaignDetails,
+    banner
   },
 
   computed: {
+    ...mapGetters("authentication", ["user"]),
     resultQuery() {
       if (this.searchQuery) {
-        return this.tasks.filter(task => {
+        return this.beneficiaries.filter(benefactor => {
           return this.searchQuery
             .toLowerCase()
             .split(" ")
-            .every(v => task.name.toLowerCase().includes(v));
+            .every(v => benefactor.User.first_name.toLowerCase().includes(v));
         });
       } else {
-        return this.tasks;
+        return this.beneficiaries;
       }
     }
   },
 
+  mounted() {
+    this.orgId = this.user.AssociatedOrganisations[0].OrganisationId;
+    this.getDetails();
+  },
+
   methods: {
-    async taskDetail() {
+    async getDetails() {
       try {
-        const response = await this.$axios.get("/cash-for-work/task/8");
-
-        console.log("TAskDetail:::", response);
-      } catch (err) {
-        console.log("detailerr", err);
-      }
-    },
-    async fetchTasks() {
-      try {
+        this.openScreen();
         this.loading = true;
+
         const response = await this.$axios.get(
-          `/cash-for-work/tasks/${this.$route.params.id}`
+          `/organisations/${this.orgId}/campaigns/${this.$route.params.id}`
         );
 
+        console.log("C4W details:::", response);
+
         if (response.status == "success") {
-          this.tasks = response.data.tasks;
+          screenLoading.close();
+          this.details = response.data;
+          this.beneficiaries = response.data.Beneficiaries;
+          this.location = JSON.parse(response.data.location?.country);
+          console.log("loc::", this.location);
+          console.log("here", response.data);
         }
 
-        console.log("TaskDetail::", response.data);
         this.loading = false;
       } catch (err) {
-        console.log(err);
+        this.loading = false;
+        screenLoading.close();
+        console.log("campaignDeetserr:::", err);
       }
     },
 
-    async getCampaignDetails() {
-      try {
-        this.loading = true;
-        const response = await this.$axios.get(
-          `/cash-for-work/${this.$route.params.id}`
-        );
-
-        if (response.status == "success") {
-          this.campaign = response.data.cashForWorkDetail;
-        }
-
-        console.log("CampaignDetails::", response.data);
-        this.loading = false;
-      } catch (err) {
-        console.log(err);
-      }
+    openScreen() {
+      screenLoading = this.$loading({
+        lock: true,
+        spinner: "el-icon-loading",
+        background: "#0000009b"
+      });
     }
   }
 };
 </script>
 
 <style scoped>
-.view-btn {
-  border: 1px solid #dcdfe6;
-  background: inherit;
-  border-radius: 3px;
-  font-size: 13px;
-
-  color: var(--secondary-black);
-}
-.view-btn:hover {
-  background: var(--primary-color);
-  border-color: var(--primary-color);
-  color: #fff;
-  font-weight: 500;
-}
-
-.table {
-  background: #ffffff;
-  box-shadow: 0px 4px 30px rgba(174, 174, 192, 0.2);
-  border-radius: 10px;
-  margin-top: 30px;
-}
-.table thead th {
-  color: #555555;
-  letter-spacing: 0.01em;
-  font-size: 1rem;
-  font-weight: 700;
-}
-.table th,
-.table td {
-  color: red;
-  padding: 1rem 2rem;
-  color: var(--secondary-black);
-  font-size: 0.875rem;
-}
-
-.div__holder {
-  background: #ffffff;
-  border-radius: 10px;
-}
 .main {
   height: calc(100vh - 72px);
   overflow-y: scroll;
 }
-.top-header {
-  color: var(--secondary-black);
-  font-weight: 700;
-  font-size: 1.125rem;
-}
-.card__holder {
-  background: #ffffff;
-  box-shadow: 0px 4px 30px rgba(174, 174, 192, 0.2);
-  border-radius: 10px;
-  width: 200px;
-}
-.text {
-  color: var(--secondary-black);
-  font-size: 1rem;
-  font-weight: 400;
-  line-height: 1.188rem;
-}
-.progress {
-  border-radius: 10px;
-  height: 10px;
-  background: #e5e5e5;
+
+.col-lg-8 {
+  flex: 0 0 63.666667%;
+  max-width: 63.666667%;
 }
 
-.tasks {
-  color: var(--secondary-black);
-  font-size: 0.875rem;
+.col-lg-4 {
+  flex: 0 0 36.333333%;
+  max-width: 36.333333%;
 }
 </style>

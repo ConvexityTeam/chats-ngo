@@ -2,11 +2,12 @@ export default {
     state: () => ({
         tempBenefactor: null,
         tempVendor: null,
+        allBeneficiaries: []
     }),
 
     getters: {
         BENEFACTOR: state => state.tempBenefactor,
-        VENDOR: state => state.tempVendor,
+        beneficiaries:state => state.allBeneficiaries
     },
 
     mutations: {
@@ -15,18 +16,27 @@ export default {
             state.tempBenefactor = payload
         },
 
-        SAVE_TEMP_VENDOR_MUTATION(state, payload) {
-            state.tempVendor = payload
+        SAVE_ALL_BENEFICIARIES(state, payload) {
+            state.allBeneficiaries = payload
         },
     },
+    
     actions: {
 
         SAVE_TEMP_BENEFACTOR({ commit }, payload) {
             commit('SAVE_TEMP_BENEFACTOR_MUTATION', payload)
         },
 
-        SAVE_TEMP_VENDOR({ commit }, payload) {
-            commit('SAVE_TEMP_VENDOR_MUTATION', payload)
+        async getallBeneficiaries({ commit }, id) {
+            try {    
+                const response = await this.$axios.get(`/organisation/${id}/beneficiaries`)
+                console.log("ALL BENEFICIARIES", response)
+
+                if (response.status == "success") {
+                    commit('SAVE_ALL_BENEFICIARIES', response.data)
+                }
+            }
+            catch (_err) {}
         },
     }
 };

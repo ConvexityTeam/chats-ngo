@@ -1,84 +1,105 @@
 <template>
-  <div class="main container">
+  <div class="main container transparent pb-5">
     <!-- Top cards here -->
-    <div class="row no-gutters pt-lg-4">
+    <div class="row pt-4">
       <!-- Wallet balance here -->
       <div class="col-lg-3">
-        <div class="card__holder px-3 pt-2">
-          <p class="text">Wallet Balance</p>
-          <h4 class="funds pb-3 d-flex">
-            $ {{ loading ? "0" : stats.balance | formatCurrency }}
-          </h4>
-          <!-- <p class="percentage pb-2">
-            2.5%
-            <span class="mx-1">
-              <svg
-                width="10"
-                height="10"
-                viewBox="0 0 10 10"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  fill-rule="evenodd"
-                  clip-rule="evenodd"
-                  d="M5.06659 1.33514e-05C4.90339 -0.000432014 4.74003 0.0629158 4.62262 0.190026L0.517362 4.63447C0.303943 4.86552 0.328941 5.21648 0.573196 5.41837C0.817451 5.62025 1.18847 5.5966 1.40189 5.36555L4.48338 2.02946L4.48338 9.44444C4.48338 9.75127 4.74632 10 5.07068 10C5.39504 10 5.65798 9.75127 5.65798 9.44444L5.65798 2.03883L8.74013 5.36614C8.95389 5.59691 9.32495 5.62006 9.5689 5.41785C9.81285 5.21564 9.83733 4.86465 9.62356 4.63388L5.55655 0.243358C5.45086 0.096467 5.27268 0 5.07068 0C5.06932 0 5.06795 4.76837e-06 5.06659 1.33514e-05Z"
-                  fill="#00BF6F"
-                />
-              </svg>
-            </span>
-          </p> -->
+        <div class="card__holder d-flex p-3">
+          <wallet-balance />
+          <div class="ml-3">
+            <p class="text">Wallet Balance</p>
+            <h4 class="funds">
+              $ {{ loading ? 0 : stats.balance || 0 | formatCurrency }}
+            </h4>
+          </div>
         </div>
       </div>
 
       <!-- Total amount Received here -->
       <div class="col-lg-3">
-        <div class="card__holder px-3 pt-2">
-          <p class="text">Total Amount Recieved</p>
-          <h4 class="funds pb-3">
-            $ {{ loading ? "0" : stats.income | formatCurrency }}
-          </h4>
+        <div class="card__holder d-flex p-3">
+          <div>
+            <img src="~/assets/img/vectors/deposit.svg" alt="deposit" />
+          </div>
+          <div class="ml-3">
+            <p class="text">Campaign Budget</p>
+            <h4 class="funds">
+              $ {{ loading ? 0 : stats.income | formatCurrency }}
+            </h4>
+          </div>
         </div>
       </div>
 
-      <!-- Total Amount Disbursed here -->
+      <!--  Amount Disbursed here -->
       <div class="col-lg-3">
-        <div class="card__holder px-3 pt-2">
-          <p class="text">Total Amount Disbursed</p>
-          <h4 class="funds pb-3">
-            $ {{ loading ? "0" : stats.expense | formatCurrency }}
-          </h4>
+        <div class="card__holder d-flex p-3">
+          <div>
+            <disbursed />
+          </div>
+          <div class="ml-3">
+            <p class="text">Amount Disbursed</p>
+            <h4 class="funds">
+              $ {{ loading ? 0 : stats.expense | formatCurrency }}
+            </h4>
+          </div>
         </div>
       </div>
 
       <!-- Total Balance -->
       <div class="col-lg-3">
-        <div class="card__holder px-3 pt-2">
-          <p class="text">Total Balance</p>
-          <h4 class="funds pb-3">
-            $ {{ loading ? "0" : stats.balance | formatCurrency }}
-          </h4>
+        <div class="card__holder d-flex p-3">
+          <div>
+            <total-balance />
+          </div>
+          <div class="ml-3">
+            <p class="text">Campaign Balance</p>
+            <h4 class="funds">
+              $
+              {{
+                loading ? 0 : (stats.income - stats.expense) | formatCurrency
+              }}
+            </h4>
+          </div>
         </div>
       </div>
     </div>
 
     <!-- First Beneficiary cards here -->
-    <div class="row no-gutters pt-lg-4">
+    <div class="row  pt-4">
       <!-- Beneficiary Count Cards here -->
-      <div class="col-lg-4 pb-4">
-        <div class="cards__holder px-3 pt-3">
-          <p class="total-count pb-4">Total Count</p>
+      <div class="col-lg-4 pb-3">
+        <div class="cards__holder p-4">
+          <p class="total-count pb-2">Total Count</p>
 
           <!-- Beneficiaries Stats  here -->
-          <div class="pb-4">
-            <p class="beneficiaries">Beneficiaries</p>
-            <h4 class="beneficiaries-count">{{ beneficiaryCount }}</h4>
+          <div class="pb-3">
+            <div class="stats-holder d-flex align-items-center px-3 w-50">
+              <img
+                src="~/assets/img/vectors/beneficiaries.svg"
+                alt="beneficiaries"
+              />
+
+              <div class="ml-2 pt-3">
+                <p class="beneficiaries">Beneficiaries</p>
+              </div>
+            </div>
+            <h4 class="beneficiaries-count m-3">
+              {{ loading ? 0 : beneficiaryCount | formatNumber }}
+            </h4>
           </div>
 
           <!-- Vendors stats here -->
-          <div class="pb-5">
-            <p class="beneficiaries">Vendors</p>
-            <h4 class="beneficiaries-count pb-3">{{ allVendors.length }}</h4>
+          <div class="pb-3">
+            <div class="stats-holder d-flex align-items-center px-3 w-50">
+              <img src="~/assets/img/vectors/vendors.svg" alt="vendors" />
+
+              <div class="ml-2 pt-3">
+                <p class="beneficiaries">Vendors</p>
+              </div>
+            </div>
+            <h4 class="beneficiaries-count m-3">
+              {{ loading ? 0 : allVendors.length | formatNumber }}
+            </h4>
           </div>
         </div>
       </div>
@@ -99,11 +120,11 @@
     </div>
 
     <!-- Second Beneficiary cards here -->
-    <div class="row no-gutters pt-lg-4">
+    <div class="row  ">
       <!-- Beneficiary By Location card here -->
       <div class="col-lg-4 pb-3">
         <div class="cards__holder px-3 pt-3">
-          <beneficiaryLocation />
+          <beneficiary-location />
         </div>
       </div>
 
@@ -123,11 +144,11 @@
     </div>
 
     <!-- Third Beneficiary cards here -->
-    <div class="row no-gutters pt-lg-4">
+    <div class="row pt-3">
       <!-- Metric card here -->
-      <div class="col-lg-5 pb-3">
-        <div class="metric__holder px-3 pt-3">
-          <p class="total-count pb-3">Metrics</p>
+      <div class="col-lg-6 pb-3">
+        <div class="metric__holder p-4">
+          <p class="total-count pb-2">Metrics</p>
 
           <!-- Maximum Disbursement Date  here -->
           <div>
@@ -136,19 +157,19 @@
           </div>
 
           <!-- Minimum Disbursement Date stats here -->
-          <div class="pb-4 mt-4">
+          <div class="mt-4">
             <p class="beneficiaries">Minimum Disbursement Date</p>
             <h4 class="date">12/04/2020</h4>
           </div>
 
           <!-- Maximum Spending Date Date stats here -->
-          <div class="pb-4">
+          <div class="mt-4">
             <p class="beneficiaries">Maximum Spending Date</p>
             <h4 class="date">12/04/2020</h4>
           </div>
 
           <!-- Maximum Spending Date Date stats here -->
-          <div class="pb-4">
+          <div class="mt-4">
             <p class="beneficiaries">Maximum Spending Date</p>
             <h4 class="date">12/04/2020</h4>
           </div>
@@ -156,21 +177,24 @@
       </div>
 
       <!-- Vendors card here -->
-      <div class="col-lg-6 ml-auto pb-3">
-        <div class="metric__holder mr-4 px-3 pt-3">
-          <p class="total-count pb-3">Vendors</p>
+      <div class="col-lg-6 pb-3">
+        <div class="metric__holder p-4">
+          <p class="total-count pb-2">Vendors</p>
 
           <div
-            class="d-flex pb-3"
-            v-for="vendor in allVendors.slice(0, 5)"
+            class="d-flex"
+            v-for="vendor in allVendors.slice(0, 6)"
             :key="vendor.id"
           >
             <div>
-              <p class="vendor-name">{{ vendor.first_name }}</p>
+              <p class="vendor-name">
+                {{ vendor.first_name + " " + vendor.last_name }}
+              </p>
             </div>
+
             <div class="ml-auto">
               <button type="button" class="more-btn">
-                <i><dot /></i>
+                <dot />
               </button>
             </div>
           </div>
@@ -179,17 +203,24 @@
             <h3 class="text-center no-record">NO RECORD FOUND</h3>
           </div>
 
-          <div class="d-flex pb-2" v-if="allVendors.length">
+          <div class="d-flex " v-if="allVendors.length">
             <div class="mt-2">
-              <nuxt-link class="viewall" to="/vendors">View all</nuxt-link>
+              <button
+                type="button"
+                @click="$router.push('vendors/all-vendors')"
+                class="d-flex viewall align-items-center"
+              >
+                <img src="~/assets/img/vectors/eye.svg" alt="see" />
+                <span class="ml-2 pt-1">View All</span>
+              </button>
             </div>
             <div class="ml-auto d-flex">
               <p class="pt-3 paginate">1 - 10 of 24</p>
               <button type="button" class="more-btn">
-                <i><leftArrow /></i>
+                <leftArrow />
               </button>
               <button type="button" class="more-btn">
-                <i><rightArrow /></i>
+                <rightArrow />
               </button>
             </div>
           </div>
@@ -209,7 +240,11 @@ import dot from "~/components/icons/dot";
 import rightArrow from "~/components/icons/right-arrow";
 import leftArrow from "~/components/icons/left-arrow";
 import locateMixin from "~/components/mixins/locate";
+import walletBalance from "~/components/icons/wallet-balance.vue";
+import totalBalance from "~/components/icons/total-balance.vue";
+import disbursed from "~/components/icons/disbursed.vue";
 import countries from "~/plugins/countries";
+
 export default {
   layout: "dashboard",
   mixins: [locateMixin],
@@ -238,14 +273,17 @@ export default {
     beneficiaryLocation,
     dot,
     rightArrow,
-    leftArrow
+    leftArrow,
+    walletBalance,
+    totalBalance,
+    disbursed
   },
 
   mounted() {
     this.fetchAllVendors();
     this.fetchAllBeneficiaries();
     this.getIp();
-    this.getStats()
+    this.getStats();
   },
 
   methods: {
@@ -343,58 +381,63 @@ export default {
   font-size: 0.875rem;
   font-weight: 500;
 }
-.viewall {
-  color: var(--primary-color);
-  font-size: 0.875rem;
-  text-decoration: none;
-}
+
 .vendor-name {
-  color: var(--secondary-black);
+  color: var(--primary-gray);
+  font-size: 1rem;
 }
 
 .date {
-  color: var(--secondary-black);
+  color: var(--tertiary-black);
   font-size: 1.125rem;
+  font-weight: 500;
+  line-height: 8px;
 }
+
+.stats-holder {
+  background: #f5f6f8;
+  border-radius: 30px;
+  height: 36px;
+}
+
 .beneficiaries {
-  color: var(--secondary-black);
+  color: var(--primary-gray);
   font-size: 1rem;
-  font-weight: 400;
   line-height: 19px;
 }
 .beneficiaries-count {
-  color: var(--secondary-black);
-  font-size: 1.875rem;
+  color: var(--tertiary-black);
+  font-size: 1.5rem;
   font-weight: 500;
-  line-height: 35px;
 }
 .card__holder {
   background: #ffffff;
-  box-shadow: 0px 4px 30px rgba(174, 174, 192, 0.2);
+  box-shadow: 0px 4px 25px rgba(174, 174, 192, 0.15);
   border-radius: 10px;
-  width: 246px;
 }
 .metric__holder {
   background: #ffffff;
-  box-shadow: 0px 4px 30px rgba(174, 174, 192, 0.2);
+  box-shadow: 0px 4px 25px rgba(174, 174, 192, 0.15);
   border-radius: 10px;
+  height: 346px;
 }
 .cards__holder {
   background: #ffffff;
-  box-shadow: 0px 4px 30px rgba(174, 174, 192, 0.2);
+  box-shadow: 0px 4px 25px rgba(174, 174, 192, 0.15);
   border-radius: 10px;
-  width: 340px;
+
+  height: 300px;
 }
 .text {
-  color: var(--secondary-black);
-  font-size: 1rem;
-  font-weight: 400;
-  line-height: 1.188rem;
+  color: #7c8db5;
+  font-size: 0.875rem;
+  font-weight: 500;
 }
 .funds {
-  color: var(--secondary-black);
+  color: var(--tertiary-black);
   font-size: 1.5rem;
   font-weight: 500;
+  line-height: 0.563rem;
 }
 .percentage {
   color: #00bf6f;
@@ -402,26 +445,7 @@ export default {
 }
 .total-count {
   color: var(--secondary-black);
-  font-weight: 700;
+  font-weight: bold;
   font-size: 1.125rem;
-}
-/* width */
-::-webkit-scrollbar {
-  width: 5px;
-}
-
-/* Track */
-::-webkit-scrollbar-track {
-  background: #f1f1f1;
-}
-
-/* Handle */
-::-webkit-scrollbar-thumb {
-  background: #888;
-}
-
-/* Handle on hover */
-::-webkit-scrollbar-thumb:hover {
-  background: #555;
 }
 </style>

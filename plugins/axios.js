@@ -57,7 +57,7 @@ export default async function({ $axios, app }) {
 
     if (err.response.status == "401") {
       app.$toast.error(err.response.data.message);
-      app.router.push('/login')
+      app.router.push('/')
     }
 
     // return data;

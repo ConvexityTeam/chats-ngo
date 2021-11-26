@@ -1,11 +1,8 @@
 const BASE_URL = "https://api.chats.cash/v1/";
+const apiKey = process.env.GOOGLE_API;
 export default {
   // Disable server-side rendering (https://go.nuxtjs.dev/ssr-mode)
   ssr: false,
-
-  env: {
-    BASE_URL
-  },
 
   head: {
     title: "frontend-ngo-web",
@@ -21,6 +18,11 @@ export default {
         rel: "stylesheet",
         href: "https://unpkg.com/element-ui/lib/theme-chalk/index.css"
       }
+    ],
+    script: [
+      {
+        src: `https://maps.googleapis.com/maps/api/js?key=${apiKey}&callback=initMap&libraries=geometry,drawing&v=weekly`
+      }
     ]
   },
 
@@ -34,6 +36,7 @@ export default {
     // "~/plugins/freshdesk.js",
     { src: "~/plugins/vuex-persist", ssr: false }
   ],
+
   loading: {
     color: " #17CE89",
     name: "fading-circle",
@@ -43,19 +46,16 @@ export default {
 
   components: true,
 
-  // pageTransition: {
-  //     name: 'page',
-  //     mode: 'out-in',
-  //     beforeEnter (el) {
-  //       console.log('Before enter...');
-  //     }
-  //   },
-
   // Modules for dev and build (recommended) (https://go.nuxtjs.dev/config-modules)
   buildModules: [],
 
   // Modules (https://go.nuxtjs.dev/config-modules)
-  modules: ["bootstrap-vue/nuxt", "@nuxtjs/axios", "@nuxtjs/toast"],
+  modules: [
+    "bootstrap-vue/nuxt",
+    "@nuxtjs/axios",
+    "@nuxtjs/toast",
+    "@nuxtjs/dotenv"
+  ],
 
   // Axios module configuration (https://go.nuxtjs.dev/config-axios)
   axios: {
@@ -73,6 +73,13 @@ export default {
   // Build Configuration (https://go.nuxtjs.dev/config-build)
   build: {
     transpile: [/^element-ui/],
-    babel: { compact: true }
+    terser: {
+      // https://github.com/terser/terser#compress-options
+      terserOptions: {
+        compress: {
+          drop_console: true
+        }
+      }
+    }
   }
 };

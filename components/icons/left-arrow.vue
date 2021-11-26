@@ -1,17 +1,15 @@
 <template>
-  <div>
-    <svg
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <path
-        d="M16 17.7143L10.9975 12L16 6.28571L14.9995 4L7.996 12L14.9995 20L16 17.7143Z"
-        fill="#333333"
-      />
-    </svg>
-  </div>
+  <svg
+    width="25"
+    height="24"
+    viewBox="0 0 25 24"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <ellipse cx="12.9321" cy="12" rx="11.9897" ry="12" fill="#FAFAFA" />
+    <path
+      d="M15.9294 16.2866L12.1827 12.003L15.9294 7.71943L15.1801 6.006L9.93459 12.003L15.1801 18L15.9294 16.2866Z"
+      fill="#7C8DB5"
+    />
+  </svg>
 </template>
->

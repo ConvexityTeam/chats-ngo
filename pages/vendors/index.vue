@@ -1,85 +1,149 @@
 <template>
-  <div class="main container">
+  <div class="main container transparent pb-5">
     <!-- Top cards here -->
-    <div class="row no-gutters pt-lg-4">
-      <!-- Beneficiaries here -->
+    <div class="row pt-4">
+      <!-- Vendors here -->
       <div class="col-lg-3">
-        <div class="card__holder px-3 pt-2">
-          <p class="text">Vendors</p>
-          <h4 class="funds">{{ loading ? "0" : allVendors }}</h4>
-          <p class="pb-2">
-            <nuxt-link to="/vendors/all-vendors" class="percentage">
-              View all
-            </nuxt-link>
-          </p>
+        <div class="card__holder  p-3">
+          <div class="d-flex">
+            <img src="~/assets/img/vectors/shop.svg" alt="shop" />
+            <div class="ml-3">
+              <p class="text">Vendors</p>
+              <h4 class="funds">
+                {{ count || 0 }}
+              </h4>
+            </div>
+            <div class="ml-auto d-flex align-items-end">
+              <button
+                type="button"
+                @click="$router.push('/vendors/all-vendors')"
+                class="d-flex viewall align-items-center"
+              >
+                <img src="~/assets/img/vectors/eye.svg" alt="see" />
+                <span class="ml-2 pt-1">View </span>
+              </button>
+            </div>
+            <!-- <button class="viewall d-flex ">kk</button> -->
+          </div>
         </div>
       </div>
 
-      <!-- Daily Transactions here -->
+      <!-- Daily transactions here -->
       <div class="col-lg-3">
-        <div class="card__holder px-3 pt-2">
-          <p class="text">Daily Transactions</p>
-          <h4 class="funds pb">23</h4>
+        <div class="card__holder d-flex p-3">
+          <div>
+            <img
+              src="~/assets/img/vectors/daily-transactions.svg"
+              alt="deposit"
+            />
+          </div>
+          <div class="ml-3">
+            <p class="text">Daily transactions</p>
+            <h4 class="funds">
+              {{ summary.transactions_count || 0 }}
+            </h4>
+          </div>
         </div>
       </div>
 
-      <!-- Transaction value here -->
+      <!--  Transaction value here -->
       <div class="col-lg-3">
-        <div class="card__holder px-3 pt-2">
-          <p class="text">Transaction Value</p>
-          <h4 class="funds pb">$125,000/N120,000</h4>
+        <div class="card__holder d-flex p-3">
+          <div>
+            <total-balance />
+          </div>
+          <div class="ml-3">
+            <p class="text">Transaction value</p>
+            <h4 class="funds">
+              $
+              {{ summary.transactions_value || 0 | formatCurrency }}
+            </h4>
+          </div>
         </div>
       </div>
 
-      <!-- Products Sold Here -->
+      <!-- Products sold -->
       <div class="col-lg-3">
-        <div class="card__holder px-3 pt-2">
-          <p class="text">Products Sold</p>
-          <h4 class="funds pb">2600</h4>
+        <div class="card__holder d-flex p-3">
+          <div>
+            <img src="~/assets/img/vectors/products.svg" alt="product" />
+          </div>
+          <div class="ml-3">
+            <p class="text">Products sold</p>
+            <h4 class="funds">
+              {{ summary.products_count || 0 }}
+            </h4>
+          </div>
         </div>
       </div>
     </div>
 
     <!-- Vendor Transactions Table here -->
-    <div class="no-gutters mr-4">
-      <vendorTransaction />
+    <div>
+      <vendor-transaction :transactions="transactions" />
     </div>
   </div>
 </template>
 
 <script>
 import vendorTransaction from "~/components/tables/vendor-transaction";
+import totalBalance from "~/components/icons/total-balance.vue";
+import { mapGetters } from "vuex";
+let screenLoading;
+
 export default {
   layout: "dashboard",
 
-  data: () => ({
-    loading: false,
-    allVendors: "",
-  }),
-
   components: {
     vendorTransaction,
+    totalBalance
   },
 
-  created() {
-    this.fetchAllVendors();
+  data: () => ({
+    id: "",
+    count: "",
+    summary: {},
+    transactions: []
+  }),
+
+  computed: {
+    ...mapGetters("authentication", ["user"])
+  },
+
+  mounted() {
+    this.id = this.user?.AssociatedOrganisations[0]?.OrganisationId;
+    this.getSummary();
   },
 
   methods: {
-    async fetchAllVendors() {
+    async getSummary() {
       try {
-        this.loading = true;
-        const response = await this.$axios.get("/vendors");
+        this.openScreen();
+        const response = await this.$axios.get(
+          `organisations/${this.id}/vendors/summary`
+        );
 
-        console.log("allendors:::", response)
+        console.log("Vendor Summary", response);
 
         if (response.status == "success") {
-          this.loading = false;
-          this.allVendors = response.data.length;
+          screenLoading.close();
+          this.summary = response.data?.today_stat;
+          this.count = response.data?.vendors_count;
+          this.transactions = response.data?.Transactions;
         }
-      } catch (error) {}
+      } catch (err) {
+        screenLoading.close();
+      }
     },
-  },
+
+    openScreen() {
+      screenLoading = this.$loading({
+        lock: true,
+        spinner: "el-icon-loading",
+        background: "#0000009b"
+      });
+    }
+  }
 };
 </script>
 
@@ -97,52 +161,20 @@ export default {
 
 .card__holder {
   background: #ffffff;
-  box-shadow: 0px 4px 30px rgba(174, 174, 192, 0.2);
+  box-shadow: 0px 4px 25px rgba(174, 174, 192, 0.15);
   border-radius: 10px;
-  width: 246px;
 }
 
 .text {
-  color: var(--secondary-black);
-  font-size: 1rem;
-  font-weight: 400;
-  line-height: 1.188rem;
-}
-.funds {
-  color: var(--secondary-black);
-  font-size: 1.5rem;
+  color: #7c8db5;
+  font-size: 0.875rem;
   font-weight: 500;
 }
 
-.funds.pb {
-  padding-bottom: 35px;
-}
-.percentage {
-  color: #00bf6f;
-  font-size: 0.8 75rem;
-}
-.total-count {
-  color: var(--secondary-black);
-  font-weight: 700;
-  font-size: 1.125rem;
-}
-/* width */
-::-webkit-scrollbar {
-  width: 5px;
-}
-
-/* Track */
-::-webkit-scrollbar-track {
-  background: #f1f1f1;
-}
-
-/* Handle */
-::-webkit-scrollbar-thumb {
-  background: #888;
-}
-
-/* Handle on hover */
-::-webkit-scrollbar-thumb:hover {
-  background: #555;
+.funds {
+  color: var(--tertiary-black);
+  font-size: 1.5rem;
+  font-weight: 500;
+  line-height: 0.563rem;
 }
 </style>

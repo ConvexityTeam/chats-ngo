@@ -3,85 +3,82 @@
     <div class="text-center">
       <!-- Logo here -->
       <div class="logo-div">
-        <img src="~/assets/img/logo.png" class="img-fluid" alt="Chats" />
+        <img src="~/assets/img/logo.svg" class="img-fluid" alt="Chats" />
       </div>
-      <h3 class="text-white welcome py-4">Welcome To CHATS</h3>
+      <h3 class="text-white welcome py-4">Hi, welcome back</h3>
     </div>
 
     <div class="d-flex justify-content-center align-items-center">
       <div class="card__holder">
-        <form @submit.prevent="registerUser">
-          <!-- Organisation name here -->
-          <div class="form-group">
-            <label for="name">Name Of Organization</label>
-            <input
-              type="text"
-              class="form-controls"
-              :class="{
-                form__input__error: $v.payload.organisation_name.$error
-              }"
-              id="name"
-              v-model="payload.organisation_name"
-              @blur="$v.payload.organisation_name.$touch()"
-            />
-          </div>
-
+        <form @submit.prevent="loginUser">
           <!-- Organisation email here -->
           <div class="form-group">
             <label for="email">Email</label>
             <input
               type="email"
               class="form-controls"
+              placeholder="example@gmail.com"
               :class="{ form__input__error: $v.payload.email.$error }"
               id="email"
               v-model="payload.email"
+              @focus="emailActive = true"
               @blur="$v.payload.email.$touch()"
             />
-          </div>
-
-          <!-- website here -->
-          <div class="form-group">
-            <label for="email">Website</label>
-            <input
-              type="website"
-              class="form-controls"
-              :class="{ form__input__error: $v.payload.website_url.$error }"
-              id="website"
-              v-model="payload.website_url"
-              @blur="$v.payload.website_url.$touch()"
-            />
+            <div class="position-absolute icon-left">
+              <email-icon :active="emailActive" />
+            </div>
           </div>
 
           <!-- Password here -->
-          <div class="form-group pb-2">
+          <div class="form-group">
             <label for="password">Password</label>
             <input
-              type="password"
+              :type="showpassword ? 'text' : 'password'"
               class="form-controls"
+              placeholder="Enter password"
               :class="{ form__input__error: $v.payload.password.$error }"
               id="password"
               v-model="payload.password"
+              @focus="passActive = true"
               @blur="$v.payload.password.$touch()"
             />
+            <div class="position-absolute icon-left ">
+              <lock-icon :active="passActive" />
+            </div>
+
+            <div
+              class="position-absolute icon-right"
+              @click="showpassword = !showpassword"
+            >
+              <eye-open v-if="showpassword" />
+              <eye-closed v-else />
+            </div>
           </div>
 
-          <!-- Submit button here -->
-          <div class="mt-4 text-center">
-            <button class="onboarding-btn">
+          <div class="mt-4 pt-2 text-center">
+            <button :disabled="loading" class="onboarding-btn">
               <span v-if="loading">
                 <img
                   src="~/assets/img/vectors/spinner.svg"
                   class="btn-spinner"
                 />
               </span>
-              <span v-else>Create Account</span>
+              <span v-else>Log in</span>
             </button>
           </div>
         </form>
-        <div class="mt-4 text-center">
+
+        <div class="mt-4 ot-2 text-center">
           <p class="account">
-            Have an account?
-            <nuxt-link class="font-bold login" to="/login">Login</nuxt-link>
+            Don’t have an account?
+            <nuxt-link class="font-bold login" to="/sign-up"
+              >Create one</nuxt-link
+            >
+          </p>
+          <p class="">
+            <nuxt-link class="forgot" to="/forgot-password"
+              >Forgot password?</nuxt-link
+            >
           </p>
         </div>
       </div>
@@ -92,30 +89,39 @@
 <script>
 import { required, email } from "vuelidate/lib/validators";
 import { mapActions } from "vuex";
+import emailIcon from "~/components/icons/email-icon.vue";
+import lockIcon from "~/components/icons/lock-icon.vue";
+import eyeClosed from "~/components/icons/eye-closed.vue";
+import eyeOpen from "~/components/icons/eye-open.vue";
+
 export default {
   layout: "default",
+
+  components: {
+    emailIcon,
+    lockIcon,
+    eyeClosed,
+    eyeOpen
+  },
+
   data() {
     return {
       loading: false,
+      emailActive: false,
+      passActive: false,
+      showpassword: false,
       payload: {
-        organisation_name: "",
         email: "",
-        website_url: "",
         password: ""
       }
     };
   },
+
   validations: {
     payload: {
-      organisation_name: {
-        required
-      },
       email: {
         required,
         email
-      },
-      website_url: {
-        required
       },
       password: {
         required
@@ -125,7 +131,7 @@ export default {
 
   methods: {
     ...mapActions("authentication", ["commitToken", "commitUser"]),
-    async registerUser() {
+    async loginUser() {
       try {
         this.loading = true;
         this.$v.payload.$touch();
@@ -136,35 +142,6 @@ export default {
           return;
         }
 
-        const response = await this.$axios.post("/auth/ngo-register", this.payload);
-
-        console.log("Register response", response);
-
-        if (response.status == "success") {
-          this.$toast.success(response.message);
-          this.loginUser();
-        } else {
-          this.$toast.error(response.message);
-          if (
-            response.message == "Email Already Exists, Recover Your Account"
-          ) {
-            this.$router.push("/login");
-          }
-        }
-
-        this.loading = false;
-      } catch (error) {
-        this.loading = false;
-      }
-    },
-
-    async loginUser() {
-      try {
-        const data = {
-          email: this.payload.email,
-          password: this.payload.password
-        };
-    
         const response = await this.$axios.post("/auth/login", this.payload);
 
         console.log("login response", response);
@@ -172,13 +149,13 @@ export default {
         if (response.status == "success") {
           this.commitToken(response.data.token);
           this.commitUser(response.data.user);
-          this.$router.push("/settings");
-        } else {
-          this.$toast.error(response.message);
+          this.$router.push("/dashboard");
         }
-      } catch (error) {
+
         this.loading = false;
-        this.$toast.error(error.response.data.message);
+      } catch (err) {
+        this.loading = false;
+        this.$toast.error(err.response.data.message);
       }
     }
   }
@@ -186,43 +163,55 @@ export default {
 </script>
 
 <style scoped>
-.login {
-  text-decoration: underline;
-  color: var(--primary-black);
-  font-weight: 700;
+.forgot {
+  color: #277ef0;
+  font-size: 0.75rem;
+  font-weight: 600;
+  font-family: "Noto Sans", sans-serif;
 }
+
 .account {
-  color: var(--primary-black);
-  font-size: 1rem;
-  font-weight: 400;
-  letter-spacing: 0.01em;
+  color: #0b0b0b;
+  font-size: 0.875rem;
+  font-weight: 700;
+  font-family: "Noto Sans", sans-serif;
+}
+
+.account.login {
+  text-decoration: none;
+  color: #277ef0;
 }
 
 .welcome {
   font-size: 2.25rem;
   font-weight: 500;
 }
+
 .logo-div {
   padding: 50px 15px 0px 15px;
 }
+
 .main {
-  background-image: url("../assets/img/DSC_1227-min 2 jpeg-min.jpg");
+  background-image: url("~/assets/img/DSC_1227-min 2 jpeg-min.jpg");
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
   height: 100vh;
   overflow: auto;
 }
+
 .card__holder {
   background: #ffffff;
   border-radius: 10px;
-  padding: 2rem 4rem;
-  width: 31.25rem;
+  padding: 2rem 1.75rem 0.75rem 1.75rem;
+  width: 28.125rem;
 }
+
 label {
   color: var(--primary-black);
-  font-size: 1rem;
+  font-size: 0.875rem;
   font-weight: 400;
+  font-family: "Poppins", sans-serif;
 }
 
 @media (max-width: 575.98px) {

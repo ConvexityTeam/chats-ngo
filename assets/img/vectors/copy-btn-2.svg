@@ -1,0 +1,17 @@
+ <svg
+            width="25"
+            height="25"
+            viewBox="0 0 25 25"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <rect width="20.9677" height="20.9677" rx="4" fill="#7A809B" />
+            <rect
+              x="4.53223"
+              y="4.53223"
+              width="19.9677"
+              height="19.9677"
+              rx="3.5"
+              stroke="#7A809B"
+            />
+          </svg>

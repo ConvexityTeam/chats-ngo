@@ -249,6 +249,7 @@
 import { required, email } from "vuelidate/lib/validators";
 import countries from "~/plugins/all-countries";
 import { mapGetters, mapActions } from "vuex";
+
 export default {
   data: () => ({
     options: { placeholder: "Phone number" },

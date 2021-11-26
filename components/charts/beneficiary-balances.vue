@@ -1,40 +1,50 @@
 <template>
   <div>
-    <bar-chart :data="barChartData" :options="barChartOptions"/>
+    <bar-chart :data="barChartData" :options="barChartOptions" :height="320" />
   </div>
 </template>
 
 <script>
-import barChart from '~/plugins/charts/barchart'
+import barChart from "~/plugins/charts/barchart";
 export default {
   components: {
-    barChart,
+    barChart
   },
   data() {
     return {
       barChartData: {
-        labels: ['0', '10,000', '15,000', '20,000', '25,000', '30,000','35,000','40,000', '45,000'],
+        labels: [
+          "0",
+          "10,000",
+          "15,000",
+          "20,000",
+          "25,000",
+          "30,000",
+          "35,000",
+          "40,000",
+          "45,000"
+        ],
         datasets: [
           {
-            label: 'Visits',
+            label: "Visits",
             data: [10000, 5000, 2000, 300, 4000, 500, 300, 4000, 500],
-            backgroundColor: '#855CF8',
-          },
-        ],
+            backgroundColor: "#27AE60"
+          }
+        ]
       },
       barChartOptions: {
         responsive: true,
         legend: {
-          display: false,
+          display: false
         },
         title: {
           display: true,
-          text: 'Beneficiary Balances',
+          text: "Beneficiary Balances",
           fontSize: 18,
-          fontColor: '#33333',
+          fontColor: "#33333"
         },
         tooltips: {
-          backgroundColor: '#17BF62',
+          backgroundColor: "#17BF62"
         },
         scales: {
           xAxes: [
@@ -43,31 +53,31 @@ export default {
               gridLines: {
                 display: true,
                 drawBorder: true,
-                drawOnChartArea: false,
+                drawOnChartArea: false
               },
-               ticks: {
+              ticks: {
                 fontSize: 10,
-                fontColor: '#000000'
+                fontColor: "#000000"
+              }
             }
-            },
           ],
           yAxes: [
             {
               ticks: {
                 beginAtZero: true,
-                 fontSize: 10,
-                     fontColor: '#000000'
+                fontSize: 10,
+                fontColor: "#000000"
               },
               gridLines: {
                 display: true,
                 drawBorder: true,
-                drawOnChartArea: false,
-              },
-            },
-          ],
-        },
-      },
-    }
-  },
-}
+                drawOnChartArea: false
+              }
+            }
+          ]
+        }
+      }
+    };
+  }
+};
 </script>
