@@ -25,7 +25,7 @@
                   type="text"
                   class="form-controls"
                   :class="{
-                    error: $v.payload.first_name.$error,
+                    error: $v.payload.first_name.$error
                   }"
                   name="name"
                   id="name"
@@ -43,7 +43,7 @@
                   type="text"
                   class="form-controls"
                   :class="{
-                    error: $v.payload.last_name.$error,
+                    error: $v.payload.last_name.$error
                   }"
                   name="name"
                   id="name"
@@ -64,7 +64,7 @@
                   type="email"
                   class="form-controls"
                   :class="{
-                    error: $v.payload.email.$error,
+                    error: $v.payload.email.$error
                   }"
                   name="email"
                   id="email"
@@ -83,7 +83,7 @@
                   mode="international"
                   class="form-controls"
                   :class="{
-                    error: $v.payload.phone.$error,
+                    error: $v.payload.phone.$error
                   }"
                   :inputOptions="options"
                   v-model="payload.phone"
@@ -143,7 +143,7 @@ import allRoles from "~/plugins/roles";
 export default {
   components: {
     close,
-    allRoles,
+    allRoles
   },
 
   data: () => ({
@@ -156,32 +156,32 @@ export default {
       last_name: "",
       email: "",
       phone: "",
-      role: "",
-    },
+      role: ""
+    }
   }),
 
   validations: {
     payload: {
       first_name: {
-        required,
+        required
       },
       last_name: {
-        required,
+        required
       },
       email: {
-        required,
+        required
       },
       phone: {
-        required,
+        required
       },
       role: {
-        required,
-      },
-    },
+        required
+      }
+    }
   },
 
   computed: {
-    ...mapGetters("authentication", ["user"]),
+    ...mapGetters("authentication", ["user"])
   },
 
   mounted() {
@@ -231,14 +231,14 @@ export default {
       screenLoading = this.$loading({
         lock: true,
         spinner: "el-icon-loading",
-        background: "#0000009b",
+        background: "#0000009b"
       });
     },
 
     closeModal() {
       this.$bvModal.hide("new-subadmin");
-    },
-  },
+    }
+  }
 };
 </script>
 

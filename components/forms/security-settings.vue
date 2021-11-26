@@ -253,7 +253,7 @@ export default {
     copy,
     check,
     Check,
-    Copy,
+    Copy
   },
 
   data: () => ({
@@ -272,36 +272,36 @@ export default {
     payload: {
       old_password: "",
       new_password: "",
-      confirm_newpassword: "",
-    },
+      confirm_newpassword: ""
+    }
   }),
 
   validations: {
     payload: {
       old_password: {
-        required,
+        required
       },
 
       new_password: {
         required,
-        minLength: minLength(6),
+        minLength: minLength(6)
       },
 
       confirm_newpassword: {
         required,
-        sameAs: sameAs((vm) => {
+        sameAs: sameAs(vm => {
           return vm.new_password;
-        }),
-      },
-    },
+        })
+      }
+    }
   },
 
   watch: {
-    toggleOn: function (val) {
+    toggleOn: function(val) {
       if (val) {
         this.$bvModal.show("addGoogleTwoFa");
       }
-    },
+    }
   },
 
   methods: {
@@ -333,8 +333,8 @@ export default {
         console.log("RESET PASSWORD::", err);
         this.$toast.error(err.response?.data?.message);
       }
-    },
-  },
+    }
+  }
 };
 </script>
 

@@ -11,7 +11,7 @@
               type="text"
               class="form-controls"
               :class="{
-                error: $v.payload.first_name.$error,
+                error: $v.payload.first_name.$error
               }"
               id="first-name"
               placeholder="John"
@@ -27,7 +27,7 @@
               type="text"
               class="form-controls"
               :class="{
-                error: $v.payload.last_name.$error,
+                error: $v.payload.last_name.$error
               }"
               id="last-name"
               placeholder="Doe"
@@ -46,7 +46,7 @@
               type="email"
               class="form-controls"
               :class="{
-                error: $v.payload.email.$error,
+                error: $v.payload.email.$error
               }"
               id="email"
               placeholder="example@gmail.com"
@@ -65,7 +65,7 @@
               type="text"
               class="form-controls"
               :class="{
-                error: $v.payload.store_name.$error,
+                error: $v.payload.store_name.$error
               }"
               id="store-name"
               placeholder=""
@@ -107,7 +107,7 @@
               type="text"
               class="form-controls"
               :class="{
-                error: $v.payload.address.$error,
+                error: $v.payload.address.$error
               }"
               id="store-address"
               placeholder=""
@@ -126,7 +126,7 @@
                 mode="international"
                 class="form-controls"
                 :class="{
-                  error: $v.payload.phone.$error,
+                  error: $v.payload.phone.$error
                 }"
                 :inputOptions="options"
                 v-model="payload.phone"
@@ -169,45 +169,45 @@ export default {
       store_name: "",
       location: {
         country: "",
-        coordinates: [],
+        coordinates: []
         // coordinates: [9.081999, 8.675277]
       },
       address: "",
-      phone: "",
-    },
+      phone: ""
+    }
   }),
 
   validations: {
     payload: {
       first_name: {
-        required,
+        required
       },
       last_name: {
-        required,
+        required
       },
       email: {
         required,
-        email,
+        email
       },
       store_name: {
-        required,
+        required
       },
       location: {
         country: {
-          required,
-        },
+          required
+        }
       },
       address: {
-        required,
+        required
       },
       phone: {
-        required,
-      },
-    },
+        required
+      }
+    }
   },
 
   computed: {
-    ...mapGetters("authentication", ["user"]),
+    ...mapGetters("authentication", ["user"])
   },
 
   mounted() {
@@ -288,14 +288,14 @@ export default {
       screenLoading = this.$loading({
         lock: true,
         spinner: "el-icon-loading",
-        background: "#0000009b",
+        background: "#0000009b"
       });
     },
 
     closeModal() {
       this.$bvModal.hide("add-vendor");
-    },
-  },
+    }
+  }
 };
 </script>
 

@@ -3,12 +3,20 @@
 @import url("https://fonts.googleapis.com/css2?family=Inconsolata:wght@200;300;400;500;600&display=swap");
 
 :root {
-  --primary-color: #17ce89;
   --primary-black: #222222;
-  --secondary-black: #7c8db5;
   --primary-blue: #25396f;
   --primary-gray: #7c8db5;
+
+  /* color */
+  --primary-color: #17ce89;
+  --secondary-black: #333333;
+  --input-field-bg-color: #f5f6f8;
+  --disabled-input-field: #6e737c;
+
+  /* text-colour */
+  --primary-text-color: #25396f;
   --input-text-color: #646a86;
+  --secondary-text-color: #7c8db5;
 }
 
 /* GENERAL STYLES */

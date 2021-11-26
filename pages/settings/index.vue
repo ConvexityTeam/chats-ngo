@@ -21,7 +21,6 @@
 import profileSettings from "~/components/forms/profile-settings";
 import securitySettings from "~/components/forms/security-settings";
 import manageAccount from "~/components/forms/manage-account";
-
 export default {
   layout: "dashboard",
 
