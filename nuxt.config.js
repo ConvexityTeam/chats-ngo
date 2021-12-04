@@ -50,7 +50,12 @@ export default {
   buildModules: [],
 
   // Modules (https://go.nuxtjs.dev/config-modules)
-  modules: ["bootstrap-vue/nuxt", "@nuxtjs/axios", "@nuxtjs/toast", '@nuxtjs/dotenv'],
+  modules: [
+    "bootstrap-vue/nuxt",
+    "@nuxtjs/axios",
+    "@nuxtjs/toast",
+    "@nuxtjs/dotenv"
+  ],
 
   // Axios module configuration (https://go.nuxtjs.dev/config-axios)
   axios: {

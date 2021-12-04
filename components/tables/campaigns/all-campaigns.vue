@@ -6,13 +6,6 @@
       <new-campaign @reload="fetchAllCampaigns" />
     </Modal>
 
-    <Modal id="fund-campaign" title="fund Campaign">
-      <fund-campaign
-        :campaign="SelectedCampaign"
-        @fundCampaign="fundCampaign"
-      />
-    </Modal>
-
     <div class="row pt-4 mt-2">
       <div class="col-lg-8">
         <div class="row">
@@ -111,13 +104,12 @@
                 <Button
                   :hasBorder="true"
                   :hasIcon="false"
-                  :disabled="campaign.is_funded"
-                  text="Fund
-                  campaign"
+                  :disabled="campaign.status == 'active'"
+                  text="Activate"
                   custom-styles=" border-radius: 5px !important;
                   height:33px; border: 1px solid #17ce89 !important; font-size:
                   0.875rem !important; padding:0px 15px !important"
-                  @click="handleModal(campaign)"
+                  @click="activateCampaign(campaign)"
                 />
               </div>
             </td>
@@ -143,15 +135,13 @@
 </template>
 
 <script>
-import fundCampaign from "~/components/forms/fund-campaign.vue";
 import newCampaign from "~/components/forms/new-campaign.vue";
 import { mapGetters } from "vuex";
 let screenLoading;
 
 export default {
   components: {
-    newCampaign,
-    fundCampaign
+    newCampaign
   },
 
   data() {
@@ -195,52 +185,26 @@ export default {
   },
 
   methods: {
-    handleModal(campaign) {
-      console.log("campaign::", campaign);
-      this.$bvModal.show("fund-campaign");
-      this.amount = campaign.budget;
-      this.SelectedCampaign = campaign;
-    },
-    async fundCampaign() {
+    async activateCampaign(campaign) {
       try {
         this.openScreen();
-        const response = await this.$axios.post("organisation/transfer/token", {
-          campaign: this.SelectedCampaign.id,
-          amount: this.SelectedCampaign.budget,
-          organisation_id: this.id
-        });
-        screenLoading.close();
-
-        console.log("FundResponse", response);
-
-        if (response.status == "success") {
-          this.$toast.success(response.message);
-          if (this.SelectedCampaign.status == "pending") {
-            return this.activateCampaign();
-          }
-        }
-      } catch (err) {
-        screenLoading.close();
-        this.$toast.error(err.response.data.message);
-        console.log({ err: err });
-      }
-    },
-    async activateCampaign() {
-      try {
         const response = await this.$axios.put("organisation/campaign", {
-          organisation_id: this.user.AssociatedOrganisations[0].OrganisationId,
-          campaignId: this.SelectedCampaign.id,
-          budget: this.SelectedCampaign.budget,
-          description: this.SelectedCampaign.description,
+          organisation_id: this.user?.AssociatedOrganisations[0]
+            ?.OrganisationId,
+          campaignId: campaign.id,
+          budget: campaign.budget,
+          description: campaign.description,
           status: "active"
         });
 
         if (response.status == "success") {
+          screenLoading.close();
           this.fetchAllCampaigns();
         }
 
         console.log("ACTIVATED", response);
       } catch (err) {
+        screenLoading.close();
         console.log(err);
       }
     },

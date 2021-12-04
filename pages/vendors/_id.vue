@@ -21,7 +21,7 @@
                   <p class="text">Total Recieved</p>
                   <h4 class="funds">
                     $
-                    {{ user.wallet ? user.wallet.balance : 0 | formatCurrency }}
+                    {{ vendor.total_received || 0 | formatCurrency }}
                   </h4>
                 </div>
               </div>
@@ -37,7 +37,7 @@
                   <p class="text">Total Spent</p>
                   <h4 class="funds">
                     $
-                    {{ user.wallet ? user.wallet.balance : 0 | formatCurrency }}
+                    {{ vendor.total_spent || 0 | formatCurrency }}
                   </h4>
                 </div>
               </div>
@@ -53,7 +53,10 @@
                   <p class="text">Total Remaining</p>
                   <h4 class="funds">
                     $
-                    {{ user.wallet ? user.wallet.balance : 0 | formatCurrency }}
+                    {{
+                      vendor.total_received - vendor.total_spent ||
+                        0 | formatCurrency
+                    }}
                   </h4>
                 </div>
               </div>

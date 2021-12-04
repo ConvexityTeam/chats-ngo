@@ -98,7 +98,10 @@
     </div>
   </div>
 </template>
+
 <script>
+
+import moment from "moment";
 import dot from "~/components/icons/dot";
 import { mapGetters } from "vuex";
 let screenLoading;
@@ -123,7 +126,7 @@ export default {
             .toLowerCase()
             .split(" ")
             .every(v =>
-              data.transaction.User.first_name.toLowerCase().includes(v)
+              data.transaction?.User?.first_name.toLowerCase().includes(v)
             );
         });
       } else {
@@ -136,7 +139,7 @@ export default {
         return {
           Reference: transaction.TransactionalId,
           Beneficiary:
-            transaction.User.first_name + " " + transaction.User.last_name,
+            transaction?.User?.first_name + " " + transaction?.User?.last_name,
           Amount: transaction.amount,
           Type: transaction.TransactionalType,
           Created: moment(transaction.createdAt).format("dddd, MMMM DD, YYYY")
@@ -146,7 +149,7 @@ export default {
   },
 
   mounted() {
-    this.id = this.user.AssociatedOrganisations[0].OrganisationId;
+    this.id = this.user?.AssociatedOrganisations[0]?.OrganisationId;
     this.getTransactions();
   },
 

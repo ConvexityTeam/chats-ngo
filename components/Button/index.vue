@@ -106,4 +106,8 @@ button:disabled {
   box-shadow: 0px 2px 4px rgba(23, 206, 137, 0.07);
   cursor: not-allowed;
 }
+
+span {
+  font-size: 0.875rem;
+}
 </style>
