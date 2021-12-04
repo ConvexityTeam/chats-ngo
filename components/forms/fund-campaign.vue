@@ -93,7 +93,7 @@ export default {
   computed: {
     share() {
       const result =
-        this.campaign.budget / this.campaign.beneficiaries_count || 0;
+        this.campaign?.budget / this.campaign?.beneficiaries_count || 0;
 
       if (result == Infinity) {
         return 0;

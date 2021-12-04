@@ -7,6 +7,10 @@
         <funding />
       </Modal>
 
+      <Modal id="fund-campaign" title="fund Campaign">
+        <fund-campaign :campaign="details" @fundCampaign="fundCampaign" />
+      </Modal>
+
       <el-drawer
         :visible.sync="drawer"
         size="75%"
@@ -42,6 +46,14 @@
         </div>
 
         <div class=" d-flex ml-auto mx-3">
+          <div v-if="!details.is_funded" class="mr-3">
+            <Button
+              text="Fund Campaign"
+              :has-icon="false"
+              custom-styles="height:50px"
+              @click="$bvModal.show('fund-campaign')"
+            />
+          </div>
           <div>
             <Button
               text="Add Products"
@@ -149,6 +161,7 @@ import campaignDetails from "~/components/tables/campaigns/campaign-details";
 import banner from "~/components/generic/banner.vue";
 import funding from "~/components/forms/funding.vue";
 import addProduct from "~/components/forms/add-product.vue";
+import fundCampaign from "~/components/forms/fund-campaign.vue";
 
 let screenLoading;
 export default {
@@ -157,7 +170,7 @@ export default {
     loading: false,
     orgId: "",
     searchQuery: "",
-
+    SelectedCampaign: {},
     complaints: [],
     beneficiaries: [],
     details: {},
@@ -174,7 +187,8 @@ export default {
     campaignDetails,
     banner,
     funding,
-    addProduct
+    addProduct,
+    fundCampaign
   },
 
   computed: {
@@ -194,13 +208,34 @@ export default {
   },
 
   mounted() {
-    this.orgId = this.user.AssociatedOrganisations[0].OrganisationId;
+    this.orgId = this.user?.AssociatedOrganisations[0]?.OrganisationId;
     this.getDetails();
   },
 
   methods: {
     showModal() {
       this.$bvModal.show("funding");
+    },
+
+    async fundCampaign() {
+      try {
+        this.openScreen();
+
+        const response = await this.$axios.post(
+          `organisations/${this.orgId}/campaigns/${this.details.id}/fund`
+        );
+
+        screenLoading.close();
+        console.log("FundResponse", response);
+
+        if (response.status == "success") {
+          this.getDetails();
+        }
+      } catch (err) {
+        screenLoading.close();
+        this.$toast.error(err.response.data.message);
+        console.log({ err: err });
+      }
     },
     async getDetails() {
       try {

@@ -72,7 +72,12 @@
 
             <td>{{ benefactor.phone }}</td>
             <td>{{ benefactor.email }}</td>
-            <td>{{ benefactor.dob | formatDate }}</td>
+            <td>
+              <span v-if="benefactor.dob">
+                {{ benefactor.dob || "-" | formatDate }}
+              </span>
+              <span v-else>-</span>
+            </td>
 
             <td>
               <div>
@@ -122,7 +127,7 @@ export default {
           return this.searchQuery
             .toLowerCase()
             .split(" ")
-            .every(v => benefactor.first_name.toLowerCase().includes(v));
+            .every(v => benefactor?.first_name.toLowerCase().includes(v));
         });
       } else {
         return this.beneficiaries;
@@ -145,7 +150,7 @@ export default {
   },
 
   mounted() {
-    this.id = this.user.AssociatedOrganisations[0].OrganisationId;
+    this.id = this.user?.AssociatedOrganisations[0]?.OrganisationId;
     this.getallBeneficiaries(this.id);
     console.log("HEREs", this.allBeneficiaries);
   },
