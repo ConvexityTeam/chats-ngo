@@ -109,7 +109,7 @@
                   custom-styles=" border-radius: 5px !important;
                   height:33px; border: 1px solid #17ce89 !important; font-size:
                   0.875rem !important; padding:0px 15px !important"
-                  @click="activateCampaign"
+                  @click="activateCampaign(campaign)"
                 />
               </div>
             </td>
@@ -185,23 +185,26 @@ export default {
   },
 
   methods: {
-    async activateCampaign() {
+    async activateCampaign(campaign) {
       try {
+        this.openScreen();
         const response = await this.$axios.put("organisation/campaign", {
           organisation_id: this.user?.AssociatedOrganisations[0]
             ?.OrganisationId,
-          campaignId: this.SelectedCampaign?.id,
-          budget: this.SelectedCampaign?.budget,
-          description: this.SelectedCampaign?.description,
+          campaignId: campaign.id,
+          budget: campaign.budget,
+          description: campaign.description,
           status: "active"
         });
 
         if (response.status == "success") {
+          screenLoading.close();
           this.fetchAllCampaigns();
         }
 
         console.log("ACTIVATED", response);
       } catch (err) {
+        screenLoading.close();
         console.log(err);
       }
     },
