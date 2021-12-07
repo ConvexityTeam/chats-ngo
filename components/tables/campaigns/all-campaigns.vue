@@ -179,7 +179,7 @@ export default {
   },
 
   mounted() {
-    this.id = this.user.AssociatedOrganisations[0].OrganisationId;
+    this.id = this.user?.AssociatedOrganisations[0]?.OrganisationId;
     this.fetchAllCampaigns();
     console.log("or:::", this.user);
   },
@@ -188,14 +188,13 @@ export default {
     async activateCampaign(campaign) {
       try {
         this.openScreen();
-        const response = await this.$axios.put("organisation/campaign", {
-          organisation_id: this.user?.AssociatedOrganisations[0]
-            ?.OrganisationId,
-          campaignId: campaign.id,
-          budget: campaign.budget,
-          description: campaign.description,
-          status: "active"
-        });
+
+        const response = await this.$axios.put(
+          `organisations/${this.id}/campaigns/${campaign.id}`,
+          {
+            status: "active"
+          }
+        );
 
         if (response.status == "success") {
           screenLoading.close();
