@@ -3,7 +3,10 @@
     <div v-if="loading"></div>
     <div v-else>
       <Modal id="beneficiary-complaint" title="Beneficiary complaint">
-        <beneficiary-complaint :complaint="activeComplaint" />
+        <beneficiary-complaint
+          :complaint="activeComplaint"
+          :campaignName="campaignName"
+        />
       </Modal>
 
       <table v-if="complaints.length" class="table table-borderless">
@@ -18,8 +21,18 @@
         </thead>
         <tbody>
           <tr v-for="complaint in complaints" :key="complaint.id">
-            <td>{{ complaint.BeneficiaryId }}</td>
-            <td>{{ complaint.BeneficiaryId }}</td>
+            <td>
+              {{
+                complaint.Beneficiary
+                  ? complaint.Beneficiary.first_name +
+                    " " +
+                    complaint.Beneficiary.last_name
+                  : ""
+              }}
+            </td>
+            <td>
+              {{ complaint.Beneficiary ? complaint.Beneficiary.email : "" }}
+            </td>
             <td>
               <div
                 class="status "
@@ -58,7 +71,13 @@ import beneficiaryComplaint from "~/components/forms/beneficiary-complaint.vue";
 export default {
   props: {
     complaints: {
-      type: Array
+      type: Array,
+      default: () => []
+    },
+
+    campaignName: {
+      type: String,
+      default: ""
     },
 
     loading: {

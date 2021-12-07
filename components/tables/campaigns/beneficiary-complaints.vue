@@ -13,7 +13,11 @@
 
           <!-- All complaints tab here -->
           <b-tab title="All" active @click="getComplaints">
-            <all-complaints :complaints="complaints" :loading="loading" />
+            <all-complaints
+              :complaints="complaints"
+              :loading="loading"
+              :campaignName="campaignName"
+            />
           </b-tab>
 
           <!-- Resolved complaints here -->
@@ -43,6 +47,10 @@ import { mapGetters } from "vuex";
 export default {
   props: {
     campaignId: {
+      type: String,
+      default: ""
+    },
+    campaignName: {
       type: String,
       default: ""
     }

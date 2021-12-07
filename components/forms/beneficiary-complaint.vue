@@ -7,7 +7,7 @@
         type="text"
         class="form-controls "
         id="campaign-name"
-        value="Feed The poor"
+        :value="campaignName"
         disabled
       />
     </div>
@@ -45,12 +45,17 @@ export default {
       type: Object,
       required: true,
       default: () => {}
+    },
+
+    campaignName: {
+      type: String,
+      default: ""
     }
   },
 
   computed: {
     report() {
-      return this.complaint.report;
+      return this.complaint?.report;
     }
   },
 
