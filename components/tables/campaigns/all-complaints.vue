@@ -1,11 +1,12 @@
 <template>
-  <div>
-    <div v-if="loading"></div>
+  <div :class="{ 'pb-3': loading }">
+    <div v-if="loading" class="loader mt-3"></div>
     <div v-else>
       <Modal id="beneficiary-complaint" title="Beneficiary complaint">
         <beneficiary-complaint
           :complaint="activeComplaint"
           :campaignName="campaignName"
+          @resolved="$emit('resolved')"
         />
       </Modal>
 
@@ -30,7 +31,7 @@
                   : ""
               }}
             </td>
-            <td>
+            <td class="email">
               {{ complaint.Beneficiary ? complaint.Beneficiary.email : "" }}
             </td>
             <td>
@@ -89,7 +90,7 @@ export default {
   components: { beneficiaryComplaint },
 
   data: () => ({
-    activeComplaint: {}
+    activeComplaint: null
   }),
 
   methods: {
@@ -100,3 +101,11 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+.email {
+  display: block;
+  word-wrap: break-word;
+  max-width: 12rem;
+}
+</style>

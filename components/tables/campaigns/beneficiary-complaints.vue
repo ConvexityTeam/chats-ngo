@@ -12,24 +12,32 @@
           <hr class="divider" />
 
           <!-- All complaints tab here -->
-          <b-tab title="All" active @click="getComplaints">
+          <b-tab title="All" active>
             <all-complaints
               :complaints="complaints"
               :loading="loading"
               :campaignName="campaignName"
+              @resolved="getComplaints"
             />
           </b-tab>
 
           <!-- Resolved complaints here -->
-          <b-tab title="Resolved" @click="getResolvedComplaints">
-            <resolved-complaints :complaints="resolved" :loading="loading" />
+          <b-tab title="Resolved">
+            <resolved-complaints
+              :complaints="resolved"
+              :loading="loading"
+              :campaignName="campaignName"
+              @resolved="getComplaints"
+            />
           </b-tab>
 
           <!-- Unresolved Complaints here -->
-          <b-tab title="Unresolved" @click="getUnresolvedComplaints">
+          <b-tab title="Unresolved">
             <unresolved-complaints
               :complaints="unresolved"
               :loading="loading"
+              :campaignName="campaignName"
+              @resolved="getComplaints"
             />
           </b-tab>
         </b-tabs>
@@ -66,30 +74,31 @@ export default {
     return {
       loading: false,
       orgId: "",
-      key: 0,
-
       complaints: [],
-      loading: false,
-      resolved: [],
-      unresolved: []
+      loading: false
     };
   },
 
   computed: {
-    ...mapGetters("authentication", ["user"])
+    ...mapGetters("authentication", ["user"]),
+    resolved() {
+      return this.complaints.filter(
+        complaint => complaint.status === "resolved"
+      );
+    },
+    unresolved() {
+      return this.complaints.filter(
+        complaint => complaint.status === "unresolved"
+      );
+    }
   },
 
   mounted() {
-    this.orgId = this.user.AssociatedOrganisations[0].OrganisationId;
+    this.orgId = this.user?.AssociatedOrganisations[0]?.OrganisationId;
     this.getComplaints();
-    this.getUnresolvedComplaints();
-    this.getResolvedComplaints();
   },
 
   methods: {
-    check() {
-      console.log("chek");
-    },
     async getComplaints() {
       try {
         this.loading = true;
@@ -102,47 +111,7 @@ export default {
         console.log("ALlcomplaints::::", response);
         if (response.status == "success") {
           this.loading = false;
-          this.complaints = response.data.Complaints;
-        }
-      } catch (err) {
-        this.loading = false;
-        console.log(err);
-      }
-    },
-
-    async getResolvedComplaints() {
-      try {
-        this.loading = true;
-
-        const response = await this.$axios.get(
-          `/organisations/${this.orgId}/campaigns/${+this
-            .campaignId}/complaints?status=resolved&page=1`
-        );
-
-        console.log("Resolvedcomplaints::::", response);
-        if (response.status == "success") {
-          this.resolved = response.data.Complaints;
-          this.loading = false;
-        }
-      } catch (err) {
-        this.loading = false;
-        console.log(err);
-      }
-    },
-
-    async getUnresolvedComplaints() {
-      try {
-        this.loading = true;
-
-        const response = await this.$axios.get(
-          `/organisations/${this.orgId}/campaigns/${+this
-            .campaignId}/complaints?status=unresolved&page=1`
-        );
-
-        console.log("unResolvedcomplaints::::", response);
-        if (response.status == "success") {
-          this.loading = false;
-          this.unresolved = response.data.Complaints;
+          this.complaints = response.data?.Complaints;
         }
       } catch (err) {
         this.loading = false;
