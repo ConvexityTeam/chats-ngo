@@ -80,7 +80,7 @@
 
             <td>$ {{ campaign.budget | formatCurrency }}</td>
 
-            <td>$ {{ 0 | formatCurrency }}</td>
+            <td>$ {{ campaign.amount_disbursed | formatCurrency }}</td>
 
             <td>
               {{ campaign.createdAt | formatDateOnly }}
