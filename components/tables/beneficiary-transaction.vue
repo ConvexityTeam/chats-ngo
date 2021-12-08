@@ -59,28 +59,30 @@
         </thead>
         <tbody>
           <tr v-for="(transaction, index) in resultQuery" :key="index">
-            <td>{{ transaction.TransactionalId }}</td>
-            <td>${{ transaction.amount }}</td>
+            <td>{{ transaction.reference }}</td>
+            <td>${{ transaction.amount | formatCurrency }}</td>
             <td class="">
               <div
                 class="status px-1"
                 :class="{
-                  approval: transaction.TransactionalType == 'approval',
-                  pending: transaction.TransactionalType == 'spent',
-                  withdrawal: transaction.TransactionalType == 'withdrawal',
-                  progress: transaction.TransactionalType == 'transfer'
+                  approval: transaction.transaction_type == 'approval',
+                  pending: transaction.transaction_type == 'spent',
+                  withdrawal: transaction.transaction_type == 'withdrawal',
+                  progress: transaction.transaction_type == 'transfer'
                 }"
               >
-                {{ transaction.TransactionalType | capitalize }}
+                {{ transaction.transaction_type | capitalize }}
               </div>
             </td>
             <td>
               {{
-                transaction.User
-                  ? transaction.User.first_name +
+                transaction &&
+                transaction.Beneficiary &&
+                transaction.Beneficiary
+                  ? transaction.Beneficiary.first_name +
                     " " +
-                    transaction.User.last_name
-                  : ""
+                    transaction.Beneficiary.last_name
+                  : "-"
               }}
             </td>
             <td>{{ transaction.createdAt | formatDateOnly }}</td>
@@ -100,7 +102,6 @@
 </template>
 
 <script>
-
 import moment from "moment";
 import dot from "~/components/icons/dot";
 import { mapGetters } from "vuex";
@@ -125,9 +126,7 @@ export default {
           return this.searchQuery
             .toLowerCase()
             .split(" ")
-            .every(v =>
-              data.transaction?.User?.first_name.toLowerCase().includes(v)
-            );
+            .every(v => data.reference.toLowerCase().includes(v));
         });
       } else {
         return this.transactions;
@@ -137,11 +136,14 @@ export default {
       const data = this.transactions || [];
       return data.map(transaction => {
         return {
-          Reference: transaction.TransactionalId,
-          Beneficiary:
-            transaction?.User?.first_name + " " + transaction?.User?.last_name,
+          Reference: transaction.reference,
           Amount: transaction.amount,
-          Type: transaction.TransactionalType,
+          Beneficiary:
+            transaction?.Beneficiary?.first_name +
+            " " +
+            transaction?.Beneficiary?.last_name,
+
+          Type: transaction.transaction_type,
           Created: moment(transaction.createdAt).format("dddd, MMMM DD, YYYY")
         };
       });
