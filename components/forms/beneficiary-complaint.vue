@@ -7,7 +7,7 @@
         type="text"
         class="form-controls "
         id="campaign-name"
-        value="Feed The poor"
+        :value="campaignName || ''"
         disabled
       />
     </div>
@@ -17,7 +17,7 @@
       <label>Complaint</label>
       <textarea
         class="form-controls"
-        v-model="report"
+        :value="report"
         rows="7"
         disabled
         cols="30"
@@ -25,56 +25,85 @@
       </textarea>
     </div>
 
-    <div class="d-flex pt-2 pb-3 button-holder">
+    <div
+      v-if="complaint.status != 'resolved'"
+      class="d-flex pt-2 pb-3 button-holder"
+    >
       <Button
         type="submit"
         :has-icon="false"
         text="Resolve complaint"
         custom-styles="height:41px; border-radius: 5px; "
-        @click="$emit('resolveComplaint')"
+        @click="resolveComplaint"
+        :loading="loading"
+        :disabled="loading"
       />
     </div>
   </form>
 </template>
 
 <script>
+import { mapGetters } from "vuex";
 let screenLoading;
+
 export default {
   props: {
     complaint: {
       type: Object,
       required: true,
       default: () => {}
+    },
+
+    campaignName: {
+      type: String,
+      default: ""
     }
   },
 
+  data: () => ({
+    orgId: "",
+    loading: false
+  }),
+
   computed: {
+    ...mapGetters("authentication", ["user"]),
+
     report() {
-      return this.complaint.report;
+      return this.complaint.report || "";
     }
   },
 
   mounted() {
+    this.orgId = this.user?.AssociatedOrganisations[0]?.OrganisationId;
     console.log("SINGLE COMPLAINT::", this.complaint);
   },
 
   methods: {
-    closeModal() {
-      this.$bvModal.hide("beneficiary-complaint");
-    },
     async resolveComplaint() {
       try {
-        this.openScreen();
-        const response = await this.$axios.put(
-          "/beneficiaries/complaint/resolve",
-          this.complaint.id
+        this.loading = true;
+        const response = await this.$axios.patch(
+          `/organisations/${this.orgId}/campaigns/${this.$route.params.id}/complaints/${this.complaint.id}/resolve`
         );
 
-        console.log("Resolved::"), response;
+        if (response.status == "success") {
+          this.$emit("resolved");
+          this.loading = false;
+          this.$toast.success(response.message);
+          this.closeModals();
+        }
+
+        console.log("Resolved::", response);
       } catch (err) {
-        screenLoading.close();
+        this.loading = false;
         console.log(err);
       }
+    },
+
+    closeModals() {
+      this.$bvModal.hide("beneficiary-complaint");
+      this.$bvModal.hide("beneficiary-complaint-unresolved");
+      this.$bvModal.hide("beneficiary-complaint-resolved");
     },
 
     openScreen() {

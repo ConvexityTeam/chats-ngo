@@ -198,6 +198,7 @@ export default {
 
         if (response.status == "success") {
           screenLoading.close();
+          this.$toast.success(response.message);
           this.fetchAllCampaigns();
         }
 

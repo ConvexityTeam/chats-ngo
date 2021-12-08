@@ -7,7 +7,7 @@
 
       <div class="ml-3">
         <p class="pt-2">
-          This campaign was paused on {{ date | formatDate }}.You may want to
+          This campaign was paused on {{ date | formatDate }}. You may want to
           <br />
         </p>
 

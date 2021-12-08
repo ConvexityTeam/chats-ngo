@@ -215,11 +215,6 @@ export default {
         const response = await this.$axios.put(
           `organisations/${this.orgId}/campaigns/${this.$route.params.id}`,
           {
-            organisation_id: this.user.AssociatedOrganisations[0]
-              .OrganisationId,
-            campaignId: this.details.id,
-            budget: this.details.budget,
-            description: this.details.description,
             status: this.campaignStatus
           }
         );

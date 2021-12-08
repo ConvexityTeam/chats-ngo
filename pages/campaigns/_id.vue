@@ -118,7 +118,7 @@
                           :has-border="true"
                           custom-styles="border: 1px solid #17CE89 !important; border-radius: 5px !important; font-size: 0.875rem !important; height: 33px !important"
                           @click="
-                            $router.push(`/beneficiaries/${benefactor.UserId}`)
+                            $router.push(`/beneficiaries/${benefactor.id}`)
                           "
                         />
                       </div>
@@ -135,6 +135,7 @@
           <div class="mt-4 pt-2">
             <beneficiary-complaints
               :campaignId="$router.history.current.params.id"
+              :campaignName="details.title"
             />
           </div>
         </div>
@@ -252,8 +253,8 @@ export default {
         if (response.status == "success") {
           screenLoading.close();
           this.details = response.data;
-          this.beneficiaries = response.data.Beneficiaries;
-          this.location = JSON.parse(response.data.location?.country);
+          this.beneficiaries = response.data?.Beneficiaries;
+          this.location = JSON.parse(response.data?.location?.country);
           console.log("loc::", this.location);
           console.log("here", response.data);
         }

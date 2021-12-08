@@ -1,9 +1,13 @@
 <template>
-  <div>
-    <div v-if="loading"></div>
+  <div :class="{ 'pb-3': loading }">
+    <div v-if="loading" class="loader mt-3"></div>
     <div v-else>
       <Modal id="beneficiary-complaint" title="Beneficiary complaint">
-        <beneficiary-complaint :complaint="activeComplaint" />
+        <beneficiary-complaint
+          :complaint="activeComplaint"
+          :campaignName="campaignName"
+          @resolved="$emit('resolved')"
+        />
       </Modal>
 
       <table v-if="complaints.length" class="table table-borderless">
@@ -18,8 +22,18 @@
         </thead>
         <tbody>
           <tr v-for="complaint in complaints" :key="complaint.id">
-            <td>{{ complaint.BeneficiaryId }}</td>
-            <td>{{ complaint.BeneficiaryId }}</td>
+            <td>
+              {{
+                complaint.Beneficiary
+                  ? complaint.Beneficiary.first_name +
+                    " " +
+                    complaint.Beneficiary.last_name
+                  : ""
+              }}
+            </td>
+            <td class="email">
+              {{ complaint.Beneficiary ? complaint.Beneficiary.email : "" }}
+            </td>
             <td>
               <div
                 class="status "
@@ -58,7 +72,13 @@ import beneficiaryComplaint from "~/components/forms/beneficiary-complaint.vue";
 export default {
   props: {
     complaints: {
-      type: Array
+      type: Array,
+      default: () => []
+    },
+
+    campaignName: {
+      type: String,
+      default: ""
     },
 
     loading: {
@@ -70,7 +90,7 @@ export default {
   components: { beneficiaryComplaint },
 
   data: () => ({
-    activeComplaint: {}
+    activeComplaint: null
   }),
 
   methods: {
@@ -81,3 +101,11 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+.email {
+  display: block;
+  word-wrap: break-word;
+  max-width: 12rem;
+}
+</style>

@@ -102,6 +102,7 @@ button:focus {
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 0 10px;
 }
 
 .status.pending {
@@ -128,6 +129,8 @@ button:focus {
   background: #CFF5F0;
   color: #24B29F;
 }
+
+
 
 /* DRAWER STYLES HERE */
 
