@@ -149,7 +149,7 @@ export default {
 
   mounted() {
     console.log("ALL VENDOE:::", this.allVendors);
-    this.getallVendors(this.user.AssociatedOrganisations[0].OrganisationId);
+    this.getallVendors(this.user?.AssociatedOrganisations[0]?.OrganisationId);
   },
 
   methods: {

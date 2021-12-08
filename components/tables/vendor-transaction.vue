@@ -54,7 +54,7 @@
         <h4>Transactions</h4>
         <div class="ml-auto"></div>
       </div>
-      <table class="table table-borderless">
+      <table class="table table-borderless" v-if="resultQuery.length">
         <thead>
           <tr>
             <th scope="col">Reference ID</th>
@@ -66,11 +66,29 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="i in 3" :key="i">
-            <td>12345678910</td>
-            <td>$123,476,000</td>
-            <td>Dangote</td>
-            <td>Funke</td>
+          <tr v-for="(transaction, index) in resultQuery" :key="index">
+            <td>{{ transaction.reference }}</td>
+            <td>{{ transaction.amount | formatCurrency }}</td>
+            <td>
+              {{
+                transaction && transaction.Vendor && transaction.Vendor
+                  ? transaction.Vendor.first_name +
+                    " " +
+                    transaction.Vendor.last_name
+                  : "-"
+              }}
+            </td>
+            <td>
+              {{
+                transaction &&
+                transaction.Beneficiary &&
+                transaction.Beneficiary
+                  ? transaction.Beneficiary.first_name +
+                    " " +
+                    transaction.Beneficiary.last_name
+                  : "-"
+              }}
+            </td>
             <td>12 Dec, 2020</td>
             <!-- <td>
               <button type="button" class="more-btn"><dot /></button>
@@ -78,13 +96,14 @@
           </tr>
         </tbody>
       </table>
-      <!-- <div v-else-if="loading" class=" text-center"></div>
-      <h3 v-else class="text-center no-record">NO RECORD FOUND</h3> -->
+      <div v-else-if="loading" class="loader text-center"></div>
+      <h3 v-else class="text-center no-record">NO RECORD FOUND</h3>
     </div>
   </div>
 </template>
 
 <script>
+import moment from "moment";
 import dot from "~/components/icons/dot";
 import addVendor from "~/components/forms/add-vendor.vue";
 
@@ -102,35 +121,43 @@ export default {
   },
 
   data: () => ({
-    searchQuery: ""
+    searchQuery: "",
+    loading: false
   }),
 
   computed: {
     resultQuery() {
-      // if (this.searchQuery) {
-      //   return this.beneficiaries.filter(benefactor => {
-      //     return this.searchQuery
-      //       .toLowerCase()
-      //       .split(" ")
-      //       .every(v => benefactor.first_name.toLowerCase().includes(v));
-      //   });
-      // } else {
-      //   return this.beneficiaries;
-      // }
+      if (this.searchQuery) {
+        return this.transactions.filter(transaction => {
+          return this.searchQuery
+            .toLowerCase()
+            .split(" ")
+            .every(v => transaction.reference.toLowerCase().includes(v));
+        });
+      } else {
+        return this.transactions;
+      }
     },
 
     computedData() {
-      // return this.beneficiaries.map(benefactor => {
-      //   return {
-      //     Name: benefactor.first_name + " " + benefactor.last_name,
-      //     Phone_Number: benefactor.phone,
-      //     Email_Address: benefactor.email,
-      //     location: benefactor.location,
-      //     Gender: benefactor.gender,
-      //     Marital_Status: benefactor.marital_status,
-      //     Created: moment(benefactor.createdAt).format("dddd, MMMM DD, YYYY")
-      //   };
-      // });
+      const data = this.transactions || [];
+      return data.map(transaction => {
+        return {
+          Reference: transaction.reference,
+          Amount: transaction.amount,
+          Vendor:
+            transaction?.Vendor?.first_name +
+            " " +
+            transaction?.Vendor?.last_name,
+          Beneficiary:
+            transaction?.Beneficiary?.first_name +
+            " " +
+            transaction?.Beneficiary?.last_name,
+
+          Type: transaction.transaction_type,
+          Created: moment(transaction.createdAt).format("dddd, MMMM DD, YYYY")
+        };
+      });
     }
   },
 
