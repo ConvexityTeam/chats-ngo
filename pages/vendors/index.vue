@@ -10,7 +10,7 @@
             <div class="ml-3">
               <p class="text">Vendors</p>
               <h4 class="funds">
-                {{ count || 0 }}
+                {{ vendors.length || 0 }}
               </h4>
             </div>
             <div class="ml-auto d-flex align-items-end">
@@ -88,7 +88,7 @@
 <script>
 import vendorTransaction from "~/components/tables/vendor-transaction";
 import totalBalance from "~/components/icons/total-balance.vue";
-import { mapGetters } from "vuex";
+import { mapGetters, mapActions } from "vuex";
 let screenLoading;
 
 export default {
@@ -103,8 +103,21 @@ export default {
     id: "",
     count: "",
     summary: {},
-    transactions: []
+    transactions: [],
+    vendors: []
   }),
+
+  async fetch() {
+    this.vendors = await this.$axios.$get(
+      `organisations/${this.user?.AssociatedOrganisations[0]?.OrganisationId}/vendors`
+    );
+    console.log("VEndors:", this.vendors);
+    this.transactions = await this.$axios.$get(
+      `organisations/${this.id}/vendors/transactions`
+    );
+
+    console.log("Transactions", this.transactions);
+  },
 
   computed: {
     ...mapGetters("authentication", ["user"])
@@ -129,7 +142,6 @@ export default {
           screenLoading.close();
           this.summary = response.data?.today_stat;
           this.count = response.data?.vendors_count;
-          this.transactions = response.data?.Transactions;
         }
       } catch (err) {
         screenLoading.close();
