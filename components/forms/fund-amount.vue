@@ -1,5 +1,5 @@
 <template>
-  <form @submit.prevent="sendAmount" class="mt-4 px-3">
+  <form @submit.prevent="fundWallet" class="mt-4 px-3">
     <!-- Name field  here -->
     <div class="form-group">
       <label for="amount">Amount to fund</label>
@@ -100,7 +100,6 @@ export default {
           this.$bvModal.hide("fund-amount");
           this.$emit("funded");
         }
-
         console.log("DEPOSIT RESPONSE", response);
       } catch (err) {
         this.$toast.error(err.response?.data?.message);
