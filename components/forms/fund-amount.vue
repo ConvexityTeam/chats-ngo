@@ -27,6 +27,8 @@
         :has-icon="false"
         :text="text"
         custom-styles="height:41px; border-radius: 5px; width: 100%"
+        :loading="loading"
+        :disabled="loading"
       />
     </div>
   </form>
@@ -39,6 +41,12 @@ import tokenOutlets from "~/components/generic/token-outlets.vue";
 export default {
   props: {
     fundAmount: {
+      type: [Number, String],
+      default: ""
+    },
+
+    orgId: {
+      type: [Number, String],
       required: true,
       default: ""
     },
@@ -58,6 +66,7 @@ export default {
 
   data() {
     return {
+      loading: false,
       amount: ""
     };
   },
@@ -68,22 +77,36 @@ export default {
     }
   },
 
-  mounted() {
-    this.amount = this.fundAmount;
-  },
-
   methods: {
-    closeModal() {
-      this.$bvModal.hide("fund-amount");
-    },
+    async sendAmount() {
+      try {
+        this.loading = true;
+        this.$v.$touch();
+        if (this.$v.amount.$error === true || this.amount == 0) {
+          this.loading = false;
+          return;
+        }
 
-    sendAmount() {
-      this.$v.$touch();
-      if (this.$v.amount.$error === true || this.amount == 0) {
-        return;
+        const response = await this.$axios.post(
+          `organisations/${this.orgId}/wallets/paystack-deposit`,
+          {
+            amount: this.amount,
+            currency: "NGN"
+          }
+        );
+
+        if (response.status === "success") {
+          this.$toast.success(response.message);
+          this.$bvModal.hide("fund-amount");
+          this.$emit("funded");
+        }
+
+        console.log("DEPOSIT RESPONSE", response);
+      } catch (err) {
+        this.$toast.error(err.response?.data?.message);
+        this.loading = false;
+        console.log("FUND ERR:::");
       }
-      this.$emit("fundWallet", { amount: this.amount });
-      this.closeModal();
     }
   }
 };

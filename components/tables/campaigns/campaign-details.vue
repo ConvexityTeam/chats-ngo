@@ -180,12 +180,13 @@ export default {
   },
 
   mounted() {
-    this.orgId = this.user.AssociatedOrganisations[0].OrganisationId;
+    this.orgId = this.user?.AssociatedOrganisations[0]?.OrganisationId;
   },
 
   methods: {
     handleModal(value) {
-      if (value == "Pause" || value == "Delete") {
+      const stats = ["Pause", "Delete"];
+      if (stats.includes(value)) {
         this.status = value;
         this.toggleModal(true);
         return;
