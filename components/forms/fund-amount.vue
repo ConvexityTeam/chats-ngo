@@ -100,7 +100,6 @@ export default {
           this.$bvModal.hide("fund-amount");
           this.$emit("funded");
         }
-
         console.log("DEPOSIT RESPONSE", response);
       } catch (err) {
         this.$toast.error(err.response?.data?.message);
