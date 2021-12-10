@@ -18,7 +18,6 @@
           </div>
 
           <!-- Campaign Expenses here -->
-
           <div class="col-lg-4">
             <div class="card__holder d-flex  p-3">
               <div>
@@ -86,7 +85,7 @@ export default {
   },
 
   mounted() {
-    this.organisationId = this.user.AssociatedOrganisations[0].Organisation.id;
+    this.organisationId = this.user?.AssociatedOrganisations[0]?.Organisation?.id;
     this.getWallet();
     this.getFinancials();
   },

@@ -2,14 +2,10 @@
   <div>
     <!-- <fund-amount @sentAmount="payViaService" /> -->
     <Modal id="fund-amount" title="fund wallet">
-      <fund-amount
-        :fundAmount="amount"
-        @fundWallet="fundWallet"
-        :showCrypto="false"
-      />
+      <fund-amount @funded="getWallet" :orgId="orgId" :showCrypto="false" />
     </Modal>
 
-    <fundBantu @fundAccount="fundAccount" />
+    <!-- <fundBantu @fundAccount="fundAccount" /> -->
 
     <div class="holder px-3 py-4">
       <h4 class="header">Fund Wallet</h4>
@@ -36,19 +32,6 @@
               @click="$bvModal.show('fund-amount')"
             />
           </div>
-
-          <paystack
-            id="paystack"
-            class="d-none"
-            :amount="amount * 100"
-            :email="paystackData.email"
-            :paystackkey="paystackData.key"
-            :reference="reference"
-            :callback="processPayment"
-            :close="close"
-            :channels="channels"
-          >
-          </paystack>
         </div>
 
         <!-- Pay with Crypto here -->
@@ -163,6 +146,9 @@ import { mapGetters } from "vuex";
 import fundAmount from "~/components/forms/fund-amount.vue";
 import fundBantu from "~/components/modals/bantu-amount.vue";
 import paystack from "vue-paystack";
+
+let screenLoading;
+
 export default {
   components: {
     fundAmount,
@@ -172,34 +158,13 @@ export default {
 
   data() {
     return {
-      amount: 0,
       wallet: {},
-      organisationId: ""
+      orgId: ""
     };
   },
 
   computed: {
     ...mapGetters("authentication", ["user"]),
-
-    channels() {
-      return ["card", "bank", "ussd"];
-    },
-
-    paystackData() {
-      return {
-        email: this.user.email,
-        key: process.env.PAYSTACK_KEY
-      };
-    },
-
-    reference() {
-      let text = "";
-      let possible =
-        "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-      for (let i = 0; i < 10; i++)
-        text += possible.charAt(Math.floor(Math.random() * possible.length));
-      return text;
-    },
 
     custom() {
       return "border-radius:5px !important; height: 41px; font-size: 0.875rem; ";
@@ -210,62 +175,27 @@ export default {
     this.loadData();
     this.getWallet();
     console.log("Wallet::", this.wallet);
-
     console.log("KEY", this.reference);
   },
 
   methods: {
-    fundWallet(data) {
-      this.amount = data.amount;
-      if (data.amount != 0) {
-        return document.getElementById("paystack").click();
-      }
-    },
-
-    processPayment() {
-      console.log("Payment recieved");
-      this.getWallet();
-    },
-
-    close() {
-      console.log("You closed checkout page");
-    },
-
-    async fundAccount(amount) {
-      try {
-        const response = await this.$axios.post("/organisation/bantu/webhook", {
-          organisation_id: +this.organisationId,
-          xbnAmount: amount
-        });
-
-        console.log("bantuResp::", response);
-        if (response.status == "success") {
-          this.$emit("reload");
-          location.reload();
-          this.$toast.success(response.message);
-        } else {
-          this.$toast.error(response.message);
-        }
-      } catch (err) {
-        console.log("bantuerr", err);
-      }
-    },
-
     loadData() {
-      this.organisationId = this.user.AssociatedOrganisations[0].Organisation.id;
+      this.orgId = this.user?.AssociatedOrganisations[0]?.Organisation.id;
     },
-
     async getWallet() {
       try {
+        this.openScreen();
         const response = await this.$axios.get(
-          `/organisation/wallets/main/${+this.organisationId}`
+          `/organisation/wallets/main/${+this.orgId}`
         );
 
         if (response.status == "success") {
+          screenLoading.close();
           console.log("Here", response.data);
           this.wallet = response.data.wallet;
         }
       } catch (err) {
+        screenLoading.close();
         console.log("Walleterr:::", err);
       }
     },
@@ -275,6 +205,14 @@ export default {
         this.$toast.success("copied to clipboard!");
       }
       return;
+    },
+
+    openScreen() {
+      screenLoading = this.$loading({
+        lock: true,
+        spinner: "el-icon-loading",
+        background: "#0000009b"
+      });
     }
   }
 };
