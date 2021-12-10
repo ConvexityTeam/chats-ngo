@@ -78,7 +78,7 @@ export default {
   },
 
   methods: {
-    async sendAmount() {
+    async fundWallet() {
       try {
         this.loading = true;
         this.$v.$touch();
