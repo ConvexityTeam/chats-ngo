@@ -1,13 +1,13 @@
 <template>
-  <form @submit.prevent="fundWallet" class="mt-4 px-3">
+  <form @submit.prevent="getDepositData" class="mt-4 px-3">
     <!-- Name field  here -->
     <div class="form-group">
       <label for="amount">Amount to fund</label>
       <input
         type="number"
-        class="form-controls "
+        class="form-controls"
         :class="{
-          error: $v.amount.$error
+          error: $v.amount.$error,
         }"
         id="amount"
         placeholder="0.00"
@@ -42,24 +42,24 @@ export default {
   props: {
     fundAmount: {
       type: [Number, String],
-      default: ""
+      default: "",
     },
 
     orgId: {
       type: [Number, String],
       required: true,
-      default: ""
+      default: "",
     },
 
     text: {
       type: String,
-      default: "Fund wallet"
+      default: "Fund wallet",
     },
 
     showCrypto: {
       type: Boolean,
-      default: true
-    }
+      default: true,
+    },
   },
 
   components: { tokenOutlets },
@@ -67,18 +67,18 @@ export default {
   data() {
     return {
       loading: false,
-      amount: ""
+      amount: "",
     };
   },
 
   validations: {
     amount: {
-      required
-    }
+      required,
+    },
   },
 
   methods: {
-    async fundWallet() {
+    async getDepositData() {
       try {
         this.loading = true;
         this.$v.$touch();
@@ -91,14 +91,13 @@ export default {
           `organisations/${this.orgId}/wallets/paystack-deposit`,
           {
             amount: this.amount,
-            currency: "NGN"
+            currency: "NGN",
           }
         );
 
         if (response.status === "success") {
-          this.$toast.success(response.message);
           this.$bvModal.hide("fund-amount");
-          this.$emit("funded");
+          this.$emit("generatedData", response.data);
         }
         console.log("DEPOSIT RESPONSE", response);
       } catch (err) {
@@ -106,8 +105,8 @@ export default {
         this.loading = false;
         console.log("FUND ERR:::");
       }
-    }
-  }
+    },
+  },
 };
 </script>
 

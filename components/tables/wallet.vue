@@ -2,17 +2,20 @@
   <div>
     <!-- <fund-amount @sentAmount="payViaService" /> -->
     <Modal id="fund-amount" title="fund wallet">
-      <fund-amount @funded="getWallet" :orgId="orgId" :showCrypto="false" />
+      <fund-amount
+        @generatedData="fundWithPaystack"
+        :orgId="orgId"
+        :showCrypto="false"
+      />
     </Modal>
 
     <!-- <fundBantu @fundAccount="fundAccount" /> -->
-
     <div class="holder px-3 py-4">
       <h4 class="header">Fund Wallet</h4>
 
       <!-- Payment options here -->
       <div class="mt-4">
-        <!-- Pay with Flutterwave here -->
+        <!-- Pay with Paystack here -->
         <div class="option-holder py-4 px-3 mb-3">
           <div>
             <h5 class="option-header">Fund Through Paystack</h5>
@@ -31,6 +34,20 @@
               :custom-styles="custom"
               @click="$bvModal.show('fund-amount')"
             />
+          </div>
+
+          <div class="d-none">
+            <paystack
+              :amount="(depositData && depositData.amount) || 0"
+              :email="(depositData && depositData.email) || ''"
+              :paystackkey="(depositData && depositData.key) || ''"
+              :reference="(depositData && depositData.ref) || ''"
+              :callback="getWallet"
+              :close="getWallet"
+              :embed="false"
+              id="paystackBtn"
+            >
+            </paystack>
           </div>
         </div>
 
@@ -153,13 +170,14 @@ export default {
   components: {
     fundAmount,
     fundBantu,
-    paystack
+    paystack,
   },
 
   data() {
     return {
       wallet: {},
-      orgId: ""
+      orgId: "",
+      depositData: {},
     };
   },
 
@@ -168,7 +186,7 @@ export default {
 
     custom() {
       return "border-radius:5px !important; height: 41px; font-size: 0.875rem; ";
-    }
+    },
   },
 
   mounted() {
@@ -181,6 +199,13 @@ export default {
   methods: {
     loadData() {
       this.orgId = this.user?.AssociatedOrganisations[0]?.Organisation.id;
+    },
+
+    fundWithPaystack(data) {
+      this.depositData = data;
+      setTimeout(() => {
+        document.getElementById("paystackBtn").click();
+      }, 300);
     },
     async getWallet() {
       try {
@@ -211,10 +236,10 @@ export default {
       screenLoading = this.$loading({
         lock: true,
         spinner: "el-icon-loading",
-        background: "#0000009b"
+        background: "#0000009b",
       });
-    }
-  }
+    },
+  },
 };
 </script>
 
