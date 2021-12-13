@@ -913,13 +913,13 @@ a {
 }
 
 .save-btn:focus {
-	outline: none;
+  outline: none;
 }
 
 .form-holder {
-	background: #ffffff;
-	box-shadow: 0px 4px 30px rgba(174, 174, 192, 0.2);
-	border-radius: 10px;
+  background: #ffffff;
+  box-shadow: 0px 4px 30px rgba(174, 174, 192, 0.2);
+  border-radius: 10px;
 }
 
 label {
