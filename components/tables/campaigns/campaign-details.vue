@@ -8,10 +8,10 @@
       />
     </Modal>
 
-    <h4 class="campaign-details-header  poppins pt-2">Campaign Summary</h4>
+    <h4 class="campaign-details-header poppins pt-2">Campaign Summary</h4>
 
     <!-- details region here -->
-    <div class="campaign-details-inner  mt-4 p-4">
+    <div class="campaign-details-inner mt-4 p-4">
       <h4 class="campaign-details-header pt-2">{{ details.title }}</h4>
 
       <div class="d-flex mt-3">
@@ -99,10 +99,7 @@
     </div>
 
     <!-- button region here -->
-    <div
-      v-if="details.status != 'pending' || details.status == 'deleted'"
-      class="mt-3"
-    >
+    <div v-if="statuses.includes(details.status)" class="mt-3">
       <div class="d-flex">
         <Button
           :text="
@@ -137,34 +134,35 @@ export default {
   props: {
     details: {
       type: Object,
-      default: () => {}
+      default: () => {},
     },
 
     count: {
       type: Number,
-      default: null
+      default: null,
     },
 
     location: {
       type: String,
-      default: ""
+      default: "",
     },
 
     user: {
       type: Object,
-      default: () => {}
+      default: () => {},
     },
 
     resumeCampaign: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
 
   data: () => ({
     campaignStatus: "",
     status: "",
-    orgId: 0
+    orgId: 0,
+    statuses: ["paused", "active"],
   }),
 
   watch: {
@@ -172,11 +170,11 @@ export default {
       if (value) {
         this.handleCampaign("active");
       }
-    }
+    },
   },
 
   components: {
-    campaignPrompt
+    campaignPrompt,
   },
 
   mounted() {
@@ -216,7 +214,7 @@ export default {
         const response = await this.$axios.put(
           `organisations/${this.orgId}/campaigns/${this.$route.params.id}`,
           {
-            status: this.campaignStatus
+            status: this.campaignStatus,
           }
         );
 
@@ -239,10 +237,10 @@ export default {
       screenLoading = this.$loading({
         lock: true,
         spinner: "el-icon-loading",
-        background: "#0000009b"
+        background: "#0000009b",
       });
-    }
-  }
+    },
+  },
 };
 </script>
 
