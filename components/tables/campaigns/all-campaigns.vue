@@ -26,7 +26,7 @@
             </div>
           </div>
 
-          <div class=" position-relative">
+          <div class="position-relative">
             <span class="filter position-absolute">
               <img src="~/assets/img/vectors/filter.svg" alt="filter" />
             </span>
@@ -40,7 +40,7 @@
         </div>
       </div>
 
-      <div class=" ml-auto mx-3">
+      <div class="ml-auto mx-3">
         <Button
           text="Create campaign"
           custom-styles="height:50px"
@@ -92,7 +92,7 @@
                 :class="{
                   pending: campaign.status == 'pending',
                   progress: campaign.status == 'active',
-                  completed: campaign.status == 'completed'
+                  completed: campaign.status == 'completed',
                 }"
               >
                 {{ campaign.status | capitalize }}
@@ -104,7 +104,7 @@
                 <Button
                   :hasBorder="true"
                   :hasIcon="false"
-                  :disabled="campaign.status == 'active'"
+                  :disabled="statuses.includes(campaign.status)"
                   text="Activate"
                   custom-styles=" border-radius: 5px !important;
                   height:33px; border: 1px solid #17ce89 !important; font-size:
@@ -128,7 +128,7 @@
           </tr>
         </tbody>
       </table>
-      <div v-else-if="loading" class=" text-center"></div>
+      <div v-else-if="loading" class="text-center"></div>
       <h3 v-else class="text-center no-record">NO RECORD FOUND</h3>
     </div>
   </div>
@@ -141,7 +141,7 @@ let screenLoading;
 
 export default {
   components: {
-    newCampaign
+    newCampaign,
   },
 
   data() {
@@ -157,8 +157,9 @@ export default {
         { value: null, text: "Filter" },
         { value: "all", text: "All" },
         { value: "inprogress", text: "In Progress" },
-        { value: "completed", text: "Completed" }
-      ]
+        { value: "completed", text: "Completed" },
+      ],
+      statuses: ["active", "completed"],
     };
   },
 
@@ -166,16 +167,16 @@ export default {
     ...mapGetters("authentication", ["user"]),
     resultQuery() {
       if (this.searchQuery) {
-        return this.campaigns.filter(campaign => {
+        return this.campaigns.filter((campaign) => {
           return this.searchQuery
             .toLowerCase()
             .split(" ")
-            .every(v => campaign.title.toLowerCase().includes(v));
+            .every((v) => campaign.title.toLowerCase().includes(v));
         });
       } else {
         return this.campaigns;
       }
-    }
+    },
   },
 
   mounted() {
@@ -192,7 +193,7 @@ export default {
         const response = await this.$axios.put(
           `organisations/${this.id}/campaigns/${campaign.id}`,
           {
-            status: "active"
+            status: "active",
           }
         );
 
@@ -219,7 +220,7 @@ export default {
 
         if (response.status == "success") {
           screenLoading.close();
-          this.campaigns = response.data;
+          this.campaigns = response.data.reverse();
         }
         this.loading = false;
 
@@ -238,10 +239,10 @@ export default {
       screenLoading = this.$loading({
         lock: true,
         spinner: "el-icon-loading",
-        background: "#0000009b"
+        background: "#0000009b",
       });
-    }
-  }
+    },
+  },
 };
 </script>
 
