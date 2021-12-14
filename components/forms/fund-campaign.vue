@@ -8,23 +8,19 @@
         <div class="row mb-2">
           <!-- campaign name -->
           <div class="col-6">
-            <span class="header">
-              CAMPAIGN NAME
-            </span>
+            <span class="header"> CAMPAIGN NAME </span>
 
             <h6 class="tertiary-black font-medium">
-              {{ campaign.title | capitalize }}
+              {{ campaign.title || "" | capitalize }}
             </h6>
           </div>
 
           <!-- campaign Budget -->
           <div class="col-6">
-            <span class="header">
-              BUDGET
-            </span>
+            <span class="header"> BUDGET </span>
 
             <h6 class="tertiary-black font-medium">
-              NGN{{ campaign.budget | formatCurrency }}
+              NGN{{ campaign.budget || 0 | formatCurrency }}
             </h6>
           </div>
         </div>
@@ -32,20 +28,16 @@
         <div class="row">
           <!-- campaign Beneficiaries -->
           <div class="col-6">
-            <span class="header">
-              TOTAL BENEFICIARIES
-            </span>
+            <span class="header"> TOTAL BENEFICIARIES </span>
 
             <h6 class="tertiary-black font-medium">
-              {{ campaign.beneficiaries_count }}
+              {{ campaign.beneficiaries_count || 0 }}
             </h6>
           </div>
 
           <!-- Beneficiaries Share -->
           <div class="col-6">
-            <span class="header">
-              BENEFICIARY SHARE
-            </span>
+            <span class="header"> BENEFICIARY SHARE </span>
 
             <h6 class="tertiary-black font-medium">
               NGN{{ share | formatCurrency }}
@@ -62,6 +54,11 @@
           :has-icon="false"
           text="Confirm and fund"
           custom-styles="height:41px; border-radius: 5px; width: 100%"
+          :disabled="
+            campaign &&
+            campaign.beneficiaries_count &&
+            campaign.beneficiaries_count == 0
+          "
           @click="$emit('fundCampaign')"
         />
       </div>
@@ -86,8 +83,8 @@ export default {
     campaign: {
       type: Object,
       required: true,
-      default: () => {}
-    }
+      default: () => {},
+    },
   },
 
   computed: {
@@ -99,7 +96,7 @@ export default {
         return 0;
       }
       return result;
-    }
+    },
   },
 
   methods: {
@@ -110,8 +107,8 @@ export default {
     sendAmount() {
       this.$emit("fundCampaign");
       this.closeModal();
-    }
-  }
+    },
+  },
 };
 </script>
 
