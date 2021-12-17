@@ -110,6 +110,11 @@ button:focus {
   color: #5e0e03;
 }
 
+.status.pending-2 {
+  background: #F8E5A2;
+  color: #885304;
+}
+
 .status.withdrawal {
   background: #FCDEFF;
   color: #4A0051;

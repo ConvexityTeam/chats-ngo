@@ -191,9 +191,6 @@ export default {
 
   mounted() {
     this.loadData();
-    this.getWallet();
-    console.log("Wallet::", this.wallet);
-    console.log("KEY", this.reference);
   },
 
   methods: {
@@ -207,22 +204,9 @@ export default {
         document.getElementById("paystackBtn").click();
       }, 300);
     },
-    async getWallet() {
-      try {
-        this.openScreen();
-        const response = await this.$axios.get(
-          `/organisation/wallets/main/${+this.orgId}`
-        );
 
-        if (response.status == "success") {
-          screenLoading.close();
-          console.log("Here", response.data);
-          this.wallet = response.data.wallet;
-        }
-      } catch (err) {
-        screenLoading.close();
-        console.log("Walleterr:::", err);
-      }
+    async getWallet() {
+      this.$emit("getWallet");
     },
     copy(value) {
       if (value.length) {
