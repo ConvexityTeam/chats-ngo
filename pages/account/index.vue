@@ -6,26 +6,30 @@
         <div class="row">
           <!--Total Deposit here -->
           <div class="col-lg-4">
-            <div class="card__holder d-flex  p-3">
+            <div class="card__holder d-flex p-3">
               <div>
                 <img src="~/assets/img/vectors/deposit.svg" alt="deposit" />
               </div>
               <div class="ml-3">
                 <p class="text">Total Deposit</p>
-                <h4 class="funds">${{ loading ? 0 : 0 }}</h4>
+                <h4 class="funds">
+                  ${{ wallet.total_deposit || 0 | formatCurrency }}
+                </h4>
               </div>
             </div>
           </div>
 
           <!-- Campaign Expenses here -->
           <div class="col-lg-4">
-            <div class="card__holder d-flex  p-3">
+            <div class="card__holder d-flex p-3">
               <div>
                 <disbursed />
               </div>
               <div class="ml-3">
                 <p class="text">Expenses</p>
-                <h4 class="funds">${{ loading ? 0 : financials.expense }}</h4>
+                <h4 class="funds">
+                  ${{ wallet.spend_for_campaign || 0 | formatCurrency }}
+                </h4>
               </div>
             </div>
           </div>
@@ -33,13 +37,20 @@
           <!--  Cash Balance here -->
 
           <div class="col-lg-4">
-            <div class="card__holder d-flex  p-3">
+            <div class="card__holder d-flex p-3">
               <div>
                 <total-balance />
               </div>
               <div class="ml-3">
                 <p class="text">Cash Balance</p>
-                <h4 class="funds">${{ loading ? 0 : wallet.balance }}</h4>
+                <h4 class="funds">
+                  ${{
+                    (wallet &&
+                      wallet.MainWallet &&
+                      wallet.MainWallet.balance) ||
+                    0 | formatCurrency
+                  }}
+                </h4>
               </div>
             </div>
           </div>
@@ -52,7 +63,7 @@
       </div>
 
       <div class="col-lg-4">
-        <wallet />
+        <wallet @getWallet="getWallet" />
       </div>
     </div>
   </div>
@@ -64,6 +75,8 @@ import wallet from "~/components/tables/wallet";
 import { mapGetters } from "vuex";
 import disbursed from "~/components/icons/disbursed.vue";
 import totalBalance from "~/components/icons/total-balance.vue";
+let screenLoading;
+
 export default {
   layout: "dashboard",
   components: {
@@ -71,56 +84,51 @@ export default {
     wallet,
 
     disbursed,
-    totalBalance
+    totalBalance,
   },
 
   data: () => ({
     loading: false,
     wallet: {},
-    financials: {}
   }),
 
   computed: {
-    ...mapGetters("authentication", ["user"])
+    ...mapGetters("authentication", ["user"]),
   },
 
   mounted() {
-    this.organisationId = this.user?.AssociatedOrganisations[0]?.Organisation?.id;
+    this.organisationId =
+      this.user?.AssociatedOrganisations[0]?.Organisation?.id;
     this.getWallet();
-    this.getFinancials();
   },
 
   methods: {
     async getWallet() {
       try {
+        this.openScreen();
         const response = await this.$axios.get(
-          `/organisation/wallets/main/${+this.organisationId}`
+          `/organisations/${+this.organisationId}/wallets`
         );
 
         if (response.status == "success") {
-          console.log("Here", response.data);
-          this.wallet = response.data.wallet;
+          console.log("WALLET", response.data);
+          this.wallet = response?.data;
+          screenLoading.close();
         }
       } catch (err) {
+        screenLoading.close();
         console.log("Walleterr:::", err);
       }
     },
 
-    async getFinancials() {
-      try {
-        this.loading = true;
-        const response = await this.$axios.get(`/users/info/statistics`);
-        if (response.status == "success") {
-          console.log("financials::", response.data[0]);
-          this.financials = response.data[0];
-        }
-        this.loading = false;
-      } catch (err) {
-        this.loading = false;
-        console.log(err);
-      }
-    }
-  }
+    openScreen() {
+      screenLoading = this.$loading({
+        lock: true,
+        spinner: "el-icon-loading",
+        background: "#0000009b",
+      });
+    },
+  },
 };
 </script>
 
@@ -129,6 +137,7 @@ export default {
   background: #ffffff;
   box-shadow: 0px 4px 25px rgba(174, 174, 192, 0.15);
   border-radius: 10px;
+  height: 6rem;
 }
 
 .text {
@@ -140,8 +149,10 @@ export default {
 .funds {
   color: #25396f;
   font-weight: 500;
-  font-size: 1.5rem;
+  font-size: 1.25rem;
   padding-top: 5px;
+  word-wrap: break-word;
+  width: 7rem;
 }
 .main {
   height: calc(100vh - 72px);

@@ -42,7 +42,7 @@
               @focus="passActive = true"
               @blur="$v.payload.password.$touch()"
             />
-            <div class="position-absolute icon-left ">
+            <div class="position-absolute icon-left">
               <lock-icon :active="passActive" />
             </div>
 
@@ -101,7 +101,7 @@ export default {
     emailIcon,
     lockIcon,
     eyeClosed,
-    eyeOpen
+    eyeOpen,
   },
 
   data() {
@@ -112,8 +112,8 @@ export default {
       showpassword: false,
       payload: {
         email: "",
-        password: ""
-      }
+        password: "",
+      },
     };
   },
 
@@ -121,12 +121,12 @@ export default {
     payload: {
       email: {
         required,
-        email
+        email,
       },
       password: {
-        required
-      }
-    }
+        required,
+      },
+    },
   },
 
   methods: {
@@ -146,7 +146,7 @@ export default {
 
         console.log("login response", response);
 
-        if (response.status == "success") {
+        if (response?.status == "success") {
           this.commitToken(response.data.token);
           this.commitUser(response.data.user);
           this.$router.push("/dashboard");
@@ -155,10 +155,11 @@ export default {
         this.loading = false;
       } catch (err) {
         this.loading = false;
-        this.$toast.error(err.response.data.message);
+        console.log("ERRR::::", err);
+        this.$toast.error(err);
       }
-    }
-  }
+    },
+  },
 };
 </script>
 

@@ -1,7 +1,7 @@
 var CryptoJS = require("crypto-js");
 
-export default async function({ $axios, app }) {
-  $axios.onRequest(config => {
+export default async function ({ $axios, app }) {
+  $axios.onRequest((config) => {
     const token = localStorage.getItem("userToken");
 
     if (token) {
@@ -18,9 +18,8 @@ export default async function({ $axios, app }) {
     // console.log("config:::", config.data)
   });
 
-  $axios.onResponse(response => {
-
-    return response.data
+  $axios.onResponse((response) => {
+    return response.data;
 
     // const crypt = new JSEncrypt();
     // crypt.setPrivateKey(privateKey);
@@ -28,7 +27,6 @@ export default async function({ $axios, app }) {
     // const decrypted = crypt.decrypt(response.data);
 
     // return JSON.parse(decrypted)
-  
 
     // const decrypted = CryptoJS.AES.decrypt(
     //   response.data,
@@ -38,7 +36,7 @@ export default async function({ $axios, app }) {
     // return JSON.parse(decrypted);
   });
 
-  $axios.onError(err => {
+  $axios.onError((err) => {
     console.log("error:::", err);
 
     // const crypt = new JSEncrypt();
@@ -55,11 +53,10 @@ export default async function({ $axios, app }) {
 
     // const data = JSON.parse(decrypted);
 
-    if (err.response.status == "401") {
+    if (err.response?.status == "401") {
       app.$toast.error(err.response.data.message);
-      app.router.push('/')
+      app.router.push("/");
     }
-
-    // return data;
+    return;
   });
 }

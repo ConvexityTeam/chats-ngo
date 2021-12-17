@@ -34,7 +34,7 @@
         </div>
       </div>
 
-      <div class=" ml-auto mx-3">
+      <div class="ml-auto mx-3">
         <csv :data="computedData" name="beneficiaries" />
       </div>
     </div>
@@ -45,81 +45,143 @@
         <h4>Transactions</h4>
         <div class="ml-auto"></div>
       </div>
-      <table class="table table-borderless">
+      <table class="table table-borderless" v-if="resultQuery.length">
         <thead>
           <tr>
             <th scope="col">Reference ID</th>
             <th scope="col">Amount</th>
             <th scope="col">Type</th>
-            <th scope="col">Paid To</th>
             <th scope="col">Date</th>
-            <th scope="col">Actions</th>
+            <th scope="col">Status</th>
           </tr>
         </thead>
         <tbody>
-          <tr v-for="i in 4" :key="i" :class="{ selected: i % 2 == 0 }">
-            <td>12345678910</td>
-            <td>$123,476,000</td>
-            <td class="">
-              <span
-                class="badge badge-pill deposited p-2"
-                :class="{ disbursed: i % 2 == 0 }"
-              >
-                {{ i % 2 == 0 ? "Disbursed" : "Deposited" | capitalize }}
+          <tr
+            v-for="(transaction, i) in resultQuery"
+            :key="i"
+            :class="{ selected: i % 2 == 0 }"
+          >
+            <td>{{ transaction.reference }}</td>
+            <td>${{ transaction.amount | formatCurrency }}</td>
+            <td>
+              <span class="badge badge-pill deposited p-2">
+                {{
+                  transaction.transaction_type == "deposit"
+                    ? "Deposited"
+                    : "Disbursed"
+                }}
               </span>
             </td>
-            <td>Wallet</td>
-            <td>12 Dec, 2020</td>
+
+            <td>{{ transaction.createdAt | formatDate }}</td>
             <td>
-              <button type="button" class="more-btn"><dot /></button>
+              <span
+                class="status p-2"
+                :class="{
+                  completed: transaction.status == 'success',
+                  'pending-2': transaction.status !== 'success',
+                }"
+              >
+                {{ transaction.status == "success" ? "Completed" : "Pending" }}
+              </span>
             </td>
           </tr>
         </tbody>
       </table>
-      <!-- <div v-else-if="loading" class=" text-center"></div>
-        <h3 v-else class="text-center no-record">NO RECORD FOUND</h3> -->
+      <div v-else-if="loading" class="text-center"></div>
+      <h3 v-else class="text-center no-record">NO RECORD FOUND</h3>
     </div>
   </div>
 </template>
+
 <script>
 import dot from "~/components/icons/dot";
+import { mapGetters } from "vuex";
+let screenLoading;
+
 export default {
   components: {
-    dot
+    dot,
   },
 
   data: () => ({
+    loading: false,
+    organisationId: "",
     searchQuery: "",
     options: [
       {
         value: "Option1",
-        label: "Option1"
+        label: "Option1",
       },
       {
         value: "Option2",
-        label: "Option2"
-      }
-    ]
+        label: "Option2",
+      },
+    ],
+
+    transactions: [],
   }),
 
   computed: {
+    ...mapGetters("authentication", ["user"]),
+
     resultQuery() {
-      // if (this.searchQuery) {
-      //   return this.campaigns.filter(campaign => {
-      //     return this.searchQuery
-      //       .toLowerCase()
-      //       .split(" ")
-      //       .every(v => campaign.title.toLowerCase().includes(v));
-      //   });
-      // } else {
-      //   return this.campaigns;
-      // }
+      if (this.searchQuery) {
+        return this.transactions.filter((transaction) => {
+          return this.searchQuery
+            .toLowerCase()
+            .split(" ")
+            .every((v) => transaction.reference.toLowerCase().includes(v));
+        });
+      } else {
+        return this.transactions;
+      }
     },
 
     computedData() {
       return [];
-    }
-  }
+    },
+  },
+
+  mounted() {
+    this.organisationId =
+      this.user?.AssociatedOrganisations[0]?.Organisation?.id;
+
+    this.getTransactions();
+  },
+
+  methods: {
+    async getTransactions() {
+      try {
+        this.openScreen();
+        this.loading = true;
+
+        const response = await this.$axios.get(
+          `/organisations/${+this.organisationId}/wallets/transactions`
+        );
+
+        if (response.status == "success") {
+          this.transactions = response.data;
+          this.loading = false;
+          screenLoading.close();
+        }
+
+        console.log("TRANSACTIONS:::", response);
+      } catch (err) {
+        this.loading = false;
+        screenLoading.close();
+        console.log(err);
+      }
+    },
+
+    openScreen() {
+      screenLoading = this.$loading({
+        lock: true,
+        spinner: "el-icon-loading",
+        background: "#0000009b",
+      });
+    },
+  },
 };
 </script>
 
@@ -157,8 +219,8 @@ select.form-control {
 }
 
 .badge.deposited {
-  background: #d1f7c4;
-  color: #337138;
+  background: #eceff1;
+  color: #7c8db5;
 }
 .badge.disbursed {
   background: #ffcdc7;
