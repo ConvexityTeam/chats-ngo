@@ -142,7 +142,7 @@ export default {
         console.log("GET AGE RESPONSE", response);
       } catch (err) {
         console.log("GETAGEERERR::", { err });
-        this.$toast.error(err.response.data.message);
+        this.$toast.error(err?.response?.data?.message);
         this.loading = false;
       }
     }

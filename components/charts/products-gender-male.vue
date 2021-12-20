@@ -1,28 +1,28 @@
 <template>
-  <div>
-    <div class>
-      <doughnut-chart
-        v-if="requiredData"
-        :data="doughnutChartData"
-        :options="doughnutChartOptions"
-        :height="220"
-        :width="250"
-      />
-      <div
-        v-else
-        class="spinner d-flex justify-content-center align-items-center"
-      >
-        <b-spinner class="primary" label="Spinning"></b-spinner>
-      </div>
+  <section>
+    <div v-if="loading" class="spinner ">
+      <b-spinner class="primary" label="Spinning"></b-spinner>
     </div>
-  </div>
+
+    <doughnut-chart
+      v-else-if="requiredData"
+      :data="doughnutChartData"
+      :options="doughnutChartOptions"
+      :height="220"
+      :width="250"
+    />
+
+    <h3 v-else class="no-record-dashboard text-center no-record">
+      NO RECORD FOUND
+    </h3>
+  </section>
 </template>
 
 <script>
 import doughnutChart from "~/plugins/charts/doughnutchart";
 export default {
   components: {
-    doughnutChart,
+    doughnutChart
   },
   data() {
     return {
@@ -38,10 +38,10 @@ export default {
               "#96E072",
               "#3DA35D",
               "#3E8914",
-              "#134611",
-            ],
-          },
-        ],
+              "#134611"
+            ]
+          }
+        ]
       },
       doughnutChartOptions: {
         responsive: true,
@@ -51,8 +51,8 @@ export default {
 
           labels: {
             fontColor: "#25396F",
-            usePointStyle: true,
-          },
+            usePointStyle: true
+          }
         },
 
         // title: {
@@ -66,19 +66,19 @@ export default {
         cutoutPercentage: 70,
         rotation: Math.PI * 1,
         animation: {
-          animateScale: true,
+          animateScale: true
         },
         tooltips: {
-          backgroundColor: "#17BF62",
-        },
-      },
+          backgroundColor: "#17BF62"
+        }
+      }
     };
   },
 
   computed: {
     requiredData() {
-      return this.doughnutChartData?.datasets[0]?.data?.length;
-    },
+      return !!this.doughnutChartData?.datasets[0]?.data?.length;
+    }
   },
 
   mounted() {
@@ -95,13 +95,12 @@ export default {
 
         if (response.status == "success") {
           const data = response.data;
-          Object.values(data).forEach((item) => {
+          Object.values(data).forEach(item => {
             this.doughnutChartData.datasets[0].data.push(item.male);
           });
           console.log("MaleData:::", data);
-
-          this.loading = false;
         }
+        this.loading = false;
 
         console.log("GET MALE RESPONSE", response);
       } catch (err) {
@@ -109,8 +108,8 @@ export default {
         this.$toast.error(err.response.data.message);
         this.loading = false;
       }
-    },
-  },
+    }
+  }
 };
 </script>
 
