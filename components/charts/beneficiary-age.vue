@@ -1,21 +1,27 @@
 <template>
-  <div>
+  <section>
+    <div v-if="loading" class="spinner">
+      <b-spinner type="grow" label="Spinning"></b-spinner>
+    </div>
+
     <doughnut-chart
-      v-if="requiredData"
+      v-else-if="requiredData"
       :data="doughnutChartData"
       :options="doughnutChartOptions"
       :height="320"
     />
 
-    <h3 v-else class="no-record-dashboard text-center no-record">NO RECORD FOUND</h3>
-  </div>
+    <h3 v-else class="no-record-dashboard text-center no-record">
+      NO RECORD FOUND
+    </h3>
+  </section>
 </template>
 
 <script>
 import doughnutChart from "~/plugins/charts/doughnutchart";
 export default {
   components: {
-    doughnutChart,
+    doughnutChart
   },
   data() {
     return {
@@ -32,10 +38,10 @@ export default {
               "#96E072",
               "#3DA35D",
               "#3E8914",
-              "#134611",
-            ],
-          },
-        ],
+              "#134611"
+            ]
+          }
+        ]
       },
 
       doughnutChartOptions: {
@@ -46,8 +52,8 @@ export default {
 
           labels: {
             fontColor: "#263238",
-            usePointStyle: true,
-          },
+            usePointStyle: true
+          }
         },
 
         title: {
@@ -55,35 +61,26 @@ export default {
           text: "Beneficiary Age Group",
           align: "end",
           fontSize: 18,
-          fontColor: "#333333",
+          fontColor: "#333333"
         },
 
         cutoutPercentage: 70,
         // rotation: Math.PI * 1,
         animation: {
-          animateScale: true,
+          animateScale: true
         },
 
         tooltips: {
-          backgroundColor: "#17BF62",
-        },
-      },
+          backgroundColor: "#17BF62"
+        }
+      }
     };
   },
 
   computed: {
     requiredData() {
-      return (
-        this.doughnutChartData &&
-        this.doughnutChartData.datasets[0] &&
-        this.doughnutChartData.datasets[0].data &&
-        this.doughnutChartData.datasets[0].data[0] || 
-        this.doughnutChartData.datasets[0].data[1] ||
-        this.doughnutChartData.datasets[0].data[2] ||
-        this.doughnutChartData.datasets[0].data[3] ||
-        this.doughnutChartData.datasets[0].data[4] !== 0
-      );
-    },
+      return !!this.doughnutChartData?.datasets[0]?.data?.length;
+    }
   },
 
   mounted() {
@@ -100,12 +97,11 @@ export default {
 
         if (response.status == "success") {
           const data = response.data;
-          Object.values(data).forEach((item) => {
+          Object.values(data).forEach(item => {
             this.doughnutChartData.datasets[0].data.push(item);
           });
-
-          this.loading = false;
         }
+        this.loading = false;
 
         console.log("GET AGE RESPONSE", response);
       } catch (err) {
@@ -113,18 +109,7 @@ export default {
         this.$toast.error(err.response?.data?.message);
         this.loading = false;
       }
-    },
-  },
+    }
+  }
 };
 </script>
-
-<style scoped>
-.spinner {
-  position: absolute;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
-  z-index: 1000;
-}
-</style>

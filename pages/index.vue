@@ -102,7 +102,7 @@ export default {
     emailIcon,
     lockIcon,
     eyeClosed,
-    eyeOpen,
+    eyeOpen
   },
 
   data() {
@@ -113,8 +113,8 @@ export default {
       showpassword: false,
       payload: {
         email: "",
-        password: "",
-      },
+        password: ""
+      }
     };
   },
 
@@ -122,12 +122,12 @@ export default {
     payload: {
       email: {
         required,
-        email,
+        email
       },
       password: {
-        required,
-      },
-    },
+        required
+      }
+    }
   },
 
   methods: {
@@ -159,8 +159,8 @@ export default {
         console.log("ERRR::::", { err });
         this.$toast.error(err?.response?.data?.message);
       }
-    },
-  },
+    }
+  }
 };
 </script>
 

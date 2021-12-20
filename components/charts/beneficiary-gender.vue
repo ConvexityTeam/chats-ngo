@@ -1,15 +1,20 @@
 <template>
-  <div>
-    <div class>
-      <doughnut-chart
-        v-if="requiredData"
-        :data="doughnutChartData"
-        :options="doughnutChartOptions"
-        :height="320"
-      />
-      <h3 v-else class="no-record-dashboard text-center no-record">NO RECORD FOUND</h3>
+  <section>
+    <div v-if="loading" class="spinner">
+      <b-spinner type="grow" label="Spinning"></b-spinner>
     </div>
-  </div>
+
+    <doughnut-chart
+      v-else-if="requiredData"
+      :data="doughnutChartData"
+      :options="doughnutChartOptions"
+      :height="320"
+    />
+
+    <h3 v-else class="no-record-dashboard text-center no-record">
+      NO RECORD FOUND
+    </h3>
+  </section>
 </template>
 
 <script>
@@ -62,7 +67,7 @@ export default {
 
   computed: {
     requiredData() {
-      return this.doughnutChartData?.datasets[0]?.data[0] || this.doughnutChartData?.datasets[0]?.data[1] !== 0;
+      return !!this.doughnutChartData?.datasets[0]?.data?.length;
     }
   },
 
@@ -97,14 +102,3 @@ export default {
   }
 };
 </script>
-
-<style scoped>
-.spinner {
-  position: absolute;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
-  z-index: 1000;
-}
-</style>
