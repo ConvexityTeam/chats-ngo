@@ -112,14 +112,3 @@ export default {
   }
 };
 </script>
-
-<style scoped>
-.spinner {
-  position: absolute;
-  top: 0;
-  /* left: 0; */
-  bottom: 0;
-  right: 130px;
-  z-index: 1000;
-}
-</style>
