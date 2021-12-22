@@ -932,6 +932,10 @@ label {
   margin-bottom: 1.5rem;
 }
 
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
 .form-controls {
   background: #f5f6f8;
   border-radius: 8px;
@@ -939,6 +943,13 @@ label {
   padding: 0rem 0.75rem;
   color: #646a86;
   font-size: 1rem;
+}
+
+.form-controls-dp {
+  background: #f5f6f8;
+  border-radius: 8px;
+  height: 50px;
+  padding: 0rem 0.75rem;
 }
 
 .form-controls-dp {
