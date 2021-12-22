@@ -1,0 +1,128 @@
+<template>
+  <div class="campaign-details-holder p-4">
+    <h4 class="campaign-details-header poppins pt-2">
+      Campaign Vendors ({{ vendors.length || 0 }})
+    </h4>
+
+    <!-- details region here -->
+    <div class="campaign-details-inner mt-4 p-4">
+      <!-- Vendors -->
+
+      <div v-if="vendors.length">
+        <p
+          v-for="vendor in vendors.slice(0, 5)"
+          :key="vendor.id"
+          class="primary-gray"
+        >
+          {{
+            vendor && vendor.Vendor
+              ? vendor.Vendor.first_name + " " + vendor.Vendor.last_name
+              : ""
+          }}
+        </p>
+
+        <!-- See all here -->
+        <div>
+          <button
+            type="button"
+            @click="$router.push(`/campaigns/${$route.params.id}/vendors`)"
+            class="d-flex viewall align-items-center p-0"
+          >
+            <img src="~/assets/img/vectors/eye.svg" alt="see" />
+            <span class="ml-2 pt-1">See All </span>
+          </button>
+        </div>
+      </div>
+
+      <div v-else>
+        <h3 class="text-center no-record">NO RECORD FOUND</h3>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+let screenLoading;
+
+export default {
+  props: {
+    user: {
+      type: Object,
+      default: () => {},
+    },
+  },
+
+  data: () => ({
+    orgId: 0,
+    vendors: [],
+  }),
+
+  mounted() {
+    this.orgId = this.user?.AssociatedOrganisations[0]?.OrganisationId;
+    this.getVendors();
+  },
+
+  methods: {
+    async getVendors() {
+      try {
+        this.openScreen();
+
+        const response = await this.$axios.get(
+          `/organisations/${this.orgId}/campaigns/${this.$route.params.id}/vendors`
+        );
+
+        console.log("Vendors::", response);
+
+        if (response.status == "success") {
+          this.vendors = response.data;
+          screenLoading.close();
+        }
+      } catch (err) {
+        screenLoading.close();
+        console.log(err);
+      }
+    },
+
+    openScreen() {
+      screenLoading = this.$loading({
+        lock: true,
+        spinner: "el-icon-loading",
+        background: "#0000009b",
+      });
+    },
+  },
+};
+</script>
+
+<style>
+.campaign-details-holder {
+  background: #ffffff;
+  box-shadow: 0px 4px 25px rgba(174, 174, 192, 0.15);
+  border-radius: 10px;
+}
+.campaign-details-header {
+  color: #25396f;
+  font-weight: bold;
+  font-size: 1.125rem;
+}
+.campaign-details-inner {
+  border: 1px solid #17ce89;
+  border-radius: 10px;
+}
+
+.campaign-captions {
+  color: #25396f;
+  font-family: "Poppins", sans-serif;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.campaign-answers {
+  color: #25396f;
+  font-size: 0.875rem;
+}
+
+.campaign-divider {
+  border-bottom: 1px solid #f5f6f8;
+}
+</style>

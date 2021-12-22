@@ -3,14 +3,25 @@
     <div v-if="loading"></div>
 
     <div class="main container transparent pt-4 mt-2 pb-5" v-else>
-      <Modal id="funding" title="Fund through Crypto">
-        <funding />
-      </Modal>
+      <!-- Modas Here -->
+      <section>
+        <Modal id="funding" title="Fund through Crypto">
+          <funding />
+        </Modal>
 
-      <Modal id="fund-campaign" title="fund Campaign">
-        <fund-campaign :campaign="details" @fundCampaign="fundCampaign" />
-      </Modal>
+        <Modal id="fund-campaign" title="Fund Campaign">
+          <fund-campaign :campaign="details" @fundCampaign="fundCampaign" />
+        </Modal>
 
+        <Modal id="reject-benefactor" title="Reject Benefactor">
+          <reject-benefactor
+            :benefactor="activeBenefactor"
+            @rejectBenefactor="rejectBenefactor"
+          />
+        </Modal>
+      </section>
+
+      <!-- Drawer Here -->
       <el-drawer
         :visible.sync="drawer"
         size="75%"
@@ -45,7 +56,7 @@
           </div>
         </div>
 
-        <div class=" d-flex ml-auto mx-3">
+        <div class="d-flex ml-auto mx-3">
           <div v-if="!details.is_funded" class="mr-3">
             <Button
               text="Fund Campaign"
@@ -77,6 +88,7 @@
         </div>
       </div>
 
+      <!-- Banner Here -->
       <div v-if="details.status == 'paused'" class="">
         <banner
           :date="details.updatedAt"
@@ -94,24 +106,69 @@
                 <div class="ml-auto"></div>
               </div>
 
-              <table v-if="resultQuery.length" class="table table-borderless">
+              <!-- tabs here -->
+              <div class="mx-2 mb-3 d-flex">
+                <b-tabs content-class="mt-1" v-model="tabIndex">
+                  <!-- All complaints tab here -->
+                  <b-tab title="All" active title-link-class="beneficiary">
+                  </b-tab>
+
+                  <!-- Unresolved Complaints here -->
+                  <b-tab title="Pending" title-link-class="beneficiary">
+                  </b-tab>
+                </b-tabs>
+
+                <!-- Approve Button here -->
+                <div
+                  class="ml-auto mr-5"
+                  v-if="unapprovedBeneficiaries.length && tabIndex == 1"
+                >
+                  <Button
+                    text="Approve"
+                    :has-icon="false"
+                    :has-border="true"
+                    custom-styles="border: 1px solid #17CE89 !important; border-radius: 5px !important; font-size: 0.875rem !important; height: 33px !important"
+                    @click="approveBeneficiaries"
+                  />
+                </div>
+              </div>
+
+              <!-- Table Here -->
+              <table v-if="query.length" class="table table-borderless">
                 <thead>
                   <tr>
                     <th scope="col">Beneficiary</th>
                     <th scope="col">Phone Number</th>
-                    <th scope="col">Email Address</th>
-                    <th scope="col"></th>
+                    <th scope="col">
+                      {{ tabIndex == 0 ? "Email Address" : "Origination" }}
+                    </th>
+                    <th scope="col">{{ tabIndex == 0 ? "" : "Actions" }}</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr v-for="benefactor in resultQuery" :key="benefactor.id">
+                  <tr v-for="(benefactor, i) in query" :key="i">
                     <td>
-                      {{ benefactor.first_name + " " + benefactor.last_name }}
+                      {{
+                        benefactor && benefactor.User
+                          ? benefactor.User.first_name +
+                            " " +
+                            benefactor.User.last_name
+                          : ""
+                      }}
                     </td>
-                    <td>{{ benefactor.phone }}</td>
-                    <td>{{ benefactor.email }}</td>
                     <td>
-                      <div>
+                      {{
+                        benefactor && benefactor.User && benefactor.User.phone
+                      }}
+                    </td>
+                    <td>
+                      <span v-if="tabIndex == 0">{{
+                        benefactor && benefactor.User && benefactor.User.email
+                      }}</span>
+                      <span v-else> -</span>
+                    </td>
+                    <td>
+                      <div v-if="tabIndex == 0">
                         <Button
                           text="View"
                           :has-icon="false"
@@ -122,11 +179,21 @@
                           "
                         />
                       </div>
+
+                      <div v-else>
+                        <Button
+                          text="Reject"
+                          :has-icon="false"
+                          :has-border="true"
+                          custom-styles="border: 1px solid #E42C66 !important; color: #E42C66 !important; border-radius: 5px !important; font-size: 0.875rem !important; height: 33px !important"
+                          @click="handleRejectBenefactor(benefactor)"
+                        />
+                      </div>
                     </td>
                   </tr>
                 </tbody>
               </table>
-              <div v-else-if="loading" class=" text-center"></div>
+              <div v-else-if="loading" class="text-center"></div>
               <h3 v-else class="text-center no-record">NO RECORD FOUND</h3>
             </div>
           </div>
@@ -150,6 +217,10 @@
             @reload="getDetails"
             :resumeCampaign="resumeCampaign"
           />
+
+          <div class="mt-4">
+            <campaign-vendors :user="user" />
+          </div>
         </div>
       </div>
     </div>
@@ -164,11 +235,14 @@ import banner from "~/components/generic/banner.vue";
 import funding from "~/components/forms/funding.vue";
 import addProduct from "~/components/forms/add-product.vue";
 import fundCampaign from "~/components/forms/fund-campaign.vue";
+import rejectBenefactor from "~/components/forms/reject-benefactor.vue";
+import campaignVendors from "~/components/tables/campaigns/campaign-vendors.vue";
 
 let screenLoading;
 export default {
   layout: "dashboard",
   data: () => ({
+    tabIndex: 0,
     loading: false,
     orgId: "",
     searchQuery: "",
@@ -178,10 +252,10 @@ export default {
     details: {},
     location: "",
     resumeCampaign: false,
-
+    activeBenefactor: {},
     title: "",
     drawer: false,
-    direction: "rtl"
+    direction: "rtl",
   }),
 
   components: {
@@ -190,28 +264,42 @@ export default {
     banner,
     funding,
     addProduct,
-    fundCampaign
+    fundCampaign,
+    rejectBenefactor,
+    campaignVendors,
   },
 
   computed: {
     ...mapGetters("authentication", ["user"]),
-    resultQuery() {
+    unapprovedBeneficiaries() {
+      return this.beneficiaries.filter((benefactor) => !benefactor.approved);
+    },
+    query() {
+      const valid =
+        this.tabIndex == 0 ? this.beneficiaries : this.unapprovedBeneficiaries;
+
       if (this.searchQuery) {
-        return this.beneficiaries.filter(benefactor => {
+        return valid.filter((benefactor) => {
           return this.searchQuery
             .toLowerCase()
             .split(" ")
-            .every(v => benefactor.User.first_name.toLowerCase().includes(v));
+            .every(
+              (v) =>
+                benefactor &&
+                benefactor.User &&
+                benefactor.User.first_name.toLowerCase().includes(v)
+            );
         });
       } else {
-        return this.beneficiaries;
+        return valid;
       }
-    }
+    },
   },
 
   mounted() {
     this.orgId = this.user?.AssociatedOrganisations[0]?.OrganisationId;
     this.getDetails();
+    this.getCampaignBeneficiaries();
   },
 
   methods: {
@@ -253,17 +341,67 @@ export default {
         if (response.status == "success") {
           screenLoading.close();
           this.details = response.data;
-          this.beneficiaries = response.data?.Beneficiaries;
           this.location = JSON.parse(response.data?.location?.country);
-          console.log("loc::", this.location);
-          console.log("here", response.data);
         }
 
         this.loading = false;
       } catch (err) {
         this.loading = false;
         screenLoading.close();
-        console.log("campaignDeetserr:::", err);
+      }
+    },
+    async getCampaignBeneficiaries() {
+      try {
+        this.openScreen();
+        const response = await this.$axios.get(
+          `/organisation/${this.orgId}/campaigns/${this.$route.params.id}/beneficiaries`
+        );
+
+        if (response.status == "success") {
+          screenLoading.close();
+          this.beneficiaries = response.data;
+        }
+
+        console.log("BENEFIFICARIES", response);
+      } catch (err) {
+        screenLoading.close();
+      }
+    },
+
+    handleRejectBenefactor(benefactor) {
+      this.activeBenefactor = benefactor;
+
+      setTimeout(() => {
+        this.$bvModal.show("reject-benefactor");
+      }, 300);
+    },
+    async approveBeneficiaries() {
+      try {
+        this.openScreen();
+        const response = await this.$axios.put(
+          `organisation/${this.orgId}/campaigns/${this.$route.params.id}/beneficiaries/approve`
+        );
+
+        if (response.status == "success") {
+          this.getCampaignBeneficiaries();
+          screenLoading.close();
+        }
+      } catch (err) {
+        screenLoading.close();
+      }
+    },
+    async rejectBenefactor() {
+      try {
+        this.openScreen();
+        const response = await this.$axios.put(
+          `/organisation/${this.orgId}/campaigns/${this.$route.params.id}/beneficiaries`,
+          {
+            beneficiary_id: this.activeBenefactor?.UserId,
+            approved: false,
+          }
+        );
+      } catch (err) {
+        screenLoading.close();
       }
     },
 
@@ -271,10 +409,10 @@ export default {
       screenLoading = this.$loading({
         lock: true,
         spinner: "el-icon-loading",
-        background: "#0000009b"
+        background: "#0000009b",
       });
-    }
-  }
+    },
+  },
 };
 </script>
 

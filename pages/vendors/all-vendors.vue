@@ -26,7 +26,7 @@
         </div>
       </div>
 
-      <div class=" ml-auto mx-3">
+      <div class="ml-auto mx-3">
         <csv :data="computedData" name="vendors" />
       </div>
     </div>
@@ -41,7 +41,7 @@
         <thead>
           <tr>
             <th scope="col">
-              {{ this.allVendors.length == 1 ? "Vendor" : "Vendors" }}
+              {{ allVendors.length == 1 ? "Vendor" : "Vendors" }}
             </th>
             <th scope="col">Phone Number</th>
             <th scope="col">Email Address</th>
@@ -91,7 +91,7 @@
           </tr>
         </tbody>
       </table>
-      <div v-else-if="loading" class=" text-center"></div>
+      <div v-else-if="loading" class="text-center"></div>
       <h3 v-else class="text-center no-record">NO RECORD FOUND</h3>
     </div>
   </div>
@@ -109,7 +109,7 @@ export default {
       img: require("~/assets/img/user.png"),
       data: [],
       searchQuery: "",
-      loading: false
+      loading: false,
     };
   },
 
@@ -118,11 +118,11 @@ export default {
     ...mapGetters("vendors", ["allVendors"]),
     resultQuery() {
       if (this.searchQuery) {
-        return this.allVendors.filter(vendor => {
+        return this.allVendors.filter((vendor) => {
           return this.searchQuery
             .toLowerCase()
             .split(" ")
-            .every(v => vendor.first_name.toLowerCase().includes(v));
+            .every((v) => vendor.first_name.toLowerCase().includes(v));
         });
       } else {
         return this.allVendors;
@@ -131,7 +131,7 @@ export default {
 
     computedData() {
       const data = this.allVendors || [];
-      return data.map(vendor => {
+      return data.map((vendor) => {
         return {
           Name: vendor.first_name + " " + vendor.last_name,
           Phone_Number: vendor.phone,
@@ -141,10 +141,10 @@ export default {
           //   ? JSON.parse(vendor.Store.location.country)
           //   : "",
           Address: vendor.Store ? vendor.Store.address : "",
-          Created: moment(vendor.createdAt).format("DD MMMM, YYYY")
+          Created: moment(vendor.createdAt).format("DD MMMM, YYYY"),
         };
       });
-    }
+    },
   },
 
   mounted() {
@@ -159,8 +159,8 @@ export default {
     handleTempVendor(vendor) {
       this.SAVE_TEMP_VENDOR(vendor);
       this.$router.push(`/vendors/${vendor.id}`);
-    }
-  }
+    },
+  },
 };
 </script>
 

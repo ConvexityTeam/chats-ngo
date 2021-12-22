@@ -2,9 +2,8 @@
   <div>
     <div class="mt-3 text-center">
       <p>
-        You are about to {{ status }} {{ title }}. Are you really sure about
-        this?
-        <span v-if="status == 'Delete'">This action cannot be undone.</span>
+        You are about to reject {{ fullName }}. Are you really sure about this?
+        <span>This action cannot be undone.</span>
       </p>
     </div>
 
@@ -13,11 +12,11 @@
       <div class="d-flex">
         <div>
           <Button
-            :text="`${status} campaign`"
+            text="Continue"
             type="submit"
             :has-icon="false"
             custom-styles="height: 41px; border-radius:5px !important;  font-size: 14px !important"
-            @click="handleCampaign"
+            @click="handleRejection"
           />
         </div>
 
@@ -41,25 +40,29 @@ import close from "~/components/icons/close";
 export default {
   name: "campaign-prompts",
   props: {
-    status: {
-      type: String,
-      default: "",
-    },
-    title: {
-      type: String,
-      default: "",
+    benefactor: {
+      type: Object,
+      default: () => {},
     },
   },
 
   components: { close },
 
+  computed: {
+    fullName() {
+      return this.benefactor && this.benefactor.User
+        ? this.benefactor.User.first_name + " " + this.benefactor.User.last_name
+        : "";
+    },
+  },
+
   methods: {
     closeModal() {
-      this.$bvModal.hide("campaign-prompt");
+      this.$bvModal.hide("reject-benefactor");
     },
 
-    handleCampaign() {
-      this.$emit("handleCampaign", this.status);
+    handleRejection() {
+      this.$emit("rejectBenefactor");
       this.closeModal();
     },
   },

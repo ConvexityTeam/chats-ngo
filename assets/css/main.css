@@ -527,8 +527,14 @@ select.form-control {
   color: inherit;
 }
 
+.beneficiary.nav-link {
+display: block;
+padding: 0.5rem 1rem;
+
+}
+
 .nav-link {
-  color: var(--tertiary-black);
+  color: var(--primary-gray);
   font-size: 1rem;
 }
 
