@@ -17,6 +17,7 @@
   --primary-text-color: #25396f;
   --input-text-color: #646a86;
   --secondary-text-color: #7c8db5;
+  --input-text-color: #646a86;
 }
 
 /* GENERAL STYLES */
@@ -298,7 +299,7 @@ input[type="number"] {
   transition: all 0.9s ease;
 }
 
-.page-enter,
+/* .page-enter,
 .page-leave-to {
   transform: translateY(10px);
 } */
