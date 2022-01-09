@@ -23,9 +23,7 @@
           </div>
           <div class="ml-3">
             <p class="text">Campaign Budget</p>
-            <h4 class="funds">
-              $ {{ loading ? 0 : stats.income | formatCurrency }}
-            </h4>
+            <h4 class="funds">$ {{ 0 | formatCurrency }}</h4>
           </div>
         </div>
       </div>
@@ -38,9 +36,7 @@
           </div>
           <div class="ml-3">
             <p class="text">Amount Disbursed</p>
-            <h4 class="funds">
-              $ {{ loading ? 0 : stats.expense | formatCurrency }}
-            </h4>
+            <h4 class="funds">$ {{ 0 | formatCurrency }}</h4>
           </div>
         </div>
       </div>
@@ -53,19 +49,14 @@
           </div>
           <div class="ml-3">
             <p class="text">Campaign Balance</p>
-            <h4 class="funds">
-              $
-              {{
-                loading ? 0 : (stats.income - stats.expense) | formatCurrency
-              }}
-            </h4>
+            <h4 class="funds">${{ 0 | formatCurrency }}</h4>
           </div>
         </div>
       </div>
     </div>
 
     <!-- First Beneficiary cards here -->
-    <div class="row  pt-4">
+    <div class="row pt-4">
       <!-- Beneficiary Count Cards here -->
       <div class="col-lg-4 pb-3">
         <div class="cards__holder p-4">
@@ -84,7 +75,7 @@
               </div>
             </div>
             <h4 class="beneficiaries-count m-3">
-              {{ loading ? 0 : beneficiaryCount | formatNumber }}
+              {{ beneficiaries.length || 0 | formatNumber }}
             </h4>
           </div>
 
@@ -98,7 +89,7 @@
               </div>
             </div>
             <h4 class="beneficiaries-count m-3">
-              {{ loading ? 0 : allVendors.length | formatNumber }}
+              {{ vendors.length || 0 | formatNumber }}
             </h4>
           </div>
         </div>
@@ -120,7 +111,7 @@
     </div>
 
     <!-- Second Beneficiary cards here -->
-    <div class="row  ">
+    <div class="row">
       <!-- Beneficiary By Location card here -->
       <div class="col-lg-4 pb-3">
         <div class="cards__holder px-3 pt-3">
@@ -183,7 +174,7 @@
 
           <div
             class="d-flex"
-            v-for="vendor in allVendors.slice(0, 6)"
+            v-for="vendor in displayedVendors"
             :key="vendor.id"
           >
             <div>
@@ -199,11 +190,11 @@
             </div>
           </div>
 
-          <div v-if="!allVendors.length">
+          <div v-if="!displayedVendors.length">
             <h3 class="text-center no-record">NO RECORD FOUND</h3>
           </div>
 
-          <div class="d-flex " v-if="allVendors.length">
+          <div class="d-flex" v-if="displayedVendors.length">
             <div class="mt-2">
               <button
                 type="button"
@@ -215,7 +206,9 @@
               </button>
             </div>
             <div class="ml-auto d-flex">
-              <p class="pt-3 paginate">1 - 10 of 24</p>
+              <p class="pt-3 paginate">
+                1 - {{ displayedVendors.length }} of {{ vendors.length }}
+              </p>
               <button type="button" class="more-btn">
                 <leftArrow />
               </button>
@@ -244,26 +237,11 @@ import walletBalance from "~/components/icons/wallet-balance.vue";
 import totalBalance from "~/components/icons/total-balance.vue";
 import disbursed from "~/components/icons/disbursed.vue";
 import countries from "~/plugins/countries";
+import { mapGetters } from "vuex";
 
 export default {
   layout: "dashboard",
   mixins: [locateMixin],
-  data() {
-    return {
-      loading: false,
-      allVendors: [],
-      beneficiaryCount: "",
-      amount: "5000",
-      stats: {},
-
-      userLocation: {
-        alphaCode: "",
-        currencySymbol: "",
-        currencyCode: "",
-        convertedValue: "5000"
-      }
-    };
-  },
 
   components: {
     beneficiaryAge,
@@ -276,14 +254,49 @@ export default {
     leftArrow,
     walletBalance,
     totalBalance,
-    disbursed
+    disbursed,
+  },
+
+  data() {
+    return {
+      loading: false,
+      beneficiaries: [],
+      vendors: [],
+      amount: "5000",
+      stats: {},
+
+      userLocation: {
+        alphaCode: "",
+        currencySymbol: "",
+        currencyCode: "",
+        convertedValue: "5000",
+      },
+    };
+  },
+
+  computed: {
+    ...mapGetters("authentication", ["user"]),
+
+    displayedVendors() {
+      return this.vendors.slice(0, 6);
+    },
+  },
+
+  async fetch() {
+    const id = this.user?.AssociatedOrganisations[0]?.OrganisationId;
+
+    const beneficiaries = await this.$axios.get(
+      `/organisation/${id}/beneficiaries`
+    );
+    const vendors = await this.$axios.get(`/organisations/${id}/vendors`);
+
+    this.beneficiaries = beneficiaries.data;
+    this.vendors = vendors.data;
   },
 
   mounted() {
-    this.fetchAllVendors();
-    this.fetchAllBeneficiaries();
-    this.getIp();
-    this.getStats();
+    // this.getIp();
+    // this.getStats();
   },
 
   methods: {
@@ -304,70 +317,49 @@ export default {
     getIp() {
       this.$axios
         .get("http://ip-api.com/json")
-        .then(response => {
+        .then((response) => {
           console.log({ response: response.data.countryCode });
           this.userLocation.alphaCode = response.data.countryCode;
           this.setCurrency();
           this.convertCurrency();
         })
-        .catch(err => {
+        .catch((err) => {
           console.log(err);
         });
     },
 
     setCurrency() {
       const userCountry = countries.filter(
-        countries => countries.alpha2Code == this.userLocation.alphaCode
+        (countries) => countries.alpha2Code == this.userLocation.alphaCode
       );
 
       this.userLocation.currencySymbol = userCountry[0].currencies[0].symbol;
       this.userLocation.currencyCode = userCountry[0].currencies[0].code;
     },
-
     convertCurrency() {
       this.$axios
         .get(`https://fixer-fixer-currency-v1.p.rapidapi.com/convert`, {
           params: {
             from: "USD",
             to: this.userLocation.currencyCode,
-            amount: this.amount
+            amount: this.amount,
           },
           headers: {
             "x-rapidapi-key":
               "53a42b6342msha5eeed4491364b5p1c9fb1jsn357450c321a9",
-            "x-rapidapi-host": "fixer-fixer-currency-v1.p.rapidapi.com"
-          }
+            "x-rapidapi-host": "fixer-fixer-currency-v1.p.rapidapi.com",
+          },
         })
 
-        .then(response => {
+        .then((response) => {
           // this.userLocation.convertedValue = response.data.result
         })
 
-        .catch(error => {
+        .catch((error) => {
           console.log("erroo", error);
         });
     },
-
-    async fetchAllBeneficiaries() {
-      try {
-        const response = await this.$axios.get("/beneficiaries");
-        console.log({ response: response });
-        this.beneficiaryCount = response.data.length;
-      } catch (error) {
-        console.log("erroo", error);
-      }
-    },
-
-    async fetchAllVendors() {
-      try {
-        const response = await this.$axios.get("/vendors");
-        this.allVendors = response.data;
-        console.log("vendors", response);
-      } catch (error) {
-        console.log(error);
-      }
-    }
-  }
+  },
 };
 </script>
 

@@ -4,7 +4,7 @@
     <div class="row pt-4">
       <!-- Beneficiaries here -->
       <div class="col-lg-3">
-        <div class="card__holder  p-3">
+        <div class="card__holder p-3">
           <div class="d-flex">
             <img
               src="~/assets/img/vectors/group-beneficiaries.svg"
@@ -105,7 +105,7 @@
     </div>
 
     <!-- Second Beneficiary cards here -->
-    <div class="row  pt-lg-4">
+    <div class="row pt-lg-4">
       <!-- Beneficiary Marital card here -->
       <div class="col-lg-4 pb-3">
         <div class="cards__holder px-3 pt-3">
@@ -154,7 +154,7 @@ export default {
     return {
       loading: false,
       id: "",
-      stats: {}
+      stats: {},
     };
   },
 
@@ -170,19 +170,20 @@ export default {
     leftArrow,
     beneficiaryTransaction,
     disbursed,
-    totalBalance
+    totalBalance,
   },
 
   mounted() {
     this.id = this.user.AssociatedOrganisations[0].OrganisationId;
     this.getallBeneficiaries(this.id);
     this.getStats();
+    console.log("STATS:::", this.stats);
     this.getChartData();
   },
 
   computed: {
     ...mapGetters("authentication", ["user"]),
-    ...mapGetters("beneficiaries", ["beneficiaries"])
+    ...mapGetters("beneficiaries", ["beneficiaries"]),
   },
 
   methods: {
@@ -215,8 +216,8 @@ export default {
         this.loading = false;
         console.log("chsrtserr:::", err);
       }
-    }
-  }
+    },
+  },
 };
 </script>
 

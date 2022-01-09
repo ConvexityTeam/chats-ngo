@@ -10,6 +10,8 @@
     "test": "jest"
   },
   "dependencies": {
+    "@8bu/vue-otp-input": "^1.2.2",
+    "@bachdgvn/vue-otp-input": "^1.0.8",
     "@nuxtjs/axios": "^5.12.2",
     "@nuxtjs/dotenv": "^1.4.1",
     "@nuxtjs/toast": "^3.3.1",
@@ -19,6 +21,7 @@
     "core-js": "^3.6.5",
     "element-ui": "^2.15.1",
     "fs": "0.0.1-security",
+    "lodash.debounce": "^4.0.8",
     "moment": "^2.29.1",
     "nuxt": "^2.14.6",
     "vue-chartjs": "^3.5.1",

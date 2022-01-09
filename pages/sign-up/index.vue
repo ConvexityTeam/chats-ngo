@@ -19,7 +19,7 @@
               class="form-controls"
               placeholder="Enter organization"
               :class="{
-                form__input__error: $v.payload.organisation_name.$error
+                form__input__error: $v.payload.organisation_name.$error,
               }"
               id="name"
               v-model="payload.organisation_name"
@@ -69,7 +69,7 @@
           </div>
 
           <!-- Password here -->
-          <div class="form-group ">
+          <div class="form-group">
             <label for="password">Password</label>
             <input
               :type="showpassword ? 'text' : 'password'"
@@ -81,7 +81,7 @@
               @focus="passActive = true"
               @blur="$v.payload.password.$touch()"
             />
-            <div class="position-absolute icon-left ">
+            <div class="position-absolute icon-left">
               <lock-icon :active="passActive" />
             </div>
 
@@ -108,7 +108,7 @@
           </div> -->
 
           <!-- Submit button here -->
-          <div class=" text-center mt-3">
+          <div class="text-center mt-3">
             <button :disabled="loading" class="onboarding-btn">
               <span v-if="loading">
                 <img
@@ -134,7 +134,7 @@
 </template>
 
 <script>
-import { required, email } from "vuelidate/lib/validators";
+import { required, email, minLength } from "vuelidate/lib/validators";
 import { mapActions } from "vuex";
 import organisationIcon from "~/components/icons/organisation-icon.vue";
 import emailIcon from "~/components/icons/email-icon.vue";
@@ -154,7 +154,7 @@ export default {
     lockIcon,
     checkbox,
     eyeClosed,
-    eyeOpen
+    eyeOpen,
   },
 
   data() {
@@ -170,30 +170,31 @@ export default {
         email: "",
         website_url: "",
         // terms: false,
-        password: ""
-      }
+        password: "",
+      },
     };
   },
 
   validations: {
     payload: {
       organisation_name: {
-        required
+        required,
       },
       email: {
         required,
-        email
+        email,
       },
       website_url: {
-        required
+        required,
       },
       // terms: {
       //   required
       // },
       password: {
-        required
-      }
-    }
+        required,
+        minLength: minLength(6),
+      },
+    },
   },
 
   methods: {
@@ -245,7 +246,7 @@ export default {
       try {
         const data = {
           email: this.payload.email,
-          password: this.payload.password
+          password: this.payload.password,
         };
 
         const response = await this.$axios.post("/auth/login", data);
@@ -261,8 +262,8 @@ export default {
         this.loading = false;
         this.$toast.error(err.response?.data?.message);
       }
-    }
-  }
+    },
+  },
 };
 </script>
 
