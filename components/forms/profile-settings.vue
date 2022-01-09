@@ -834,6 +834,14 @@ a {
   transform: translateY(-50%);
 }
 
+.slide-enter {
+  transform: translateY(50%);
+}
+
+.slide-leave {
+  transform: translateY(-50%);
+}
+
 .mgt-btn.one {
   padding: 0.6rem 3.5rem;
 }
