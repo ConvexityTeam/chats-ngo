@@ -52,8 +52,12 @@ export default async function ({ $axios, app }) {
     // ).toString(CryptoJS.enc.Utf8);
 
     // const data = JSON.parse(decrypted);
+    const paths = ["/"];
 
-    if (err.response?.status == "401") {
+    if (
+      err.response?.status == "401" &&
+      !app.router.history.current.path.includes(paths)
+    ) {
       app.$toast.error(err.response.data.message);
       app.router.push("/");
     }

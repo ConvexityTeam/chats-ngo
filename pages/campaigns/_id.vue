@@ -248,7 +248,13 @@ export default {
           `/organisations/${this.orgId}/campaigns/${this.$route.params.id}`
         );
 
-        console.log("details:::", response);
+				if (response.status == 'success') {
+					screenLoading.close();
+					this.details = response.data;
+					// this.beneficiaries = response.data[0].Beneficiaries;
+					// this.location = JSON.parse(response.data[0].location);
+					console.log('here', response.data);
+				}
 
         if (response.status == "success") {
           screenLoading.close();
@@ -280,8 +286,8 @@ export default {
 
 <style scoped>
 .main {
-  height: calc(100vh - 72px);
-  overflow-y: scroll;
+	height: calc(100vh - 72px);
+	overflow-y: scroll;
 }
 
 .col-lg-8 {

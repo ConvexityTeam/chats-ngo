@@ -18,10 +18,10 @@
               type="email"
               class="form-controls"
               placeholder="example@gmail.com"
-              :class="{ form__input__error: $v.payload.email.$error }"
-              id="email"
-              v-model="payload.email"
               @focus="emailActive = true"
+              id="email"
+              :class="{ form__input__error: $v.payload.email.$error }"
+              v-model="payload.email"
               @blur="$v.payload.email.$touch()"
             />
             <div class="position-absolute icon-left">
@@ -155,8 +155,8 @@ export default {
         this.loading = false;
       } catch (err) {
         this.loading = false;
-        console.log("ERRR::::", err);
-        this.$toast.error(err);
+        console.log("ERRR::::", { err });
+        this.$toast.error(err?.response?.data?.message);
       }
     },
   },
