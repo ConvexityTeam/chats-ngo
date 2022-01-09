@@ -1,62 +1,62 @@
 export default {
-  state: () => ({
-    token: "",
-    userLocation: {},
-    user: null
-  }),
+	state: () => ({
+		token: '',
+		userLocation: {},
+		user: null,
+	}),
 
-  getters: {
-    token: state => state.token,
-    userLocation: state => state.userLocation,
-    user: state => state.user
-  },
+	getters: {
+		token: (state) => state.token,
+		userLocation: (state) => state.userLocation,
+		user: (state) => state.user,
+	},
 
-  mutations: {
-    setUserToken(state, payload) {
-      state.token = payload;
-      localStorage.setItem("userToken", payload);
-    },
-    setUserLocation(state, payload) {
-      state.userLocation = payload;
-    },
+	mutations: {
+		setUserToken(state, payload) {
+			state.token = payload;
+			localStorage.setItem('userToken', payload);
+		},
+		setUserLocation(state, payload) {
+			state.userLocation = payload;
+		},
 
-    setUserObject(state, payload) {
-      state.user = payload;
-    },
+		setUserObject(state, payload) {
+			state.user = payload;
+		},
 
-    setUserUpdate(state, payload) {
-      state.user.AssociatedOrganisations[0].Organisation = payload;
-    },
+		setUserUpdate(state, payload) {
+			state.user.AssociatedOrganisations[0].Organisation = payload;
+		},
 
-    removeToken(state) {
-      window.localStorage.removeItem("userToken");
-      state.token = "";
-    }
-  },
+		removeToken(state) {
+			window.localStorage.removeItem('userToken');
+			state.token = '';
+		},
+	},
 
-  actions: {
-    /**
-     * User Authentication Actions
-     */
-    commitToken({ commit }, payload) {
-      commit("setUserToken", payload);
-    },
+	actions: {
+		/**
+		 * User Authentication Actions
+		 */
+		commitToken({ commit }, payload) {
+			commit('setUserToken', payload);
+		},
 
-    locateUser({ commit }, payload) {
-      commit("setUserLocation", payload);
-    },
+		locateUser({ commit }, payload) {
+			commit('setUserLocation', payload);
+		},
 
-    commitUser({ commit }, payload) {
-      commit("setUserObject", payload);
-    },
+		commitUser({ commit }, payload) {
+			commit('setUserObject', payload);
+		},
 
-    commitUserUpdate({ commit }, payload) {
-      commit("setUserUpdate", payload);
-    },
+		commitUserUpdate({ commit }, payload) {
+			commit('setUserUpdate', payload);
+		},
 
-    async logout({ commit }) {
-      await commit("removeToken");
-      return true;
-    }
-  }
+		async logout({ commit }) {
+			await commit('removeToken');
+			return true;
+		},
+	},
 };

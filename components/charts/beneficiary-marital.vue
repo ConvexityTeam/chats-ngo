@@ -2,10 +2,17 @@
   <div>
     <div class>
       <doughnut-chart
+        v-if="requiredData"
         :data="doughnutChartData"
         :options="doughnutChartOptions"
         :height="320"
       />
+      <div
+        v-else
+        class="spinner d-flex justify-content-center align-items-center"
+      >
+        <b-spinner class="primary" label="Spinning"></b-spinner>
+      </div>
     </div>
   </div>
 </template>
@@ -14,19 +21,20 @@
 import doughnutChart from "~/plugins/charts/doughnutchart";
 export default {
   components: {
-    doughnutChart
+    doughnutChart,
   },
   data() {
     return {
+      loading: false,
       doughnutChartData: {
         labels: ["Single", "Married", "Divorced"],
         datasets: [
           {
             label: ["Single", "Married", "Divorced"],
-            data: [10, 15, 5],
-            backgroundColor: ["#E8FCCF", "#96E072", "#3DA35D"]
-          }
-        ]
+            data: [],
+            backgroundColor: ["#E8FCCF", "#96E072", "#3DA35D"],
+          },
+        ],
       },
       doughnutChartOptions: {
         responsive: true,
@@ -36,25 +44,61 @@ export default {
 
           labels: {
             fontColor: "#263238",
-            usePointStyle: true
-          }
+            usePointStyle: true,
+          },
         },
         title: {
           display: true,
           text: "Beneficiary By Marital Status",
           fontSize: 18,
-          fontColor: "#333333"
+          fontColor: "#333333",
         },
         cutoutPercentage: 70,
         rotation: Math.PI * 1,
         animation: {
-          animateScale: true
+          animateScale: true,
         },
         tooltips: {
-          backgroundColor: "#17BF62"
-        }
-      }
+          backgroundColor: "#17BF62",
+        },
+      },
     };
-  }
+  },
+
+  computed: {
+    requiredData() {
+      return this.doughnutChartData?.datasets[0]?.data?.length;
+    },
+  },
+
+  mounted() {
+    this.updateChart();
+  },
+
+  methods: {
+    async updateChart() {
+      try {
+        this.loading = true;
+        const response = await this.$axios.get("/beneficiaries/marital_status");
+
+        // console.log('MaritalData:::', data);
+
+        if (response.status == "success") {
+          const data = response.data;
+          Object.values(data).forEach((item) => {
+            this.doughnutChartData.datasets[0].data.push(item);
+          });
+
+          this.loading = false;
+        }
+
+        console.log("MARITAL_STATUS RESPONSE", response);
+      } catch (err) {
+        console.log("MARITALSTATUSERERR::", { err });
+        this.$toast.error(err.response.data.message);
+        this.loading = false;
+      }
+    },
+  },
 };
 </script>

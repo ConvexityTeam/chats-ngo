@@ -150,7 +150,7 @@ export default {
     },
 
     handleCode(value) {
-      this.payload.otp = value;
+      this.payload.otp = value; 
       this.step = 3;
     },
     async resetPassword(payload) {
@@ -169,7 +169,7 @@ export default {
           this.$router.push("/");
         }
 
-        console.log("REset response", response);
+        console.log("Reset response", response);
         this.loading = false;
       } catch (err) {
         this.loading = false;

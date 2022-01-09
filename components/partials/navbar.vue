@@ -11,13 +11,14 @@
       </div>
 
       <!-- Route location here -->
-      <div class="col-lg-4 mx-4">
+      <div class="col-lg-4 ml-5">
         <h5 class="title">{{ title | capitalize }}</h5>
       </div>
 
       <div
         class="col-sm-auto d-flex ml-auto justify-content-between align-items-center"
       >
+      <!-- Notification -->
         <span>
           <div class="d-flex align-items-center px-2">
             <el-badge
@@ -40,6 +41,7 @@
                 /></svg
             ></el-badge>
 
+            <!-- profile picture -->
             <div class="d-flex image-holder justify-content-center mx-auto">
               <img
                 v-if="
