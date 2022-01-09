@@ -182,6 +182,10 @@ input[type="number"] {
   border-top-color: #2f4275;
 }
 
+.b-avatar .b-avatar-img img {
+  object-fit: contain !important;
+}
+
 /* STATUS STYLES */
 .status {
   height: 24px !important;
