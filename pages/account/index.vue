@@ -35,7 +35,6 @@
           </div>
 
           <!--  Cash Balance here -->
-
           <div class="col-lg-4">
             <div class="card__holder d-flex p-3">
               <div>
@@ -48,7 +47,7 @@
                     (wallet &&
                       wallet.MainWallet &&
                       wallet.MainWallet.balance) ||
-                    0 | formatCurrency
+                      0 | formatCurrency
                   }}
                 </h4>
               </div>
@@ -84,21 +83,20 @@ export default {
     wallet,
 
     disbursed,
-    totalBalance,
+    totalBalance
   },
 
   data: () => ({
     loading: false,
-    wallet: {},
+    wallet: {}
   }),
 
   computed: {
-    ...mapGetters("authentication", ["user"]),
+    ...mapGetters("authentication", ["user"])
   },
 
   mounted() {
-    this.organisationId =
-      this.user?.AssociatedOrganisations[0]?.Organisation?.id;
+    this.organisationId = this.user?.AssociatedOrganisations[0]?.Organisation?.id;
     this.getWallet();
   },
 
@@ -125,10 +123,10 @@ export default {
       screenLoading = this.$loading({
         lock: true,
         spinner: "el-icon-loading",
-        background: "#0000009b",
+        background: "#0000009b"
       });
-    },
-  },
+    }
+  }
 };
 </script>
 
@@ -147,12 +145,11 @@ export default {
   margin-bottom: 0px !important;
 }
 .funds {
-  color: #25396f;
+  color: var(--primary-blue);
   font-weight: 500;
-  font-size: 1.25rem;
+  font-size: 1.125rem;
   padding-top: 5px;
-  word-wrap: break-word;
-  width: 7rem;
+  word-break: break-all;
 }
 .main {
   height: calc(100vh - 72px);

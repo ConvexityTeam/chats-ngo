@@ -8,7 +8,7 @@
         <div class="ml-4">
           <sideMenu />
         </div>
-        <div style="flex-grow: 1;">
+        <div style="flex-grow: 1">
           <nuxt />
         </div>
       </div>
@@ -17,13 +17,38 @@
 </template>
 
 <script>
-import topNav from '~/components/partials/navbar'
-import sideMenu from '~/components/partials/sidemenu'
+import topNav from "~/components/partials/navbar";
+import sideMenu from "~/components/partials/sidemenu";
+import IdleJs from "idle-js";
+
 export default {
-  middleware: 'authenticated',
+  middleware: "authenticated",
   components: {
     topNav,
-    sideMenu,
+    sideMenu
   },
-}
+
+  mounted() {
+    const timeout = {
+      dev: 600000,
+      prd: 60000
+    };
+
+    var idle = new IdleJs({
+      idle: process.env.NODE_ENV === "development" ? timeout.dev : timeout.prd, // idle time in ms
+      events: ["mousemove", "keydown", "mousedown", "touchstart"], // events that will trigger the idle resetter
+
+      onIdle: () => {
+        localStorage.clear();
+        this.$store.dispatch("authentication/logout");
+        this.$router.push("/");
+      },
+
+      keepTracking: true, // set it to false if you want to be notified only on the first idleness change
+      startAtIdle: false // set it to true if you want to start in the idle state
+    });
+
+    idle.start();
+  }
+};
 </script>

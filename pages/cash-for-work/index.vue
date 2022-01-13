@@ -6,7 +6,7 @@
     </Modal>
 
     <Modal id="new-task" title="new task">
-      <new-task @reload="fetchAllCampaigns" />
+      <new-task @reload="fetchAllCampaigns" :campaign="campaign" />
     </Modal>
 
     <Modal id="fund-campaign" title="fund Campaign">
@@ -15,9 +15,6 @@
         @fundCampaign="fundCampaign"
       />
     </Modal>
-
-    <!-- <newCash @reload="fetchAllCampaigns" /> -->
-    <!-- <newTask @reload="fetchAllCampaigns" :id="id" /> -->
 
     <!-- New C4W Here -->
     <div class="row pt-4 mt-2">
@@ -42,7 +39,7 @@
         </div>
       </div>
 
-      <div class=" ml-auto mx-3">
+      <div class="ml-auto mx-3">
         <Button
           text="Create new"
           custom-styles="height:50px"
@@ -53,7 +50,7 @@
 
     <!-- cards here -->
     <div class="row mt-4 pt-2">
-      <div v-if="loading" class=" text-center"></div>
+      <div v-if="loading" class="text-center"></div>
 
       <div
         v-else-if="resultQuery.length"
@@ -64,10 +61,10 @@
         <div class="card__holder">
           <div class="p-4">
             <!-- title here -->
-            <h4 class="caption  pb-2">{{ campaign.title }}</h4>
+            <h4 class="caption pb-2">{{ campaign.title }}</h4>
 
             <!-- Beneficiaries count here -->
-            <div class="d-flex ">
+            <div class="d-flex">
               <svg
                 class="mt-1"
                 width="26"
@@ -127,13 +124,13 @@
                 :has-icon="false"
                 text="Create task"
                 custom-styles="height:41px; font-weight: 600; border-radius: 5px; font-size: 0.875rem"
-                @click="$bvModal.show('new-task')"
+                @click="handleNewTask(campaign)"
               />
 
               <button
                 type="button"
                 :disabled="campaign.is_funded"
-                class=" border-0 bg-transparent fund-btn poppins"
+                class="border-0 bg-transparent fund-btn poppins"
                 @click="handleModal(campaign)"
               >
                 Fund campaign
@@ -141,7 +138,7 @@
 
               <button
                 type="button"
-                class=" border-0 bg-transparent "
+                class="border-0 bg-transparent"
                 @click="$router.push(`/cash-for-work/${campaign.id}`)"
               >
                 <svg
@@ -185,9 +182,10 @@ export default {
       loading: false,
       loading: false,
       id: "",
+      campaign: {},
       campaigns: [],
       SelectedCampaign: {},
-      searchQuery: ""
+      searchQuery: "",
     };
   },
 
@@ -195,20 +193,20 @@ export default {
     ...mapGetters("authentication", ["user"]),
     resultQuery() {
       if (this.searchQuery) {
-        return this.campaigns.filter(campaign => {
+        return this.campaigns.filter((campaign) => {
           return this.searchQuery
             .toLowerCase()
             .split(" ")
-            .every(v => campaign.title.toLowerCase().includes(v));
+            .every((v) => campaign.title.toLowerCase().includes(v));
         });
       } else {
         return this.campaigns;
       }
-    }
+    },
   },
 
   mounted() {
-    this.id = this.user.AssociatedOrganisations[0].OrganisationId;
+    this.id = this.user?.AssociatedOrganisations[0]?.OrganisationId;
     this.fetchAllCampaigns();
   },
 
@@ -218,7 +216,6 @@ export default {
         this.loading = true;
         this.openScreen();
 
-        // const response = await this.$axios.get(`/cash-for-work`);
         const response = await this.$axios.get(
           `/organisations/${+this.id}/campaigns/all?type=cash-for-work`
         );
@@ -235,14 +232,33 @@ export default {
         this.loading = false;
       }
     },
+    async fundCampaign() {
+      try {
+        this.openScreen();
 
+        const response = await this.$axios.post(
+          `organisations/${this.id}/campaigns/${SelectedCampaign.id}/fund`
+        );
+
+        screenLoading.close();
+        console.log("FundResponse", response);
+
+        if (response.status == "success") {
+          this.fetchAllCampaigns();
+        }
+      } catch (err) {
+        screenLoading.close();
+        this.$toast.error(err.response.data.message);
+        console.log({ err: err });
+      }
+    },
     async fundCampaign() {
       try {
         this.openScreen();
         const response = await this.$axios.post("organisation/transfer/token", {
           campaign: this.SelectedCampaign.id,
           amount: this.SelectedCampaign.budget,
-          organisation_id: this.id
+          organisation_id: this.id,
         });
         screenLoading.close();
 
@@ -267,7 +283,7 @@ export default {
           campaignId: this.SelectedCampaign.id,
           budget: this.SelectedCampaign.budget,
           description: this.SelectedCampaign.description,
-          status: "active"
+          status: "active",
         });
 
         if (response.status == "success") {
@@ -278,6 +294,11 @@ export default {
       } catch (err) {
         console.log(err);
       }
+    },
+
+    handleNewTask(campaign) {
+      this.campaign = campaign;
+      this.$bvModal.show("new-task");
     },
 
     handleModal(campaign) {
@@ -291,10 +312,10 @@ export default {
       screenLoading = this.$loading({
         lock: true,
         spinner: "el-icon-loading",
-        background: "#0000009b"
+        background: "#0000009b",
       });
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -321,25 +342,8 @@ export default {
   cursor: not-allowed;
 }
 
-.tasks {
-  color: #646a86;
-  font-size: 0.875rem;
-}
-
-.tasks span {
-  font-weight: bold;
-}
-
-.task-badge {
-  background: #f5f6f8;
-  border-radius: 30px;
-  font-size: 0.875rem;
-  color: var(--tertiary-black);
-  height: 24px;
-}
-
 .caption {
-  color: var(--tertiary-black);
+  color: var(--primary-blue);
   font-weight: bold;
   font-size: 1.125rem;
   letter-spacing: 0.01em;

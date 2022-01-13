@@ -35,7 +35,12 @@
       </div>
 
       <div class="ml-auto mx-3">
-        <csv :data="computedData" name="beneficiaries" />
+        <csv
+          :data="computedData"
+          name="beneficiaries"
+          :has-border="true"
+          :green-csv="true"
+        />
       </div>
     </div>
 
@@ -79,7 +84,7 @@
                 class="status p-2"
                 :class="{
                   completed: transaction.status == 'success',
-                  'pending-2': transaction.status !== 'success',
+                  'pending-2': transaction.status !== 'success'
                 }"
               >
                 {{ transaction.status == "success" ? "Completed" : "Pending" }}
@@ -101,7 +106,7 @@ let screenLoading;
 
 export default {
   components: {
-    dot,
+    dot
   },
 
   data: () => ({
@@ -111,15 +116,15 @@ export default {
     options: [
       {
         value: "Option1",
-        label: "Option1",
+        label: "Option1"
       },
       {
         value: "Option2",
-        label: "Option2",
-      },
+        label: "Option2"
+      }
     ],
 
-    transactions: [],
+    transactions: []
   }),
 
   computed: {
@@ -127,11 +132,11 @@ export default {
 
     resultQuery() {
       if (this.searchQuery) {
-        return this.transactions.filter((transaction) => {
+        return this.transactions.filter(transaction => {
           return this.searchQuery
             .toLowerCase()
             .split(" ")
-            .every((v) => transaction.reference.toLowerCase().includes(v));
+            .every(v => transaction.reference.toLowerCase().includes(v));
         });
       } else {
         return this.transactions;
@@ -140,12 +145,11 @@ export default {
 
     computedData() {
       return [];
-    },
+    }
   },
 
   mounted() {
-    this.organisationId =
-      this.user?.AssociatedOrganisations[0]?.Organisation?.id;
+    this.organisationId = this.user?.AssociatedOrganisations[0]?.Organisation?.id;
 
     this.getTransactions();
   },
@@ -178,10 +182,10 @@ export default {
       screenLoading = this.$loading({
         lock: true,
         spinner: "el-icon-loading",
-        background: "#0000009b",
+        background: "#0000009b"
       });
-    },
-  },
+    }
+  }
 };
 </script>
 

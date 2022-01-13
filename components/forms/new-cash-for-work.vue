@@ -9,7 +9,7 @@
           type="text"
           class="form-controls"
           :class="{
-            error: $v.payload.title.$error
+            error: $v.payload.title.$error,
           }"
           placeholder="Enter name of campaign"
           v-model="payload.title"
@@ -25,7 +25,7 @@
           class="form-controls p-2"
           placeholder="Short description"
           :class="{
-            error: $v.payload.description.$error
+            error: $v.payload.description.$error,
           }"
           cols="30"
           rows="3"
@@ -44,7 +44,7 @@
               type="number"
               class="form-controls"
               :class="{
-                error: $v.payload.budget.$error
+                error: $v.payload.budget.$error,
               }"
               id="total-amount"
               placeholder="0.00"
@@ -57,37 +57,37 @@
       </div>
 
       <!-- Date fields here -->
-      <div class="row ">
+      <div class="row">
         <div class="col-lg-6">
           <!--start date  field  here -->
-          <div class="form-group">
+          <div id="c4w" class="form-group">
             <label for="start-date">Start Date</label>
             <date-picker
               v-model="payload.start_date"
               format="DD-MM-YYYY"
               placeholder="DD-MM-YYYY"
-              valueType="format"
+              :disabled-date="(present) => present <= new Date()"
             ></date-picker>
           </div>
         </div>
 
         <!--end date field  here -->
         <div class="col-lg-6">
-          <div class="form-group">
+          <div id="c4w" class="form-group">
             <label for="end-date">End Date</label>
 
             <date-picker
               v-model="payload.end_date"
               format="DD-MM-YYYY"
               placeholder="DD-MM-YYYY"
-              valueType="format"
+              :disabled-date="(present) => present <= new Date()"
             ></date-picker>
           </div>
         </div>
       </div>
 
       <!-- button area here -->
-      <div class="d-flex my-3 ">
+      <div class="d-flex my-3">
         <div>
           <Button
             text="Create campaign"
@@ -114,15 +114,16 @@
 </template>
 
 <script>
-import { required, minValue } from "vuelidate/lib/validators";
+import { required } from "vuelidate/lib/validators";
 import { mapGetters } from "vuex";
 import DatePicker from "vue2-datepicker";
 import "vue2-datepicker/index.css";
-const greaterThanZero = value => value >= 100;
+const greaterThanZero = (value) => value >= 100;
 
 export default {
   data() {
     return {
+      present: new Date(),
       loading: false,
       id: 0,
       payload: {
@@ -132,26 +133,26 @@ export default {
         budget: "",
         location: [],
         start_date: "",
-        end_date: ""
+        end_date: "",
       },
 
       location: {
-        coordinates: []
-      }
+        coordinates: [],
+      },
     };
   },
 
   validations: {
     payload: {
       title: {
-        required
+        required,
       },
       description: {
-        required
+        required,
       },
       budget: {
         required,
-        greaterThanZero
+        greaterThanZero,
       },
       //   location: {
       //     coordinates: {
@@ -159,22 +160,21 @@ export default {
       //     }
       //   },
       start_date: {
-        required
+        required,
       },
       end_date: {
-        required
-      }
-    }
+        required,
+      },
+    },
   },
   components: { DatePicker },
 
   computed: {
-    ...mapGetters("authentication", ["user"])
+    ...mapGetters("authentication", ["user"]),
   },
 
   mounted() {
-    this.id = this.user.AssociatedOrganisations[0].OrganisationId;
-    // this.formatCurrency(100000);
+    this.id = this.user?.AssociatedOrganisations[0]?.OrganisationId;
   },
 
   methods: {
@@ -183,7 +183,7 @@ export default {
     },
     async createCampaign() {
       console.log("pd::", this.payload);
-      console.log("COORD", this.payload.location.coordinates);
+      // console.log("COORD", this.payload.location.coordinates);
 
       try {
         this.loading = true;
@@ -215,16 +215,16 @@ export default {
         this.loading = false;
         this.$toast.error(err.response.data?.message);
       }
-    }
+    },
 
     // TODO:Try emiting fetch all campaigns method from parent and calling here
-  }
+  },
 };
 </script>
 
 <style scoped>
 label {
-  color: var(--tertiary-black);
+  color: var(--primary-blue);
   font-size: 1rem;
   font-weight: 500;
 }

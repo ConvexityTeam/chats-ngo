@@ -16,7 +16,7 @@
 body,
 html {
   font-family: "Gilroy";
-  background: #fafafa;
+  background: #FCFCFE;
   scroll-behavior: smooth;
 }
 
@@ -151,12 +151,24 @@ input[type=number] {
   object-fit: contain !important;
 }
 
+/* TOOLTIP HERE */
+
+.tooltip-inner {
+  background: #2F4275 ;
+  opacity: 0.95 ;
+  max-width: 280px;
+  padding: 1rem 0.5rem;
+  text-align: left;
+}
+
+.bs-tooltip-top .arrow::before{
+  border-top-color: #2F4275;
+}
+
 /* STATUS STYLES */
 .status {
-  height: 24px;
+  height: 24px !important;
   border-radius: 30px;
-  background: #ffcdc7;
-  color: #5e0e03;
   font-size: 0.75rem;
   letter-spacing: 0.01em;
   display: flex;
@@ -195,6 +207,28 @@ input[type=number] {
   color: #24B29F;
 }
 
+/* Progress Style */
+
+.tasks {
+  color: #646a86;
+  font-size: 0.875rem;
+}
+
+.tasks span {
+  font-weight: bold;
+}
+
+.task-badge {
+  background: #f5f6f8;
+  border-radius: 30px;
+  font-size: 0.875rem;
+  color: var(--primary-blue);
+  height: 24px;
+}
+
+.progress {
+  height: 0.5rem;
+}
 
 
 /* DRAWER STYLES HERE */
@@ -238,12 +272,21 @@ input[type=number] {
 /* .page-enter-active,
 .page-leave-active {
   transition: all 0.9s ease;
-} */
+}
 
-/* .page-enter,
+.page-enter,
 .page-leave-to {
   transform: translateY(10px);
 } */
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: all 0.9s ease;
+}
+.fade-enter,
+.fade-leave-to {
+  opacity: 0;
+}
 
 /* FORM INPUT HERE */
 
@@ -329,6 +372,11 @@ p.form-input__error span {
   padding: 0rem 3rem;
   border-radius: 8px;
   height: 50px;
+  background: inherit;
+}
+
+.form-controls.search::placeholder{
+  font-size: 1rem;
 }
 
 .search-icon {
@@ -379,6 +427,29 @@ p.form-input__error span {
 select.form-control {
   width: fit-content;
 }
+
+/* PRODUCT STYLES */
+.word-content {
+  font-size: 1rem;
+  word-break: break-all;
+  width: 10rem;
+  max-width: 10rem;
+}
+
+.no-product {
+  margin: 120px auto;
+}
+
+.product-holder {
+  border: 1px solid #f5f6f8;
+  border-radius: 0px 10px 10px 0px;
+  border-left: 5px solid #17ce89;
+}
+
+.product-holder.odd {
+  border-left: 5px solid #e42c66;
+}
+
 
 /* VUE TEL INPUT STYLES */
 .vti__input:focus {
@@ -665,6 +736,11 @@ select.form-control {
   outline: none;
   line-height: 1.5;
   transition: all 0.3s ease;
+}
+
+#c4w > .mx-datepicker > .mx-input-wrapper > .mx-input {
+  border: 1px solid #7c8db5 !important;
+  background: inherit !important;
 }
 
 /* LOADERS HERE */

@@ -8,7 +8,7 @@
       />
     </Modal>
 
-    <h4 class="campaign-details-header poppins pt-2">Campaign Summary</h4>
+    <h4 class="campaign-details-header poppins pt-2">Task Summary</h4>
 
     <!-- details region here -->
     <div class="campaign-details-inner mt-4 p-4">
@@ -31,13 +31,13 @@
 
         <div class="ml-2">
           <p class="campaign-beneficiary-count">
-            {{ count }} {{ count == 1 ? "Beneficiary" : "Beneficiaries" }}
+            {{ count }} {{ count == 1 ? "Entry" : "Entries" }}
           </p>
         </div>
       </div>
 
       <!-- Task Region -->
-      <div v-if="details.type == 'cash-for-work'">
+      <div>
         <!-- Progress bar here -->
         <b-progress
           :value="100"
@@ -48,14 +48,6 @@
 
         <!-- Task count here -->
         <div class="d-flex">
-          <div>
-            <p class="tasks">
-              <span>{{ details.completedTasks }}</span>
-              / {{ details.totalTasks }}
-              {{ details.totalTasks == 1 ? "Task" : "Tasks" }}
-            </p>
-          </div>
-
           <!-- Progress here -->
           <div class="ml-auto">
             <div class="task-badge d-flex align-items-center px-3">
@@ -68,16 +60,6 @@
       <!-- Details -->
       <div class="mt-4">
         <div class="d-flex campaign-divider mb-3">
-          <p class="campaign-captions">Budget:</p>
-
-          <div class="ml-auto">
-            <p class="campaign-answers">
-              $ {{ details.budget | formatCurrency }}
-            </p>
-          </div>
-        </div>
-
-        <div class="d-flex campaign-divider mb-3">
           <p class="campaign-captions">Description:</p>
 
           <div class="ml-auto">
@@ -86,31 +68,11 @@
         </div>
 
         <div class="d-flex campaign-divider mb-3">
-          <p class="campaign-captions">Start date:</p>
+          <p class="campaign-captions">Amount:</p>
 
           <div class="ml-auto">
             <p class="campaign-answers">
-              {{ details.start_date | shortDate }}
-            </p>
-          </div>
-        </div>
-
-        <div class="d-flex campaign-divider mb-3">
-          <p class="campaign-captions">End date:</p>
-
-          <div class="ml-auto">
-            <p class="campaign-answers">
-              {{ details.end_date | shortDate }}
-            </p>
-          </div>
-        </div>
-
-        <div class="d-flex campaign-divider mb-3">
-          <p class="campaign-captions">Location:</p>
-
-          <div class="ml-auto">
-            <p class="campaign-answers">
-              {{ location }}
+              $ {{ details.budget | formatCurrency }}
             </p>
           </div>
         </div>
@@ -126,37 +88,11 @@
         </div>
       </div>
     </div>
-
-    <!-- button region here -->
-    <div v-if="statuses.includes(details.status)" class="mt-3">
-      <div class="d-flex">
-        <Button
-          :text="
-            details.status == 'paused' ? 'Resume campaign' : 'Pause campaign'
-          "
-          :has-icon="false"
-          :has-border="true"
-          custom-styles=" height: 41px !important; border: 1px solid #17CE89 !important; border-radius: 5px !important; font-size: 0.875rem !important; padding: 0px 8px !important; font-weight: 600 !important"
-          @click="handleModal(details.status == 'paused' ? 'resume' : 'Pause')"
-        />
-
-        <div class="ml-3">
-          <Button
-            text="Delete campaign"
-            :has-icon="false"
-            :has-border="true"
-            custom-styles=" height: 41px !important; border: 1px solid #E42C66 !important; color: #E42C66 !important; border-radius: 5px !important; font-size: 0.875rem !important; padding: 0px 8px !important; font-weight: 600 !important"
-            @click="handleModal('Delete')"
-          />
-        </div>
-      </div>
-    </div>
   </div>
 </template>
 
 <script>
 import campaignPrompt from "~/components/forms/campaign-prompts.vue";
-
 let screenLoading;
 
 export default {

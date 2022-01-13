@@ -52,26 +52,26 @@
                     <th scope="col">Description</th>
                     <th scope="col">Amount</th>
                     <th scope="col">Created</th>
-                    <th scope="col"></th>
+                    <th scope="col">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr v-for="benefactor in resultQuery" :key="benefactor.id">
+                  <tr v-for="task in resultQuery" :key="task.id">
                     <td>
-                      {{ benefactor.first_name + " " + benefactor.last_name }}
+                      {{ task.name }}
                     </td>
-                    <td>{{ benefactor.phone }}</td>
-                    <td>{{ benefactor.email }}</td>
-                    <td>{{ benefactor.email }}</td>
+                    <td>{{ task.description }}</td>
+                    <td>{{ task.amount | formatCurrency }}</td>
+                    <td>{{ task.createdAt | shortDate }}</td>
                     <td>
                       <div>
                         <Button
-                          text="View"
+                          text="View entries"
                           :has-icon="false"
                           :has-border="true"
                           custom-styles="border: 1px solid #17CE89 !important; border-radius: 5px !important; font-size: 0.875rem !important; height: 33px !important"
                           @click="
-                            $router.push(`/beneficiaries/${benefactor.UserId}`)
+                            $router.push(`/cash-for-work/tasks/${task.id}`)
                           "
                         />
                       </div>
@@ -79,7 +79,7 @@
                   </tr>
                 </tbody>
               </table>
-              <div v-else-if="loading" class=" text-center"></div>
+              <div v-else-if="loading" class="text-center"></div>
               <h3 v-else class="text-center no-record">NO RECORD FOUND</h3>
             </div>
           </div>
@@ -110,12 +110,17 @@ import banner from "~/components/generic/banner.vue";
 let screenLoading;
 export default {
   layout: "dashboard",
+  components: {
+    campaignDetails,
+    banner,
+  },
+
   data: () => ({
     loading: false,
     orgId: "",
     searchQuery: "",
+    tasks: [],
 
-    complaints: [],
     beneficiaries: [],
     details: {},
     location: "",
@@ -123,32 +128,37 @@ export default {
 
     title: "",
     drawer: false,
-    direction: "rtl"
+    direction: "rtl",
   }),
 
-  components: {
-    campaignDetails,
-    banner
+  async fetch() {
+    const id = this.user?.AssociatedOrganisations[0]?.OrganisationId;
+    const response = await this.$axios.get(
+      `tasks/${id}/${this.$route.params.id}`
+    );
+
+    this.tasks = response.data?.rows;
+    console.log("response:::", response);
   },
 
   computed: {
     ...mapGetters("authentication", ["user"]),
     resultQuery() {
       if (this.searchQuery) {
-        return this.beneficiaries.filter(benefactor => {
+        return this.tasks.filter((task) => {
           return this.searchQuery
             .toLowerCase()
             .split(" ")
-            .every(v => benefactor.User.first_name.toLowerCase().includes(v));
+            .every((v) => task.name.toLowerCase().includes(v));
         });
       } else {
-        return this.beneficiaries;
+        return this.tasks;
       }
-    }
+    },
   },
 
   mounted() {
-    this.orgId = this.user.AssociatedOrganisations[0].OrganisationId;
+    this.orgId = this.user?.AssociatedOrganisations[0]?.OrganisationId;
     this.getDetails();
   },
 
@@ -168,7 +178,7 @@ export default {
           screenLoading.close();
           this.details = response.data;
           this.beneficiaries = response.data.Beneficiaries;
-          this.location = JSON.parse(response.data.location?.country);
+          this.location = JSON.parse(response.data?.location?.country);
           console.log("loc::", this.location);
           console.log("here", response.data);
         }
@@ -185,10 +195,10 @@ export default {
       screenLoading = this.$loading({
         lock: true,
         spinner: "el-icon-loading",
-        background: "#0000009b"
+        background: "#0000009b",
       });
-    }
-  }
+    },
+  },
 };
 </script>
 

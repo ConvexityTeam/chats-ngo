@@ -1,10 +1,10 @@
 <template>
-  <div class="d-flex ">
+  <div class="d-flex">
     <!-- form here -->
     <div class="w-50 p-5">
       <div class="mt-2 mb-4">
         <h3 class="tertiary-black font-bold">Add Product / Service</h3>
-        <span class="font-medium primary-gray ">
+        <span class="font-medium primary-gray">
           Select product or services and assign vendors and price tags.
         </span>
       </div>
@@ -30,7 +30,7 @@
       </div>
 
       <!-- Tag here -->
-      <div class="mb-3 ">
+      <div class="mb-3">
         <label for="tag">Tag</label>
         <div class="w-100">
           <input
@@ -50,7 +50,7 @@
       </div>
 
       <!-- Cost here -->
-      <div class="mb-3 ">
+      <div class="mb-3">
         <label for="cost">Cost</label>
         <div class="w-100">
           <input
@@ -105,7 +105,7 @@
 
     <div class="vl mx-auto" />
 
-    <div class="w-50  py-5 px-4">
+    <div class="w-50 py-5 px-4">
       <i
         class="el-dialog__close el-icon el-icon-close float-right mt-2"
         @click="$emit('close')"
@@ -210,11 +210,11 @@
         </div>
 
         <div class="text-center mt-4 w-75 mx-auto">
-          <h5 class="font-bold tertiary-black" style="  font-size: 1.125rem;">
+          <h5 class="font-bold tertiary-black" style="font-size: 1.125rem">
             Nothing in here yet.
           </h5>
 
-          <p class=" font-medium primary-gray">
+          <p class="font-medium primary-gray">
             Products or services will show up here once you add them on the left
             pane.
           </p>
@@ -396,31 +396,9 @@ div.vl {
   height: 100vh;
 }
 
-.word-content {
-  font-size: 1rem;
-  word-break: break-all;
-  width: 10rem;
-  max-width: 10rem;
-}
-
-.no-product {
-  margin: 120px auto;
-}
-
-.product-holder {
-  border: 1px solid #f5f6f8;
-  box-sizing: border-box;
-  border-radius: 0px 10px 10px 0px;
-  border-left: 5px solid #17ce89;
-}
-
-.product-holder.odd {
-  border-left: 5px solid #e42c66;
-}
-
 label {
   font-size: 1rem;
-  color: var(--tertiary-black);
+  color: var(--primary-blue);
   font-weight: 500;
   letter-spacing: 0.01em;
   margin-bottom: 0.25rem;

@@ -74,25 +74,17 @@
             style="cursor: pointer"
             :class="{ selected: i % 2 == 0 }"
           >
-            <td class="campaign-title">
-              {{ campaign.title }}
-            </td>
-
+            <td class="campaign-title">{{ campaign.title }}</td>
             <td>$ {{ campaign.budget | formatCurrency }}</td>
-
             <td>$ {{ campaign.amount_disbursed | formatCurrency }}</td>
-
-            <td>
-              {{ campaign.createdAt | formatDateOnly }}
-            </td>
-
+            <td>{{ campaign.createdAt | shortDate }}</td>
             <td>
               <div
                 class="status px-1"
                 :class="{
                   pending: campaign.status == 'pending',
                   progress: campaign.status == 'active',
-                  completed: campaign.status == 'completed',
+                  completed: campaign.status == 'completed'
                 }"
               >
                 {{ campaign.status | capitalize }}
@@ -141,7 +133,7 @@ let screenLoading;
 
 export default {
   components: {
-    newCampaign,
+    newCampaign
   },
 
   data() {
@@ -157,9 +149,9 @@ export default {
         { value: null, text: "Filter" },
         { value: "all", text: "All" },
         { value: "inprogress", text: "In Progress" },
-        { value: "completed", text: "Completed" },
+        { value: "completed", text: "Completed" }
       ],
-      statuses: ["active", "completed"],
+      statuses: ["active", "completed"]
     };
   },
 
@@ -167,16 +159,16 @@ export default {
     ...mapGetters("authentication", ["user"]),
     resultQuery() {
       if (this.searchQuery) {
-        return this.campaigns.filter((campaign) => {
+        return this.campaigns.filter(campaign => {
           return this.searchQuery
             .toLowerCase()
             .split(" ")
-            .every((v) => campaign.title.toLowerCase().includes(v));
+            .every(v => campaign.title.toLowerCase().includes(v));
         });
       } else {
         return this.campaigns;
       }
-    },
+    }
   },
 
   mounted() {
@@ -193,7 +185,7 @@ export default {
         const response = await this.$axios.put(
           `organisations/${this.id}/campaigns/${campaign.id}`,
           {
-            status: "active",
+            status: "active"
           }
         );
 
@@ -239,10 +231,10 @@ export default {
       screenLoading = this.$loading({
         lock: true,
         spinner: "el-icon-loading",
-        background: "#0000009b",
+        background: "#0000009b"
       });
-    },
-  },
+    }
+  }
 };
 </script>
 
@@ -294,11 +286,11 @@ select.form-control {
   font-weight: bold;
   letter-spacing: 0.01em;
   font-size: 1.125rem;
-  color: var(--tertiary-black);
+  color: var(--primary-blue);
 }
 
 .table thead th {
-  color: var(--tertiary-black);
+  color: var(--primary-blue);
   background: #f7f7f7;
   letter-spacing: 0.01em;
   font-size: 1rem;
@@ -307,7 +299,7 @@ select.form-control {
 }
 
 .table td {
-  color: var(--tertiary-black);
+  color: var(--primary-blue);
   padding: 1rem 1.5rem;
   font-size: 1rem;
   vertical-align: middle;

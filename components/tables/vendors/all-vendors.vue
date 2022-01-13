@@ -1,8 +1,12 @@
 <template>
-  <div class="main container transparent pb-5">
-    <div class="pt-4 mt-2">
+  <div class="main  transparent pb-5">
+    <!-- <div class="pt-4 mt-2">
       <back text="Go Back" @click="$router.push('/vendors')" />
-    </div>
+    </div> -->
+
+    <Modal id="add-vendor" size="lg" title="Add Vendor">
+      <add-vendor @reload="handleReload" />
+    </Modal>
 
     <div class="row pt-4">
       <div class="col-lg-8">
@@ -26,8 +30,23 @@
         </div>
       </div>
 
-      <div class="ml-auto mx-3">
-        <csv :data="computedData" name="vendors" />
+      <div class=" ml-auto d-flex mx-3">
+        <csv
+          :has-border="true"
+          :data="computedData"
+          :green-csv="true"
+          name="vendors"
+        />
+
+        <div class="ml-3">
+          <Button
+            text="Add Vendor"
+            custom-styles="height:50px; border: 1px solid #17ce89 !important;"
+            :has-border="false"
+            :is-green="false"
+            @click="$bvModal.show('add-vendor')"
+          />
+        </div>
       </div>
     </div>
 
@@ -41,7 +60,7 @@
         <thead>
           <tr>
             <th scope="col">
-              {{ allVendors.length == 1 ? "Vendor" : "Vendors" }}
+              {{ resultQuery.length == 1 ? "Vendor" : "Vendors" }}
             </th>
             <th scope="col">Phone Number</th>
             <th scope="col">Email Address</th>
@@ -69,7 +88,6 @@
                 {{ vendor.first_name + " " + vendor.last_name }}
               </span>
             </td>
-
             <td>{{ vendor.phone }}</td>
             <td class="truncate">{{ vendor.email }}</td>
             <td>{{ vendor.createdAt | shortDate }}</td>
@@ -99,6 +117,7 @@
 
 <script>
 import { mapActions, mapGetters } from "vuex";
+import addVendor from "~/components/forms/add-vendor.vue";
 import moment from "moment";
 
 export default {
@@ -111,6 +130,10 @@ export default {
       searchQuery: "",
       loading: false
     };
+  },
+
+  components: {
+    addVendor
   },
 
   computed: {
@@ -137,9 +160,13 @@ export default {
           Phone_Number: vendor.phone,
           Store: vendor.Store ? vendor.Store.store_name : "",
           Email_Address: vendor.email,
-          // location: vendor.Store
-          //   ? JSON.parse(vendor.Store.location.country)
-          //   : "",
+          //   location: vendor.Store
+          //     ? JSON.parse(
+          //         vendor?.Store?.location?.country +
+          //           "," +
+          //           vendor?.Store?.location?.state
+          //       )
+          //     : "",
           Address: vendor.Store ? vendor.Store.address : "",
           Created: moment(vendor.createdAt).format("DD MMMM, YYYY")
         };
@@ -155,6 +182,10 @@ export default {
   methods: {
     ...mapActions("beneficiaries", ["SAVE_TEMP_VENDOR"]),
     ...mapActions("vendors", ["getallVendors"]),
+
+    handleReload() {
+      this.getallVendors(this.user?.AssociatedOrganisations[0]?.OrganisationId);
+    },
 
     handleTempVendor(vendor) {
       this.SAVE_TEMP_VENDOR(vendor);

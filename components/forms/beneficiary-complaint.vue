@@ -5,7 +5,7 @@
       <label for="campaign-name">Campaign Name</label>
       <input
         type="text"
-        class="form-controls "
+        class="form-controls"
         id="campaign-name"
         :value="campaignName || ''"
         disabled
@@ -51,18 +51,18 @@ export default {
     complaint: {
       type: Object,
       required: true,
-      default: () => {}
+      default: () => {},
     },
 
     campaignName: {
       type: String,
-      default: ""
-    }
+      default: "",
+    },
   },
 
   data: () => ({
     orgId: "",
-    loading: false
+    loading: false,
   }),
 
   computed: {
@@ -70,7 +70,7 @@ export default {
 
     report() {
       return this.complaint.report || "";
-    }
+    },
   },
 
   mounted() {
@@ -110,16 +110,16 @@ export default {
       screenLoading = this.$loading({
         lock: true,
         spinner: "el-icon-loading",
-        background: "#0000009b"
+        background: "#0000009b",
       });
-    }
-  }
+    },
+  },
 };
 </script>
 
 <style scoped>
 label {
-  color: var(--tertiary-black);
+  color: var(--primary-blue);
   font-size: 1rem;
   font-weight: 500;
 }

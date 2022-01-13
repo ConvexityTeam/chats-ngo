@@ -237,7 +237,7 @@ export default {
 }
 
 .option-header {
-  color: var(--tertiary-black);
+  color: var(--primary-blue);
   font-weight: 600;
   font-size: 1rem;
   font-family: "Poppins", sans-serif;
@@ -287,7 +287,7 @@ export default {
 }
 
 .header {
-  color: var(--tertiary-black);
+  color: var(--primary-blue);
   font-weight: bold;
   font-size: 1.125rem;
   font-family: "Poppins", sans-serif;

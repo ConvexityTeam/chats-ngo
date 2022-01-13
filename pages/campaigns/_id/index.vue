@@ -63,6 +63,7 @@
               :has-icon="false"
               custom-styles="height:50px"
               @click="$bvModal.show('fund-campaign')"
+              :disabled="details.status == 'pending'"
             />
           </div>
 
@@ -175,7 +176,7 @@
                           :has-border="true"
                           custom-styles="border: 1px solid #17CE89 !important; border-radius: 5px !important; font-size: 0.875rem !important; height: 33px !important"
                           @click="
-                            $router.push(`/beneficiaries/${benefactor.id}`)
+                            $router.push(`/beneficiaries/${benefactor.UserId}`)
                           "
                         />
                       </div>
@@ -218,8 +219,14 @@
             :resumeCampaign="resumeCampaign"
           />
 
+          <!-- Campaign Vendors here -->
           <div class="mt-4">
             <campaign-vendors :user="user" />
+          </div>
+
+          <!-- Campaign Products here -->
+          <div class="mt-4">
+            <campaign-products :user="user" />
           </div>
         </div>
       </div>
@@ -237,6 +244,7 @@ import addProduct from "~/components/forms/add-product.vue";
 import fundCampaign from "~/components/forms/fund-campaign.vue";
 import rejectBenefactor from "~/components/forms/reject-benefactor.vue";
 import campaignVendors from "~/components/tables/campaigns/campaign-vendors.vue";
+import campaignProducts from "~/components/tables/campaigns/campaign-products.vue";
 
 let screenLoading;
 export default {
@@ -255,7 +263,7 @@ export default {
     activeBenefactor: {},
     title: "",
     drawer: false,
-    direction: "rtl",
+    direction: "rtl"
   }),
 
   components: {
@@ -267,24 +275,25 @@ export default {
     fundCampaign,
     rejectBenefactor,
     campaignVendors,
+    campaignProducts
   },
 
   computed: {
     ...mapGetters("authentication", ["user"]),
     unapprovedBeneficiaries() {
-      return this.beneficiaries.filter((benefactor) => !benefactor.approved);
+      return this.beneficiaries.filter(benefactor => !benefactor.approved);
     },
     query() {
       const valid =
         this.tabIndex == 0 ? this.beneficiaries : this.unapprovedBeneficiaries;
 
       if (this.searchQuery) {
-        return valid.filter((benefactor) => {
+        return valid.filter(benefactor => {
           return this.searchQuery
             .toLowerCase()
             .split(" ")
             .every(
-              (v) =>
+              v =>
                 benefactor &&
                 benefactor.User &&
                 benefactor.User.first_name.toLowerCase().includes(v)
@@ -293,7 +302,7 @@ export default {
       } else {
         return valid;
       }
-    },
+    }
   },
 
   mounted() {
@@ -306,7 +315,6 @@ export default {
     showModal() {
       this.$bvModal.show("funding");
     },
-
     async fundCampaign() {
       try {
         this.openScreen();
@@ -323,7 +331,7 @@ export default {
         }
       } catch (err) {
         screenLoading.close();
-        this.$toast.error(err.response.data.message);
+        this.$toast.error(err?.response?.data?.message);
         console.log({ err: err });
       }
     },
@@ -336,13 +344,13 @@ export default {
           `/organisations/${this.orgId}/campaigns/${this.$route.params.id}`
         );
 
-				if (response.status == 'success') {
-					screenLoading.close();
-					this.details = response.data;
-					// this.beneficiaries = response.data[0].Beneficiaries;
-					// this.location = JSON.parse(response.data[0].location);
-					console.log('here', response.data);
-				}
+        if (response.status == "success") {
+          screenLoading.close();
+          this.details = response.data;
+          // this.beneficiaries = response.data[0].Beneficiaries;
+          // this.location = JSON.parse(response.data[0].location);
+          console.log("here", response.data);
+        }
 
         if (response.status == "success") {
           screenLoading.close();
@@ -403,7 +411,7 @@ export default {
           `/organisation/${this.orgId}/campaigns/${this.$route.params.id}/beneficiaries`,
           {
             beneficiary_id: this.activeBenefactor?.UserId,
-            approved: false,
+            approved: false
           }
         );
       } catch (err) {
@@ -415,17 +423,17 @@ export default {
       screenLoading = this.$loading({
         lock: true,
         spinner: "el-icon-loading",
-        background: "#0000009b",
+        background: "#0000009b"
       });
-    },
-  },
+    }
+  }
 };
 </script>
 
 <style scoped>
 .main {
-	height: calc(100vh - 72px);
-	overflow-y: scroll;
+  height: calc(100vh - 72px);
+  overflow-y: scroll;
 }
 
 .col-lg-8 {

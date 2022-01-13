@@ -4,7 +4,7 @@
     <div class="row pt-4">
       <!-- Vendors here -->
       <div class="col-lg-3">
-        <div class="card__holder  p-3">
+        <div class="card__holder p-3">
           <div class="d-flex">
             <img src="~/assets/img/vectors/shop.svg" alt="shop" />
             <div class="ml-3">
@@ -13,16 +13,7 @@
                 {{ vendors.length || 0 }}
               </h4>
             </div>
-            <div class="ml-auto d-flex align-items-end">
-              <button
-                type="button"
-                @click="$router.push('/vendors/all-vendors')"
-                class="d-flex viewall align-items-center"
-              >
-                <img src="~/assets/img/vectors/eye.svg" alt="see" />
-                <span class="ml-2 pt-1">View </span>
-              </button>
-            </div>
+
             <!-- <button class="viewall d-flex ">kk</button> -->
           </div>
         </div>
@@ -38,10 +29,21 @@
             />
           </div>
           <div class="ml-3">
-            <p class="text">Daily transactions</p>
+            <p class="text">Transactions</p>
             <h4 class="funds">
               {{ summary.transactions_count || 0 }}
             </h4>
+          </div>
+
+          <div class="ml-auto d-flex align-items-end">
+            <button
+              type="button"
+              @click="$router.push('/vendors/transactions')"
+              class="d-flex viewall align-items-center"
+            >
+              <img src="~/assets/img/vectors/eye.svg" alt="see" />
+              <span class="ml-2 pt-1">View </span>
+            </button>
           </div>
         </div>
       </div>
@@ -80,15 +82,21 @@
 
     <!-- Vendor Transactions Table here -->
     <div>
-      <vendor-transaction :transactions="transactions" />
+      <!-- <vendor-transaction :transactions="transactions" /> -->
+    </div>
+
+    <div class="mt-2">
+      <all-vendors />
     </div>
   </div>
 </template>
 
 <script>
-import vendorTransaction from "~/components/tables/vendor-transaction";
+import vendorTransaction from "~/components/tables/vendors/vendor-transaction";
+import allVendors from "~/components/tables/vendors/all-vendors";
 import totalBalance from "~/components/icons/total-balance.vue";
-import { mapGetters, mapActions } from "vuex";
+import { mapGetters } from "vuex";
+import AllVendors from "./all-vendors.vue";
 let screenLoading;
 
 export default {
@@ -96,28 +104,17 @@ export default {
 
   components: {
     vendorTransaction,
-    totalBalance
+    totalBalance,
+    allVendors,
+    AllVendors
   },
 
   data: () => ({
     id: "",
     count: "",
     summary: {},
-    transactions: [],
     vendors: []
   }),
-
-  async fetch() {
-    this.vendors = await this.$axios.$get(
-      `organisations/${this.user?.AssociatedOrganisations[0]?.OrganisationId}/vendors`
-    );
-    console.log("VEndors:", this.vendors);
-    this.transactions = await this.$axios.$get(
-      `organisations/${this.id}/vendors/transactions`
-    );
-
-    console.log("Transactions", this.transactions);
-  },
 
   computed: {
     ...mapGetters("authentication", ["user"])
@@ -184,9 +181,10 @@ export default {
 }
 
 .funds {
-  color: var(--tertiary-black);
-  font-size: 1.5rem;
+  color: var(--primary-blue);
+  font-size: 1.125rem;
   font-weight: 500;
   line-height: 0.563rem;
+  word-break: break-all;
 }
 </style>

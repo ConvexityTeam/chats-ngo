@@ -94,13 +94,13 @@ export default {
     disbursed,
     totalBalance,
     beneficiaryDetails,
-    beneficiaryCampaign
+    beneficiaryCampaign,
   },
 
   data: () => ({
     id: "",
     loading: false,
-    userDetails: {}
+    userDetails: {},
   }),
 
   mounted() {
@@ -109,7 +109,7 @@ export default {
   },
 
   computed: {
-    ...mapGetters("authentication", ["user"])
+    ...mapGetters("authentication", ["user"]),
   },
 
   methods: {
@@ -139,10 +139,10 @@ export default {
       screenLoading = this.$loading({
         lock: true,
         spinner: "el-icon-loading",
-        background: "#0000009b"
+        background: "#0000009b",
       });
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -165,7 +165,7 @@ export default {
 }
 
 .funds {
-  color: var(--tertiary-black);
+  color: var(--primary-blue);
   font-size: 1.5rem;
   font-weight: 500;
   line-height: 0.563rem;
