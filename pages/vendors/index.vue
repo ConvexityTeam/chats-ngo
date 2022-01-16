@@ -10,7 +10,7 @@
             <div class="ml-3">
               <p class="text">Vendors</p>
               <h4 class="funds">
-                {{ vendors.length || 0 }}
+                {{ allVendors.length || 0 }}
               </h4>
             </div>
 
@@ -86,7 +86,7 @@
     </div>
 
     <div class="mt-2">
-      <all-vendors />
+      <all-vendors :allVendors="allVendors" @handleReload="getallVendors" />
     </div>
   </div>
 </template>
@@ -95,7 +95,7 @@
 import vendorTransaction from "~/components/tables/vendors/vendor-transaction";
 import allVendors from "~/components/tables/vendors/all-vendors";
 import totalBalance from "~/components/icons/total-balance.vue";
-import { mapGetters } from "vuex";
+import { mapGetters, mapActions } from "vuex";
 import AllVendors from "./all-vendors.vue";
 let screenLoading;
 
@@ -110,27 +110,30 @@ export default {
   },
 
   data: () => ({
-    id: "",
     count: "",
     summary: {},
     vendors: []
   }),
 
   computed: {
-    ...mapGetters("authentication", ["user"])
+    ...mapGetters("authentication", ["user"]),
+    ...mapGetters("vendors", ["allVendors"])
   },
 
   mounted() {
-    this.id = this.user?.AssociatedOrganisations[0]?.OrganisationId;
+    this.getallVendors(this.user?.AssociatedOrganisations[0]?.OrganisationId);
     this.getSummary();
   },
 
   methods: {
+    ...mapActions("vendors", ["getallVendors"]),
     async getSummary() {
       try {
+        const id = this.user?.AssociatedOrganisations[0]?.OrganisationId;
         this.openScreen();
+
         const response = await this.$axios.get(
-          `organisations/${this.id}/vendors/summary`
+          `organisations/${id}/vendors/summary`
         );
 
         console.log("Vendor Summary", response);

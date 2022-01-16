@@ -37,8 +37,10 @@
       <table class="table table-borderless" v-else-if="resultQuery.length">
         <thead>
           <tr>
-            <th scope="col">Vendors</th>
-            <th scope="col">Vendor ID</th>
+            <th scope="col">
+              {{ resultQuery.length == 1 ? "Vendor" : "Vendors" }}
+            </th>
+            <!-- <th scope="col">Vendor ID</th> -->
             <th scope="col">Phone Number</th>
             <th scope="col">Email Address</th>
             <th scope="col">Account Created</th>
@@ -69,7 +71,7 @@
                 }}
               </span>
             </td>
-            <td>{{ vendor.VendorId }}</td>
+            <!-- <td>{{ vendor.VendorId }}</td> -->
             <td>{{ vendor && vendor.Vendor ? vendor.Vendor.phone : "" }}</td>
             <td class="truncate">
               {{ vendor && vendor.Vendor ? vendor.Vendor.email : "" }}

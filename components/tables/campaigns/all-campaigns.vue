@@ -82,7 +82,8 @@
               <div
                 class="status px-1"
                 :class="{
-                  pending: campaign.status == 'pending',
+                  pending:
+                    campaign.status == 'pending' || campaign.status == 'paused',
                   progress: campaign.status == 'active',
                   completed: campaign.status == 'completed'
                 }"

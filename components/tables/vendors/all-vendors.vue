@@ -1,11 +1,7 @@
 <template>
-  <div class="main  transparent pb-5">
-    <!-- <div class="pt-4 mt-2">
-      <back text="Go Back" @click="$router.push('/vendors')" />
-    </div> -->
-
+  <div class="pb-5">
     <Modal id="add-vendor" size="lg" title="Add Vendor">
-      <add-vendor @reload="handleReload" />
+      <add-vendor @reload="$emit('handleReload')" />
     </Modal>
 
     <div class="row pt-4">
@@ -102,7 +98,7 @@
                   custom-styles=" border-radius: 5px !important;
                   height:33px; border: 1px solid #17ce89 !important; font-size:
                   0.875rem !important; padding:0px 10px !important"
-                  @click="handleTempVendor(vendor)"
+                  @click="$router.push(`/vendors/${vendor.id}`)"
                 />
               </div>
             </td>
@@ -116,29 +112,35 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from "vuex";
+import { mapGetters } from "vuex";
 import addVendor from "~/components/forms/add-vendor.vue";
 import moment from "moment";
 
 export default {
   layout: "dashboard",
-  data() {
-    return {
-      isCheckAll: false,
-      img: require("~/assets/img/user.png"),
-      data: [],
-      searchQuery: "",
-      loading: false
-    };
-  },
-
   components: {
     addVendor
   },
 
+  props: {
+    allVendors: {
+      type: Array,
+      default: () => []
+    }
+  },
+
+  data() {
+    return {
+      loading: false,
+      isCheckAll: false,
+      img: require("~/assets/img/user.png"),
+      data: [],
+      searchQuery: ""
+    };
+  },
+
   computed: {
     ...mapGetters("authentication", ["user"]),
-    ...mapGetters("vendors", ["allVendors"]),
     resultQuery() {
       if (this.searchQuery) {
         return this.allVendors.filter(vendor => {
@@ -171,25 +173,6 @@ export default {
           Created: moment(vendor.createdAt).format("DD MMMM, YYYY")
         };
       });
-    }
-  },
-
-  mounted() {
-    console.log("ALL VENDOE:::", this.allVendors);
-    this.getallVendors(this.user?.AssociatedOrganisations[0]?.OrganisationId);
-  },
-
-  methods: {
-    ...mapActions("beneficiaries", ["SAVE_TEMP_VENDOR"]),
-    ...mapActions("vendors", ["getallVendors"]),
-
-    handleReload() {
-      this.getallVendors(this.user?.AssociatedOrganisations[0]?.OrganisationId);
-    },
-
-    handleTempVendor(vendor) {
-      this.SAVE_TEMP_VENDOR(vendor);
-      this.$router.push(`/vendors/${vendor.id}`);
     }
   }
 };
