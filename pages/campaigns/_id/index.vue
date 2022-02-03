@@ -110,12 +110,16 @@
               <!-- tabs here -->
               <div class="mx-2 mb-3 d-flex">
                 <b-tabs content-class="mt-1" v-model="tabIndex">
-                  <!-- All complaints tab here -->
+                  <!-- All  beneficiaries here -->
                   <b-tab title="All" active title-link-class="beneficiary">
                   </b-tab>
 
-                  <!-- Unresolved Complaints here -->
+                  <!-- Pending beneficiaries  here -->
                   <b-tab title="Pending" title-link-class="beneficiary">
+                  </b-tab>
+
+                  <!-- Rejected beneficiaries  here -->
+                  <b-tab title="Rejected" title-link-class="beneficiary">
                   </b-tab>
                 </b-tabs>
 
@@ -143,7 +147,9 @@
                     <th scope="col">
                       {{ tabIndex == 0 ? "Email Address" : "Origination" }}
                     </th>
-                    <th scope="col">{{ tabIndex == 0 ? "" : "Actions" }}</th>
+                    <th scope="col">
+                      {{ tabIndex == 0 || 2 ? "" : "Actions" }}
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
@@ -166,7 +172,9 @@
                       <span v-if="tabIndex == 0">{{
                         benefactor && benefactor.User && benefactor.User.email
                       }}</span>
-                      <span v-else> -</span>
+                      <span v-else>
+                        {{ benefactor.source || "-" | capitalize }}
+                      </span>
                     </td>
                     <td>
                       <div v-if="tabIndex == 0">
@@ -181,7 +189,7 @@
                         />
                       </div>
 
-                      <div v-else>
+                      <div v-if="tabIndex == 1">
                         <Button
                           text="Reject"
                           :has-icon="false"

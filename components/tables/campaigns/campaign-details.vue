@@ -140,7 +140,7 @@
           @click="handleModal(details.status == 'paused' ? 'resume' : 'Pause')"
         />
 
-        <div class="ml-3">
+        <!-- <div class="ml-3">
           <Button
             text="Delete campaign"
             :has-icon="false"
@@ -148,7 +148,7 @@
             custom-styles=" height: 41px !important; border: 1px solid #E42C66 !important; color: #E42C66 !important; border-radius: 5px !important; font-size: 0.875rem !important; padding: 0px 8px !important; font-weight: 600 !important"
             @click="handleModal('Delete')"
           />
-        </div>
+        </div> -->
       </div>
     </div>
   </div>
@@ -163,35 +163,35 @@ export default {
   props: {
     details: {
       type: Object,
-      default: () => {},
+      default: () => {}
     },
 
     count: {
       type: Number,
-      default: null,
+      default: null
     },
 
     location: {
       type: String,
-      default: "",
+      default: ""
     },
 
     user: {
       type: Object,
-      default: () => {},
+      default: () => {}
     },
 
     resumeCampaign: {
       type: Boolean,
-      default: false,
-    },
+      default: false
+    }
   },
 
   data: () => ({
     campaignStatus: "",
     status: "",
     orgId: 0,
-    statuses: ["paused", "active"],
+    statuses: ["paused", "active"]
   }),
 
   watch: {
@@ -199,11 +199,11 @@ export default {
       if (value) {
         this.handleCampaign("active");
       }
-    },
+    }
   },
 
   components: {
-    campaignPrompt,
+    campaignPrompt
   },
 
   mounted() {
@@ -243,7 +243,7 @@ export default {
         const response = await this.$axios.put(
           `organisations/${this.orgId}/campaigns/${this.$route.params.id}`,
           {
-            status: this.campaignStatus,
+            status: this.campaignStatus
           }
         );
 
@@ -266,10 +266,10 @@ export default {
       screenLoading = this.$loading({
         lock: true,
         spinner: "el-icon-loading",
-        background: "#0000009b",
+        background: "#0000009b"
       });
-    },
-  },
+    }
+  }
 };
 </script>
 
