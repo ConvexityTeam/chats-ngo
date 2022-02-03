@@ -172,48 +172,41 @@
         <div class="metric__holder p-4">
           <p class="total-count pb-2">Vendors</p>
 
-          <div
-            class="d-flex"
-            v-for="vendor in displayedVendors"
-            :key="vendor.id"
-          >
-            <div>
-              <p class="vendor-name">
-                {{ vendor.first_name + " " + vendor.last_name }}
-              </p>
-            </div>
+          <div v-if="$fetchState.pending" class="loader"></div>
 
-            <div class="ml-auto">
-              <button type="button" class="more-btn">
-                <dot />
-              </button>
+          <div v-else-if="vendors.length">
+            <div
+              class="d-flex"
+              v-for="vendor in displayedVendors"
+              :key="vendor.id"
+            >
+              <div>
+                <span class="vendor-name">
+                  {{ vendor.first_name + " " + vendor.last_name }}
+                </span>
+              </div>
+
+              <div class="ml-auto">
+                <button type="button" class="more-btn">
+                  <dot />
+                </button>
+              </div>
             </div>
           </div>
 
-          <div v-if="!displayedVendors.length">
+          <div v-else>
             <h3 class="text-center no-record">NO RECORD FOUND</h3>
           </div>
 
           <div class="d-flex" v-if="displayedVendors.length">
-            <div class="mt-2">
+            <div class="">
               <button
                 type="button"
-                @click="$router.push('vendors/all-vendors')"
+                @click="$router.push('/vendors')"
                 class="d-flex viewall align-items-center"
               >
                 <img src="~/assets/img/vectors/eye.svg" alt="see" />
                 <span class="ml-2 pt-1">View All</span>
-              </button>
-            </div>
-            <div class="ml-auto d-flex">
-              <p class="pt-3 paginate">
-                1 - {{ displayedVendors.length }} of {{ vendors.length }}
-              </p>
-              <button type="button" class="more-btn">
-                <leftArrow />
-              </button>
-              <button type="button" class="more-btn">
-                <rightArrow />
               </button>
             </div>
           </div>
@@ -254,7 +247,7 @@ export default {
     leftArrow,
     walletBalance,
     totalBalance,
-    disbursed,
+    disbursed
   },
 
   data() {
@@ -269,8 +262,8 @@ export default {
         alphaCode: "",
         currencySymbol: "",
         currencyCode: "",
-        convertedValue: "5000",
-      },
+        convertedValue: "5000"
+      }
     };
   },
 
@@ -278,8 +271,8 @@ export default {
     ...mapGetters("authentication", ["user"]),
 
     displayedVendors() {
-      return this.vendors.slice(0, 6);
-    },
+      return this.vendors.slice(0, 5);
+    }
   },
 
   async fetch() {
@@ -317,20 +310,20 @@ export default {
     getIp() {
       this.$axios
         .get("http://ip-api.com/json")
-        .then((response) => {
+        .then(response => {
           console.log({ response: response.data.countryCode });
           this.userLocation.alphaCode = response.data.countryCode;
           this.setCurrency();
           this.convertCurrency();
         })
-        .catch((err) => {
+        .catch(err => {
           console.log(err);
         });
     },
 
     setCurrency() {
       const userCountry = countries.filter(
-        (countries) => countries.alpha2Code == this.userLocation.alphaCode
+        countries => countries.alpha2Code == this.userLocation.alphaCode
       );
 
       this.userLocation.currencySymbol = userCountry[0].currencies[0].symbol;
@@ -342,24 +335,24 @@ export default {
           params: {
             from: "USD",
             to: this.userLocation.currencyCode,
-            amount: this.amount,
+            amount: this.amount
           },
           headers: {
             "x-rapidapi-key":
               "53a42b6342msha5eeed4491364b5p1c9fb1jsn357450c321a9",
-            "x-rapidapi-host": "fixer-fixer-currency-v1.p.rapidapi.com",
-          },
+            "x-rapidapi-host": "fixer-fixer-currency-v1.p.rapidapi.com"
+          }
         })
 
-        .then((response) => {
+        .then(response => {
           // this.userLocation.convertedValue = response.data.result
         })
 
-        .catch((error) => {
+        .catch(error => {
           console.log("erroo", error);
         });
-    },
-  },
+    }
+  }
 };
 </script>
 
@@ -377,10 +370,12 @@ export default {
 .vendor-name {
   color: var(--primary-gray);
   font-size: 1rem;
+  padding-bottom: 1rem;
+  display: block;
 }
 
 .date {
-  color: var(--tertiary-black);
+  color: var(--primary-blue);
   font-size: 1.125rem;
   font-weight: 500;
   line-height: 8px;
@@ -398,7 +393,7 @@ export default {
   line-height: 19px;
 }
 .beneficiaries-count {
-  color: var(--tertiary-black);
+  color: var(--primary-blue);
   font-size: 1.5rem;
   font-weight: 500;
 }
@@ -426,17 +421,18 @@ export default {
   font-weight: 500;
 }
 .funds {
-  color: var(--tertiary-black);
-  font-size: 1.5rem;
+  color: var(--primary-blue);
+  font-size: 1.125rem;
   font-weight: 500;
   line-height: 0.563rem;
+  word-break: break-all;
 }
 .percentage {
   color: #00bf6f;
   font-size: 0.8 75rem;
 }
 .total-count {
-  color: var(--secondary-black);
+  color: #333333;
   font-weight: bold;
   font-size: 1.125rem;
 }

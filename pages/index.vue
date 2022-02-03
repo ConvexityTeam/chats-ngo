@@ -96,6 +96,7 @@ import eyeOpen from "~/components/icons/eye-open.vue";
 
 export default {
   layout: "default",
+  middleware: ["loginguard"],
 
   components: {
     emailIcon,

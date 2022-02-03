@@ -74,7 +74,7 @@
             <td>{{ benefactor.email }}</td>
             <td>
               <span v-if="benefactor.dob">
-                {{ benefactor.dob || "-" | formatDate }}
+                {{ benefactor.dob || "-" | shortDate }}
               </span>
               <span v-else>-</span>
             </td>
@@ -157,24 +157,6 @@ export default {
 
   methods: {
     ...mapActions("beneficiaries", ["getallBeneficiaries"]),
-    // async fetchAllBeneficiaries() {
-    //   try {
-    //     this.openScreen();
-
-    //     const response = await this.$axios.get(
-    //       `organisation/${this.id}/beneficiaries`
-    //     );
-    //     console.log("Allbeneficiaries:::", response);
-
-    //     if (response.status == "success") {
-    //       this.beneficiaries = response.data;
-    //       screenLoading.close();
-    //     }
-    //   } catch (error) {
-    //     screenLoading.close();
-    //     this.$toast.error(error.response.data.message);
-    //   }
-    // },
 
     handleTempBenefactor(benefactor) {
       this.$router.push(`/beneficiaries/${benefactor.id}`);

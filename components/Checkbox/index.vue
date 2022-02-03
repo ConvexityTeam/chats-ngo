@@ -2,7 +2,9 @@
   <label>
     <input
       type="checkbox"
+      :id="id"
       class="focus:outline-none"
+      :checked="value"
       @change="$emit('input', $event.target.checked)"
     />
     <span></span>
@@ -10,7 +12,17 @@
 </template>
 <script>
 export default {
-  name: "c-checkbox"
+  name: "c-checkbox",
+  props: {
+    id: {
+      type: String,
+      default: "",
+    },
+    value: {
+      type: Boolean,
+      default: false,
+    },
+  },
 };
 </script>
 <style scoped>

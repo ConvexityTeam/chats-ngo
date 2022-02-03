@@ -77,9 +77,9 @@
               <div
                 class="status px-1"
                 :class="{
-                  pending: campaign.status == 'pending',
-                  progress: campaign.status == 'active',
-                  completed: campaign.status == 'completed'
+                  pending: campaign.status === 'pending',
+                  progress: campaign.status === 'active',
+                  completed: campaign.status === 'completed'
                 }"
               >
                 {{ campaign.status | capitalize }}
@@ -206,18 +206,6 @@ select.form-control {
   appearance: none;
   height: 50px;
   border-radius: 10px;
-}
-
-.status {
-  height: 24px;
-  border-radius: 30px;
-  background: #ffcdc7;
-  color: #5e0e03;
-  font-size: 0.75rem;
-  letter-spacing: 0.01em;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
 .create {

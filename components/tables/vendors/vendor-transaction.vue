@@ -51,10 +51,13 @@
     <!-- Table here -->
     <div class="table-holder mt-4">
       <div class="flex align-items-center table-title">
-        <h4>Transactions</h4>
+        <h4>Vendor Transactions</h4>
         <div class="ml-auto"></div>
       </div>
-      <table class="table table-borderless" v-if="resultQuery.length">
+
+      <div v-if="$fetchState.pending" class="loader text-center"></div>
+
+      <table class="table table-borderless" v-else-if="resultQuery.length">
         <thead>
           <tr>
             <th scope="col">Reference ID</th>
@@ -71,7 +74,7 @@
             <td>{{ transaction.amount | formatCurrency }}</td>
             <td>
               {{
-                transaction && transaction.Vendor && transaction.Vendor
+                transaction.Vendor
                   ? transaction.Vendor.first_name +
                     " " +
                     transaction.Vendor.last_name
@@ -80,8 +83,6 @@
             </td>
             <td>
               {{
-                transaction &&
-                transaction.Beneficiary &&
                 transaction.Beneficiary
                   ? transaction.Beneficiary.first_name +
                     " " +
@@ -89,14 +90,11 @@
                   : "-"
               }}
             </td>
-            <td>12 Dec, 2020</td>
-            <!-- <td>
-              <button type="button" class="more-btn"><dot /></button>
-            </td> -->
+            <td>{{ transction.createdAt | shortDate }}</td>
           </tr>
         </tbody>
       </table>
-      <div v-else-if="loading" class="loader text-center"></div>
+
       <h3 v-else class="text-center no-record">NO RECORD FOUND</h3>
     </div>
   </div>
@@ -104,28 +102,31 @@
 
 <script>
 import moment from "moment";
-import dot from "~/components/icons/dot";
 import addVendor from "~/components/forms/add-vendor.vue";
+import { mapGetters } from "vuex";
 
 export default {
-  props: {
-    transactions: {
-      type: Array,
-      default: () => []
-    }
-  },
-
   components: {
-    dot,
     addVendor
   },
 
   data: () => ({
     searchQuery: "",
-    loading: false
+    loading: false,
+    transactions: []
   }),
 
+  async fetch() {
+    const id = this.user?.AssociatedOrganisations[0]?.OrganisationId;
+    const response = await this.$axios.get(
+      `organisations/${id}/vendors/transactions`
+    );
+
+    this.transactions = response.data;
+  },
+
   computed: {
+    ...mapGetters("authentication", ["user"]),
     resultQuery() {
       if (this.searchQuery) {
         return this.transactions.filter(transaction => {
@@ -138,7 +139,6 @@ export default {
         return this.transactions;
       }
     },
-
     computedData() {
       const data = this.transactions || [];
       return data.map(transaction => {

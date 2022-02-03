@@ -1,32 +1,28 @@
 <template>
   <div class="campaign-details-holder p-4">
     <h4 class="campaign-details-header poppins pt-2">
-      Campaign Vendors ({{ vendors.length || 0 }})
+      Campaign products / services ({{ products.length || 0 }})
     </h4>
 
     <!-- details region here -->
     <div class="campaign-details-inner mt-4 p-4">
       <div v-if="$fetchState.pending" class="loader"></div>
 
-      <!-- Vendors -->
-      <div v-else-if="vendors.length">
+      <!-- Products -->
+      <div v-else-if="products.length">
         <p
-          v-for="vendor in vendors.slice(0, 5)"
-          :key="vendor.id"
+          v-for="(product, i) in products.slice(0, 5)"
+          :key="i"
           class="primary-gray"
         >
-          {{
-            vendor && vendor.Vendor
-              ? vendor.Vendor.first_name + " " + vendor.Vendor.last_name
-              : ""
-          }}
+          {{ product.tag | capitalize }}
         </p>
 
         <!-- See all here -->
         <div>
           <button
             type="button"
-            @click="$router.push(`/campaigns/${$route.params.id}/vendors`)"
+            @click="$router.push(`/campaigns/${$route.params.id}/products`)"
             class="d-flex viewall align-items-center p-0"
           >
             <img src="~/assets/img/vectors/eye.svg" alt="see" />
@@ -52,16 +48,16 @@ export default {
   },
 
   data: () => ({
-    vendors: []
+    products: []
   }),
 
   async fetch() {
     const id = this.user?.AssociatedOrganisations[0]?.OrganisationId;
     const response = await this.$axios.get(
-      `/organisations/${id}/campaigns/${this.$route.params.id}/vendors`
+      `organisations/${id}/campaigns/${this.$route.params.id}/products`
     );
 
-    this.vendors = response.data;
+    this.products = response.data;
   }
 };
 </script>

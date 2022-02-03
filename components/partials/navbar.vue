@@ -3,11 +3,12 @@
     <el-drawer :visible.sync="drawer" :direction="direction">
       <span>Hi, there!</span>
     </el-drawer>
-    <nav class="navbar  ">
+
+    <nav class="navbar">
       <div class="col-lg-2 col-sm-4 mx-1">
-        <a class="navbar-brand" href="#">
+        <span class="navbar-brand" href="">
           <img src="~/assets/img/logo-2.svg" alt="Chats" />
-        </a>
+        </span>
       </div>
 
       <!-- Route location here -->
@@ -18,13 +19,13 @@
       <div
         class="col-sm-auto d-flex ml-auto justify-content-between align-items-center"
       >
-      <!-- Notification -->
+        <!-- Notification -->
         <span>
           <div class="d-flex align-items-center px-2">
             <el-badge
               :is-dot="isNotification"
               class="item mx-3"
-              style="cursor:pointer"
+              style="cursor: pointer"
             >
               <svg
                 @click="drawer = true"
@@ -140,7 +141,7 @@ export default {
 .title {
   font-size: 1.75rem;
   font-weight: bold;
-  color: var(--tertiary-black);
+  color: var(--primary-blue);
 }
 
 .image-holder {

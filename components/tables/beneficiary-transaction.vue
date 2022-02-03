@@ -85,12 +85,7 @@
                   : "-"
               }}
             </td>
-            <td>{{ transaction.createdAt | formatDateOnly }}</td>
-            <!-- <td>
-              <button type="button" class="more-btn">
-                <i><dot /></i>
-              </button>
-            </td> -->
+            <td>{{ transaction.createdAt | shortDate }}</td>
           </tr>
         </tbody>
       </table>
@@ -103,13 +98,11 @@
 
 <script>
 import moment from "moment";
-import dot from "~/components/icons/dot";
 import { mapGetters } from "vuex";
 let screenLoading;
 
 export default {
   layout: "dashboard",
-  components: { dot },
 
   data: () => ({
     loading: false,

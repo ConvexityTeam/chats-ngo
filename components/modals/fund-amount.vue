@@ -19,9 +19,9 @@
           <label for="amount">Amount to fund</label>
           <input
             type="number"
-            class="form-controls "
+            class="form-controls"
             :class="{
-              error: $v.amount.$error
+              error: $v.amount.$error,
             }"
             id="amount"
             placeholder="0.00"
@@ -48,26 +48,26 @@ import close from "~/components/icons/close";
 export default {
   props: {
     fundAmount: {
-      type: Number
-    }
+      type: Number,
+    },
   },
 
   data() {
     return {
-      amount: ""
+      amount: "",
     };
   },
 
   validations: {
     amount: {
-      required
-    }
+      required,
+    },
   },
 
   watch: {
     fundAmount(value) {
       this.amount = value;
-    }
+    },
   },
 
   components: { close },
@@ -84,14 +84,14 @@ export default {
       }
       this.$emit("fundWallet", { amount: this.amount });
       this.closeModal();
-    }
-  }
+    },
+  },
 };
 </script>
 
 <style scoped>
 .header {
-  color: var(--tertiary-black);
+  color: var(--primary-blue);
   font-weight: bold;
   font-size: 1.5rem;
 }
@@ -109,7 +109,7 @@ export default {
 }
 
 label {
-  color: var(--tertiary-black);
+  color: var(--primary-blue);
   font-size: 1rem;
   font-weight: 500;
 }

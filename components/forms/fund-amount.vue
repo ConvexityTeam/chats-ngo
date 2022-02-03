@@ -112,7 +112,7 @@ export default {
 
 <style scoped>
 label {
-  color: var(--tertiary-black);
+  color: var(--primary-blue);
   font-size: 1rem;
   font-weight: 500;
 }

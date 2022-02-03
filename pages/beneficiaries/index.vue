@@ -154,7 +154,7 @@ export default {
     return {
       loading: false,
       id: "",
-      stats: {},
+      stats: {}
     };
   },
 
@@ -170,7 +170,7 @@ export default {
     leftArrow,
     beneficiaryTransaction,
     disbursed,
-    totalBalance,
+    totalBalance
   },
 
   mounted() {
@@ -183,7 +183,7 @@ export default {
 
   computed: {
     ...mapGetters("authentication", ["user"]),
-    ...mapGetters("beneficiaries", ["beneficiaries"]),
+    ...mapGetters("beneficiaries", ["beneficiaries"])
   },
 
   methods: {
@@ -216,8 +216,8 @@ export default {
         this.loading = false;
         console.log("chsrtserr:::", err);
       }
-    },
-  },
+    }
+  }
 };
 </script>
 
@@ -278,10 +278,12 @@ export default {
   font-size: 0.875rem;
   font-weight: 500;
 }
+
 .funds {
-  color: var(--tertiary-black);
-  font-size: 1.5rem;
+  color: var(--primary-blue);
+  font-size: 1.125rem;
   font-weight: 500;
   line-height: 0.563rem;
+  word-break: break-all;
 }
 </style>

@@ -27,16 +27,20 @@
     </div>
 
     <!-- Table here -->
-    <!-- Table here -->
-    <div class="table-holder mt-4">
+    <div class="table-holder mt-4" :class="{ 'pb-2': $fetchState.pending }">
       <div class="flex align-items-center table-title">
         <h4>Vendor list</h4>
         <div class="ml-auto"></div>
       </div>
-      <table class="table table-borderless" v-if="resultQuery.length">
+
+      <div v-if="$fetchState.pending" class="text-center loader mb-5"></div>
+      <table class="table table-borderless" v-else-if="resultQuery.length">
         <thead>
           <tr>
-            <th scope="col">Vendor</th>
+            <th scope="col">
+              {{ resultQuery.length == 1 ? "Vendor" : "Vendors" }}
+            </th>
+            <!-- <th scope="col">Vendor ID</th> -->
             <th scope="col">Phone Number</th>
             <th scope="col">Email Address</th>
             <th scope="col">Account Created</th>
@@ -67,12 +71,12 @@
                 }}
               </span>
             </td>
-
+            <!-- <td>{{ vendor.VendorId }}</td> -->
             <td>{{ vendor && vendor.Vendor ? vendor.Vendor.phone : "" }}</td>
             <td class="truncate">
               {{ vendor && vendor.Vendor ? vendor.Vendor.email : "" }}
             </td>
-            <td>{{ vendor.createdAt | formatDate }}</td>
+            <td>{{ vendor.createdAt | shortDate }}</td>
 
             <td>
               <div>
@@ -93,7 +97,7 @@
           </tr>
         </tbody>
       </table>
-      <div v-else-if="loading" class="text-center"></div>
+
       <h3 v-else class="text-center no-record">NO RECORD FOUND</h3>
     </div>
   </div>
@@ -101,7 +105,6 @@
 
 <script>
 import { mapGetters } from "vuex";
-let screenLoading;
 
 export default {
   layout: "dashboard",
@@ -112,7 +115,7 @@ export default {
       orgId: "",
       vendors: [],
       searchQuery: "",
-      img: require("~/assets/img/user.png"),
+      img: require("~/assets/img/user.png")
     };
   },
 
@@ -120,12 +123,12 @@ export default {
     ...mapGetters("authentication", ["user"]),
     resultQuery() {
       if (this.searchQuery) {
-        return this.vendors.filter((vendor) => {
+        return this.vendors.filter(vendor => {
           return this.searchQuery
             .toLowerCase()
             .split(" ")
             .every(
-              (v) =>
+              v =>
                 vendor &&
                 vendor.Vendor &&
                 vendor.Vendor.first_name.toLowerCase().includes(v)
@@ -134,44 +137,17 @@ export default {
       } else {
         return this.vendors;
       }
-    },
+    }
   },
 
-  mounted() {
-    this.orgId = this.user?.AssociatedOrganisations[0]?.OrganisationId;
-    this.getVendors();
-    console.log("or::", this.user);
-  },
+  async fetch() {
+    const id = this.user?.AssociatedOrganisations[0]?.OrganisationId;
+    const response = await this.$axios.get(
+      `/organisations/${id}/campaigns/${this.$route.params.id}/vendors`
+    );
 
-  methods: {
-    async getVendors() {
-      try {
-        this.openScreen();
-
-        const response = await this.$axios.get(
-          `/organisations/${this.orgId}/campaigns/${this.$route.params.id}/vendors`
-        );
-
-        console.log("Vendors::", response);
-
-        if (response.status == "success") {
-          this.vendors = response.data;
-          screenLoading.close();
-        }
-      } catch (err) {
-        screenLoading.close();
-        console.log(err);
-      }
-    },
-
-    openScreen() {
-      screenLoading = this.$loading({
-        lock: true,
-        spinner: "el-icon-loading",
-        background: "#0000009b",
-      });
-    },
-  },
+    this.vendors = response.data;
+  }
 };
 </script>
 
@@ -223,11 +199,11 @@ select.form-control {
   font-weight: bold;
   letter-spacing: 0.01em;
   font-size: 1.125rem;
-  color: var(--tertiary-black);
+  color: var(--primary-blue);
 }
 
 .table thead th {
-  color: var(--tertiary-black);
+  color: var(--primary-blue);
   background: #f7f7f7;
   letter-spacing: 0.01em;
   font-size: 1rem;
@@ -236,7 +212,7 @@ select.form-control {
 }
 
 .table td {
-  color: var(--tertiary-black);
+  color: var(--primary-blue);
   padding: 1rem 1.5rem;
   font-size: 1rem;
   vertical-align: middle;

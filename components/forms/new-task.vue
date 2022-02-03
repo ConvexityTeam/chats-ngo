@@ -1,6 +1,6 @@
 <template>
   <div class="mt-4 px-3">
-    <form @submit.prevent="createCampaign">
+    <form @submit.prevent="createTask">
       <!-- Name field  here -->
       <div class="form-group">
         <label for="name">Task name</label>
@@ -9,11 +9,11 @@
           type="text"
           class="form-controls"
           :class="{
-            error: $v.payload.title.$error
+            error: $v.payload.name.$error,
           }"
           placeholder="Enter name of task"
-          v-model="payload.title"
-          @blur="$v.payload.title.$touch()"
+          v-model="payload.name"
+          @blur="$v.payload.name.$touch()"
         />
       </div>
 
@@ -25,7 +25,7 @@
           class="form-controls p-2"
           placeholder="Short description"
           :class="{
-            error: $v.payload.description.$error
+            error: $v.payload.description.$error,
           }"
           cols="30"
           rows="3"
@@ -34,30 +34,106 @@
         ></textarea>
       </div>
 
-      <!--Budget field  here -->
+      <!--Amount field  here -->
       <div class="row form-group">
         <div class="col-lg-12">
-          <!--Budget field  here -->
+          <!--Amount field  here -->
           <div class="">
             <label for="total-amount">Amount</label>
             <input
               type="number"
               class="form-controls"
               :class="{
-                error: $v.payload.budget.$error
+                error: $v.payload.amount.$error,
               }"
               id="total-amount"
               placeholder="0.00"
-              v-model="payload.budget"
-              @blur="$v.payload.budget.$touch()"
+              v-model="payload.amount"
+              @blur="$v.payload.amount.$touch()"
               ref="budget"
             />
           </div>
         </div>
       </div>
 
+      <!--Max. Entries field here -->
+      <div class="row form-group">
+        <div class="col-lg-12">
+          <!--Max. Entries  field  here -->
+          <div class="">
+            <label for="entries">Maximum entries</label>
+            <input
+              type="number"
+              class="form-controls"
+              :class="{
+                error: $v.payload.assignment_count.$error,
+              }"
+              id="entries"
+              placeholder="0"
+              v-model="payload.assignment_count"
+              @blur="$v.payload.assignment_count.$touch()"
+            />
+          </div>
+        </div>
+      </div>
+
+      <!--Evidence field here -->
+      <div class="row mb-1">
+        <div class="col-lg-12">
+          <!--Evidence field  here -->
+          <div class="d-flex mt-2">
+            <Checkbox
+              id="require-evidence"
+              :value="payload.require_evidence"
+              @input="(value) => (payload.require_evidence = value)"
+            />
+            <label for="evidence" class="ml-2">Require evidence?</label>
+
+            <div class="ml-2">
+              <Tooltip :content="content" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <transition name="fade">
+        <div v-if="payload.require_evidence">
+          <!--Vendor approval field here -->
+          <div class="row mb-1">
+            <div class="col-lg-12">
+              <div class="d-flex mt-">
+                <Checkbox
+                  id="require-vendor-approval"
+                  :value="payload.require_vendor_approval"
+                  @input="(value) => (payload.require_vendor_approval = value)"
+                />
+                <label for="evidence" class="ml-2 approval"
+                  >To be approved by vendor</label
+                >
+              </div>
+            </div>
+          </div>
+
+          <!-- field agent approv here -->
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="d-flex mt-">
+                <Checkbox
+                  id="require-agent-approval"
+                  :value="payload.require_agent_approval"
+                  @input="(value) => (payload.require_agent_approval = value)"
+                />
+                <label for="evidence" class="ml-2 approval"
+                  >To be approved by field agent</label
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+      </transition>
+
       <!-- button area here -->
-      <div class="d-flex mt-4 mb-3">
+      <div class="d-flex mt-3 mb-3">
         <div>
           <Button
             text="Create"
@@ -74,6 +150,7 @@
             text="Cancel"
             :has-icon="false"
             :has-border="true"
+            :disabled="loading"
             custom-styles="height: 41px; border-radius:5px !important; font-size: 14px !important; padding: 0px 25px !important;"
             @click="closeModal"
           />
@@ -88,119 +165,135 @@ import { required, minValue } from "vuelidate/lib/validators";
 import { mapGetters } from "vuex";
 import DatePicker from "vue2-datepicker";
 import "vue2-datepicker/index.css";
-const greaterThanZero = value => value >= 100;
+const validAmount = (value) => value >= 100;
 
 export default {
+  props: {
+    campaign: {
+      type: Object,
+      default: () => {},
+    },
+  },
+
   data() {
     return {
       loading: false,
       id: 0,
       payload: {
-        type: "cash-for-work",
-        title: "",
+        name: "",
         description: "",
-        budget: "",
-        location: [],
-        start_date: "",
-        end_date: ""
+        amount: "",
+        assignment_count: "",
+        require_evidence: true,
+        require_vendor_approval: false,
+        require_agent_approval: false,
       },
-
+      content:
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Gravida aliquet sed.",
       location: {
-        coordinates: []
-      }
+        coordinates: [],
+      },
     };
   },
 
   validations: {
     payload: {
-      title: {
-        required
+      name: {
+        required,
       },
       description: {
-        required
-      },
-      budget: {
         required,
-        greaterThanZero
       },
-      //   location: {
-      //     coordinates: {
-      //       required
-      //     }
-      //   },
-      start_date: {
-        required
+      amount: {
+        required,
+        validAmount,
       },
-      end_date: {
-        required
-      }
-    }
+      assignment_count: {
+        required,
+        minValue: minValue(1),
+      },
+      require_evidence: {
+        required,
+      },
+    },
   },
+
   components: { DatePicker },
 
   computed: {
-    ...mapGetters("authentication", ["user"])
+    ...mapGetters("authentication", ["user"]),
+  },
+
+  watch: {
+    "payload.require_evidence": function (value) {
+      if (!value) {
+        this.payload.require_vendor_approval = false;
+        this.payload.require_agent_approval = false;
+      }
+    },
   },
 
   mounted() {
-    this.id = this.user.AssociatedOrganisations[0].OrganisationId;
-    // this.formatCurrency(100000);
+    this.id = this.user?.AssociatedOrganisations[0]?.OrganisationId;
   },
 
   methods: {
     closeModal() {
-      this.$bvModal.hide("new-cash");
+      this.$bvModal.hide("new-task");
     },
-    async createCampaign() {
-      console.log("pd::", this.payload);
-      console.log("COORD", this.payload.location.coordinates);
-
+    async createTask() {
       try {
-        this.loading = true;
         this.$v.payload.$touch();
 
         if (this.$v.payload.$error === true) {
-          return (this.loading = false);
+          return;
         }
 
-        this.payload.location = this.payload.location
-          ? JSON.stringify(this.payload.location)
-          : "";
+        if (this.payload.require_evidence) {
+          if (
+            !this.payload.require_vendor_approval &&
+            !this.payload.require_agent_approval
+          ) {
+            this.$toast.error("Please select either vendor or agent approval");
+            return;
+          }
+        }
+
+        this.loading = true;
 
         const response = await this.$axios.post(
-          `/organisations/${+this.id}/campaigns`,
-          this.payload
+          `tasks/${this.id}/${this.campaign.id}`,
+          [this.payload]
         );
 
         if (response.status == "success") {
-          this.$emit("reload");
+          this.loading = false;
           this.closeModal();
+          this.$emit("reload");
           this.$toast.success(response.message);
         }
-        console.log("C4W:::", response);
 
-        this.loading = false;
+        console.log("TASK RESP:::", response);
       } catch (err) {
-        console.log({ err });
         this.loading = false;
-        this.$toast.error(err.response.data?.message);
+        this.$toast.error(err?.response?.data?.message);
+        console.log(e);
       }
-    }
-
-    // TODO:Try emiting fetch all campaigns method from parent and calling here
-  }
+    },
+  },
 };
 </script>
 
 <style scoped>
 label {
-  color: var(--tertiary-black);
+  color: var(--primary-blue);
   font-size: 1rem;
   font-weight: 500;
 }
 
-.form-group {
-  margin-bottom: 1.5rem;
+label.approval {
+  color: var(--primary-gray);
+  font-weight: 400;
 }
 
 .form-controls {
