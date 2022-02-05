@@ -30,8 +30,8 @@ export default {
 
   mounted() {
     const timeout = {
-      dev: 600000,
-      prd: 60000
+      dev: 600000, // 10 minutes
+      prd: 180000 // 3 minutes
     };
 
     var idle = new IdleJs({
