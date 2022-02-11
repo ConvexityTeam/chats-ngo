@@ -31,15 +31,23 @@ export default {
   mounted() {
     const timeout = {
       dev: 600000, // 10 minutes
+      staging: 300000, // 5 minutes
       prd: 180000 // 3 minutes
     };
 
+    console.log("check::", window.location.host);
+    const host = window.location.host;
+
     var idle = new IdleJs({
-      idle: process.env.NODE_ENV === "development" ? timeout.dev : timeout.prd, // idle time in ms
+      idle:
+        process.env.NODE_ENV === "development"
+          ? timeout.dev
+          : host.includes("chats.vercel.app")
+          ? timeout.staging
+          : timeout.prd, // idle time in ms
       events: ["mousemove", "keydown", "mousedown", "touchstart"], // events that will trigger the idle resetter
 
       onIdle: () => {
-        localStorage.clear();
         this.$store.dispatch("authentication/logout");
         this.$router.push("/");
       },

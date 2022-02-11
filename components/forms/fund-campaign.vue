@@ -56,8 +56,8 @@
           custom-styles="height:41px; border-radius: 5px; width: 100%"
           :disabled="
             campaign &&
-            campaign.beneficiaries_count &&
-            campaign.beneficiaries_count == 0
+              campaign.beneficiaries_count &&
+              campaign.beneficiaries_count == 0
           "
           @click="$emit('fundCampaign')"
         />
@@ -83,8 +83,8 @@ export default {
     campaign: {
       type: Object,
       required: true,
-      default: () => {},
-    },
+      default: () => {}
+    }
   },
 
   computed: {
@@ -96,7 +96,7 @@ export default {
         return 0;
       }
       return result;
-    },
+    }
   },
 
   methods: {
@@ -107,8 +107,8 @@ export default {
     sendAmount() {
       this.$emit("fundCampaign");
       this.closeModal();
-    },
-  },
+    }
+  }
 };
 </script>
 
