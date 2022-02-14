@@ -83,7 +83,6 @@
                     </td>
                     <td>
                       <div>
-               
                         <Button
                           text=" View"
                           :has-icon="false"
@@ -212,6 +211,12 @@ export default {
         screenLoading.close();
         console.log("campaignDeetserr:::", err);
       }
+    },
+
+    handleNewTask(task) {
+      this.task = task;
+      this.$bvModal.show("new-task");
+      console.log("Clicked New Task!");
     },
 
     handleNewTask(task) {

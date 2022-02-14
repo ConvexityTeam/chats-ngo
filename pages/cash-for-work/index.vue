@@ -242,8 +242,24 @@ export default {
           `organisations/${this.id}/campaigns/${SelectedCampaign.id}/fund`
         );
 
+        if (response.status == "success") {
+          this.fetchAllCampaigns();
+        }
+      } catch (err) {
         screenLoading.close();
-        console.log("FundResponse", response);
+        this.$toast.error(err.response.data.message);
+        console.log({ err: err });
+      }
+    },
+    async fundCampaign() {
+      try {
+        this.openScreen();
+        const response = await this.$axios.post("organisation/transfer/token", {
+          campaign: this.SelectedCampaign.id,
+          amount: this.SelectedCampaign.budget,
+          organisation_id: this.id
+        });
+        screenLoading.close();
 
         if (response.status == "success") {
           this.fetchAllCampaigns();
@@ -264,7 +280,27 @@ export default {
         });
         screenLoading.close();
 
-        console.log("FundResponse", response);
+        if (response.status == "success") {
+          this.$toast.success(response.message);
+          if (this.SelectedCampaign.status == "pending") {
+            return this.activateCampaign();
+          }
+        }
+      } catch (err) {
+        screenLoading.close();
+        this.$toast.error(err.response.data.message);
+        console.log({ err: err });
+      }
+    },
+    async activateCampaign() {
+      try {
+        const response = await this.$axios.put("organisation/campaign", {
+          organisation_id: this.user.AssociatedOrganisations[0].OrganisationId,
+          campaignId: this.SelectedCampaign.id,
+          budget: this.SelectedCampaign.budget,
+          description: this.SelectedCampaign.description,
+          status: "active"
+        });
 
         if (response.status == "success") {
           this.$toast.success(response.message);

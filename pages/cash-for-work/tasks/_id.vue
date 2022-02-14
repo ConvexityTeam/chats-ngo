@@ -29,6 +29,13 @@
         </div>
       </div>
 
+      <div v-if="details.status == 'paused'" class="">
+        <banner
+          :date="details.updatedAt"
+          @resumeCampaign="resumeCampaign = true"
+        />
+      </div>
+
       <div class="row" :class="{ 'mt-3': details.status == 'paused' }">
         <div class="col-lg-8">
           <!-- Campaign beneficiaries here -->
@@ -63,11 +70,13 @@
                     <td>
                       <div>
                         <Button
-                          text="View submission"
+                          text="View entries"
                           :has-icon="false"
                           :has-border="true"
                           custom-styles="border: 1px solid #17CE89 !important; border-radius: 5px !important; font-size: 0.875rem !important; height: 33px !important"
-                          @click="handleClick(task)"
+                          @click="
+                            $router.push(`/cash-for-work/tasks/${task.id}`)
+                          "
                         />
                       </div>
                     </td>
@@ -102,12 +111,14 @@
 import { mapGetters } from "vuex";
 import taskDetails from "~/components/tables/tasks/task-details.vue";
 import newTask from "~/components/modals/new-task";
+import banner from "~/components/generic/banner.vue";
 
 let screenLoading;
 export default {
   layout: "dashboard",
   components: {
     taskDetails,
+    banner,
     newTask
   },
 
@@ -116,28 +127,26 @@ export default {
     orgId: "",
     searchQuery: "",
     tasks: [],
+
+    beneficiaries: [],
     details: {},
     location: "",
     resumeCampaign: false,
-    sent: {},
 
-    entries: [
-      {
-        name: "",
-        status: ""
-      }
-    ]
+    title: "",
+    drawer: false,
+    direction: "rtl"
   }),
 
-  //   async fetch() {
-  //     const id = this.user?.AssociatedOrganisations[0]?.OrganisationId;
-  //     const response = await this.$axios.get(
-  //       `tasks/${id}/${this.$route.params.id}`
-  //     );
+  async fetch() {
+    const id = this.user?.AssociatedOrganisations[0]?.OrganisationId;
+    const response = await this.$axios.get(
+      `tasks/${id}/${this.$route.params.id}`
+    );
 
-  //     this.tasks = response.data;
-  //     console.log("response:::", response);
-  //   },
+    this.tasks = response.data;
+    console.log("response:::", response);
+  },
 
   computed: {
     ...mapGetters("authentication", ["user"]),
@@ -161,14 +170,6 @@ export default {
   },
 
   methods: {
-    handleClick(data) {
-      const accepted = {
-        ...data,
-        ...this.details
-      };
-
-      this.sent = accepted;
-    },
     async getDetails() {
       try {
         this.openScreen();
