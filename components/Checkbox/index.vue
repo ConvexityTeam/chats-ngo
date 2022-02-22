@@ -16,13 +16,13 @@ export default {
   props: {
     id: {
       type: String,
-      default: "",
+      default: ""
     },
     value: {
       type: Boolean,
-      default: false,
-    },
-  },
+      default: false
+    }
+  }
 };
 </script>
 <style scoped>
@@ -36,6 +36,7 @@ span {
   display: inline-block;
   border-radius: 5px;
   transition: all linear 0.3s;
+  cursor: pointer;
 }
 span:after {
   content: "";

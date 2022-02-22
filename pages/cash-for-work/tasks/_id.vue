@@ -29,13 +29,6 @@
         </div>
       </div>
 
-      <div v-if="details.status == 'paused'" class="">
-        <banner
-          :date="details.updatedAt"
-          @resumeCampaign="resumeCampaign = true"
-        />
-      </div>
-
       <div class="row" :class="{ 'mt-3': details.status == 'paused' }">
         <div class="col-lg-8">
           <!-- Campaign beneficiaries here -->
@@ -61,18 +54,20 @@
                       {{ task.name }}
                     </td>
                     <td>{{ task.description }}</td>
-                    <td>{{ task.amount | formatCurrency }}</td>
-                    <td>{{ task.createdAt | shortDate }}</td>
+                    <td>
+                      {{ task.amount | formatCurrency }}
+                    </td>
+                    <td>
+                      {{ task.createdAt | shortDate }}
+                    </td>
                     <td>
                       <div>
                         <Button
-                          text="View entries"
+                          text="View submission"
                           :has-icon="false"
                           :has-border="true"
                           custom-styles="border: 1px solid #17CE89 !important; border-radius: 5px !important; font-size: 0.875rem !important; height: 33px !important"
-                          @click="
-                            $router.push(`/cash-for-work/tasks/${task.id}`)
-                          "
+                          @click="handleClick(task)"
                         />
                       </div>
                     </td>
@@ -80,7 +75,9 @@
                 </tbody>
               </table>
               <div v-else-if="loading" class="text-center"></div>
-              <h3 v-else class="text-center no-record">NO RECORD FOUND</h3>
+              <h3 v-else class="text-center no-record">
+                NO RECORD FOUND
+              </h3>
             </div>
           </div>
         </div>
@@ -104,14 +101,14 @@
 <script>
 import { mapGetters } from "vuex";
 import taskDetails from "~/components/tables/tasks/task-details.vue";
-import banner from "~/components/generic/banner.vue";
+import newTask from "~/components/modals/new-task";
 
 let screenLoading;
 export default {
   layout: "dashboard",
   components: {
     taskDetails,
-    banner,
+    newTask
   },
 
   data: () => ({
@@ -119,41 +116,43 @@ export default {
     orgId: "",
     searchQuery: "",
     tasks: [],
-
-    beneficiaries: [],
     details: {},
     location: "",
     resumeCampaign: false,
+    sent: {},
 
-    title: "",
-    drawer: false,
-    direction: "rtl",
+    entries: [
+      {
+        name: "",
+        status: ""
+      }
+    ]
   }),
 
-  async fetch() {
-    const id = this.user?.AssociatedOrganisations[0]?.OrganisationId;
-    const response = await this.$axios.get(
-      `tasks/${id}/${this.$route.params.id}`
-    );
+  //   async fetch() {
+  //     const id = this.user?.AssociatedOrganisations[0]?.OrganisationId;
+  //     const response = await this.$axios.get(
+  //       `tasks/${id}/${this.$route.params.id}`
+  //     );
 
-    this.tasks = response.data?.rows;
-    console.log("response:::", response);
-  },
+  //     this.tasks = response.data;
+  //     console.log("response:::", response);
+  //   },
 
   computed: {
     ...mapGetters("authentication", ["user"]),
     resultQuery() {
       if (this.searchQuery) {
-        return this.tasks.filter((task) => {
+        return this.tasks.filter(task => {
           return this.searchQuery
             .toLowerCase()
             .split(" ")
-            .every((v) => task.name.toLowerCase().includes(v));
+            .every(v => task.name.toLowerCase().includes(v));
         });
       } else {
         return this.tasks;
       }
-    },
+    }
   },
 
   mounted() {
@@ -162,6 +161,14 @@ export default {
   },
 
   methods: {
+    handleClick(data) {
+      const accepted = {
+        ...data,
+        ...this.details
+      };
+
+      this.sent = accepted;
+    },
     async getDetails() {
       try {
         this.openScreen();
@@ -177,7 +184,9 @@ export default {
           screenLoading.close();
           this.details = response.data;
           this.beneficiaries = response.data.Beneficiaries;
-          this.location = JSON.parse(response.data?.location?.country);
+          // this.location = JSON.parse(
+          // 	response.data?.location?.country
+          // );
           console.log("loc::", this.location);
           console.log("here", response.data);
         }
@@ -194,10 +203,10 @@ export default {
       screenLoading = this.$loading({
         lock: true,
         spinner: "el-icon-loading",
-        background: "#0000009b",
+        background: "#0000009b"
       });
-    },
-  },
+    }
+  }
 };
 </script>
 

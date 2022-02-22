@@ -33,7 +33,10 @@
 						</div>
 
 						<!-- Organization profile here  -->
-						<form v-if="step == 1" @submit.prevent="updateOrganisationProfile">
+						<form
+							v-if="step == 1"
+							@submit.prevent="updateOrganisationProfile"
+						>
 							<!-- Country - State section here  -->
 							<div class="row sizing-top">
 								<div class="col-lg-6">
@@ -42,17 +45,26 @@
 									<div>
 										<el-select
 											id="dropdown"
-											v-model="payload.organisation_profile.country"
-											@blur="$v.payload.organisation_profile.country.$touch()"
+											v-model="
+												payload.organisation_profile
+													.country
+											"
+											@blur="
+												$v.payload.organisation_profile.country.$touch()
+											"
 											filterable
 											placeholder="Nigeria"
 											class="country"
 											:class="{
-												error: $v.payload.organisation_profile.country.$error,
+												error:
+													$v.payload
+														.organisation_profile
+														.country.$error,
 											}"
 										>
 											<el-option
-												v-for="(country, i) in countries"
+												v-for="(country,
+												i) in countries"
 												:key="i"
 												:label="country.countryName"
 												:value="country.countryName"
@@ -69,12 +81,18 @@
 										type="text"
 										class="form-controls px-3"
 										:class="{
-											error: $v.payload.organisation_profile.state.$error,
+											error:
+												$v.payload.organisation_profile
+													.state.$error,
 										}"
 										id="state"
 										placeholder="John"
-										v-model="payload.organisation_profile.state"
-										@blur="$v.payload.organisation_profile.state.$touch()"
+										v-model="
+											payload.organisation_profile.state
+										"
+										@blur="
+											$v.payload.organisation_profile.state.$touch()
+										"
 									/>
 								</div>
 							</div>
@@ -90,34 +108,45 @@
 										placeholder="Address"
 										class="form-controls px-3"
 										:class="{
-											error: $v.payload.organisation_profile.address.$error,
+											error:
+												$v.payload.organisation_profile
+													.address.$error,
 										}"
-										v-model="payload.organisation_profile.address"
-										@blur="$v.payload.organisation_profile.address.$touch()"
+										v-model="
+											payload.organisation_profile.address
+										"
+										@blur="
+											$v.payload.organisation_profile.address.$touch()
+										"
 									/>
 								</div>
 
-                <!-- Year Founded here  -->
-                <div class="col-lg-6 mb-3">
-                  <label id="year_founded" for="year">Year Founded</label>
-                  <input
-                    type="number"
-                    @wheel="$event.target.blur()"
-                    id="year_founded"
-                    class="form-controls px-3"
-                    :class="{
-                      error:
-                        $v.payload.organisation_profile.year_of_inception
-                          .$error,
-                    }"
-                    placeholder="YYYY"
-                    v-model="payload.organisation_profile.year_of_inception"
-                    @blur="
-                      $v.payload.organisation_profile.year_of_inception.$touch()
-                    "
-                  />
-                </div>
-              </div>
+								<!-- Year Founded here  -->
+								<div class="col-lg-6 mb-3">
+									<label id="year_founded" for="year"
+										>Year Founded</label
+									>
+									<input
+										type="number"
+										@wheel="$event.target.blur()"
+										id="year_founded"
+										class="form-controls px-3"
+										:class="{
+											error:
+												$v.payload.organisation_profile
+													.year_of_inception.$error,
+										}"
+										placeholder="YYYY"
+										v-model="
+											payload.organisation_profile
+												.year_of_inception
+										"
+										@blur="
+											$v.payload.organisation_profile.year_of_inception.$touch()
+										"
+									/>
+								</div>
+							</div>
 
 							<!-- Website - OrgID section here  -->
 							<div class="row">
@@ -130,10 +159,17 @@
 										placeholder="Website"
 										class="form-controls px-3"
 										:class="{
-											error: $v.payload.organisation_profile.website_url.$error,
+											error:
+												$v.payload.organisation_profile
+													.website_url.$error,
 										}"
-										v-model="payload.organisation_profile.website_url"
-										@blur="$v.payload.organisation_profile.website_url.$touch()"
+										v-model="
+											payload.organisation_profile
+												.website_url
+										"
+										@blur="
+											$v.payload.organisation_profile.website_url.$touch()
+										"
 									/>
 								</div>
 								<!-- Store name here -->
@@ -153,7 +189,10 @@
 						</form>
 
 						<!-- User Profile here  -->
-						<form v-if="step == 2" @submit.prevent="updateUserProfile">
+						<form
+							v-if="step == 2"
+							@submit.prevent="updateUserProfile"
+						>
 							<!-- Name section here  -->
 							<div class="row sizing-top">
 								<!-- First Name  -->
@@ -165,10 +204,16 @@
 										placeholder="Juliana"
 										class="form-controls px-3"
 										:class="{
-											error: $v.payload.user_profile.first_name.$error,
+											error:
+												$v.payload.user_profile
+													.first_name.$error,
 										}"
-										v-model="payload.user_profile.first_name"
-										@blur="$v.payload.user_profile.first_name.$touch()"
+										v-model="
+											payload.user_profile.first_name
+										"
+										@blur="
+											$v.payload.user_profile.first_name.$touch()
+										"
 									/>
 								</div>
 
@@ -179,9 +224,15 @@
 										id="last_name"
 										placeholder="Orji"
 										class="form-controls px-3"
-										:class="{ error: $v.payload.user_profile.last_name.$error }"
+										:class="{
+											error:
+												$v.payload.user_profile
+													.last_name.$error,
+										}"
 										v-model="payload.user_profile.last_name"
-										@blur="$v.payload.user_profile.last_name.$touch()"
+										@blur="
+											$v.payload.user_profile.last_name.$touch()
+										"
 									/>
 								</div>
 							</div>
@@ -207,13 +258,16 @@
 									<div>
 										<el-select
 											id="dropdown"
-											v-model="payload.user_profile.country"
+											v-model="
+												payload.user_profile.country
+											"
 											filterable
 											placeholder="Country Code"
 											input-class="form-controls"
 										>
 											<el-option
-												v-for="(countryCode, i) in countries"
+												v-for="(countryCode,
+												i) in countries"
 												:key="i"
 												:label="countryCode.countryCode"
 												:value="countryCode.countryCode"
@@ -223,25 +277,26 @@
 									</div>
 								</div>
 
-                <!-- Currency Code  -->
-                <div class="col-lg-6 mb-3">
-                  <label for="country">Currency Code</label>
-                  <el-select
-                    autocomplete="new-password"
-                    id="dropdown"
-                    v-model="payload.user_profile.currency"
-                    filterable
-                    placeholder="Currency Code"
-                  >
-                    <el-option
-                      v-for="(currencyCode, i) in countries"
-                      :key="i"
-                      :label="currencyCode.currencyCode"
-                      :value="currencyCode.currencyCode"
-                    >
-                    </el-option>
-                  </el-select>
-                </div>
+								<!-- Currency Code  -->
+								<div class="col-lg-6 mb-3">
+									<label for="country">Currency Code</label>
+									<el-select
+										autocomplete="new-password"
+										id="dropdown"
+										v-model="payload.user_profile.currency"
+										filterable
+										placeholder="Currency Code"
+									>
+										<el-option
+											v-for="(currencyCode,
+											i) in countries"
+											:key="i"
+											:label="currencyCode.currencyCode"
+											:value="currencyCode.currencyCode"
+										>
+										</el-option>
+									</el-select>
+								</div>
 
 								<!-- Location Here  -->
 								<div class="col-lg-6 mb-3">
@@ -273,7 +328,9 @@
 									<div>
 										<el-select
 											id="dropdown"
-											v-model="payload.user_profile.gender"
+											v-model="
+												payload.user_profile.gender
+											"
 											filterable
 											placeholder="Gender"
 											class=""
@@ -295,13 +352,17 @@
 									<div>
 										<el-select
 											id="dropdown"
-											v-model="payload.user_profile.marital_status"
+											v-model="
+												payload.user_profile
+													.marital_status
+											"
 											filterable
 											placeholder="Marital Status"
 											class=""
 										>
 											<el-option
-												v-for="(type, i) in marital_status"
+												v-for="(type,
+												i) in marital_status"
 												:key="i"
 												:label="type.name"
 												:value="type.name"
@@ -311,19 +372,21 @@
 									</div>
 								</div>
 
-                <!-- Date of Birth Here  -->
+								<!-- Date of Birth Here  -->
 
-                <div class="col-lg-6 mb-3">
-                  <label for="state">Date of Birth</label>
-                  <date-picker
-                    v-model="payload.user_profile.dob"
-                    input-class=""
-                    format="DD-MM-YYYY"
-                    placeholder="DD-MM-YYYY"
-                    id="year_of_inception"
-                    :disabled-date="(present) => present >= new Date()"
-                  ></date-picker>
-                </div>
+								<div class="col-lg-6 mb-3">
+									<label for="state">Date of Birth</label>
+									<date-picker
+										v-model="payload.user_profile.dob"
+										input-class=""
+										format="DD-MM-YYYY"
+										placeholder="DD-MM-YYYY"
+										id="year_of_inception"
+										:disabled-date="
+											(present) => present >= new Date()
+										"
+									></date-picker>
+								</div>
 
 								<!-- Save Button -->
 								<div class="col-lg-12 mb-2 mt-1">
@@ -344,289 +407,301 @@
 				</div>
 			</div>
 
-      <!-- Logo Here -->
-      <div class="col-lg-3">
-        <b-card class="profile-card pb-2">
-          <div
-            class="d-flex profile-card-image-holder justify-content-center mx-auto"
-          >
-            <div
-              class="d-flex align-items-center just profile-card-image-holder m-auto overflow-hidden"
-            >
-              <!--Organisation Photo here -->
-              <b-avatar
-                :src="file"
-                size="150px"
-                class="img-fluid p-1"
-                variant="light"
-              ></b-avatar>
+			<!-- Logo Here -->
+			<div class="col-lg-3">
+				<b-card class="profile-card pb-2">
+					<div
+						class="d-flex profile-card-image-holder justify-content-center mx-auto"
+					>
+						<div
+							class="d-flex align-items-center just profile-card-image-holder m-auto overflow-hidden"
+						>
+							<!--Organisation Photo here -->
+							<b-avatar
+								:src="file"
+								size="150px"
+								class="img-fluid p-1"
+								variant="light"
+							></b-avatar>
 
-              <label>
-                <button
-                  type="button"
-                  class="profile-card-btn"
-                  @click="$refs.fileInput.click()"
-                >
-                  <Camera />
-                </button>
+							<label>
+								<button
+									type="button"
+									class="profile-card-btn"
+									@click="$refs.fileInput.click()"
+								>
+									<Camera />
+								</button>
 
-                <input
-                  type="file"
-                  accept="image/png, .pdf"
-                  @change="handlePhotoUpdate"
-                  ref="fileInput"
-                  style="display: none"
-                />
-              </label>
-            </div>
-          </div>
+								<input
+									type="file"
+									accept="image/png, .pdf"
+									@change="handlePhotoUpdate"
+									ref="fileInput"
+									style="display: none"
+								/>
+							</label>
+						</div>
+					</div>
 
-          <!-- organisation title here -->
-          <b-card-title class="mt-4 d-flex justify-content-center text-center">
-            <h6 class="font-bold primary-blue">
-              {{ organisationName }}
-            </h6>
-          </b-card-title>
+					<!-- organisation title here -->
+					<b-card-title
+						class="mt-4 d-flex justify-content-center text-center"
+					>
+						<h6 class="font-bold primary-blue">
+							{{ organisationName }}
+						</h6>
+					</b-card-title>
 
-          <!-- reg.ID here -->
-          <b-card-text
-            class="profile-card-id text-input d-flex justify-content-center"
-            >{{ registrationId }}</b-card-text
-          >
+					<!-- reg.ID here -->
+					<b-card-text
+						class="profile-card-id text-input d-flex justify-content-center"
+						>{{ registrationId }}</b-card-text
+					>
 
-          <!-- websiteUrl here -->
-          <b-card-text
-            class="profile-card-website-url secondary-black text-sm d-flex justify-content-center"
-          >
-            <a
-              :href="websiteUrl"
-              target="_blank"
-              rel="noreferrer"
-              class="secondary-black"
-            >
-              {{ websiteUrl }}</a
-            >
-          </b-card-text>
-        </b-card>
-      </div>
-    </div>
-  </div>
+					<!-- websiteUrl here -->
+					<b-card-text
+						class="profile-card-website-url secondary-black text-sm d-flex justify-content-center"
+					>
+						<a
+							:href="websiteUrl"
+							target="_blank"
+							rel="noreferrer"
+							class="secondary-black"
+						>
+							{{ websiteUrl }}</a
+						>
+					</b-card-text>
+				</b-card>
+			</div>
+		</div>
+	</div>
 </template>
 
 <script>
-import { required, email, maxLength, numeric } from "vuelidate/lib/validators";
-import Camera from "~/components/icons/camera";
-import DatePicker from "vue2-datepicker";
-import { mapGetters, mapActions } from "vuex";
+import { required, email, maxLength, numeric } from 'vuelidate/lib/validators';
+import Camera from '~/components/icons/camera';
+import DatePicker from 'vue2-datepicker';
+import { mapGetters, mapActions } from 'vuex';
 
 export default {
-  name: "ProfileSettings",
-  components: {
-    Camera,
-    DatePicker,
-    email,
-  },
+	name: 'ProfileSettings',
+	components: {
+		Camera,
+		DatePicker,
+		email,
+	},
 
-  data: () => ({
-    options: { placeholder: "Phone number" },
-    marital_status: [
-      { name: "single" },
-      { name: "married" },
-      { name: "divorced" },
-    ],
-    gender: [{ name: "male" }, { name: "female" }],
+	data: () => ({
+		options: { placeholder: 'Phone number' },
+		marital_status: [
+			{ name: 'single' },
+			{ name: 'married' },
+			{ name: 'divorced' },
+		],
+		gender: [{ name: 'male' }, { name: 'female' }],
 
-    present: new Date(),
-    organisation_id: 0,
-    loading: false,
-    countries: [],
-    step: 1,
-    file: "",
-    payload: {
-      organisation_profile: {
-        country: "",
-        state: "",
-        address: "",
-        year_of_inception: "",
-        website_url: "",
-      },
-      user_profile: {
-        first_name: "",
-        last_name: "",
-        country: "",
-        currency: "",
-        phone: "",
-        location: "",
-        address: "",
-        gender: "",
-        marital_status: "",
-        dob: "",
-      },
-      logo: {},
-    },
-  }),
+		present: new Date(),
+		organisation_id: 0,
+		loading: false,
+		countries: [],
+		step: 1,
+		file: '',
+		payload: {
+			organisation_profile: {
+				country: '',
+				state: '',
+				address: '',
+				year_of_inception: '',
+				website_url: '',
+			},
+			user_profile: {
+				first_name: '',
+				last_name: '',
+				country: '',
+				currency: '',
+				phone: '',
+				location: '',
+				address: '',
+				gender: '',
+				marital_status: '',
+				dob: '',
+			},
+			logo: {},
+		},
+	}),
 
-  validations: {
-    payload: {
-      organisation_profile: {
-        country: { required },
-        state: { required },
-        address: { required },
-        year_of_inception: { required, maxLength: maxLength(4), numeric },
-        website_url: { required },
-      },
-      user_profile: {
-        first_name: { required },
-        last_name: { required },
-      },
-    },
-  },
+	validations: {
+		payload: {
+			organisation_profile: {
+				country: { required },
+				state: { required },
+				address: { required },
+				year_of_inception: {
+					required,
+					maxLength: maxLength(4),
+					numeric,
+				},
+				website_url: { required },
+			},
+			user_profile: {
+				first_name: { required },
+				last_name: { required },
+			},
+		},
+	},
 
-  async fetch() {
-    const response = await this.$axios.get("/utils/countries");
-    this.countries = response.data;
-  },
+	async fetch() {
+		const response = await this.$axios.get('/utils/countries');
+		this.countries = response.data;
+	},
 
 	computed: {
 		...mapGetters('authentication', ['user']),
 
-    websiteUrl() {
-      return this.payload?.organisation_profile?.website_url ?? "";
-    },
+		websiteUrl() {
+			return this.payload?.organisation_profile?.website_url ?? '';
+		},
 
-    organisationName() {
-      return this.user?.AssociatedOrganisations[0]?.Organisation?.name ?? "";
-    },
+		organisationName() {
+			return (
+				this.user?.AssociatedOrganisations[0]?.Organisation?.name ?? ''
+			);
+		},
 
-    registrationId() {
-      return (
-        this.user?.AssociatedOrganisations[0]?.Organisation?.registration_id ??
-        ""
-      );
-    },
-  },
+		registrationId() {
+			return (
+				this.user?.AssociatedOrganisations[0]?.Organisation
+					?.registration_id ?? ''
+			);
+		},
+	},
 
-  mounted() {
-    this.loadData();
-    console.log("USER::", this.user);
-  },
+	mounted() {
+		this.loadData();
+		console.log('USER::', this.user);
+	},
 
-  methods: {
-    ...mapActions("authentication", ["commitUserUpdate"]),
-    async updateOrganisationProfile() {
-      try {
-        this.loading = true;
-        this.$v.payload.organisation_profile.$touch();
+	methods: {
+		...mapActions('authentication', ['commitUserUpdate']),
+		async updateOrganisationProfile() {
+			try {
+				this.loading = true;
+				this.$v.payload.organisation_profile.$touch();
 
-        if (this.$v.payload.organisation_profile.$error === true) {
-          if (this.$v.payload.organisation_profile.country.$error === true) {
-            this.$toast.error("Please fill in country");
-            return (this.loading = false);
-          }
-          return (this.loading = false);
-        }
+				if (this.$v.payload.organisation_profile.$error === true) {
+					if (
+						this.$v.payload.organisation_profile.country.$error ===
+						true
+					) {
+						this.$toast.error('Please fill in country');
+						return (this.loading = false);
+					}
+					return (this.loading = false);
+				}
 
-        const response = await this.$axios.put(
-          `/organisations/${this.organisation_id}/profile`,
-          this.payload.organisation_profile
-        );
+				const response = await this.$axios.put(
+					`/organisations/${this.organisation_id}/profile`,
+					this.payload.organisation_profile
+				);
 
-        if (response.status == "success") {
-          this.loading = false;
-          this.$toast.success(response.message);
-          this.commitUserUpdate(response.data);
-        }
-      } catch (err) {
-        console.log("UPDATEORGPROFILEERR::", { err });
-        this.$toast.error(err?.response?.data?.message);
-        this.loading = false;
-      }
-    },
-    async updateUserProfile() {
-      try {
-        this.loading = true;
-        this.$v.payload.user_profile.$touch();
+				if (response.status == 'success') {
+					this.loading = false;
+					this.$toast.success(response.message);
+					this.commitUserUpdate(response.data);
+				}
+			} catch (err) {
+				console.log('UPDATEORGPROFILEERR::', { err });
+				this.$toast.error(err?.response?.data?.message);
+				this.loading = false;
+			}
+		},
+		async updateUserProfile() {
+			try {
+				this.loading = true;
+				this.$v.payload.user_profile.$touch();
 
-        if (this.$v.payload.user_profile.$error === true) {
-          return (this.loading = false);
-        }
+				if (this.$v.payload.user_profile.$error === true) {
+					return (this.loading = false);
+				}
 
-        console.log("PL::", this.payload.user_profile);
+				console.log('PL::', this.payload.user_profile);
 
-        const response = await this.$axios.put(
-          "/users/profile",
-          this.payload.user_profile
-        );
-        console.log("USER RESPONSE:::", response);
+				const response = await this.$axios.put(
+					'/users/profile',
+					this.payload.user_profile
+				);
+				console.log('USER RESPONSE:::', response);
 
 				if (response.status == 'success') {
 					this.loading = false;
 					this.$toast.success(response.message);
 				}
 
-        console.log("UPDATE PROFILE RESPONSE", response);
-      } catch (err) {
-        console.log("UPDATEUSERPROFILEERR::", { err });
-        this.$toast.error(err?.response?.data?.message);
-        this.loading = false;
-      }
-    },
+				console.log('UPDATE PROFILE RESPONSE', response);
+			} catch (err) {
+				console.log('UPDATEUSERPROFILEERR::', { err });
+				this.$toast.error(err?.response?.data?.message);
+				this.loading = false;
+			}
+		},
 
-    loadData() {
-      const organisation = this.user?.AssociatedOrganisations[0]?.Organisation;
+		loadData() {
+			const organisation = this.user?.AssociatedOrganisations[0]
+				?.Organisation;
 
-      this.payload.logo = organisation.logo_link;
-      this.file = organisation.logo_link;
-      this.organisation_id = organisation.id;
+			this.payload.logo = organisation.logo_link;
+			this.file = organisation.logo_link;
+			this.organisation_id = organisation.id;
 
-      this.objectAliaser(this.payload.organisation_profile, organisation);
-      this.objectAliaser(this.payload.user_profile, this.user);
-    },
-    objectAliaser(oldObj, newObj) {
-      return Object.keys(oldObj).forEach((item) => {
-        oldObj[item] = newObj?.[item];
-        if (item == "dob") {
-          oldObj[item] = new Date(newObj?.[item]);
-        }
-      });
-    },
+			this.objectAliaser(this.payload.organisation_profile, organisation);
+			this.objectAliaser(this.payload.user_profile, this.user);
+		},
+		objectAliaser(oldObj, newObj) {
+			return Object.keys(oldObj).forEach((item) => {
+				oldObj[item] = newObj?.[item];
+				if (item == 'dob') {
+					oldObj[item] = new Date(newObj?.[item]);
+				}
+			});
+		},
 
-    handlePhotoUpdate(value) {
-      const image = value.target.files[0];
-      this.file = URL.createObjectURL(image);
-      this.payload.logo = image;
-      this.updatephoto();
-    },
-    async updatephoto() {
-      try {
-        this.loading = true;
-        const formData = new FormData();
+		handlePhotoUpdate(value) {
+			const image = value.target.files[0];
+			this.file = URL.createObjectURL(image);
+			this.payload.logo = image;
+			this.updatephoto();
+		},
+		async updatephoto() {
+			try {
+				this.loading = true;
+				const formData = new FormData();
 
 				formData.append('logo', this.payload.logo);
 
-        const response = await this.$axios.post(
-          `organisations/${this.organisation_id}/logo`,
-          formData
-        );
+				const response = await this.$axios.post(
+					`organisations/${this.organisation_id}/logo`,
+					formData
+				);
 
-        if (response.status == "success") {
-          this.loading = false;
-          this.$toast.success(response.message);
-          this.commitUserUpdate(response.data);
-        }
-      } catch (err) {
-        console.log("UPDATEPROFILEERR::", { err });
-        this.$toast.error(err?.response?.data?.message);
-        this.loading = false;
-      }
-    },
-  },
+				if (response.status == 'success') {
+					this.loading = false;
+					this.$toast.success(response.message);
+					this.commitUserUpdate(response.data);
+				}
+			} catch (err) {
+				console.log('UPDATEPROFILEERR::', { err });
+				this.$toast.error(err?.response?.data?.message);
+				this.loading = false;
+			}
+		},
+	},
 };
 </script>
 
 <style scoped>
 a {
-  text-decoration: none;
+	text-decoration: none;
 }
 .ctn-mgt-btn {
 	border-radius: 10px;

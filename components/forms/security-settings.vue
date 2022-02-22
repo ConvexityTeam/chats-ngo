@@ -146,7 +146,7 @@
                     type="submit"
                     :has-icon="false"
                     text="Save"
-                    custom-styles="height:50px;  width: 100%"
+                    custom-styles="height:50px;  width:100%"
                     :loading="loading"
                     :disabled="loading"
                   />
@@ -294,10 +294,6 @@ export default {
         }),
       },
     },
-  },
-
-  computed: {
-    ...mapGetters("authentication", ["user"]),
   },
 
   watch: {

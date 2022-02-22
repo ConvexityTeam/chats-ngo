@@ -1,5 +1,9 @@
 <template>
   <div class="pb-5">
+    <!-- create new task modal  -->
+    <Modal id="new-task" title="new task">
+      <newTask />
+    </Modal>
     <div v-if="loading"></div>
 
     <div class="main container transparent pt-4 mt-2 pb-5" v-else>
@@ -27,6 +31,13 @@
             </div>
           </div>
         </div>
+        <div class="ml-auto mx-3">
+          <Button
+            text="Create new"
+            custom-styles="height:50px"
+            v-b-modal.new-task
+          />
+        </div>
       </div>
 
       <div v-if="details.status == 'paused'" class="">
@@ -41,18 +52,19 @@
           <!-- Campaign beneficiaries here -->
           <div>
             <div class="table-holder mt-2">
-              <div class="d-flex align-items-center table-title">
-                <div class="ml-auto"></div>
-              </div>
+              <div v-if="$fetchState.pending" class="text-center"></div>
 
-              <table v-if="resultQuery.length" class="table table-borderless">
+              <table
+                v-else-if="resultQuery.length"
+                class="table table-borderless"
+              >
                 <thead>
                   <tr>
                     <th scope="col">Name</th>
-                    <th scope="col">Description</th>
+                    <th scope="col">Entries</th>
                     <th scope="col">Amount</th>
                     <th scope="col">Created</th>
-                    <th scope="col">Actions</th>
+                    <th scope="col"></th>
                   </tr>
                 </thead>
                 <tbody>
@@ -60,16 +72,23 @@
                     <td>
                       {{ task.name }}
                     </td>
-                    <td>{{ task.description }}</td>
-                    <td>{{ task.amount | formatCurrency }}</td>
-                    <td>{{ task.createdAt | shortDate }}</td>
+                    <td class="entries">
+                      {{ task.assignment_count }}
+                    </td>
+                    <td>
+                      {{ task.amount | formatCurrency }}
+                    </td>
+                    <td class="max-width">
+                      {{ task.createdAt | shortDate }}
+                    </td>
                     <td>
                       <div>
+               
                         <Button
-                          text="View entries"
+                          text=" View"
                           :has-icon="false"
                           :has-border="true"
-                          custom-styles="border: 1px solid #17CE89 !important; border-radius: 5px !important; font-size: 0.875rem !important; height: 33px !important"
+                          custom-styles="border: 1px solid #17CE89 !important; border-radius: 5px !important; font-size: 0.875rem !important; height: 33px !important;"
                           @click="
                             $router.push(`/cash-for-work/tasks/${task.id}`)
                           "
@@ -79,8 +98,10 @@
                   </tr>
                 </tbody>
               </table>
-              <div v-else-if="loading" class="text-center"></div>
-              <h3 v-else class="text-center no-record">NO RECORD FOUND</h3>
+
+              <h3 v-else class="text-center no-record">
+                NO RECORD FOUND
+              </h3>
             </div>
           </div>
         </div>
@@ -103,9 +124,9 @@
 
 <script>
 import { mapGetters } from "vuex";
-
 import campaignDetails from "~/components/tables/campaigns/campaign-details";
 import banner from "~/components/generic/banner.vue";
+import newTask from "~/components/forms/new-task";
 
 let screenLoading;
 export default {
@@ -113,12 +134,14 @@ export default {
   components: {
     campaignDetails,
     banner,
+    newTask
   },
 
   data: () => ({
     loading: false,
     orgId: "",
     searchQuery: "",
+    task: {},
     tasks: [],
 
     beneficiaries: [],
@@ -128,7 +151,7 @@ export default {
 
     title: "",
     drawer: false,
-    direction: "rtl",
+    direction: "rtl"
   }),
 
   async fetch() {
@@ -136,28 +159,28 @@ export default {
     const response = await this.$axios.get(
       `tasks/${id}/${this.$route.params.id}`
     );
-
-    this.tasks = response.data?.rows;
-    console.log("response:::", response);
+    this.tasks = response.data;
+    console.log("tasks:::", this.tasks);
   },
 
   computed: {
     ...mapGetters("authentication", ["user"]),
     resultQuery() {
       if (this.searchQuery) {
-        return this.tasks.filter((task) => {
+        return this.tasks.filter(task => {
           return this.searchQuery
             .toLowerCase()
             .split(" ")
-            .every((v) => task.name.toLowerCase().includes(v));
+            .every(v => task.name.toLowerCase().includes(v));
         });
       } else {
         return this.tasks;
       }
-    },
+    }
   },
 
   mounted() {
+    console.log("USER::", this.user);
     this.orgId = this.user?.AssociatedOrganisations[0]?.OrganisationId;
     this.getDetails();
   },
@@ -191,14 +214,20 @@ export default {
       }
     },
 
+    handleNewTask(task) {
+      this.task = task;
+      this.$bvModal.show("new-task");
+      console.log("Clicked New Task!");
+    },
+
     openScreen() {
       screenLoading = this.$loading({
         lock: true,
         spinner: "el-icon-loading",
-        background: "#0000009b",
+        background: "#0000009b"
       });
-    },
-  },
+    }
+  }
 };
 </script>
 
@@ -216,5 +245,15 @@ export default {
 .col-lg-4 {
   flex: 0 0 36.333333%;
   max-width: 36.333333%;
+}
+
+.max-width {
+  width: 9rem;
+  max-width: 9rem;
+}
+
+.entries {
+  width: 2rem;
+  max-width: 2rem;
 }
 </style>

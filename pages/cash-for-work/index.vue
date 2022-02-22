@@ -170,7 +170,7 @@ import newCash from "~/components/forms/new-cash-for-work.vue";
 import newTask from "~/components/forms/new-task";
 
 // import newTask from "~/components/modals/new-task";
-import { mapGetters } from "vuex";
+import { mapGetters, mapActions } from "vuex";
 let screenLoading;
 
 export default {
@@ -185,24 +185,25 @@ export default {
       campaign: {},
       campaigns: [],
       SelectedCampaign: {},
-      searchQuery: "",
+      searchQuery: ""
     };
   },
 
   computed: {
     ...mapGetters("authentication", ["user"]),
+
     resultQuery() {
       if (this.searchQuery) {
-        return this.campaigns.filter((campaign) => {
+        return this.campaigns.filter(campaign => {
           return this.searchQuery
             .toLowerCase()
             .split(" ")
-            .every((v) => campaign.title.toLowerCase().includes(v));
+            .every(v => campaign.title.toLowerCase().includes(v));
         });
       } else {
         return this.campaigns;
       }
-    },
+    }
   },
 
   mounted() {
@@ -211,6 +212,7 @@ export default {
   },
 
   methods: {
+    ...mapActions("authentication", ["commitUserCampaignUpdate"]),
     async fetchAllCampaigns() {
       try {
         this.loading = true;
@@ -258,7 +260,7 @@ export default {
         const response = await this.$axios.post("organisation/transfer/token", {
           campaign: this.SelectedCampaign.id,
           amount: this.SelectedCampaign.budget,
-          organisation_id: this.id,
+          organisation_id: this.id
         });
         screenLoading.close();
 
@@ -283,7 +285,7 @@ export default {
           campaignId: this.SelectedCampaign.id,
           budget: this.SelectedCampaign.budget,
           description: this.SelectedCampaign.description,
-          status: "active",
+          status: "active"
         });
 
         if (response.status == "success") {
@@ -312,10 +314,10 @@ export default {
       screenLoading = this.$loading({
         lock: true,
         spinner: "el-icon-loading",
-        background: "#0000009b",
+        background: "#0000009b"
       });
-    },
-  },
+    }
+  }
 };
 </script>
 
