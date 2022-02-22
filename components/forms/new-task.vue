@@ -9,7 +9,7 @@
           type="text"
           class="form-controls"
           :class="{
-            error: $v.payload.name.$error,
+            error: $v.payload.name.$error
           }"
           placeholder="Enter name of task"
           v-model="payload.name"
@@ -25,7 +25,7 @@
           class="form-controls p-2"
           placeholder="Short description"
           :class="{
-            error: $v.payload.description.$error,
+            error: $v.payload.description.$error
           }"
           cols="30"
           rows="3"
@@ -44,7 +44,7 @@
               type="number"
               class="form-controls"
               :class="{
-                error: $v.payload.amount.$error,
+                error: $v.payload.amount.$error
               }"
               id="total-amount"
               placeholder="0.00"
@@ -66,7 +66,7 @@
               type="number"
               class="form-controls"
               :class="{
-                error: $v.payload.assignment_count.$error,
+                error: $v.payload.assignment_count.$error
               }"
               id="entries"
               placeholder="0"
@@ -83,9 +83,9 @@
           <!--Evidence field  here -->
           <div class="d-flex mt-2">
             <Checkbox
-              id="require-evidence"
+              id="evidence"
               :value="payload.require_evidence"
-              @input="(value) => (payload.require_evidence = value)"
+              @input="value => (payload.require_evidence = value)"
             />
             <label for="evidence" class="ml-2">Require evidence?</label>
 
@@ -105,9 +105,9 @@
                 <Checkbox
                   id="require-vendor-approval"
                   :value="payload.require_vendor_approval"
-                  @input="(value) => (payload.require_vendor_approval = value)"
+                  @input="value => (payload.require_vendor_approval = value)"
                 />
-                <label for="evidence" class="ml-2 approval"
+                <label for="require-vendor-approval" class="ml-2 approval"
                   >To be approved by vendor</label
                 >
               </div>
@@ -121,9 +121,9 @@
                 <Checkbox
                   id="require-agent-approval"
                   :value="payload.require_agent_approval"
-                  @input="(value) => (payload.require_agent_approval = value)"
+                  @input="value => (payload.require_agent_approval = value)"
                 />
-                <label for="evidence" class="ml-2 approval"
+                <label for="require-agent-approval" class="ml-2 approval"
                   >To be approved by field agent</label
                 >
               </div>
@@ -165,14 +165,14 @@ import { required, minValue } from "vuelidate/lib/validators";
 import { mapGetters } from "vuex";
 import DatePicker from "vue2-datepicker";
 import "vue2-datepicker/index.css";
-const validAmount = (value) => value >= 100;
+const validAmount = value => value >= 100;
 
 export default {
   props: {
     campaign: {
       type: Object,
-      default: () => {},
-    },
+      default: () => null
+    }
   },
 
   data() {
@@ -186,55 +186,56 @@ export default {
         assignment_count: "",
         require_evidence: true,
         require_vendor_approval: false,
-        require_agent_approval: false,
+        require_agent_approval: false
       },
       content:
         "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Gravida aliquet sed.",
       location: {
-        coordinates: [],
-      },
+        coordinates: []
+      }
     };
   },
 
   validations: {
     payload: {
       name: {
-        required,
+        required
       },
       description: {
-        required,
+        required
       },
       amount: {
         required,
-        validAmount,
+        validAmount
       },
       assignment_count: {
         required,
-        minValue: minValue(1),
+        minValue: minValue(1)
       },
       require_evidence: {
-        required,
-      },
-    },
+        required
+      }
+    }
   },
 
   components: { DatePicker },
 
   computed: {
-    ...mapGetters("authentication", ["user"]),
+    ...mapGetters("authentication", ["user", "getCampaign"])
   },
 
   watch: {
-    "payload.require_evidence": function (value) {
+    "payload.require_evidence": function(value) {
       if (!value) {
         this.payload.require_vendor_approval = false;
         this.payload.require_agent_approval = false;
       }
-    },
+    }
   },
 
   mounted() {
     this.id = this.user?.AssociatedOrganisations[0]?.OrganisationId;
+    console.log("OrgId:::", this.id);
   },
 
   methods: {
@@ -260,27 +261,35 @@ export default {
         }
 
         this.loading = true;
+        let currentCampaignId;
+
+        if (this.campaign) {
+          currentCampaignId = this.campaign.id;
+        } else {
+          currentCampaignId = this.$route?.params?.id;
+        }
 
         const response = await this.$axios.post(
-          `tasks/${this.id}/${this.campaign.id}`,
+          `tasks/${this.id}/${currentCampaignId}`,
           [this.payload]
         );
 
         if (response.status == "success") {
-          this.loading = false;
           this.closeModal();
           this.$emit("reload");
           this.$toast.success(response.message);
         }
 
+        this.loading = false;
+
         console.log("TASK RESP:::", response);
       } catch (err) {
         this.loading = false;
         this.$toast.error(err?.response?.data?.message);
-        console.log(e);
+        console.log(err);
       }
-    },
-  },
+    }
+  }
 };
 </script>
 

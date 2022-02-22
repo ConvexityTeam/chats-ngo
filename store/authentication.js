@@ -9,6 +9,16 @@ export default {
 		token: (state) => state.token,
 		userLocation: (state) => state.userLocation,
 		user: (state) => state.user,
+		// getCampaign: (state) => (id) => {
+		// 	const foundId = state.user.AssociatedOrganisations[0].Organisation.find(
+		// 		(campaign) => {
+		// 			console.log('STATE.USER', id, campaign.id);
+		// 			return campaign.id === id;
+		// 		}
+		// 	);
+		// 	console.log('FOUND::', foundId);
+		// 	return foundId;
+		// },
 	},
 
 	mutations: {
@@ -32,6 +42,11 @@ export default {
 			window.localStorage.removeItem('userToken');
 			state.token = '';
 		},
+
+		// setUserCampaignUpdate(state, payload) {
+		// 	state.user.AssociatedOrganisations[0].Organisation = payload;
+		// 	console.log('STORE::', payload);
+		// },
 	},
 
 	actions: {
@@ -58,5 +73,9 @@ export default {
 			await commit('removeToken');
 			return true;
 		},
+
+		// commitUserCampaignUpdate({ commit }, payload) {
+		// 	commit('setUserCampaignUpdate', payload);
+		// },
 	},
 };

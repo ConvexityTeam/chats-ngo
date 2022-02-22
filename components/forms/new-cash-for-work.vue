@@ -9,7 +9,7 @@
           type="text"
           class="form-controls"
           :class="{
-            error: $v.payload.title.$error,
+            error: $v.payload.title.$error
           }"
           placeholder="Enter name of campaign"
           v-model="payload.title"
@@ -25,7 +25,7 @@
           class="form-controls p-2"
           placeholder="Short description"
           :class="{
-            error: $v.payload.description.$error,
+            error: $v.payload.description.$error
           }"
           cols="30"
           rows="3"
@@ -44,7 +44,7 @@
               type="number"
               class="form-controls"
               :class="{
-                error: $v.payload.budget.$error,
+                error: $v.payload.budget.$error
               }"
               id="total-amount"
               placeholder="0.00"
@@ -66,7 +66,8 @@
               v-model="payload.start_date"
               format="DD-MM-YYYY"
               placeholder="DD-MM-YYYY"
-              :disabled-date="(present) => present <= new Date()"
+              valueType="format"
+              :disabled-date="present => present <= new Date()"
             ></date-picker>
           </div>
         </div>
@@ -80,7 +81,8 @@
               v-model="payload.end_date"
               format="DD-MM-YYYY"
               placeholder="DD-MM-YYYY"
-              :disabled-date="(present) => present <= new Date()"
+              valueType="format"
+              :disabled-date="present => present <= new Date()"
             ></date-picker>
           </div>
         </div>
@@ -118,7 +120,7 @@ import { required } from "vuelidate/lib/validators";
 import { mapGetters } from "vuex";
 import DatePicker from "vue2-datepicker";
 import "vue2-datepicker/index.css";
-const greaterThanZero = (value) => value >= 100;
+const greaterThanZero = value => value >= 100;
 
 export default {
   data() {
@@ -133,26 +135,26 @@ export default {
         budget: "",
         location: [],
         start_date: "",
-        end_date: "",
+        end_date: ""
       },
 
       location: {
-        coordinates: [],
-      },
+        coordinates: []
+      }
     };
   },
 
   validations: {
     payload: {
       title: {
-        required,
+        required
       },
       description: {
-        required,
+        required
       },
       budget: {
         required,
-        greaterThanZero,
+        greaterThanZero
       },
       //   location: {
       //     coordinates: {
@@ -160,17 +162,17 @@ export default {
       //     }
       //   },
       start_date: {
-        required,
+        required
       },
       end_date: {
-        required,
-      },
-    },
+        required
+      }
+    }
   },
   components: { DatePicker },
 
   computed: {
-    ...mapGetters("authentication", ["user"]),
+    ...mapGetters("authentication", ["user"])
   },
 
   mounted() {
@@ -213,12 +215,10 @@ export default {
       } catch (err) {
         console.log({ err });
         this.loading = false;
-        this.$toast.error(err.response.data?.message);
+        this.$toast.error(err?.response?.data?.message);
       }
-    },
-
-    // TODO:Try emiting fetch all campaigns method from parent and calling here
-  },
+    }
+  }
 };
 </script>
 

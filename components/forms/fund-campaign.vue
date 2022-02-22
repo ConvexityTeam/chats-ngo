@@ -36,7 +36,7 @@
           </div>
 
           <!-- Beneficiaries Share -->
-          <div class="col-6">
+          <div class="col-6" v-if="campaign.type != 'cash-for-work'">
             <span class="header"> BENEFICIARY SHARE </span>
 
             <h6 class="tertiary-black font-medium">
