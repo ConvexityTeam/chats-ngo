@@ -1,6 +1,13 @@
 <template>
 	<div>
-		<bar-chart :data="barChartData" :options="barChartOptions" :height="320" />
+		<div>
+			<bar-chart
+				v-if="requiredData"
+				:data="barChartData"
+				:options="barChartOptions"
+				:height="320"
+			/>
+		</div>
 	</div>
 </template>
 
@@ -15,19 +22,21 @@ export default {
 			barChartData: {
 				labels: [
 					'0',
-					'10,000',
-					'15,000',
-					'20,000',
-					'25,000',
-					'30,000',
-					'35,000',
-					'40,000',
-					'45,000',
+					'100,000',
+					'200,000',
+					'300,000',
+					'400,000',
+					'500,000',
+					'600,000',
+					'700,000',
+					'800,000',
+					'900,000',
+					'1,000,000',
 				],
 				datasets: [
 					{
 						label: 'Visits',
-						data: [10000, 5000, 2000, 300, 4000, 500, 300, 4000, 500],
+						data: [],
 						backgroundColor: '#27AE60',
 					},
 				],
@@ -81,35 +90,39 @@ export default {
 	},
 
 	mounted() {
-		// this.updateChart();
+		this.updateChart();
 	},
 
-	// methods: {
-	// 	async updateChart() {
-	// 		try {
-	// 			this.loading = true;
-	// 			const response = await this.$axios.get('/beneficiaries/total_balance');
+	computed: {
+		requiredData() {
+			return this.barChartData?.datasets[0]?.data?.length;
+		},
+	},
 
-	// 			const data = response.data;
-	// 			Object.values(data).forEach((item) => {
-	// 				this.doughnutChartData.datasets[0].data.push(item);
-	// 			});
+	methods: {
+		async updateChart() {
+			try {
+				this.loading = true;
+				const response = await this.$axios.get(
+					'/beneficiaries/total_balance'
+				);
 
-	// 			console.log('TotalBalanceData:::', data);
+				const data = response.data;
+				Object.values(data).forEach((item) => {
+					this.barChartData.datasets[0].data.push(item);
+				});
 
-	// 			if (response.status == 'success') {
-	// 				this.loading = false;
-	// 				// this.$toast.success(response.message);
-	// 			}
+				if (response.status == 'success') {
+					this.loading = false;
+				}
 
-	// 			console.log('GET TOTAL_BALANCE RESPONSE', response);
-	// 		} catch (err) {
-	// 			console.log('GETTOTALBALANCEERERR::', { err });
-	// 			this.$toast.error(err.response.data.message);
-	// 			this.loading = false;
-	// 		}
-	// 	},
-	// },
+				console.log('GET TOTAL_BALANCE RESPONSE', response);
+			} catch (err) {
+				console.log('GETTOTALBALANCEERERR::', { err });
+				this.loading = false;
+			}
+		},
+	},
 };
 </script>
 
