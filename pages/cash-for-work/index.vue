@@ -6,7 +6,7 @@
     </Modal>
 
     <Modal id="new-task" title="new task">
-      <new-task @reload="fetchAllCampaigns" :campaign="campaign" />
+      <new-task />
     </Modal>
 
     <Modal id="fund-campaign" title="fund Campaign">
@@ -61,7 +61,21 @@
         <div class="card__holder">
           <div class="p-4">
             <!-- title here -->
-            <h4 class="caption pb-2">{{ campaign.title }}</h4>
+            <h4 class="caption pb-2 d-flex justify-content-between">
+              {{ campaign.title }}
+
+              <!-- Temporary  -->
+              <Button
+                :hasBorder="true"
+                :hasIcon="false"
+                :disabled="statuses.includes(campaign.status)"
+                text="Activate"
+                custom-styles=" border-radius: 5px !important;
+                  height:33px; border: 1px solid #17ce89 !important; font-size:
+                  0.875rem !important; padding:0px 15px !important"
+                @click="activateCampaign(campaign)"
+              />
+            </h4>
 
             <!-- Beneficiaries count here -->
             <div class="d-flex">
@@ -79,7 +93,7 @@
                 />
               </svg>
 
-              <div class="ml-2">
+              <div class="ml-2 d-flex">
                 <p class="campaign-beneficiary-count">
                   {{ campaign.beneficiaries_count }}
                   {{
@@ -88,6 +102,19 @@
                       : "Beneficiaries"
                   }}
                 </p>
+              </div>
+
+              <!-- Temporary  -->
+              <div
+                class="status px-1 ml-5"
+                :class="{
+                  pending:
+                    campaign.status == 'pending' || campaign.status == 'paused',
+                  progress: campaign.status == 'active',
+                  completed: campaign.status == 'completed'
+                }"
+              >
+                {{ campaign.status | capitalize }}
               </div>
             </div>
 
@@ -168,8 +195,6 @@
 import fundCampaign from "~/components/forms/fund-campaign.vue";
 import newCash from "~/components/forms/new-cash-for-work.vue";
 import newTask from "~/components/forms/new-task";
-
-// import newTask from "~/components/modals/new-task";
 import { mapGetters, mapActions } from "vuex";
 let screenLoading;
 
@@ -185,7 +210,8 @@ export default {
       campaign: {},
       campaigns: [],
       SelectedCampaign: {},
-      searchQuery: ""
+      searchQuery: "",
+      statuses: ["active", "completed"]
     };
   },
 
@@ -213,6 +239,30 @@ export default {
 
   methods: {
     ...mapActions("authentication", ["commitUserCampaignUpdate"]),
+
+    async activateCampaign(campaign) {
+      try {
+        this.openScreen();
+
+        const response = await this.$axios.put(
+          `organisations/${this.id}/campaigns/${campaign.id}`,
+          {
+            status: "active"
+          }
+        );
+
+        if (response.status == "success") {
+          screenLoading.close();
+          this.$toast.success(response.message);
+          this.fetchAllCampaigns();
+        }
+
+        console.log("ACTIVATED", response);
+      } catch (err) {
+        screenLoading.close();
+        console.log(err);
+      }
+    },
     async fetchAllCampaigns() {
       try {
         this.loading = true;

@@ -2,7 +2,7 @@
   <div class="pb-5">
     <!-- create new task modal  -->
     <Modal id="new-task" title="new task">
-      <newTask />
+      <newTask @reload="getDetails" />
     </Modal>
     <div v-if="loading"></div>
 
@@ -112,7 +112,6 @@
             :count="details.Beneficiaries ? details.Beneficiaries.length : 0"
             :location="location"
             :user="user"
-            @reload="getDetails"
             :resumeCampaign="resumeCampaign"
           />
         </div>
@@ -200,9 +199,9 @@ export default {
           screenLoading.close();
           this.details = response.data;
           this.beneficiaries = response.data.Beneficiaries;
-          this.location = JSON.parse(response.data?.location?.country);
-          console.log("loc::", this.location);
-          console.log("here", response.data);
+          // this.location = JSON.parse(
+          // 	response.data?.location?.country
+          // );
         }
 
         this.loading = false;
@@ -211,12 +210,6 @@ export default {
         screenLoading.close();
         console.log("campaignDeetserr:::", err);
       }
-    },
-
-    handleNewTask(task) {
-      this.task = task;
-      this.$bvModal.show("new-task");
-      console.log("Clicked New Task!");
     },
 
     handleNewTask(task) {
