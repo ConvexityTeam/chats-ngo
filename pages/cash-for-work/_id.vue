@@ -2,7 +2,7 @@
   <div class="pb-5">
     <!-- create new task modal  -->
     <Modal id="new-task" title="new task">
-      <newTask @reload="getDetails" />
+      <newTask @reload="$fetchState" />
     </Modal>
     <div v-if="loading"></div>
 
@@ -112,6 +112,7 @@
             :count="details.Beneficiaries ? details.Beneficiaries.length : 0"
             :location="location"
             :user="user"
+            @reload="getDetails"
             :resumeCampaign="resumeCampaign"
           />
         </div>
@@ -202,6 +203,9 @@ export default {
           // this.location = JSON.parse(
           // 	response.data?.location?.country
           // );
+          //   console.log("loc::", this.location);
+          console.log("here", response.data);
+          console.log("TASKS", this.task);
         }
 
         this.loading = false;

@@ -2,13 +2,13 @@
   <div class="mt-4 px-4">
     <!-- campaign details   here -->
     <div class="mt-4">
-      <span class="primary-blue font-medium">Campaign Overview</span>
+      <span class="tertiary-black font-medium">Cash for work details</span>
 
       <div class="detail-holder mt-2 mb-4 p-3">
         <div class="row mb-2">
           <!-- campaign name -->
           <div class="col-6">
-            <span class="header"> CAMPAIGN NAME </span>
+            <span class="header"> CASH FOR WORK NAME </span>
 
             <h6 class="primary-blue font-medium pt-1">
               {{ campaign.title || "" | capitalize }}

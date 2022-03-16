@@ -63,18 +63,6 @@
             <!-- title here -->
             <h4 class="caption pb-2 d-flex justify-content-between">
               {{ campaign.title }}
-
-              <!-- Temporary  -->
-              <Button
-                :hasBorder="true"
-                :hasIcon="false"
-                :disabled="statuses.includes(campaign.status)"
-                text="Activate"
-                custom-styles=" border-radius: 5px !important;
-                  height:33px; border: 1px solid #17ce89 !important; font-size:
-                  0.875rem !important; padding:0px 15px !important"
-                @click="activateCampaign(campaign)"
-              />
             </h4>
 
             <!-- Beneficiaries count here -->
@@ -102,19 +90,6 @@
                       : "Beneficiaries"
                   }}
                 </p>
-              </div>
-
-              <!-- Temporary  -->
-              <div
-                class="status px-1 ml-5"
-                :class="{
-                  pending:
-                    campaign.status == 'pending' || campaign.status == 'paused',
-                  progress: campaign.status == 'active',
-                  completed: campaign.status == 'completed'
-                }"
-              >
-                {{ campaign.status | capitalize }}
               </div>
             </div>
 
@@ -204,7 +179,6 @@ export default {
   data() {
     return {
       count: 0,
-      loading: false,
       loading: false,
       id: "",
       campaign: {},
@@ -312,58 +286,45 @@ export default {
         screenLoading.close();
 
         if (response.status == "success") {
+          this.$toast.success(response.message);
+          if (this.SelectedCampaign.status == "pending") {
+            return this.activateCampaign();
+          }
           this.fetchAllCampaigns();
         }
       } catch (err) {
         screenLoading.close();
-        this.$toast.error(err.response.data.message);
+        // this.$toast.error(err.response.message);
         console.log({ err: err });
       }
     },
-    async fundCampaign() {
-      try {
-        this.openScreen();
-        const response = await this.$axios.post("organisation/transfer/token", {
-          campaign: this.SelectedCampaign.id,
-          amount: this.SelectedCampaign.budget,
-          organisation_id: this.id
-        });
-        screenLoading.close();
+    // async fundCampaign() {
+    // 	try {
+    // 		this.openScreen();
+    // 		const response = await this.$axios.post(
+    // 			'organisation/transfer/token',
+    // 			{
+    // 				campaign: this.SelectedCampaign.id,
+    // 				amount: this.SelectedCampaign.budget,
+    // 				organisation_id: this.id,
+    // 			}
+    // 		);
+    // 		screenLoading.close();
 
-        if (response.status == "success") {
-          this.$toast.success(response.message);
-          if (this.SelectedCampaign.status == "pending") {
-            return this.activateCampaign();
-          }
-        }
-      } catch (err) {
-        screenLoading.close();
-        this.$toast.error(err.response.data.message);
-        console.log({ err: err });
-      }
-    },
-    async activateCampaign() {
-      try {
-        const response = await this.$axios.put("organisation/campaign", {
-          organisation_id: this.user.AssociatedOrganisations[0].OrganisationId,
-          campaignId: this.SelectedCampaign.id,
-          budget: this.SelectedCampaign.budget,
-          description: this.SelectedCampaign.description,
-          status: "active"
-        });
+    // 		console.log('FundResponse', response);
 
-        if (response.status == "success") {
-          this.$toast.success(response.message);
-          if (this.SelectedCampaign.status == "pending") {
-            return this.activateCampaign();
-          }
-        }
-      } catch (err) {
-        screenLoading.close();
-        this.$toast.error(err.response.data.message);
-        console.log({ err: err });
-      }
-    },
+    // 		if (response.status == 'success') {
+    // 			this.$toast.success(response.message);
+    // 			if (this.SelectedCampaign.status == 'pending') {
+    // 				return this.activateCampaign();
+    // 			}
+    // 		}
+    // 	} catch (err) {
+    // 		screenLoading.close();
+    // 		this.$toast.error(err.response.data.message);
+    // 		console.log({ err: err });
+    // 	}
+    // },
     async activateCampaign() {
       try {
         const response = await this.$axios.put("organisation/campaign", {

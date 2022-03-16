@@ -31,7 +31,8 @@
 
         <div class="ml-2">
           <p class="campaign-beneficiary-count">
-            {{ count }} {{ count == 1 ? "Beneficiary" : "Beneficiaries" }}
+            {{ count }}
+            {{ count == 1 ? "Beneficiary" : "Beneficiaries" }}
           </p>
         </div>
       </div>
@@ -52,7 +53,7 @@
             <p class="tasks">
               <span>{{ details.completedTasks }}</span>
               / {{ details.totalTasks }}
-              {{ details.totalTasks == 1 ? "Task" : "Tasks" }}
+              {{ details.length == 1 ? "Task" : "Tasks" }}
             </p>
           </div>
 
@@ -81,7 +82,9 @@
           <p class="campaign-captions">Description:</p>
 
           <div class="ml-auto">
-            <p class="campaign-answers">{{ details.description }}</p>
+            <p class="campaign-answers">
+              {{ details.description }}
+            </p>
           </div>
         </div>
 
@@ -207,6 +210,7 @@ export default {
   },
 
   mounted() {
+    console.log("DETAILS", this.details);
     this.orgId = this.user?.AssociatedOrganisations[0]?.OrganisationId;
   },
 

@@ -168,6 +168,10 @@ input[type="number"] {
   -moz-appearance: textfield;
 }
 
+.b-avatar .b-avatar-img img {
+  object-fit: contain !important;
+}
+
 /* TOOLTIP HERE */
 
 .tooltip-inner {
@@ -180,10 +184,6 @@ input[type="number"] {
 
 .bs-tooltip-top .arrow::before {
   border-top-color: #2f4275;
-}
-
-.b-avatar .b-avatar-img img {
-  object-fit: contain !important;
 }
 
 /* STATUS STYLES */
@@ -206,6 +206,11 @@ input[type="number"] {
 .status.pending-2 {
   background: #f8e5a2;
   color: #885304;
+}
+
+.status.pending_approval {
+  background: #ffeab6;
+  color: #704831;
 }
 
 .status.withdrawal {
@@ -235,6 +240,16 @@ input[type="number"] {
 .status.approval {
   background: #cff5f0;
   color: #24b29f;
+}
+
+.status.disbursed {
+  background: #f1f1f1;
+  color: #646a86;
+}
+
+.status.rejected {
+  background: #ffcdc7;
+  color: #e42c66;
 }
 
 /* Progress Style */
@@ -312,6 +327,7 @@ input[type="number"] {
 .fade-leave-active {
   transition: all 0.9s ease;
 }
+
 .fade-enter,
 .fade-leave-to {
   opacity: 0;
