@@ -1,6 +1,6 @@
 <template>
   <div class="pb-5">
-    <checkEvidence />
+    <checkEvidence :details="details" />
     <div v-if="loading"></div>
 
     <div class="main container transparent pt-4 mt-2 pb-5" v-else>
@@ -85,12 +85,15 @@
                       <div>
                         <Button
                           :isGray="task.status == 'active'"
-                          v-b-modal.check-evidence
                           :text="handleText(task.status)"
                           :has-icon="false"
                           :has-border="true"
                           custom-styles="border-radius: 5px !important; font-size: 0.875rem !important; height: 33px !important; width: 136px !important; padding: 0px 15px !important"
-                          @click="handleClick(task)"
+                          @click="
+                            task.status == 'completed'
+                              ? disburseFunds(task)
+                              : handleClick(task)
+                          "
                           :disabled="task.status == 'active'"
                         />
                       </div>
@@ -184,6 +187,74 @@ export default {
   },
 
   methods: {
+    handleText(status) {
+      if (status == "pending") {
+        return "Submission";
+      } else if (status == "active") {
+        return "Disburse";
+      } else if (status == "completed") {
+        return "Disburse";
+      } else if (status == "disbursed") {
+        return "View";
+      } else if (status == "rejected") {
+        return "Review";
+      }
+    },
+
+    handleClick(task) {
+      this.details = task;
+      this.$bvModal.show("check-evidence");
+
+      //   v - b - modal.check - evidence;
+      //   this.location = task.location;
+      //   this.resumeCampaign = task.status == "completed";
+    },
+
+    disburseFunds(task) {
+      console.dir("task:::", task);
+    },
+
+    getDetails() {
+      this.loading = true;
+      this.$axios
+        .get(`cash-for-work/task/details/${this.orgId}`)
+        .then(response => {
+          if (response.status == "success") {
+            this.details = response.data;
+            this.location = response.data.location;
+            this.resumeCampaign = response.data.status == "completed";
+          }
+          this.loading = false;
+        })
+        .catch(error => {
+          this.loading = false;
+        });
+    },
+
+    async approveTask(task) {
+      this.loading = true;
+      const response = await this.$axios.post(
+        `cash-for-work/task/approve/${task.id}`
+      );
+      if (response.status == "success") {
+        this.getDetails();
+      }
+      this.loading = false;
+    },
+
+    async disburseTask(task) {
+      this.loading = true;
+      const response = await this.$axios.post(
+        `cash-for-work/task/disburse/${task.id}`
+      );
+      if (response.status == "success") {
+        this.getDetails();
+      }
+      this.loading = false;
+    },
+
+    async rejectTask(task) {},
+
     async getDetails() {
       try {
         this.openScreen();
