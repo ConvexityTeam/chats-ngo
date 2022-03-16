@@ -3,7 +3,7 @@
     :type="type"
     class="d-flex align-items-center px-3"
     @click="$emit('click')"
-    :class="{ border: hasBorder }"
+    :class="{ border: hasBorder, isGray: isGray }"
     :style="customStyles"
     :disabled="disabled"
   >
@@ -74,6 +74,10 @@ export default {
       type: Boolean,
       default: false
     },
+    isGray: {
+      type: Boolean,
+      default: false
+    },
     loading: {
       type: Boolean,
       default: false
@@ -111,5 +115,14 @@ button:disabled {
   border: inherit;
   box-shadow: 0px 2px 4px rgba(23, 206, 137, 0.07);
   cursor: not-allowed;
+}
+
+button.isGray {
+  border: 1px solid #7c8db5 !important;
+  color: #7c8db5;
+}
+
+button span {
+  font-size: 0.875rem;
 }
 </style>

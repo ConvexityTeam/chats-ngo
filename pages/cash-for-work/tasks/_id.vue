@@ -1,5 +1,6 @@
 <template>
   <div class="pb-5">
+    <checkEvidence />
     <div v-if="loading"></div>
 
     <div class="main container transparent pt-4 mt-2 pb-5" v-else>
@@ -29,13 +30,6 @@
         </div>
       </div>
 
-      <div v-if="details.status == 'paused'" class="">
-        <banner
-          :date="details.updatedAt"
-          @resumeCampaign="resumeCampaign = true"
-        />
-      </div>
-
       <div class="row" :class="{ 'mt-3': details.status == 'paused' }">
         <div class="col-lg-8">
           <!-- Campaign beneficiaries here -->
@@ -49,34 +43,55 @@
                 <thead>
                   <tr>
                     <th scope="col">Name</th>
-                    <th scope="col">Description</th>
-                    <th scope="col">Amount</th>
-                    <th scope="col">Created</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Submitted</th>
                     <th scope="col">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr v-for="task in resultQuery" :key="task.id">
                     <td>
-                      {{ task.name }}
+                      <div class="d-flex align-items-center">
+                        <b-avatar
+                          :src="file"
+                          size="32px"
+                          class="img-fluid p-1"
+                          variant="light"
+                        ></b-avatar>
+                        <span class="pl-3">{{ task.name }}</span>
+                      </div>
                     </td>
-                    <td>{{ task.description }}</td>
                     <td>
-                      {{ task.amount | formatCurrency }}
+                      <div
+                        class="status px-1"
+                        :class="{
+                          pending_approval: task.status == 'pending',
+                          progress: task.status == 'active',
+                          completed: task.status == 'completed',
+                          disbursed: task.status == 'disbursed',
+                          rejected: task.status == 'rejected'
+                        }"
+                      >
+                        {{ task.status | capitalize }}
+                      </div>
                     </td>
                     <td>
-                      {{ task.createdAt | shortDate }}
+                      <span v-if="!task.createdAt">
+                        {{ task.createdAt | shortDate }}</span
+                      >
+                      <span v-else class="text-center">- </span>
                     </td>
                     <td>
                       <div>
                         <Button
-                          text="View entries"
+                          :isGray="task.status == 'active'"
+                          v-b-modal.check-evidence
+                          :text="handleText(task.status)"
                           :has-icon="false"
                           :has-border="true"
-                          custom-styles="border: 1px solid #17CE89 !important; border-radius: 5px !important; font-size: 0.875rem !important; height: 33px !important"
-                          @click="
-                            $router.push(`/cash-for-work/tasks/${task.id}`)
-                          "
+                          custom-styles="border-radius: 5px !important; font-size: 0.875rem !important; height: 33px !important; width: 136px !important; padding: 0px 15px !important"
+                          @click="handleClick(task)"
+                          :disabled="task.status == 'active'"
                         />
                       </div>
                     </td>
@@ -98,7 +113,6 @@
             :count="details.Beneficiaries ? details.Beneficiaries.length : 0"
             :location="location"
             :user="user"
-            @reload="getDetails"
             :resumeCampaign="resumeCampaign"
           />
         </div>
@@ -111,15 +125,15 @@
 import { mapGetters } from "vuex";
 import taskDetails from "~/components/tables/tasks/task-details.vue";
 import newTask from "~/components/modals/new-task";
-import banner from "~/components/generic/banner.vue";
+import checkEvidence from "~/components/modals/check-evidence";
 
 let screenLoading;
 export default {
   layout: "dashboard",
   components: {
     taskDetails,
-    banner,
-    newTask
+    newTask,
+    checkEvidence
   },
 
   data: () => ({
