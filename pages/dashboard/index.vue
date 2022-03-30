@@ -9,13 +9,16 @@
           <div class="ml-3">
             <p class="text">Wallet Balance</p>
             <h4 class="funds">
-              $ {{ loading ? 0 : stats.balance || 0 | formatCurrency }}
+              ${{
+                (wallet && wallet.MainWallet && wallet.MainWallet.balance) ||
+                  0 | formatCurrency
+              }}
             </h4>
           </div>
         </div>
       </div>
 
-      <!-- Total amount Received here -->
+      <!-- Campaign Budget -->
       <div class="col-lg-3">
         <div class="card__holder d-flex p-3">
           <div>
@@ -23,7 +26,9 @@
           </div>
           <div class="ml-3">
             <p class="text">Campaign Budget</p>
-            <h4 class="funds">$ {{ 0 | formatCurrency }}</h4>
+            <h4 class="funds">
+              $ {{ wallet.spend_for_campaign || 0 | formatCurrency }}
+            </h4>
           </div>
         </div>
       </div>
@@ -257,6 +262,7 @@ export default {
       vendors: [],
       amount: "5000",
       stats: {},
+      wallet: {},
 
       userLocation: {
         alphaCode: "",
@@ -276,20 +282,41 @@ export default {
   },
 
   async fetch() {
-    const id = this.user?.AssociatedOrganisations[0]?.OrganisationId;
+    const id = parseInt(this.user?.AssociatedOrganisations[0]?.OrganisationId);
 
     const beneficiaries = await this.$axios.get(
       `/organisation/${id}/beneficiaries`
     );
     const vendors = await this.$axios.get(`/organisations/${id}/vendors`);
 
-    this.beneficiaries = beneficiaries.data;
-    this.vendors = vendors.data;
+    this.beneficiaries = beneficiaries.data ?? [];
+    this.vendors = vendors?.data ?? [];
+
+    const wallet = await this.$axios.get(`/organisations/${id}/wallets`);
+    this.wallet = wallet?.data ?? {};
+
+    console.log("walletData", wallet);
   },
 
   mounted() {
     // this.getIp();
     // this.getStats();
+    //   async getWallet() {
+    //   try {
+    //     this.openScreen();
+    //     const response = await this.$axios.get(
+    //       `/organisations/${+this.organisationId}/wallets`
+    //     );
+    //     if (response.status == "success") {
+    //       console.log("WALLET", response.data);
+    //       this.wallet = response?.data;
+    //       screenLoading.close();
+    //     }
+    //   } catch (err) {
+    //     screenLoading.close();
+    //     console.log("Walleterr:::", err);
+    //   }
+    // },
   },
 
   methods: {

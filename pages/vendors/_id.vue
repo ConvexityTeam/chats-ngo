@@ -55,7 +55,7 @@
                     $
                     {{
                       vendor.total_received - vendor.total_spent ||
-                      0 | formatCurrency
+                        0 | formatCurrency
                     }}
                   </h4>
                 </div>
@@ -97,14 +97,14 @@ export default {
     disbursed,
     totalBalance,
     VendorDetails,
-    VendorProducts,
+    VendorProducts
   },
 
   data: () => ({
     id: "",
     loading: false,
     vendor: {},
-    products: [],
+    products: []
   }),
 
   mounted() {
@@ -114,7 +114,7 @@ export default {
   },
 
   computed: {
-    ...mapGetters("authentication", ["user"]),
+    ...mapGetters("authentication", ["user"])
   },
 
   methods: {
@@ -134,7 +134,7 @@ export default {
           screenLoading.close();
           this.loading = false;
           this.vendor = response.data;
-          this.products = response.data.Store?.Products;
+          this.products = response.data.Store?.Products.reverse();
         }
       } catch (err) {
         screenLoading.close();
@@ -147,10 +147,10 @@ export default {
       screenLoading = this.$loading({
         lock: true,
         spinner: "el-icon-loading",
-        background: "#0000009b",
+        background: "#0000009b"
       });
-    },
-  },
+    }
+  }
 };
 </script>
 

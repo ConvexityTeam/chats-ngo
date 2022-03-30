@@ -37,7 +37,7 @@
       <div class="ml-auto mx-3">
         <csv
           :data="computedData"
-          name="beneficiaries"
+          name="Transactions"
           :has-border="true"
           :green-csv="true"
         />
@@ -102,6 +102,7 @@
 <script>
 import dot from "~/components/icons/dot";
 import { mapGetters } from "vuex";
+import moment from "moment";
 let screenLoading;
 
 export default {
@@ -145,6 +146,19 @@ export default {
 
     computedData() {
       return [];
+    },
+
+    computedData() {
+      const data = this.transactions || [];
+      return data.map(transaction => {
+        return {
+          Reference: transaction.reference,
+          Amount: "$" + transaction.amount || "-",
+          Transaction_Type: transaction.transaction_type || "-",
+          Date: moment(transaction.createdAt).format("DD MMMM, YYYY"),
+          Status: transaction.status || "-"
+        };
+      });
     }
   },
 
