@@ -61,6 +61,8 @@ export default {
       `/organisations/${id}/campaigns/${this.$route.params.id}/vendors`
     );
 
+    console.log("CAMPAIGN VENDORS", response);
+
     this.vendors = response.data;
   }
 };

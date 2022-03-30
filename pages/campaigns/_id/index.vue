@@ -335,6 +335,7 @@ export default {
         console.log("FundResponse", response);
 
         if (response.status == "success") {
+          this.$toast.success(response.message);
           this.getDetails();
         }
       } catch (err) {

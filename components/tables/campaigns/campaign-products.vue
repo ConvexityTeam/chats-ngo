@@ -57,6 +57,8 @@ export default {
       `organisations/${id}/campaigns/${this.$route.params.id}/products`
     );
 
+    console.log("CAMPAIGN PRODUCTS", response);
+
     this.products = response.data;
   }
 };

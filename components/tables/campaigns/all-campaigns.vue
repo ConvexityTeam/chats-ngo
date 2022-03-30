@@ -85,7 +85,8 @@
                   pending:
                     campaign.status == 'pending' || campaign.status == 'paused',
                   progress: campaign.status == 'active',
-                  completed: campaign.status == 'completed'
+                  ongoing: campaign.status == 'ongoing',
+                  done: campaign.status == 'completed'
                 }"
               >
                 {{ campaign.status | capitalize }}
@@ -152,7 +153,7 @@ export default {
         { value: "inprogress", text: "In Progress" },
         { value: "completed", text: "Completed" }
       ],
-      statuses: ["active", "completed"]
+      statuses: ["active", "completed", "ongoing"]
     };
   },
 
