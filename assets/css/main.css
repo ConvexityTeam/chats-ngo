@@ -5,10 +5,10 @@
 :root {
   --primary-color: #17ce89;
   --primary-black: #222222;
-  --secondary-black: #7C8DB5;
+  --secondary-black: #7c8db5;
   --primary-blue: #25396f;
   --primary-gray: #7c8db5;
-  --input-text-color: #646A86;
+  --input-text-color: #646a86;
 }
 
 /* GENERAL STYLES */
@@ -16,7 +16,7 @@
 body,
 html {
   font-family: "Gilroy";
-  background: #FCFCFE;
+  background: #fcfcfe;
   scroll-behavior: smooth;
 }
 
@@ -143,26 +143,26 @@ input::-webkit-inner-spin-button {
   margin: 0;
 }
 
-input[type=number] {
+input[type="number"] {
   -moz-appearance: textfield;
 }
 
-.b-avatar .b-avatar-img img{
+.b-avatar .b-avatar-img img {
   object-fit: contain !important;
 }
 
 /* TOOLTIP HERE */
 
 .tooltip-inner {
-  background: #2F4275 ;
-  opacity: 0.95 ;
+  background: #2f4275;
+  opacity: 0.95;
   max-width: 280px;
   padding: 1rem 0.5rem;
   text-align: left;
 }
 
-.bs-tooltip-top .arrow::before{
-  border-top-color: #2F4275;
+.bs-tooltip-top .arrow::before {
+  border-top-color: #2f4275;
 }
 
 /* STATUS STYLES */
@@ -183,13 +183,13 @@ input[type=number] {
 }
 
 .status.pending-2 {
-  background: #F8E5A2;
+  background: #f8e5a2;
   color: #885304;
 }
 
 .status.withdrawal {
-  background: #FCDEFF;
-  color: #4A0051;
+  background: #fcdeff;
+  color: #4a0051;
 }
 
 .status.progress {
@@ -198,13 +198,22 @@ input[type=number] {
 }
 
 .status.completed {
-  background: #d1f7c4;
+  background: #d1f7c4 !important;
   color: #337138;
 }
 
+.status.done {
+  background: #d1f7c4 !important;
+  color: #337138;
+}
+
+.status.ongoing {
+  background: #ffeab6;
+  color: #704831;
+}
 .status.approval {
-  background: #CFF5F0;
-  color: #24B29F;
+  background: #cff5f0;
+  color: #24b29f;
 }
 
 /* Progress Style */
@@ -229,7 +238,6 @@ input[type=number] {
 .progress {
   height: 0.5rem;
 }
-
 
 /* DRAWER STYLES HERE */
 
@@ -375,7 +383,7 @@ p.form-input__error span {
   background: inherit;
 }
 
-.form-controls.search::placeholder{
+.form-controls.search::placeholder {
   font-size: 1rem;
 }
 
@@ -450,7 +458,6 @@ select.form-control {
   border-left: 5px solid #e42c66;
 }
 
-
 /* VUE TEL INPUT STYLES */
 .vti__input:focus {
   width: inherit;
@@ -496,7 +503,7 @@ select.form-control {
 }
 
 /* ELEMEBT SELECT HERE */
-#balance>.el-select>.el-input>.el-input__inner {
+#balance > .el-select > .el-input > .el-input__inner {
   width: 100%;
   border: 1px solid #999999;
   height: 42px;
@@ -521,7 +528,7 @@ select.form-control {
   border: 1px solid var(--primary-color);
 }
 
-#role>.el-select>.el-input>.el-input__inner {
+#role > .el-select > .el-input > .el-input__inner {
   border: none;
   width: 100%;
   background: #f5f6f8;
@@ -532,11 +539,11 @@ select.form-control {
   font-size: 1rem;
 }
 
-#error>.el-select>.el-input>.el-input__inner {
+#error > .el-select > .el-input > .el-input__inner {
   border: 1px #ee3934;
 }
 
-#product>.el-select>.el-input>.el-input__inner {
+#product > .el-select > .el-input > .el-input__inner {
   width: 100%;
   border: 1px solid #7c8db5;
   height: 41px;
@@ -546,7 +553,7 @@ select.form-control {
   font-size: 1rem;
 }
 
-#product>.el-select>.el-input> ::placeholder {
+#product > .el-select > .el-input > ::placeholder {
   letter-spacing: 0.01em;
   font-size: 0.875rem;
   color: #646a86;
@@ -598,7 +605,7 @@ select.form-control {
   border: none;
 }
 
-.el-table th>.cell {
+.el-table th > .cell {
   color: #4f4f4f;
   font-size: 1rem;
 }
@@ -615,7 +622,7 @@ select.form-control {
   border-radius: 10px;
 }
 
-.el-table__expand-icon>.el-icon {
+.el-table__expand-icon > .el-icon {
   font-size: 1rem;
   color: #333333;
 }
