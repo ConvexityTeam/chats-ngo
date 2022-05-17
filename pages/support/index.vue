@@ -1,11 +1,10 @@
 <template>
     <div class="container">
-    SUPPORT HERE
+     <h1>[SUPPORT HERE]</h1>
     </div>
 </template>
 
 <script>
 export default {
-    layout:"dashboard"
 }
 </script>

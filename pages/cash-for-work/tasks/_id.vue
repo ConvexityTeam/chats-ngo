@@ -1,5 +1,6 @@
 <template>
   <div class="pb-5">
+    <c4w-evidence-promp :rejected="true" :rejectedMessage="true" />
     <checkEvidence :details="details" />
     <div v-if="loading"></div>
 
@@ -49,7 +50,11 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr v-for="task in resultQuery" :key="task.id">
+                  <tr
+                    v-for="(task, i) in resultQuery"
+                    :key="task.id"
+                    :class="{ selected: i % 2 == 0 }"
+                  >
                     <td>
                       <div class="d-flex align-items-center">
                         <b-avatar
@@ -66,7 +71,7 @@
                         class="status px-1"
                         :class="{
                           pending_approval: task.status == 'pending',
-                          progress: task.status == 'active',
+                          progress: task.status == 'in progress',
                           completed: task.status == 'completed',
                           disbursed: task.status == 'disbursed',
                           rejected: task.status == 'rejected'
@@ -75,7 +80,7 @@
                         {{ task.status | capitalize }}
                       </div>
                     </td>
-                    <td>
+                    <td class="d-flex justify-content-center">
                       <span v-if="!task.createdAt">
                         {{ task.createdAt | shortDate }}</span
                       >
@@ -84,7 +89,7 @@
                     <td>
                       <div>
                         <Button
-                          :isGray="task.status == 'active'"
+                          :isGray="task.status == 'in progress'"
                           :text="handleText(task.status)"
                           :has-icon="false"
                           :has-border="true"
@@ -94,7 +99,7 @@
                               ? disburseFunds(task)
                               : handleClick(task)
                           "
-                          :disabled="task.status == 'active'"
+                          :disabled="task.status == 'in progress'"
                         />
                       </div>
                     </td>
@@ -129,6 +134,7 @@ import { mapGetters } from "vuex";
 import taskDetails from "~/components/tables/tasks/task-details.vue";
 import newTask from "~/components/modals/new-task";
 import checkEvidence from "~/components/modals/check-evidence";
+import c4wEvidencePromp from "~/components/modals/c4w-evidence-prompt";
 
 let screenLoading;
 export default {
@@ -136,7 +142,8 @@ export default {
   components: {
     taskDetails,
     newTask,
-    checkEvidence
+    checkEvidence,
+    c4wEvidencePromp
   },
 
   data: () => ({
@@ -187,27 +194,26 @@ export default {
   },
 
   methods: {
-    handleText(status) {
-      if (status == "pending") {
-        return "Submission";
-      } else if (status == "active") {
-        return "Disburse";
-      } else if (status == "completed") {
-        return "Disburse";
-      } else if (status == "disbursed") {
-        return "View";
-      } else if (status == "rejected") {
-        return "Review";
-      }
-    },
-
     handleClick(task) {
       this.details = task;
       this.$bvModal.show("check-evidence");
+    },
 
-      //   v - b - modal.check - evidence;
-      //   this.location = task.location;
-      //   this.resumeCampaign = task.status == "completed";
+    handleText(status) {
+      switch (status) {
+        case "pending":
+          return "Submission";
+        case "in progress":
+          return "Submission";
+        case "completed":
+          return "Disburse";
+        case "disbursed":
+          return "View";
+        case "rejected":
+          return "Review";
+        default:
+          return " ";
+      }
     },
 
     disburseFunds(task) {
@@ -273,8 +279,6 @@ export default {
           // this.location = JSON.parse(
           // 	response.data?.location?.country
           // );
-          console.log("loc::", this.location);
-          console.log("here", response.data);
         }
 
         this.loading = false;

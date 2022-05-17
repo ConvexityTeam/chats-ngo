@@ -6,13 +6,13 @@
     </Modal>
 
     <Modal id="new-task" title="new task">
-      <new-task />
+      <new-task :campaign="campaign" @reload="fetchAllCampaigns" />
     </Modal>
 
-    <Modal id="fund-campaign" title="fund Campaign">
-      <fund-campaign
-        :campaign="SelectedCampaign"
-        @fundCampaign="fundCampaign"
+    <Modal id="fund-cash-for-work" title="fund cash for work">
+      <fund-cash-for-work
+        :c4w="SelectedC4w"
+        @fundCashForWork="fundCashForWork"
       />
     </Modal>
 
@@ -167,7 +167,7 @@
 </template>
 
 <script>
-import fundCampaign from "~/components/forms/fund-campaign.vue";
+import fundCashForWork from "~/components/forms/fund-cash-for-work.vue";
 import newCash from "~/components/forms/new-cash-for-work.vue";
 import newTask from "~/components/forms/new-task";
 import { mapGetters, mapActions } from "vuex";
@@ -175,7 +175,7 @@ let screenLoading;
 
 export default {
   layout: "dashboard",
-  components: { newCash, fundCampaign, newTask },
+  components: { newCash, fundCashForWork, newTask },
   data() {
     return {
       count: 0,
@@ -183,9 +183,10 @@ export default {
       id: "",
       campaign: {},
       campaigns: [],
-      SelectedCampaign: {},
+      SelectedC4w: {},
       searchQuery: "",
-      statuses: ["active", "completed"]
+      statuses: ["active", "completed"],
+      selected: null
     };
   },
 
@@ -230,8 +231,6 @@ export default {
           this.$toast.success(response.message);
           this.fetchAllCampaigns();
         }
-
-        console.log("ACTIVATED", response);
       } catch (err) {
         screenLoading.close();
         console.log(err);
@@ -251,97 +250,32 @@ export default {
           this.campaigns = response.data.reverse();
           screenLoading.close();
         }
-
-        console.log("All C4W:::", response);
       } catch (err) {
         screenLoading.close();
         this.loading = false;
       }
     },
-    async fundCampaign() {
+    async fundCashForWork() {
       try {
         this.openScreen();
 
         const response = await this.$axios.post(
-          `organisations/${this.id}/campaigns/${SelectedCampaign.id}/fund`
+          `organisations/${this.id}/campaigns/${this.SelectedC4w.id}/fund`
         );
 
-        if (response.status == "success") {
-          this.fetchAllCampaigns();
-        }
-      } catch (err) {
-        screenLoading.close();
-        this.$toast.error(err.response.data.message);
-        console.log({ err: err });
-      }
-    },
-    async fundCampaign() {
-      try {
-        this.openScreen();
-        const response = await this.$axios.post("organisation/transfer/token", {
-          campaign: this.SelectedCampaign.id,
-          amount: this.SelectedCampaign.budget,
-          organisation_id: this.id
-        });
         screenLoading.close();
 
         if (response.status == "success") {
           this.$toast.success(response.message);
-          if (this.SelectedCampaign.status == "pending") {
+          if (this.SelectedC4w.status == "pending") {
             return this.activateCampaign();
           }
           this.fetchAllCampaigns();
         }
       } catch (err) {
         screenLoading.close();
-        // this.$toast.error(err.response.message);
-        console.log({ err: err });
-      }
-    },
-    // async fundCampaign() {
-    // 	try {
-    // 		this.openScreen();
-    // 		const response = await this.$axios.post(
-    // 			'organisation/transfer/token',
-    // 			{
-    // 				campaign: this.SelectedCampaign.id,
-    // 				amount: this.SelectedCampaign.budget,
-    // 				organisation_id: this.id,
-    // 			}
-    // 		);
-    // 		screenLoading.close();
-
-    // 		console.log('FundResponse', response);
-
-    // 		if (response.status == 'success') {
-    // 			this.$toast.success(response.message);
-    // 			if (this.SelectedCampaign.status == 'pending') {
-    // 				return this.activateCampaign();
-    // 			}
-    // 		}
-    // 	} catch (err) {
-    // 		screenLoading.close();
-    // 		this.$toast.error(err.response.data.message);
-    // 		console.log({ err: err });
-    // 	}
-    // },
-    async activateCampaign() {
-      try {
-        const response = await this.$axios.put("organisation/campaign", {
-          organisation_id: this.user.AssociatedOrganisations[0].OrganisationId,
-          campaignId: this.SelectedCampaign.id,
-          budget: this.SelectedCampaign.budget,
-          description: this.SelectedCampaign.description,
-          status: "active"
-        });
-
-        if (response.status == "success") {
-          this.fetchAllCampaigns();
-        }
-
-        console.log("ACTIVATED", response);
-      } catch (err) {
-        console.log(err);
+        this.$toast.error(err.message);
+        console.log({ error: err });
       }
     },
 
@@ -351,10 +285,9 @@ export default {
     },
 
     handleModal(campaign) {
-      console.log("Selectedcampaign::", campaign);
-      this.$bvModal.show("fund-campaign");
+      this.$bvModal.show("fund-cash-for-work");
       this.amount = campaign.budget;
-      this.SelectedCampaign = campaign;
+      this.SelectedC4w = campaign;
     },
 
     openScreen() {

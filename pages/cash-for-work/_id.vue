@@ -258,4 +258,8 @@ export default {
   width: 2rem;
   max-width: 2rem;
 }
+
+.selected {
+  background: #fcfcfe;
+}
 </style>

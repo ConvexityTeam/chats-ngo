@@ -16,8 +16,8 @@
 			<div class="col-lg-12 mt-5 px-3 primary-blue font-medium">
 				<!-- Name field  here -->
 				<div class="row">
-					<!-- First name -->
-					<div class="col-lg-12 mb-3">
+					<!-- Task Name -->
+					<div class="col-lg-12 mb-1">
 						<div class="form-group">
 							<label for="name">Task Name</label>
 							<input
@@ -25,43 +25,97 @@
 								class="form-controls"
 								name="task-name"
 								id="task-name"
-								placeholder="first name"
-								v-model="payload.first_name"
-								@blur="$v.payload.first_name.$touch()"
+								placeholder="Task Name"
+								readonly
 							/>
 						</div>
 					</div>
-					<!-- Last Name -->
+					<!-- Task Description -->
 					<div class="col-lg-12 mb-3">
 						<div class="form-group">
-							<label for="name">Last Name</label>
+							<label for="name">Activity Description</label>
 							<textarea
 								type="text"
-                                name=""
-								value="taskDescription"
+								name="task-description"
+								id="task-description"
+								value="task-description"
+								placeholder="Task Description"
+								readonly
 								cols="50"
-								rows="20"
+								rows="5"
 							/>
 						</div>
 					</div>
 				</div>
 
-				<div class="row">
-					<!-- Email -->
-					<div class="col-lg-6 mb-3">
-						HELLO1
+				<!-- Image -->
+				<div class="img-evidence-ctn">
+					<label for="name">Photos</label>
+					<div class="d-flex mb-3">
+						<!-- evidence 1 -->
+						<div class="img-evidence">
+							<b-img v-if="file1" :src="file1" fluid></b-img>
+							<img
+								v-else
+								src="~/assets/img/vectors/evidence-placeholder.svg"
+								width="80"
+							/>
+						</div>
+
+						<!-- evidence 2 -->
+						<div class="img-evidence ml-3">
+							<b-img v-if="file2" :src="file2" fluid></b-img>
+							<img
+								v-else
+								src="~/assets/img/vectors/evidence-placeholder.svg"
+								width="80"
+							/>
+						</div>
+					</div>
+
+					<div class="d-flex">
+						<div class="img-evidence">
+							<b-img v-if="file3" :src="file3" fluid></b-img>
+							<img
+								v-else
+								src="~/assets/img/vectors/evidence-placeholder.svg"
+								width="80"
+							/>
+						</div>
+
+						<div class="img-evidence ml-3">
+							<b-img v-if="file4" :src="file4" fluid></b-img>
+							<img
+								v-else
+								src="~/assets/img/vectors/evidence-placeholder.svg"
+								width="80"
+							/>
+						</div>
 					</div>
 				</div>
 
-				<div class="d-flex py-3">
-					<div class="save-btn ml-auto">
+				<div class="d-flex buttons">
+					<div class="save-btn">
 						<Button
 							type="submit"
 							:has-icon="false"
-							text="Save"
+							text="Confirm approval"
 							custom-styles="height:50px;  width: 100%"
 							:loading="loading"
 							:disabled="loading"
+							@click="approveAndPromptModal"
+						/>
+					</div>
+					<div class="save-btn px-3">
+						<Button
+							type="submit"
+							:has-icon="false"
+							text="Reject"
+							custom-styles="height:50px;  width: 100%;"
+							class="border"
+							:loading="loading"
+							:disabled="loading"
+							@click="rejectAndPromptModal"
 						/>
 					</div>
 				</div>
@@ -70,98 +124,34 @@
 	</div>
 </template>
 <script>
-import { required } from 'vuelidate/lib/validators';
 import { mapGetters } from 'vuex';
 import close from '~/components/icons/close';
-import allRoles from '~/plugins/roles';
 
 export default {
 	components: {
 		close,
-		allRoles,
 	},
 
 	data: () => ({
-		options: { placeholder: '(759) 012-3985' },
 		loading: false,
 		orgId: '',
-		roles: [],
-		payload: {
-			first_name: '',
-			last_name: '',
-			email: '',
-			phone: '',
-			role: '',
-		},
+		file1: null,
+		file2: null,
+		file3: null,
+		file4: null,
+		beneficiaryName: 'Hayatu',
+		action: '',
 	}),
-
-	validations: {
-		payload: {
-			first_name: {
-				required,
-			},
-			last_name: {
-				required,
-			},
-			email: {
-				required,
-			},
-			phone: {
-				required,
-			},
-			role: {
-				required,
-			},
-		},
-	},
 
 	computed: {
 		...mapGetters('authentication', ['user']),
 	},
 
 	mounted() {
-		this.roles = allRoles;
-		console.log('Roles:::', this.roles);
 		this.orgId = this.user?.AssociatedOrganisations[0]?.OrganisationId;
 	},
 
 	methods: {
-		async addSubadmin() {
-			try {
-				// console.log('payload:::', this.payload);
-				this.loading = true;
-				this.$v.payload.$touch();
-
-				if (this.$v.payload.$error === true) {
-					this.$toast.error('Please fill in appropriately');
-					this.loading = false;
-					return;
-				}
-
-				this.payload.phone = this.payload.phone.replace(/\s/g, '');
-
-				const response = await this.$axios.post(
-					`ngos/${this.orgId}/members`,
-					this.payload
-				);
-				console.log('response:::', response);
-
-				if (response.status == 'success') {
-					this.loading = false;
-					this.$emit('reload');
-					this.closeModal();
-					this.$toast.success(response.message);
-				}
-
-				console.log('ADD SUBADMIN RESPONSE', response);
-			} catch (err) {
-				console.log('ADDSUBADMINERR::', { err });
-				this.$toast.error(err.response.data.message);
-				this.loading = false;
-			}
-			this.$emit('addSubadmin', this.payload);
-		},
-
 		openScreen() {
 			screenLoading = this.$loading({
 				lock: true,
@@ -170,8 +160,23 @@ export default {
 			});
 		},
 
+		rejectAndPromptModal() {
+			this.$bvModal.hide('check-evidence');
+			this.action = 'rejected';
+			this.$emit('action', this.action);
+			console.log('ACTION', this.action);
+			this.$bvModal.show('evidence-confirmation-prompt');
+		},
+
+		approveAndPromptModal() {
+			this.$bvModal.hide('check-evidence');
+			this.action = 'approved';
+			this.$emit('action', this.action);
+			console.log('ACTION', this.action);
+			this.$bvModal.show('evidence-confirmation-prompt');
+		},
 		closeModal() {
-			this.$bvModal.hide('new-subadmin');
+			this.$bvModal.hide('check-evidence');
 		},
 	},
 };
@@ -185,15 +190,51 @@ label {
 	letter-spacing: 0.01em;
 }
 
+.img-evidence-ctn {
+	width: 434px !important;
+}
+
+.img-evidence {
+	display: flex;
+	justify-content: center;
+	width: 209px !important;
+	height: 150px;
+	border-radius: 10px;
+	background-color: #fcfcfe;
+	border: #7c8db5 solid 1px;
+}
+
+.buttons {
+	margin: 32px 0 16px 0;
+}
+
 .form-group {
 	margin-bottom: 1.5rem;
 }
 
-.form-controls{
+.form-group > textarea {
+	height: 123px;
 	background: #f5f6f8;
 	border-radius: 5px;
-    border: var(--primary-gray) solid 1px;
-	height: 50px;
+	border: var(--primary-gray) solid 1px;
+	outline: none;
+}
+
+.form-group > textarea:focus {
+	border: var(--primary-gray) solid 1px !important;
+}
+
+.form-group > textarea::placeholder {
+	color: #646a86;
+	font-size: 1rem;
+	padding: 1rem 1.25rem;
+}
+
+.form-controls {
+	background: #f5f6f8;
+	border-radius: 5px;
+	border: var(--primary-gray) solid 1px;
+	height: 41px;
 	padding: 0rem 1.25rem;
 }
 
@@ -203,8 +244,17 @@ label {
 }
 
 .form-controls:focus {
-    border: none;
+	border: var(--primary-gray) solid 1px !important;
 }
+.close-btn {
+	border: none;
+	background: inherit;
+	bottom: -3px;
+	right: 10px;
+}
+</style>
+
+<style>
 .close-btn {
 	border: none;
 	background: inherit;
