@@ -137,6 +137,7 @@ import checkEvidence from "~/components/modals/check-evidence";
 import c4wEvidencePromp from "~/components/modals/c4w-evidence-prompt";
 
 let screenLoading;
+
 export default {
   layout: "dashboard",
   components: {

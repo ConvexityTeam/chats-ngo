@@ -12,7 +12,7 @@
 
     <!-- details region here -->
     <div class="campaign-details-inner mt-4 p-4">
-      <h4 class="campaign-details-header pt-2">{{ details.title }}</h4>
+      <h4 class="campaign-details-header pt-2">{{ details.name }}</h4>
 
       <div class="d-flex mt-3">
         <svg
@@ -72,7 +72,7 @@
 
           <div class="ml-auto">
             <p class="campaign-answers">
-              $ {{ details.budget | formatCurrency }}
+              $ {{ details.amount | formatCurrency }}
             </p>
           </div>
         </div>
