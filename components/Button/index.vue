@@ -20,7 +20,9 @@
       src="~/assets/img/vectors/spinner.svg"
       class="btn-spinner"
     />
-    <span :class="{ 'ml-2': hasIcon }">{{ loading ? "" : text }}</span>
+    <span :class="{ 'ml-2': hasIcon }" :style="{ fontSize: fontSize }">{{
+      loading ? "" : text
+    }}</span>
   </button>
 </template>
 
@@ -75,6 +77,10 @@ export default {
     loading: {
       type: Boolean,
       default: false
+    },
+    fontSize: {
+      type: String,
+      default: "0.875rem"
     }
   }
 };
@@ -105,9 +111,5 @@ button:disabled {
   border: inherit;
   box-shadow: 0px 2px 4px rgba(23, 206, 137, 0.07);
   cursor: not-allowed;
-}
-
-span {
-  font-size: 0.875rem;
 }
 </style>

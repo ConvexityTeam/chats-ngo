@@ -57,8 +57,8 @@
             <div class="ml-4">
               <p class="total">Total Products Value</p>
               <h4 class="amount">
-                $
-                {{
+                {{ $currency
+                }}{{
                   data.sum_value == null ? "0" : data.sum_value | formatCurrency
                 }}
               </h4>
@@ -118,11 +118,11 @@ export default {
     productsGenderFemale,
     productsGenderMale,
     productsAgeGroup,
-    allProducts,
+    allProducts
   },
   data: () => ({
     loading: false,
-    data: {},
+    data: {}
   }),
 
   mounted() {
@@ -142,7 +142,7 @@ export default {
       //     Created: moment(benefactor.createdAt).format("dddd, MMMM DD, YYYY")
       //   };
       // });
-    },
+    }
   },
 
   methods: {
@@ -159,8 +159,8 @@ export default {
         console.log(err);
         this.loading = false;
       }
-    },
-  },
+    }
+  }
 };
 </script>
 

@@ -17,20 +17,26 @@
       />
     </svg>
 
-    <span class=" pt-1">{{ text }}</span>
+    <span class="pt-1" :style="customStyles">{{ text }}</span>
   </button>
 </template>
 
 <script>
 export default {
+  name: "Back",
   props: {
     text: {
+      type: String,
+      default: ""
+    },
+    customStyles: {
       type: String,
       default: ""
     }
   }
 };
 </script>
+
 <style scoped>
 button {
   color: #7c8db5;

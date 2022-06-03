@@ -1,7 +1,6 @@
 <template>
   <div class="main container transparent pb-5">
     <!-- Modals here -->
-
     <Modal id="new-campaign" title="new campaign">
       <new-campaign @reload="fetchAllCampaigns" />
     </Modal>
@@ -75,8 +74,10 @@
             :class="{ selected: i % 2 == 0 }"
           >
             <td class="campaign-title">{{ campaign.title }}</td>
-            <td>$ {{ campaign.budget | formatCurrency }}</td>
-            <td>$ {{ campaign.amount_disbursed | formatCurrency }}</td>
+            <td>{{ $currency }}{{ campaign.budget | formatCurrency }}</td>
+            <td>
+              {{ $currency }}{{ campaign.amount_disbursed | formatCurrency }}
+            </td>
             <td>{{ campaign.createdAt | shortDate }}</td>
             <td>
               <div
@@ -98,12 +99,12 @@
                 <Button
                   :hasBorder="true"
                   :hasIcon="false"
-                  :disabled="statuses.includes(campaign.status)"
                   text="Activate"
                   custom-styles=" border-radius: 5px !important;
                   height:33px; border: 1px solid #17ce89 !important; font-size:
                   0.875rem !important; padding:0px 15px !important"
                   @click="activateCampaign(campaign)"
+                  :disabled="statuses.includes(campaign.status)"
                 />
               </div>
             </td>
@@ -214,7 +215,7 @@ export default {
 
         if (response.status == "success") {
           screenLoading.close();
-          this.campaigns = response.data.reverse();
+          this.campaigns = response.data;
         }
         this.loading = false;
 

@@ -1,11 +1,17 @@
 var CryptoJS = require("crypto-js");
 
-export default async function ({ $axios, app }) {
-  $axios.onRequest((config) => {
+export default async function({ $axios, app }) {
+  $axios.onRequest(config => {
     const token = localStorage.getItem("userToken");
+    const identityPay = config.url.includes("myidentitypay");
 
     if (token) {
       config.headers["Authorization"] = `Bearer ${token}`;
+    }
+
+    if (identityPay) {
+      delete config.headers["Authorization"];
+      config.headers["x-api-key"] = process.env.NIN_KEY;
     }
 
     // const encrypted = CryptoJS.AES.encrypt(
@@ -18,7 +24,7 @@ export default async function ({ $axios, app }) {
     // console.log("config:::", config.data)
   });
 
-  $axios.onResponse((response) => {
+  $axios.onResponse(response => {
     return response.data;
 
     // const crypt = new JSEncrypt();
@@ -36,7 +42,7 @@ export default async function ({ $axios, app }) {
     // return JSON.parse(decrypted);
   });
 
-  $axios.onError((err) => {
+  $axios.onError(err => {
     console.log("error:::", err);
 
     // const crypt = new JSEncrypt();
@@ -54,11 +60,12 @@ export default async function ({ $axios, app }) {
     // const data = JSON.parse(decrypted);
     const paths = ["/"];
 
-    if (
-      err.response?.status == "401" &&
-      !app.router.history.current.path.includes(paths)
-    ) {
-      app.$toast.error(err.response.data.message);
+    // &&
+    // !app.router.history.current.path == "/"
+
+    if (err.response?.status == 401) {
+      console.log("FAILED", { err });
+      app.$toast.error(err.response?.data?.message);
       app.router.push("/");
     }
     return;

@@ -279,6 +279,12 @@ export default {
   computed: {
     ...mapGetters("authentication", ["user"]),
     ...mapGetters("vendors", ["allVendors"]),
+    computedVendors() {
+      // return only the vendors whose id is not in payload.vendors
+      return this.allVendors.filter(vendor => {
+        return !this.payload.vendors.includes(vendor.id);
+      });
+    },
     isComplete() {
       return (
         this.payload.type &&

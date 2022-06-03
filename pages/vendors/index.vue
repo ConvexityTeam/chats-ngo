@@ -57,8 +57,8 @@
           <div class="ml-3">
             <p class="text">Transaction value</p>
             <h4 class="funds">
-              $
-              {{ summary.transactions_value || 0 | formatCurrency }}
+              {{ $currency
+              }}{{ summary.transactions_value || 0 | formatCurrency }}
             </h4>
           </div>
         </div>

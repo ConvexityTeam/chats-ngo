@@ -13,6 +13,7 @@
         </button>
       </div>
 
+      <!-- Content Here -->
       <div>
         <slot></slot>
       </div>
@@ -52,6 +53,7 @@ export default {
 
   methods: {
     closeModal() {
+      this.$emit("closeModal");
       this.$bvModal.hide(`${this.id}`);
     },
     showModal() {

@@ -20,8 +20,8 @@
                 <div class="ml-3">
                   <p class="text">Total Recieved</p>
                   <h4 class="funds">
-                    $
-                    {{ vendor.total_received || 0 | formatCurrency }}
+                    {{ $currency
+                    }}{{ vendor.total_received || 0 | formatCurrency }}
                   </h4>
                 </div>
               </div>
@@ -36,8 +36,8 @@
                 <div class="ml-3">
                   <p class="text">Total Spent</p>
                   <h4 class="funds">
-                    $
-                    {{ vendor.total_spent || 0 | formatCurrency }}
+                    {{ $currency
+                    }}{{ vendor.total_spent || 0 | formatCurrency }}
                   </h4>
                 </div>
               </div>
@@ -52,8 +52,8 @@
                 <div class="ml-3">
                   <p class="text">Total Remaining</p>
                   <h4 class="funds">
-                    $
-                    {{
+                    {{ $currency
+                    }}{{
                       vendor.total_received - vendor.total_spent ||
                         0 | formatCurrency
                     }}

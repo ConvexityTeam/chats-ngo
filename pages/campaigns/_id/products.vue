@@ -4,6 +4,18 @@
       <back text="Go Back" @click="$router.go(-1)" />
     </div>
 
+    <!-- Modal here -->
+    <div>
+      <Modal id="edit-product" title="Edit Product / Service">
+        <editProduct :product="activeProduct" />
+      </Modal>
+
+      <Modal id="delete-product" :title="`Delete ${activeProduct.type}`">
+        <deleteProduct :product="activeProduct" @handleDelete="handleDelete" />
+      </Modal>
+    </div>
+
+    <!-- Search Region here -->
     <div class="row pt-4 mt-2">
       <div class="col-lg-8">
         <div class="row">
@@ -53,7 +65,7 @@
                         >
                           {{ product.type }} TAG</span
                         >
-                        <h6 class="word-content primary-blue font-bold">
+                        <h6 class="word-content primary-blue font-medium pt-1">
                           {{ product.tag | capitalize }}
                         </h6>
                       </div>
@@ -65,8 +77,8 @@
                         >
                           {{ product.type }} COST</span
                         >
-                        <h6 class="word-content primary-blue  font-bold">
-                          NGN {{ product.cost | formatCurrency }}
+                        <h6 class="word-content primary-blue font-medium pt-1">
+                          {{ $currency }}{{ product.cost | formatCurrency }}
                         </h6>
                       </div>
                     </div>
@@ -75,13 +87,18 @@
                     <div class="col-lg-5">
                       <div class="mb-3">
                         <span class="primary-gray text-xs">VENDOR(s)</span>
-                        <!-- <h6
-                  class="word-content tertiary-black font-bold"
-                  v-for="(vendor, i) in product.vendors"
-                  :key="i + 'vendor'"
-                >
-                  {{ findVendor(vendor) }}
-                </h6> -->
+
+                        <h6
+                          class="word-content primary-blue font-medium"
+                          :class="{ 'pt-1': i === 0 }"
+                          v-for="(vendor, i) in product.ProductVendors.slice(
+                            0,
+                            3
+                          )"
+                          :key="i + 'vendor'"
+                        >
+                          {{ vendor.VendorName }}
+                        </h6>
                       </div>
                     </div>
 
@@ -93,7 +110,7 @@
                           <button
                             class="actions"
                             type="button"
-                            @click="editProduct(product)"
+                            @click="handleAction('edit', product)"
                           >
                             <img
                               src="~/assets/img/vectors/prod-edit.svg"
@@ -102,12 +119,16 @@
                           </button>
                         </div>
 
+                        <!-- :disabled="
+                              statuses.includes(product.campaign_status)
+                            " -->
+
                         <!-- Delete button here -->
                         <div class="ml-2">
                           <button
                             class="actions"
                             type="button"
-                            @click="deleteProduct(product)"
+                            @click="handleAction('delete', product)"
                           >
                             <img
                               src="~/assets/img/vectors/red-bin.svg"
@@ -132,15 +153,21 @@
 
 <script>
 import { mapGetters } from "vuex";
+import editProduct from "~/components/forms/edit-product.vue";
+import deleteProduct from "~/components/forms/delete-product.vue";
+
 let screenLoading;
 
 export default {
   layout: "dashboard",
+  components: { editProduct, deleteProduct },
 
   data() {
     return {
       searchQuery: "",
-      products: []
+      products: [],
+      activeProduct: {},
+      statuses: ["ongoing", "active", "completed"]
     };
   },
 
@@ -165,17 +192,22 @@ export default {
     const response = await this.$axios.get(
       `organisations/${id}/campaigns/${this.$route.params.id}/products`
     );
-
     this.products = response.data;
   },
 
   methods: {
-    editProduct(product) {
-      console.log("edit product", product);
+    handleAction(action, product) {
+      this.activeProduct = product;
+      this.$bvModal.show(`${action}-product`);
     },
-
-    deleteProduct(product) {
-      console.log("delete product", product);
+    async handleDelete() {
+      try {
+        this.openScreen();
+        const response = await this.$axios.post(``);
+      } catch (err) {
+        screenLoading.close();
+        console.log(err);
+      }
     },
 
     openScreen() {
@@ -209,5 +241,10 @@ export default {
 button.actions {
   background: inherit;
   border: none;
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 </style>

@@ -67,7 +67,7 @@
             :class="{ selected: i % 2 == 0 }"
           >
             <td>{{ transaction.reference }}</td>
-            <td>${{ transaction.amount | formatCurrency }}</td>
+            <td>{{ $currency }}{{ transaction.amount | formatCurrency }}</td>
             <td>
               <span class="badge badge-pill deposited p-2">
                 {{

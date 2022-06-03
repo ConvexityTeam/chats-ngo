@@ -13,7 +13,8 @@
               <div class="ml-3">
                 <p class="text">Total Deposit</p>
                 <h4 class="funds">
-                  ${{ wallet.total_deposit || 0 | formatCurrency }}
+                  {{ $currency
+                  }}{{ wallet.total_deposit || 0 | formatCurrency }}
                 </h4>
               </div>
             </div>
@@ -28,7 +29,8 @@
               <div class="ml-3">
                 <p class="text">Expenses</p>
                 <h4 class="funds">
-                  ${{ wallet.spend_for_campaign || 0 | formatCurrency }}
+                  {{ $currency
+                  }}{{ wallet.spend_for_campaign || 0 | formatCurrency }}
                 </h4>
               </div>
             </div>
@@ -43,7 +45,8 @@
               <div class="ml-3">
                 <p class="text">Cash Balance</p>
                 <h4 class="funds">
-                  ${{
+                  {{ $currency
+                  }}{{
                     (wallet &&
                       wallet.MainWallet &&
                       wallet.MainWallet.balance) ||

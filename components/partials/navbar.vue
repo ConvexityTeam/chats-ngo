@@ -39,25 +39,18 @@
                   d="M14.65 20V19.65H20H20.65V19V18V17.7308L20.4596 17.5404L18.65 15.7308V11C18.65 7.87749 17.0532 5.12045 14.15 4.18696V4C14.15 2.81101 13.189 1.85 12 1.85C10.811 1.85 9.85 2.81101 9.85 4V4.18642C6.93788 5.11866 5.35 7.86819 5.35 11V15.7308L3.54038 17.5404L3.35 17.7308V18V19V19.65H4H9.35V20C9.35 20.7028 9.6292 21.3769 10.1262 21.8738C10.6231 22.3708 11.2972 22.65 12 22.65C13.459 22.65 14.65 21.459 14.65 20Z"
                   stroke="black"
                   stroke-width="1.3"
-                /></svg
-            ></el-badge>
+                />
+              </svg>
+            </el-badge>
 
             <!-- profile picture -->
             <div class="d-flex image-holder justify-content-center mx-auto">
-              <img
-                v-if="
-                  user.AssociatedOrganisations[0].Organisation.logo_link != null
-                "
-                :src="
-                  user.AssociatedOrganisations[0]
-                    ? user.AssociatedOrganisations[0].Organisation.logo_link
-                    : ''
-                "
-                width="50"
-                height="50"
-                class="p-1"
-                style="object-fit: contain"
-              />
+              <b-avatar
+                :src="logo"
+                size="50px"
+                class="img-fluid p-1"
+                variant="light"
+              ></b-avatar>
             </div>
           </div>
         </span>
@@ -77,7 +70,13 @@ export default {
   }),
 
   computed: {
-    ...mapGetters("authentication", ["user"])
+    ...mapGetters("authentication", ["user"]),
+
+    logo() {
+      return (
+        this.user?.AssociatedOrganisations[0]?.Organisation?.logo_link ?? ""
+      );
+    }
   },
 
   watch: {
@@ -150,6 +149,10 @@ export default {
   height: 50px;
   background: #e7e7e7;
   border: none;
+}
+
+.badge-light {
+  background: #e7e7e7 !important;
 }
 
 @media screen and (max-width: 991px) {
