@@ -71,7 +71,7 @@
         <tbody>
           <tr v-for="(transaction, index) in resultQuery" :key="index">
             <td>{{ transaction.reference }}</td>
-            <td>{{ transaction.amount | formatCurrency }}</td>
+            <td>{{ $currency }}{{ transaction.amount | formatCurrency }}</td>
             <td>
               {{
                 transaction.Vendor

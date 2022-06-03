@@ -67,8 +67,20 @@ html {
   cursor: not-allowed;
 }
 
+.pointer {
+  cursor: pointer;
+}
+
 .primary-gray {
   color: var(--primary-gray);
+}
+
+.w-45 {
+  width: 45%;
+}
+
+.w-80 {
+  width: 80%;
 }
 
 .primary-blue {
@@ -630,7 +642,8 @@ select.form-control {
 .el-input__inner {
   border: 1px solid #999999;
   border-radius: 10px;
-  height: 45px !important;
+  min-height: 45px !important;
+  height: fit-content;
 }
 
 .el-input__inner:focus {
@@ -640,6 +653,7 @@ select.form-control {
 /* TOAST HERE */
 .toasted-container {
   background-color: transparent !important;
+  max-width: 400px;
 }
 
 .toasted-container .toasted-primary.success {
@@ -649,6 +663,7 @@ select.form-control {
   padding: 1rem !important;
   font-size: 1rem;
   font-weight: 500;
+  line-height: 1.5rem;
 }
 
 .toasted-container .toasted-primary.error {
@@ -658,6 +673,7 @@ select.form-control {
   padding: 1rem !important;
   font-size: 1rem;
   font-weight: 500;
+  line-height: 1.5rem;
 }
 
 .bg-success {
@@ -773,6 +789,10 @@ select.form-control {
   -webkit-animation: spin 2s linear infinite;
   animation: spin 2s linear infinite;
   margin: auto;
+}
+
+.el-loading-spinner i {
+  color: #17ce89 !important;
 }
 
 .dropdown-item.active,

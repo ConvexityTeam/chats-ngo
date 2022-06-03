@@ -48,6 +48,18 @@ export default {
     user: {
       type: Object,
       default: () => {}
+    },
+    remount: {
+      type: Boolean,
+      default: false
+    }
+  },
+
+  watch: {
+    remount(value) {
+      if (value) {
+        this.$fetch();
+      }
     }
   },
 

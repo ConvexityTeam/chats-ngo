@@ -9,10 +9,6 @@
           <funding />
         </Modal>
 
-        <Modal id="fund-campaign" title="Fund Campaign">
-          <fund-campaign :campaign="details" @fundCampaign="fundCampaign" />
-        </Modal>
-
         <Modal id="reject-benefactor" title="Reject Benefactor">
           <reject-benefactor
             :benefactor="activeBenefactor"
@@ -28,16 +24,17 @@
         :with-header="false"
         :direction="direction"
       >
-        <add-product @close="drawer = false" />
+        <add-product @close="closeDrawer" />
       </el-drawer>
 
+      <!-- Back Button -->
       <back text="Go Back" @click="$router.go(-1)" />
 
-      <!-- search region here -->
-      <div class="row py-4">
-        <div class="col-lg-8">
+      <!-- search - button region here -->
+      <div class="row py-4 mt-2">
+        <div class="col-lg-4">
           <div class="row">
-            <div class="col-lg-5">
+            <div class="col-lg-10">
               <!-- Search Box here -->
               <div class="position-relative">
                 <input
@@ -56,28 +53,40 @@
           </div>
         </div>
 
-        <div class="d-flex ml-auto mx-3">
-          <div v-if="!details.is_funded" class="mr-3">
+        <!-- Buttons here -->
+        <div class="d-flex align-items-center ml-auto mx-3">
+          <div class="mr-4 align-self-center pt-2">
+            <h2
+              class="primary poppins text-sm font-medium pointer"
+              @click="$router.push('/campaigns/manage-tokens')"
+            >
+              View / manage SMS token & QR codes
+            </h2>
+          </div>
+
+          <div class="mr-4">
             <Button
-              text="Fund Campaign"
+              text="Disburse Funds"
               :has-icon="false"
               custom-styles="height:50px"
-              @click="$bvModal.show('fund-campaign')"
-              :disabled="details.status == 'pending'"
+              @click="
+                $router.push(`/campaigns/${$route.params.id}/disbursement`)
+              "
+              :disabled="statuses.includes(details.status)"
             />
           </div>
 
           <div>
             <Button
               text="Add Products"
-              custom-styles="height:50px; border: 1px solid #17ce89 !important;"
+              custom-styles="height:50px; border: 1px solid #17ce89 !important; font-weight: 600!important;"
               :has-border="true"
               :is-green="true"
               @click="drawer = true"
             />
           </div>
 
-          <div class="ml-3">
+          <!-- <div class="ml-3">
             <Button
               text="Public Funding"
               :has-icon="false"
@@ -85,19 +94,19 @@
               @click="showModal"
               :disabled="true"
             />
-          </div>
+          </div> -->
         </div>
       </div>
 
       <!-- Banner Here -->
-      <div v-if="details.status == 'paused'" class="">
+      <div v-if="details.status === 'paused'" class="">
         <banner
           :date="details.updatedAt"
           @resumeCampaign="resumeCampaign = true"
         />
       </div>
 
-      <div class="row" :class="{ 'mt-3': details.status == 'paused' }">
+      <div class="row mt-3">
         <div class="col-lg-8">
           <!-- Campaign beneficiaries here -->
           <div>
@@ -229,18 +238,20 @@
 
           <!-- Campaign Vendors here -->
           <div class="mt-4">
-            <campaign-vendors :user="user" />
+            <campaign-vendors :user="user" :remount="remount" />
           </div>
 
           <!-- Campaign Products here -->
           <div class="mt-4">
-            <campaign-products :user="user" />
+            <campaign-products :user="user" :remount="remount" />
           </div>
         </div>
       </div>
     </div>
   </div>
 </template>
+
+<!--  -->
 
 <script>
 import { mapGetters } from "vuex";
@@ -249,7 +260,6 @@ import campaignDetails from "~/components/tables/campaigns/campaign-details";
 import banner from "~/components/generic/banner.vue";
 import funding from "~/components/forms/funding.vue";
 import addProduct from "~/components/forms/add-product.vue";
-import fundCampaign from "~/components/forms/fund-campaign.vue";
 import rejectBenefactor from "~/components/forms/reject-benefactor.vue";
 import campaignVendors from "~/components/tables/campaigns/campaign-vendors.vue";
 import campaignProducts from "~/components/tables/campaigns/campaign-products.vue";
@@ -271,7 +281,9 @@ export default {
     activeBenefactor: {},
     title: "",
     drawer: false,
-    direction: "rtl"
+    remount: false,
+    direction: "rtl",
+    statuses: ["active", "completed", "ongoing"]
   }),
 
   components: {
@@ -280,7 +292,6 @@ export default {
     banner,
     funding,
     addProduct,
-    fundCampaign,
     rejectBenefactor,
     campaignVendors,
     campaignProducts
@@ -320,6 +331,11 @@ export default {
   },
 
   methods: {
+    closeDrawer() {
+      this.drawer = false;
+      this.remount = true;
+    },
+
     showModal() {
       this.$bvModal.show("funding");
     },
@@ -352,14 +368,6 @@ export default {
         const response = await this.$axios.get(
           `/organisations/${this.orgId}/campaigns/${this.$route.params.id}`
         );
-
-        if (response.status == "success") {
-          screenLoading.close();
-          this.details = response.data;
-          // this.beneficiaries = response.data[0].Beneficiaries;
-          // this.location = JSON.parse(response.data[0].location);
-          console.log("here", response.data);
-        }
 
         if (response.status == "success") {
           screenLoading.close();

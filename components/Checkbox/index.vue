@@ -1,12 +1,17 @@
 <template>
-  <label>
+  <label :style="{ height: height }">
     <input
       type="checkbox"
+      ref="checkbox"
       :id="id"
       class="focus:outline-none"
-      :checked="value"
-      @change="$emit('input', $event.target.checked)"
+      :checked="checked"
+      :value="value"
+      @change="$emit('input', $refs.checkbox.value)"
     />
+
+    <!-- @change="$emit('input', $event.target.checked)" -->
+
     <span></span>
   </label>
 </template>
@@ -19,15 +24,24 @@ export default {
       default: ""
     },
     value: {
+      type: Number
+    },
+    checked: {
       type: Boolean,
       default: false
+    },
+    height: {
+      type: String,
+      default: "16px"
     }
   }
 };
 </script>
+
 <style scoped>
 label {
   position: relative;
+  display: flex !important;
 }
 span {
   width: 20px;

@@ -9,7 +9,8 @@
           <div class="ml-3">
             <p class="text">Wallet Balance</p>
             <h4 class="funds">
-              ${{
+              {{ $currency
+              }}{{
                 (wallet && wallet.MainWallet && wallet.MainWallet.balance) ||
                   0 | formatCurrency
               }}
@@ -27,7 +28,8 @@
           <div class="ml-3">
             <p class="text">Campaign Budget</p>
             <h4 class="funds">
-              $ {{ campaignDetails.campaign_budget || 0 | formatCurrency }}
+              {{ $currency
+              }}{{ campaignDetails.campaign_budget || 0 | formatCurrency }}
             </h4>
           </div>
         </div>
@@ -41,7 +43,10 @@
           </div>
           <div class="ml-3">
             <p class="text">Amount Disbursed</p>
-            <h4 class="funds">$ {{ campaignDetails.amount_disbursed || 0 | formatCurrency }}</h4>
+            <h4 class="funds">
+              {{ $currency
+              }}{{ campaignDetails.amount_disbursed || 0 | formatCurrency }}
+            </h4>
           </div>
         </div>
       </div>
@@ -54,7 +59,9 @@
           </div>
           <div class="ml-3">
             <p class="text">Campaign Balance</p>
-            <h4 class="funds">${{ campaignDetails.balance || 0 | formatCurrency }}</h4>
+            <h4 class="funds">
+              {{ $currency }}{{ campaignDetails.balance || 0 | formatCurrency }}
+            </h4>
           </div>
         </div>
       </div>
@@ -264,7 +271,6 @@ export default {
       stats: {},
       wallet: {},
       campaignDetails: {},
-
       userLocation: {
         alphaCode: "",
         currencySymbol: "",
@@ -296,12 +302,13 @@ export default {
     const wallet = await this.$axios.get(`/organisations/${id}/wallets`);
     this.wallet = wallet?.data ?? {};
 
-    const campaignDetails = await this.$axios.get(`/organisations/campaigns/transaction`);
+    const campaignDetails = await this.$axios.get(
+      `/organisations/campaigns/transaction`
+    );
     this.campaignDetails = campaignDetails?.data ?? {};
 
     console.log("walletData", wallet);
   },
-  
 
   mounted() {
     // this.getIp();

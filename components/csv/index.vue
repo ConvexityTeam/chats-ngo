@@ -6,7 +6,8 @@
         :csv="greenCsv ? false : true"
         :hasBorder="hasBorder"
         :green-csv="greenCsv"
-        custom-styles="height: 3.125rem"
+        :custom-styles="customStyles"
+        :fontSize="fontSize"
       >
       </Button>
     </download-csv>
@@ -36,6 +37,14 @@ export default {
     greenCsv: {
       type: Boolean,
       default: false
+    },
+    customStyles: {
+      type: String,
+      default: "height: 3.125rem"
+    },
+    fontSize: {
+      type: String,
+      default: "0.875rem"
     }
   }
 };

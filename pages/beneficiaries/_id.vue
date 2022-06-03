@@ -20,7 +20,8 @@
                 <div class="ml-3">
                   <p class="text">Total Recieved</p>
                   <h4 class="funds">
-                    ${{
+                    {{ $currency
+                    }}{{
                       userDetails.total_wallet_received || 0 | formatCurrency
                     }}
                   </h4>
@@ -37,7 +38,8 @@
                 <div class="ml-3">
                   <p class="text">Total Spent</p>
                   <h4 class="funds">
-                    ${{ userDetails.total_wallet_spent || 0 | formatCurrency }}
+                    {{ $currency
+                    }}{{ userDetails.total_wallet_spent || 0 | formatCurrency }}
                   </h4>
                 </div>
               </div>
@@ -52,7 +54,8 @@
                 <div class="ml-3">
                   <p class="text">Total Remaining</p>
                   <h4 class="funds">
-                    ${{
+                    {{ $currency
+                    }}{{
                       userDetails.total_wallet_balance || 0 | formatCurrency
                     }}
                   </h4>
@@ -94,13 +97,13 @@ export default {
     disbursed,
     totalBalance,
     beneficiaryDetails,
-    beneficiaryCampaign,
+    beneficiaryCampaign
   },
 
   data: () => ({
     id: "",
     loading: false,
-    userDetails: {},
+    userDetails: {}
   }),
 
   mounted() {
@@ -109,7 +112,7 @@ export default {
   },
 
   computed: {
-    ...mapGetters("authentication", ["user"]),
+    ...mapGetters("authentication", ["user"])
   },
 
   methods: {
@@ -139,10 +142,10 @@ export default {
       screenLoading = this.$loading({
         lock: true,
         spinner: "el-icon-loading",
-        background: "#0000009b",
+        background: "#0000009b"
       });
-    },
-  },
+    }
+  }
 };
 </script>
 

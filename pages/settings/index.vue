@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <b-tabs content-class="mt-1" nav-class nav-wrapper-class>
+    <b-tabs content-class="mt-1" id="profile-tab" nav-class nav-wrapper-class>
       <!-- Profile tab here -->
       <b-tab title="Profile" active class="nav-links">
         <profileSettings />
@@ -28,7 +28,26 @@ export default {
   components: {
     profileSettings,
     securitySettings,
-    manageAccount,
-  },
+    manageAccount
+  }
 };
 </script>
+
+<style>
+#profile-tab__BV_tab_controls_ > .nav-item > .nav-link {
+  font-family: "Poppins", sans-serif;
+  font-size: 1.125rem;
+  font-weight: 500;
+  color: #7c8db5;
+  padding: 1rem 1.75rem;
+}
+
+#profile-tab__BV_tab_controls_ > .nav-item > .active {
+  font-weight: 600;
+  color: #17ce89;
+}
+
+#profile-tab__BV_tab_controls_ {
+  padding: 0px 5px;
+}
+</style>

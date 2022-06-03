@@ -21,7 +21,7 @@
 import doughnutChart from "~/plugins/charts/doughnutchart";
 export default {
   components: {
-    doughnutChart,
+    doughnutChart
   },
   data() {
     return {
@@ -32,9 +32,9 @@ export default {
           {
             label: ["Male", "Female"],
             data: [],
-            backgroundColor: ["#3DA35D", "#96E072"],
-          },
-        ],
+            backgroundColor: ["#3DA35D", "#96E072"]
+          }
+        ]
       },
       doughnutChartOptions: {
         responsive: true,
@@ -44,31 +44,31 @@ export default {
 
           labels: {
             fontColor: "#263238",
-            usePointStyle: true,
-          },
+            usePointStyle: true
+          }
         },
         title: {
           display: true,
           text: "Beneficiary By Gender",
           fontSize: 18,
-          fontColor: "#333333",
+          fontColor: "#333333"
         },
         cutoutPercentage: 70,
         rotation: Math.PI * 1,
         animation: {
-          animateScale: true,
+          animateScale: true
         },
         tooltips: {
-          backgroundColor: "#17BF62",
-        },
-      },
+          backgroundColor: "#17BF62"
+        }
+      }
     };
   },
 
   computed: {
     requiredData() {
       return this.doughnutChartData?.datasets[0]?.data?.length;
-    },
+    }
   },
 
   mounted() {
@@ -85,7 +85,7 @@ export default {
 
         if (response.status == "success") {
           const data = response.data;
-          Object.values(data).forEach((item) => {
+          Object.values(data).forEach(item => {
             this.doughnutChartData.datasets[0].data.push(item);
           });
 
@@ -95,11 +95,11 @@ export default {
         console.log("GET GENDER RESPONSE", response);
       } catch (err) {
         console.log("GETGENDERERR::", { err });
-        this.$toast.error(err.response.data.message);
+        this.$toast.error(err?.response?.data?.message);
         this.loading = false;
       }
-    },
-  },
+    }
+  }
 };
 </script>
 

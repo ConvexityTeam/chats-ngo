@@ -9,7 +9,7 @@
           type="text"
           class="form-controls"
           :class="{
-            error: $v.payload.title.$error,
+            error: $v.payload.title.$error
           }"
           placeholder="Enter name of campaign"
           v-model="payload.title"
@@ -26,7 +26,7 @@
           class="form-controls p-2"
           placeholder="Short description"
           :class="{
-            error: $v.payload.description.$error,
+            error: $v.payload.description.$error
           }"
           cols="30"
           rows="3"
@@ -45,14 +45,22 @@
               type="number"
               class="form-controls"
               :class="{
-                error: $v.payload.budget.$error,
+                error: $v.payload.budget.$error
               }"
               id="total-amount"
               placeholder="0.00"
-              v-model="payload.budget"
               @blur="$v.payload.budget.$touch()"
-              ref="budget"
+              v-model="payload.budget"
             />
+            <!--  -->
+
+            <!-- @focus="
+                payload.budget = String(payload.budget).replace(
+                  /[,]|[$]|[' ']|[a-z]/g,
+                  ''
+                );
+                $event.target.type = 'number';
+              " -->
           </div>
         </div>
       </div>
@@ -68,7 +76,7 @@
               format="DD-MM-YYYY"
               placeholder="DD-MM-YYYY"
               valueType="format"
-              :disabled-date="(present) => present <= new Date()"
+              :disabled-date="present => present <= new Date()"
             ></date-picker>
           </div>
         </div>
@@ -83,7 +91,7 @@
               format="DD-MM-YYYY"
               placeholder="DD-MM-YYYY"
               valueType="format"
-              :disabled-date="(present) => present <= new Date()"
+              :disabled-date="present => present <= new Date()"
             ></date-picker>
           </div>
         </div>
@@ -135,7 +143,7 @@ import { required, minValue } from "vuelidate/lib/validators";
 import { mapGetters } from "vuex";
 import DatePicker from "vue2-datepicker";
 import "vue2-datepicker/index.css";
-const greaterThanZero = (value) => value >= 100;
+const greaterThanZero = value => value >= 100;
 
 let geocoder;
 
@@ -153,26 +161,26 @@ export default {
         budget: "",
         location: [],
         start_date: "",
-        end_date: "",
+        end_date: ""
       },
 
       location: {
-        coordinates: [],
-      },
+        coordinates: []
+      }
     };
   },
 
   validations: {
     payload: {
       title: {
-        required,
+        required
       },
       description: {
-        required,
+        required
       },
       budget: {
         required,
-        greaterThanZero,
+        greaterThanZero
       },
       //   location: {
       //     coordinates: {
@@ -180,17 +188,17 @@ export default {
       //     }
       //   },
       start_date: {
-        required,
+        required
       },
       end_date: {
-        required,
-      },
-    },
+        required
+      }
+    }
   },
   components: { DatePicker },
 
   computed: {
-    ...mapGetters("authentication", ["user"]),
+    ...mapGetters("authentication", ["user"])
   },
 
   mounted() {
@@ -205,6 +213,32 @@ export default {
 
     checkValue(value) {
       this.isGeofence = value;
+    },
+    formatNumbers(event, key, payload) {
+      if (payload) {
+        console.log("payload", payload);
+        if (this.$v.payload[key]) {
+          this.$v.payload[key].$touch();
+        }
+        event.target.type = "text";
+        this.payload[key] =
+          "$ " +
+          new Intl.NumberFormat("en-US", {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+          }).format(this.payload[key]);
+      } else {
+        if (this.$v[key]) {
+          this.$v[key].$touch();
+        }
+        event.target.type = "text";
+        this[key] =
+          "$ " +
+          new Intl.NumberFormat("en-US", {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+          }).format(this[key]);
+      }
     },
 
     formatCurrency(value) {
@@ -259,7 +293,7 @@ export default {
       const map = new google.maps.Map(document.getElementById("map_canvas"), {
         center: { lat: 17.35297042396732, lng: 8.808737500000019 },
         zoom: 3,
-        mapTypeId: google.maps.MapTypeId.ROADMAP,
+        mapTypeId: google.maps.MapTypeId.ROADMAP
       });
 
       var all_overlays = [];
@@ -269,7 +303,7 @@ export default {
         drawingControl: true,
         drawingControlOptions: {
           position: google.maps.ControlPosition.TOP_CENTER,
-          drawingModes: [google.maps.drawing.OverlayType.POLYGON],
+          drawingModes: [google.maps.drawing.OverlayType.POLYGON]
         },
 
         polygonOptions: {
@@ -277,8 +311,8 @@ export default {
           draggable: true,
           editable: true,
           fillColor: "",
-          fillOpacity: 0.35,
-        },
+          fillOpacity: 0.35
+        }
       });
 
       const clearSelection = () => {
@@ -288,7 +322,7 @@ export default {
         }
       };
 
-      const setSelection = (shape) => {
+      const setSelection = shape => {
         clearSelection();
         selectedShape = shape;
         shape.setEditable(true);
@@ -325,7 +359,7 @@ export default {
         controlUI.appendChild(controlText);
 
         // Setup the click event listeners: simply set the map to Chicago.
-        controlUI.addEventListener("click", function () {
+        controlUI.addEventListener("click", function() {
           deleteSelectedShape();
         });
       };
@@ -335,7 +369,7 @@ export default {
       google.maps.event.addListener(
         drawingManager,
         "polygoncomplete",
-        (event) => {
+        event => {
           const vertices = event.getPath();
           for (let i = 0; i < vertices.getLength(); i++) {
             const coordinates = vertices.getAt(i).toUrlValue(6);
@@ -366,25 +400,23 @@ export default {
         }
       );
 
-      google.maps.event.addListener(
-        drawingManager,
-        "overlaycomplete",
-        function (event) {
-          all_overlays.push(event);
-          if (event.type !== google.maps.drawing.OverlayType.MARKER) {
-            drawingManager.setDrawingMode(null);
-            //Write code to select the newly selected object.
+      google.maps.event.addListener(drawingManager, "overlaycomplete", function(
+        event
+      ) {
+        all_overlays.push(event);
+        if (event.type !== google.maps.drawing.OverlayType.MARKER) {
+          drawingManager.setDrawingMode(null);
+          //Write code to select the newly selected object.
 
-            var newShape = event.overlay;
-            newShape.type = event.type;
-            google.maps.event.addListener(newShape, "click", function () {
-              setSelection(newShape);
-            });
-
+          var newShape = event.overlay;
+          newShape.type = event.type;
+          google.maps.event.addListener(newShape, "click", function() {
             setSelection(newShape);
-          }
+          });
+
+          setSelection(newShape);
         }
-      );
+      });
 
       var centerControlDiv = document.createElement("div");
       var centerControl = new CenterControl(centerControlDiv, map);
@@ -393,8 +425,8 @@ export default {
       map.controls[google.maps.ControlPosition.BOTTOM_CENTER].push(
         centerControlDiv
       );
-    },
-  },
+    }
+  }
 };
 </script>
 
