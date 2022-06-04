@@ -31,7 +31,8 @@
                     height="130"
                     width="130"
                     class="m-auto"
-                    alt=""
+                    alt="qr-code
+                    "
                   />
                 </div>
                 <!-- token.token.substring(0, 10200) -->
