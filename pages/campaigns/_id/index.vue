@@ -58,7 +58,12 @@
           <div class="mr-4 align-self-center pt-2">
             <h2
               class="primary poppins text-sm font-medium pointer"
-              @click="$router.push('/campaigns/manage-tokens')"
+              @click="
+                $router.push({
+                  path: '/campaigns/manage-tokens',
+                  query: { method: 'sms' }
+                })
+              "
             >
               View / manage SMS token & QR codes
             </h2>
@@ -283,7 +288,7 @@ export default {
     drawer: false,
     remount: false,
     direction: "rtl",
-    statuses: ["active", "completed", "ongoing"]
+    statuses: ["pending", "completed", "ongoing"]
   }),
 
   components: {

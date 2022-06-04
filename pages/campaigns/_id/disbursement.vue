@@ -217,9 +217,10 @@ export default {
     },
     handleRoute() {
       if (this.tokenType === "wallet") {
-        return this.goBack();
+        this.goBack();
+      } else {
+        this.handleTokens();
       }
-      this.handleTokens();
     },
 
     goBack() {
@@ -229,7 +230,10 @@ export default {
     handleTokens() {
       this.$router.push({
         path: "/campaigns/manage-tokens",
-        query: { method: this.tokenType }
+        query: { method: this.tokenType },
+        meta: {
+          reload: true
+        }
       });
     },
 

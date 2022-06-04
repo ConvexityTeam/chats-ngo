@@ -1,7 +1,7 @@
 <template>
   <div class="mt-4 px-4 py-3">
     <div class="row">
-      <div class="col-lg-4" v-for="i in 20" :key="i">
+      <div class="col-lg-4" v-for="(token, i) in data" :key="i">
         <div
           class="card-holder p-4"
           :class="{ 'html2pdf__page-break': i % 9 === 0 }"
@@ -26,20 +26,30 @@
               <div class="mb-2 pb-1">
                 <p class="text-xs primary-gray ">BENEFICIARY</p>
                 <p class="primary-blue text-sm font-medium">
-                  {{ "Damilare Akinbosun" + " " + i }}
+                  {{
+                    token.Beneficiary
+                      ? `${token.Beneficiary.first_name +
+                          " " +
+                          token.Beneficiary.last_name}`
+                      : ""
+                  }}
                 </p>
               </div>
 
               <!-- Campaign -->
               <div class="mb-2 pb-1">
                 <p class="text-xs primary-gray ">CAMPAIGN</p>
-                <p class="primary-blue text-sm font-medium">Feed the poor</p>
+                <p class="primary-blue text-sm font-medium">
+                  {{ token.Campaign ? token.Campaign.title : "" }}
+                </p>
               </div>
 
               <!-- AMOUNT -->
               <div class="mb-2 ">
                 <p class="text-xs primary-gray ">AMOUNT</p>
-                <p class="primary-blue text-sm font-medium">NGN90,000.00</p>
+                <p class="primary-blue text-sm font-medium">
+                  {{ $currency }}{{ token.amount | formatCurrency }}
+                </p>
               </div>
             </div>
           </div>
@@ -53,8 +63,15 @@
 import QrcodeVue from "qrcode.vue";
 
 export default {
-  name: "COmplete-Qr-codes",
-  components: { QrcodeVue }
+  name: "Complete-Qr-Codes",
+  components: { QrcodeVue },
+
+  props: {
+    data: {
+      type: Array,
+      default: () => []
+    }
+  }
 };
 </script>
 

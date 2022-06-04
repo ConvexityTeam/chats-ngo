@@ -1,30 +1,40 @@
 <template>
   <div>
-    <div class="mt-4" style="overflow:auto">
+    <div class="mt-4" style="overflow:auto" v-if="data.length">
       <div
         class="row"
         v-infinite-scroll="load"
         :infinite-scroll-disabled="disabled"
         :infinite-scroll-immediate="false"
       >
-        <div class="col-lg-4" v-for="i in count" :key="i">
+        <div
+          class="col-lg-4"
+          v-for="(token, i) in data.slice(0, count)"
+          :key="i"
+        >
           <div class="card-holder p-4 ">
             <div class="row">
               <!-- QR code here -->
               <div class="col-lg-6">
+                <!-- {{ token.token.length }}
+                {{ token.token.slice(0, 1270) }} -->
+
                 <div class="qr-holder p-2 d-flex">
-                  <qrcode-vue
-                    :value="
-                      handleQrCode(
-                        'data:image/png;base64,PCFkb2N0eXBlIGh0bWw+CjxodG1sIGxhbmc9ImVuIiBkYXRhLW4taGVhZD0iJTdCJTIybGFuZyUyMjolN0IlMjIxJTIyOiUyMmVuJTIyJTdEJTdEIj4KICA8aGVhZD4KICAgIDx0aXRsZT5yZW5hcGF5PC90aXRsZT48bWV0YSBkYXRhLW4taGVhZD0iMSIgY2hhcnNldD0idXRmLTgiPjxtZXRhIGRhdGEtbi1oZWFkPSIxIiBuYW1lPSJ2aWV3cG9ydCIgY29udGVudD0id2lkdGg9ZGV2aWNlLXdpZHRoLGluaXRpYWwtc2NhbGU9MSI+PG1ldGEgZGF0YS1uLWhlYWQ9IjEiIGRhdGEtaGlkPSJkZXNjcmlwdGlvbiIgbmFtZT0iZGVzY3JpcHRpb24iIGNvbnRlbnQ9IiI+PGxpbmsgZGF0YS1uLWhlYWQ9IjEiIHJlbD0iaWNvbiIgdHlwZT0iaW1hZ2UveC1pY29uIiBocmVmPSIvZmF2aWNvbi5pY28iPjxsaW5rIGRhdGEtbi1oZWFkPSIxIiByZWw9InN0eWxlc2hlZXQiIGhyZWY9Imh0dHBzOi8vdW5wa2cuY29tL2VsZW1lbnQtdWkvbGliL3RoZW1lLWNoYWxrL2luZGV4LmNzcyI+PGxpbmsgZGF0YS1uLWhlYWQ9IjEiIHJlbD0ic3R5bGVzaGVldCIgaHJlZj0iaHR0cHM6Ly9jZG5qcy5jbG91ZGZsYXJlLmNvbS9hamF4L2xpYnMvZm9udC1hd2Vzb21lLzQuNy4wL2Nzcy9mb250LWF3ZXNvbWUubWluLmNzcyI+PGxpbmsgcmVsPSJwcmVsb2FkIiBocmVmPSIvX251eHQvYTQ4OWY4Yy5qcyIgYXM9InNjcmlwdCI+PGxpbmsgcmVsPSJwcmVsb2FkIiBocmVmPSIvX251eHQvODIxZjg5Mi5qcyIgYXM9InNjcmlwdCI+PGxpbmsgcmVsPSJwcmVsb2FkIiBocmVmPSIvX251eHQvNjlkMmU1NS5qcyIgYXM9InNjcmlwdCI+PGxpbmsgcmVsPSJwcmVsb2FkIiBocmVmPSIvX251eHQvNWZmNGE2ZS5qcyIgYXM9InNjcmlwdCI+CiAgPC9oZWFkPgogIDxib2R5PgogICAgPGRpdiBpZD0iX19udXh0Ij48c3R5bGU+I251eHQtbG9hZGluZ3tiYWNrZ3JvdW5kOiNmZmY7dmlzaWJpbGl0eTpoaWRkZW47b3BhY2l0eTowO3Bvc2l0aW9uOmFic29sdXRlO2xlZnQ6MDtyaWdodDowO3RvcDowO2JvdHRvbTowO2Rpc3BsYXk6ZmxleDtqdXN0aWZ5LWNvbnRlbnQ6Y2VudGVyO2FsaWduLWl0ZW1zOmNlbnRlcjtmbGV4LWRpcmVjdGlvbjpjb2x1bW47YW5pbWF0aW9uOm51eHRMb2FkaW5nSW4gMTBzIGVhc2U7LXdlYmtpdC1hbmltYXRpb246bnV4dExvYWRpbmdJbiAxMHMgZWFzZTthbmltYXRpb24tZmlsbC1tb2RlOmZvcndhcmRzO292ZXJmbG93OmhpZGRlbn1Aa2V5ZnJhbWVzIG51eHRMb2FkaW5nSW57MCV7dmlzaWJpbGl0eTpoaWRkZW47b3BhY2l0eTowfTIwJXt2aXNpYmlsaXR5OnZpc2libGU7b3BhY2l0eTowfTEwMCV7dmlzaWJpbGl0eTp2aXNpYmxlO29wYWNpdHk6MX19QC13ZWJraXQta2V5ZnJhbWVzIG51eHRMb2FkaW5nSW57MCV7dmlzaWJpbGl0eTpoaWRkZW47b3BhY2l0eTowfTIwJXt2aXNpYmlsaXR5OnZpc2libGU7b3BhY2l0eTowfTEwMCV7dmlzaWJpbGl0eTp2aXNpYmxlO29wYWNpdHk6MX19I251eHQtbG9hZGluZz5kaXYsI251eHQtbG9hZGluZz5kaXY6YWZ0ZXJ7Ym9yZGVyLXJhZGl1czo1MCU7d2lkdGg6NXJlbTtoZWlnaHQ6NXJlbX0jbnV4dC1sb2FkaW5nPmRpdntmb250LXNpemU6MTBweDtwb3NpdGlvbjpyZWxhdGl2ZTt0ZXh0LWluZGVudDotOTk5OWVtO2JvcmRlcjouNXJlbSBzb2xpZCAjZjVmNWY1O2JvcmRlci1sZWZ0Oi41cmVtIHNvbGlkICMyMjI4NDA7LXdlYmtpdC10cmFuc2Zvcm06dHJhbnNsYXRlWigwKTstbXMtdHJhbnNmb3JtOnRyYW5zbGF0ZVooMCk7dHJhbnNmb3JtOnRyYW5zbGF0ZVooMCk7LXdlYmtpdC1hbmltYXRpb246bnV4dExvYWRpbmcgMS4xcyBpbmZpbml0ZSBsaW5lYXI7YW5pbWF0aW9uOm51eHRMb2FkaW5nIDEuMXMgaW5maW5pdGUgbGluZWFyfSNudXh0LWxvYWRpbmcuZXJyb3I+ZGl2e2JvcmRlci1sZWZ0Oi41cmVtIHNvbGlkICNmZjQ1MDA7YW5pbWF0aW9uLWR1cmF0aW9uOjVzfUAtd2Via2l0LWtleWZyYW1lcyBudXh0TG9hZGluZ3swJXstd2Via2l0LXRyYW5zZm9ybTpyb3RhdGUoMCk7dHJhbnNmb3JtOnJvdGF0ZSgwKX0xMDAley13ZWJraXQtdHJhbnNmb3JtOnJvdGF0ZSgzNjBkZWcpO3RyYW5zZm9ybTpyb3RhdGUoMzYwZGVnKX19QGtleWZyYW1lcyBudXh0TG9hZGluZ3swJXstd2Via2l0LXRyYW5zZm9ybTpyb3RhdGUoMCk7dHJhbnNmb3JtOnJvdGF0ZSgwKX0xMDAley13ZWJraXQtdHJhbnNmb3JtOnJvdGF0ZSgzNjBkZWcpO3RyYW5zZm9ybTpyb3RhdGUoMzYwZGVnKX19PC9zdHlsZT48c2NyaXB0PndpbmRvdy5hZGRFdmVudExpc3RlbmVyKCJlcnJvciIsZnVuY3Rpb24oKXt2YXIgZT1kb2N1bWVudC5nZXRFbGVtZW50QnlJZCgibnV4dC1sb2FkaW5nIik7ZSYmKGUuY2xhc3NOYW1lKz0iIGVycm9yIil9KTwvc2NyaXB0PjxkaXYgaWQ9Im51eHQtbG9hZGluZyIgYXJpYS1saXZlPSJwb2xpdGUiIHJvbGU9InN0YXR1cyI+PGRpdj5Mb2FkaW5nLi4uPC9kaXY+PC9kaXY+PC9kaXY+PHNjcmlwdD53aW5kb3cuX19OVVhUX189e2NvbmZpZzp7X2FwcDp7YmFzZVBhdGg6Ii8iLGFzc2V0c1BhdGg6Ii9fbnV4dC8iLGNkblVSTDpudWxsfX19PC9zY3JpcHQ+CiAgPHNjcmlwdCBzcmM9Ii9fbnV4dC9hNDg5ZjhjLmpzIj48L3NjcmlwdD48c2NyaXB0IHNyYz0iL19udXh0LzgyMWY4OTIuanMiPjwvc2NyaXB0PjxzY3JpcHQgc3JjPSIvX251eHQvNjlkMmU1NS5qcyI+PC9zY3JpcHQ+PHNjcmlwdCBzcmM9Ii9fbnV4dC81ZmY0YTZlLmpzIj48L3NjcmlwdD48L2JvZHk+CjwvaHRtbD4K'
-                      )
-                    "
+                  <!-- <qrcode-vue
+                    :value="handleQrCode(token.token)"
                     level="H"
                     :size="120"
-                    render-as="svg"
                     class="m-auto"
+                  /> -->
+                  <img
+                    :src="token.token"
+                    height="130"
+                    width="130"
+                    class="m-auto"
+                    alt=""
                   />
                 </div>
+                <!-- token.token.substring(0, 10200) -->
               </div>
 
               <!-- Beneficiary Details here -->
@@ -33,20 +43,30 @@
                 <div class="mb-2 pb-1">
                   <p class="text-xs primary-gray ">BENEFICIARY</p>
                   <p class="primary-blue text-sm font-medium">
-                    Damilare Akinbosun
+                    {{
+                      token.Beneficiary
+                        ? `${token.Beneficiary.first_name +
+                            " " +
+                            token.Beneficiary.last_name}`
+                        : ""
+                    }}
                   </p>
                 </div>
 
                 <!-- Campaign -->
                 <div class="mb-2 pb-1">
                   <p class="text-xs primary-gray ">CAMPAIGN</p>
-                  <p class="primary-blue text-sm font-medium">Feed the poor</p>
+                  <p class="primary-blue text-sm font-medium">
+                    {{ token.Campaign ? token.Campaign.title : "" }}
+                  </p>
                 </div>
 
                 <!-- AMOUNT -->
                 <div class="mb-2 ">
                   <p class="text-xs primary-gray ">AMOUNT</p>
-                  <p class="primary-blue text-sm font-medium">NGN90,000.00</p>
+                  <p class="primary-blue text-sm font-medium">
+                    {{ $currency }}{{ token.amount | formatCurrency }}
+                  </p>
                 </div>
               </div>
             </div>
@@ -57,15 +77,19 @@
       <!-- Loading State -->
       <p
         class="text-center primary mt-3 mb-4 poppins font-medium"
-        v-if="loading"
+        v-if="isLoading"
       >
         Load more...
       </p>
-
-      <!-- <p class="text-center primary my-4 poppins font-medium" v-if="noMore">
-      No more...
-    </p> -->
     </div>
+
+    <!-- Loader Here -->
+    <div v-else-if="loading" class="py-5">
+      <div class="text-center loader my-5"></div>
+    </div>
+
+    <!-- No Data Here -->
+    <h3 v-else class="text-center no-record my-5">NO RECORD FOUND</h3>
   </div>
 </template>
 
@@ -95,12 +119,13 @@ export default {
 
   data: () => ({
     count: 6,
-    isLoading: false
+    isLoading: false,
+    test: require("../../../assets/img/Cash For Work.png")
   }),
 
   computed: {
     noMore() {
-      return this.count >= 20;
+      return this.count >= this.data.length;
     },
     disabled() {
       return this.isLoading || this.noMore;
@@ -118,9 +143,17 @@ export default {
     async handleQrCode(baseStr64) {
       if (!baseStr64) return;
 
-      fetch(baseStr64)
-        .then(res => res.blob())
-        .then(console.log);
+      // fetch(baseStr64)
+      //   .then(res => res.blob())
+      //   .then(console.log);
+
+      console.log("baseStr64", baseStr64);
+      return baseStr64;
+      // const split = baseStr64.split("png;base64,");
+      // const base64 = split[1];
+      // return base64;
+      // console.log("split:::", split);
+      // console.log("base64::", base64);
     }
   }
 };

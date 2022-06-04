@@ -3,7 +3,7 @@
     <Back
       text="Back to campaigns"
       customStyles="font-weight: 400!important"
-      @click="$router.go(-1)"
+      @click="$router.push('/campaigns')"
     />
 
     <!-- Search Region Here -->
@@ -40,7 +40,7 @@
             text="Resend token"
             custom-styles="height:50px; font-weight: 600!important; font-size: 16px!important"
             :disabled="!selectedTokens.length"
-            @click="resendAllToken"
+            @click="resendToken"
           />
 
           <div class="ml-3 pl-1">
@@ -96,7 +96,8 @@
           <SmsTokens
             :loading="loading"
             :data="resultQuery"
-            @resendToken="resendToken"
+            :isCleared="isCleared"
+            @resendToken="handleSingleToken"
             @handleSelected="data => (selectedTokens = data)"
           />
         </b-tab>
@@ -131,6 +132,8 @@ import SmsTokens from "~/components/tables/campaigns/sms-tokens.vue";
 import QrCodes from "~/components/tables/campaigns/qr-codes.vue";
 import CompleteQrCodes from "~/components/tables/campaigns/complete-qr-codes.vue";
 
+let screenLoading;
+
 export default {
   name: "Manage-tokens",
   middleware: "authenticated",
@@ -139,6 +142,7 @@ export default {
   data: () => ({
     loading: false,
     triggerDownload: false,
+    isCleared: false,
     searchQuery: "",
     smsTokens: [],
     qrCodes: [],
@@ -153,7 +157,9 @@ export default {
           return this.searchQuery
             .toLowerCase()
             .split(" ")
-            .every(v => benefactor?.first_name.toLowerCase().includes(v));
+            .every(v =>
+              benefactor?.Beneficiary?.first_name?.toLowerCase().includes(v)
+            );
         });
       } else {
         return data;
@@ -162,6 +168,14 @@ export default {
 
     tokenType() {
       return this.$route.query.method;
+    }
+  },
+
+  watch: {
+    "route.meta.reload": function(value) {
+      if (value) {
+        this.fetchTokens();
+      }
     }
   },
 
@@ -183,6 +197,7 @@ export default {
         }
 
         if (qrCodes.status == "success") {
+          console.log("qrCodes", qrCodes.data.tokens);
           this.qrCodes = qrCodes.data?.tokens;
         }
 
@@ -193,15 +208,54 @@ export default {
         this.$toast.error(err?.response?.data?.message);
       }
     },
+    async resendToken() {
+      try {
+        this.openScreen();
+        const response = await this.$axios.post(
+          `organisations/beneficiaries/sms-token`,
+          {
+            beneficiaryIds: this.selectedTokens
+          }
+        );
+        console.log("REsponse:::", response);
 
-    async resendToken() {},
-
-    async resendAllToken() {},
+        if (response.status == "success") {
+          this.isCleared = true;
+          this.$toast.success(
+            `SMS token sent to ${this.selectedTokens.length} ${
+              this.selectedTokens.length === 1 ? "beneficiary" : "beneficiaries"
+            } `
+          );
+          this.selectedTokens = [];
+        }
+        screenLoading.close();
+      } catch (err) {
+        screenLoading.close();
+        console.log(err);
+        this.$toast.error(err?.response?.data?.message);
+      }
+    },
+    handleSingleToken(id) {
+      if (this.selectedTokens.includes(id)) {
+        this.selectedTokens = this.selectedTokens.filter(v => v != id);
+      } else {
+        this.selectedTokens.push(id);
+        this.resendToken();
+      }
+    },
 
     handleTabClick(tokenType) {
       this.$router.replace({
         path: this.$route.path,
         query: { method: tokenType }
+      });
+    },
+
+    openScreen() {
+      screenLoading = this.$loading({
+        lock: true,
+        spinner: "el-icon-loading",
+        background: "#0000009b"
       });
     }
   }

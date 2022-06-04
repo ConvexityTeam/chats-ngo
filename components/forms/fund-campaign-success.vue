@@ -66,7 +66,7 @@
     </div>
 
     <!-- Button Here -->
-    <div class="my-4 pb-1">
+    <div class="m-4 pb-1">
       <Button
         type="button"
         :has-icon="false"

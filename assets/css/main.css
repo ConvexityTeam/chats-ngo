@@ -159,10 +159,6 @@ input[type="number"] {
   -moz-appearance: textfield;
 }
 
-.b-avatar .b-avatar-img img {
-  object-fit: contain !important;
-}
-
 /* TOOLTIP HERE */
 
 .tooltip-inner {

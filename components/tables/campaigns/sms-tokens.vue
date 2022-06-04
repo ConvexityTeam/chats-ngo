@@ -11,7 +11,7 @@
           <th scope="col">
             <Checkbox
               @input="handleSelectAll"
-              :checked="selected.length === SampleData.length"
+              :checked="selected.length === data.length"
             />
           </th>
           <th scope="col">Beneficiary</th>
@@ -30,7 +30,6 @@
         <tr
           v-for="(token, i) in data"
           :key="i"
-          style="cursor: pointer"
           :class="{ selected: i % 2 == 0 }"
         >
           <td>
@@ -48,6 +47,7 @@
                   :src="token.Beneficiary ? token.Beneficiary.profile_pic : ''"
                   class="mr-2"
                   variant="light"
+                  alt="user"
                 ></b-avatar>
               </span>
               {{
@@ -62,7 +62,9 @@
           <td></td>
           <td class="wrap">{{ token.Campaign ? token.Campaign.title : "" }}</td>
           <td></td>
-          <td class="wrap">{{ $currency }}{{ token.amount }}</td>
+          <td class="wrap">
+            {{ $currency }}{{ token.amount | formatCurrency }}
+          </td>
           <td></td>
           <td>{{ token.token }}</td>
           <td></td>
@@ -76,6 +78,7 @@
                   height:33px; border: 1px solid #17ce89 !important; font-size:
                   0.875rem !important; padding:0px 15px !important"
                 @click="$emit('resendToken', token.beneficiaryId)"
+                :disabled="selected.length === data.length"
               />
             </div>
           </td>
@@ -104,12 +107,25 @@ export default {
     loading: {
       type: Boolean,
       default: false
+    },
+
+    isCleared: {
+      type: Boolean,
+      default: false
     }
   },
 
   data: () => ({
     selected: []
   }),
+
+  watch: {
+    isCleared(val) {
+      if (val) {
+        this.selected = [];
+      }
+    }
+  },
 
   methods: {
     handleCheckbox(value) {
@@ -118,16 +134,16 @@ export default {
       if (index > -1) {
         this.selected.splice(index, 1);
       } else {
-        this.selected.push(value);
+        this.selected.push(Number(value));
       }
 
       this.$emit("handleSelected", this.selected);
     },
     handleSelectAll() {
-      if (this.SampleData.length === this.selected.length) {
+      if (this.data.length === this.selected.length) {
         this.selected = [];
       } else {
-        this.selected = this.SampleData.map(user => user.id);
+        this.selected = this.data.map(user => user.beneficiaryId);
       }
 
       this.$emit("handleSelected", this.selected);

@@ -215,7 +215,7 @@ export default {
 
         if (response.status == "success") {
           screenLoading.close();
-          this.campaigns = response.data;
+          this.campaigns = response.data.reverse();
         }
         this.loading = false;
 
