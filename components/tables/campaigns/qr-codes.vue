@@ -28,11 +28,10 @@
                   /> -->
                   <img
                     :src="token.token"
-                    height="130"
-                    width="130"
+                    height="150"
+                    width="150"
                     class="m-auto"
-                    alt="qr-code
-                    "
+                    alt=""
                   />
                 </div>
                 <!-- token.token.substring(0, 10200) -->
