@@ -60,7 +60,7 @@
               class="primary poppins text-sm font-medium pointer"
               @click="
                 $router.push({
-                  path: '/campaigns/manage-tokens',
+                  path: `/campaigns/${$route.params.id}/manage-tokens`,
                   query: { method: 'sms' }
                 })
               "

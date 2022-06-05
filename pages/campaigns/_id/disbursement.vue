@@ -229,8 +229,8 @@ export default {
 
     handleTokens() {
       this.$router.push({
-        path: "/campaigns/manage-tokens",
-        query: { method: this.tokenType },
+        path: `/campaigns/${this.$route.params.id}/manage-tokens`,
+        query: { method: this.tokenType || "sms" },
         meta: {
           reload: true
         }

@@ -123,7 +123,8 @@ export default {
   },
 
   data: () => ({
-    loading: false
+    loading: false,
+    statuses: ["pending", "completed", "ongoing"]
   }),
 
   computed: {
@@ -149,7 +150,10 @@ export default {
       return text;
     },
     disabled() {
-      return !!this.campaign && this.campaign?.beneficiaries_count == 0;
+      return (
+        (!!this.campaign && this.campaign?.beneficiaries_count == 0) ||
+        this.statuses.includes(this.campaign?.status)
+      );
     },
 
     tokenData() {

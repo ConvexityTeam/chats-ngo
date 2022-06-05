@@ -131,7 +131,7 @@
 import SmsTokens from "~/components/tables/campaigns/sms-tokens.vue";
 import QrCodes from "~/components/tables/campaigns/qr-codes.vue";
 import CompleteQrCodes from "~/components/tables/campaigns/complete-qr-codes.vue";
-
+import { mapGetters } from "vuex";
 let screenLoading;
 
 export default {
@@ -150,6 +150,7 @@ export default {
   }),
 
   computed: {
+    ...mapGetters("authentication", ["user"]),
     resultQuery() {
       const data = this.tokenType === "sms" ? this.smsTokens : this.qrCodes;
       if (this.searchQuery) {
@@ -186,10 +187,17 @@ export default {
   methods: {
     async fetchTokens() {
       try {
+        const campaignId = this.$route.params.id;
+        const orgId = this.user?.AssociatedOrganisations[0]?.OrganisationId;
+
         this.loading = true;
         const [smsTokens, qrCodes] = await Promise.all([
-          this.$axios.get(`/organisations/smstoken/tokens/1`),
-          this.$axios.get(`/organisations/papertoken/tokens/1`)
+          this.$axios.get(
+            `/organisations/${orgId}/${campaignId}/smstoken/tokens/1`
+          ),
+          this.$axios.get(
+            `/organisations/${orgId}/${campaignId}/papertoken/tokens/1`
+          )
         ]);
 
         if (smsTokens.status == "success") {
