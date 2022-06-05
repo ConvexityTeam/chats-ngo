@@ -41,8 +41,8 @@
       <div v-if="details.type == 'cash-for-work'">
         <!-- Progress bar here -->
         <b-progress
-          :value="100"
-          :max="100"
+          :value="details.Jobs[0].assignment_count"
+          :max="details.Jobs.length"
           variant="success"
           class="mb-3 mt-1"
         ></b-progress>
@@ -210,7 +210,6 @@ export default {
   },
 
   mounted() {
-    console.log("DETAILS", this.details);
     this.orgId = this.user?.AssociatedOrganisations[0]?.OrganisationId;
   },
 

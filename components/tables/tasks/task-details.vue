@@ -31,7 +31,7 @@
 
         <div class="ml-2">
           <p class="campaign-beneficiary-count">
-            {{ count }} {{ count == 1 ? "Entry" : "Entries" }}
+            {{ details.assignment_count }} {{ details.assignment_count == 1 ? "Entry" : "Entries" }}
           </p>
         </div>
       </div>
@@ -40,7 +40,7 @@
       <div>
         <!-- Progress bar here -->
         <b-progress
-          :value="100"
+          :value="details.campleted_task / details.assignment_count * 100"
           :max="100"
           variant="success"
           class="mb-3 mt-1"
@@ -51,7 +51,7 @@
           <!-- Progress here -->
           <div class="ml-auto">
             <div class="task-badge d-flex align-items-center px-3">
-              {{ details.progress || 0 }}%
+              {{ details.campleted_task / details.assignment_count * 100 || 0 }}%
             </div>
           </div>
         </div>

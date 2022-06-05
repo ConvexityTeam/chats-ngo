@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<b-modal id="evidence-confirmation-prompt" hide-header hide-footer>
+		<b-modal id="disburse-funds" @disburseFunds="disburseFunds" hide-header hide-footer>
 			<div class="text-center position-relative pt-2">
 				<h3 class="header font-bold primary-blue">Task approval</h3>
 				<!--Close button here -->
@@ -15,23 +15,24 @@
 
 			<div class="d-flex justify-content-center flex-column">
 				<div class="d-flex justify-content-center icon">
-					<approved v-if="approved" />
-					<rejected v-if="rejected" />
+					<approved />
+					<!-- <rejected v-if="rejected" /> -->
 				</div>
-				<p v-if="approvalMessage" class="d-flex text-center message">
+				<p class="d-flex text-center message">
 					Task submission for [beneficiary] has been successfully
 					approved.
 				</p>
-				<p v-if="rejectedMessage" class="d-flex text-center message">
+				<!-- <p v-if="rejectedMessage" class="d-flex text-center message">
 					Task submission for [beneficiary] has been rejected.
-				</p>
+				</p> -->
 				<div class="btn mx-auto">
 					<Button
 						:has-icon="false"
-						:text="handleText()"
+						text="Disburse"
 						custom-styles="height:50px;  width: 100%;"
 						:loading="loading"
 						:disabled="loading"
+						@click="disburseFunds"
 					/>
 				</div>
 			</div>
@@ -45,7 +46,7 @@ import approved from '~/components/icons/approvedIcon';
 import rejected from '~/components/icons/rejectedIcon';
 
 export default {
-	name: 'c4wPrompt',
+	name: 'Disburse Fund',
 	components: {
 		close,
 		approved,
@@ -59,35 +60,24 @@ export default {
 	},
 
 	props: {
-		approved: {
-			type: Boolean,
-			default: false,
-		},
-		rejected: {
-			type: Boolean,
-			default: false,
-		},
-		approvalMessage: {
-			type: Boolean,
-			default: false,
-		},
-		rejectedMessage: {
-			type: Boolean,
-			default: false,
-		},
+
 	},
 	methods: {
-		closeModal() {
-			this.$bvModal.hide('evidence-confirmation-prompt');
+		async disburseFunds(task) {
+			console.log('emittedTask:::', task);
+			// this.loading = true;
+			// const response = await this.$axios.post(
+			// 	`organisations/${orgId}/task/${campaignId}/fund_beneficiary`
+			// );
+			// if (response.status == 'success') {
+			// 	this.getDetails();
+			// }
+			// this.loading = false;
 		},
 
-		handleText(action) {
-			if (approved) {
-				return 'Disburse funds';
-			} else {
-				return 'Go to task';
-			}
-		},
+		closeModal() {
+			this.$bvModal.hide('disburse-funds');
+		}
 	},
 };
 </script>

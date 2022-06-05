@@ -23,7 +23,7 @@
 							<input
 								type="text"
 								class="form-controls"
-								name="task-name"
+								name="taskName"
 								id="task-name"
 								placeholder="Task Name"
 								readonly
@@ -37,7 +37,7 @@
 							<textarea
 								type="text"
 								name="task-description"
-								id="task-description"
+								id="taskDescription"
 								value="task-description"
 								placeholder="Task Description"
 								readonly
@@ -103,7 +103,6 @@
 							custom-styles="height:50px;  width: 100%"
 							:loading="loading"
 							:disabled="loading"
-							@click="approveAndPromptModal"
 						/>
 					</div>
 					<div class="save-btn px-3">
@@ -115,7 +114,6 @@
 							class="border"
 							:loading="loading"
 							:disabled="loading"
-							@click="rejectAndPromptModal"
 						/>
 					</div>
 				</div>
@@ -139,8 +137,8 @@ export default {
 		file2: null,
 		file3: null,
 		file4: null,
-		beneficiaryName: 'Hayatu',
-		action: '',
+		taskName: '',
+		taskDescription: '',
 	}),
 
 	computed: {
@@ -160,21 +158,6 @@ export default {
 			});
 		},
 
-		rejectAndPromptModal() {
-			this.$bvModal.hide('check-evidence');
-			this.action = 'rejected';
-			this.$emit('action', this.action);
-			console.log('ACTION', this.action);
-			this.$bvModal.show('evidence-confirmation-prompt');
-		},
-
-		approveAndPromptModal() {
-			this.$bvModal.hide('check-evidence');
-			this.action = 'approved';
-			this.$emit('action', this.action);
-			console.log('ACTION', this.action);
-			this.$bvModal.show('evidence-confirmation-prompt');
-		},
 		closeModal() {
 			this.$bvModal.hide('check-evidence');
 		},
