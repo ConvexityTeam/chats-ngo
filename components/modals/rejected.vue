@@ -1,8 +1,8 @@
 <template>
-	<div>
+	<transition name="fade">
 		<b-modal id="rejected" hide-header hide-footer>
 			<div class="text-center position-relative pt-2">
-				<h3 class="header font-bold primary-blue">Task approval</h3>
+				<h3 class="header font-bold primary-blue">Task Rejected</h3>
 				<!--Close button here -->
 				<button
 					type="button"
@@ -18,12 +18,12 @@
 					<rejected />
 				</div>
 
-				<p class="d-flex text-center message">
-					Task submission for [beneficiary] has been rejected.
+				<p class="d-flex justify-content-center text-center message">
+					Task submission for {{ task.beneficiary_first_name === null ? 'null' : '' + ' ' + task.beneficiary_last_name === null ? 'null' : '' }} has been rejected.
 				</p>
 			</div>
 		</b-modal>
-	</div>
+	</transition>
 </template>
 
 <script>
@@ -37,16 +37,21 @@ export default {
 		rejected,
 	},
 
+	props: {
+		task: {
+			type: Object,
+			required: true,
+		}
+	},
+
 	data() {
 		return {
 			loading: false,
 		};
 	},
-
-	props: {
-	},
 	methods: {
 		closeModal() {
+			console.log('close modal', this.task);
 			this.$bvModal.hide('rejected');
 		}
 	},
@@ -66,5 +71,12 @@ export default {
 }
 .icon {
 	margin: 22px 0 20px 0;
+}
+
+.fade-enter-active, .fade-leave-active {
+  transition: opacity .5s;
+}
+.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+  opacity: 0;
 }
 </style>

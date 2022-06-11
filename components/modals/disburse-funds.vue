@@ -1,8 +1,8 @@
 <template>
 	<div>
-		<b-modal id="disburse-funds" @disburseFunds="disburseFunds" hide-header hide-footer>
+		<b-modal id="disburse-funds" hide-header hide-footer>
 			<div class="text-center position-relative pt-2">
-				<h3 class="header font-bold primary-blue">Task approval</h3>
+				<h3 class="header font-bold primary-blue">Task approved</h3>
 				<!--Close button here -->
 				<button
 					type="button"
@@ -19,12 +19,9 @@
 					<!-- <rejected v-if="rejected" /> -->
 				</div>
 				<p class="d-flex text-center message">
-					Task submission for [beneficiary] has been successfully
+					Task submission for {{ task.beneficiary_first_name + ' ' + task.beneficiary_first_last }} has been successfully
 					approved.
 				</p>
-				<!-- <p v-if="rejectedMessage" class="d-flex text-center message">
-					Task submission for [beneficiary] has been rejected.
-				</p> -->
 				<div class="btn mx-auto">
 					<Button
 						:has-icon="false"
@@ -41,12 +38,14 @@
 </template>
 
 <script>
+
+import { mapGetters } from 'vuex';
 import close from '~/components/icons/close';
 import approved from '~/components/icons/approvedIcon';
 import rejected from '~/components/icons/rejectedIcon';
 
 export default {
-	name: 'Disburse Fund',
+	name: 'DisburseFund',
 	components: {
 		close,
 		approved,
@@ -56,23 +55,52 @@ export default {
 	data() {
 		return {
 			loading: false,
+			orgId: null,
 		};
 	},
 
 	props: {
-
+		task: {
+			type: Object,
+			required: true,
+		},
+		campaignId: {
+			type: Number,
+			required: true,
+		}
 	},
+
+	computed: {
+		...mapGetters('authentication', ['user']),
+	},
+
+	mounted() {
+		this.orgId = this.user?.AssociatedOrganisations[0]?.OrganisationId;
+	},
+
 	methods: {
-		async disburseFunds(task) {
-			console.log('emittedTask:::', task);
-			// this.loading = true;
-			// const response = await this.$axios.post(
-			// 	`organisations/${orgId}/task/${campaignId}/fund_beneficiary`
-			// );
-			// if (response.status == 'success') {
-			// 	this.getDetails();
-			// }
-			// this.loading = false;
+		// Funds Disbursed
+		async disburseFunds() {
+			console.log('DISBURSE TASK RECEived and CampaignId', this.task);
+			console.log({ beneficiaryId : this.task.TaskAssignment.UserId, taskAssignmentId: this.task.TaskAssignment.id});
+			try {
+				const response = await this.$axios.post(
+					`organisations/${this.orgId}/task/${this.campaignId}/fund_beneficiary`,
+					{ 
+						beneficiaryId : this.task.TaskAssignment.UserId,
+						taskAssignmentId: this.task.TaskAssignment.id
+					});
+
+				if (response.status == 'success') {
+				setTimeout(() => {
+					this.$bvModal.hide('disburse-funds');
+				}, 3000);
+				}
+			this.loading = false;
+			} catch (error) {
+				console.log('Disburse Funds Error:::', error);
+				this.$bvModal.hide('disburse-funds');
+			}
 		},
 
 		closeModal() {
