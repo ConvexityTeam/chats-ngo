@@ -164,7 +164,7 @@ export default {
 	methods: {
 		// Approve Task
 		approveTask(task) {
-			console.log('DISBURSE', task)
+			// console.log('DISBURSE', task)
 			this.$bvModal.hide('check-evidence');
 			this.$bvModal.show('disburse-funds');
 		},

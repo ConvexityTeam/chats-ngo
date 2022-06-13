@@ -168,9 +168,6 @@ export default {
     const response = await this.$axios.get(
       `tasks/${id}/${this.$route.params.id}`
     );
-
-    this.tasks = response.data;
-    console.log("response:::", response);
   },
 
   computed: {
