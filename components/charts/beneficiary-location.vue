@@ -7,12 +7,7 @@
 				:options="barChartOptions"
 				:height="320"
 			/>
-			<div
-				v-else
-				class="spinner d-flex justify-content-center align-items-center"
-			>
-				<b-spinner class="primary" label="Spinning"></b-spinner>
-			</div>
+		<h3 v-else class="no-record-dashboard text-center no-record">NO RECORD FOUND</h3>
 		</div>
 	</div>
 </template>
@@ -89,7 +84,7 @@ export default {
 
 	computed: {
 		requiredData() {
-			return this.barChartData?.datasets[0]?.data?.length;
+			return this.barChartData?.datasets[0]?.data[0] || this.barChartData?.datasets[0]?.data[1] || this.barChartData?.datasets[0]?.data[2] || this.barChartData?.datasets[0]?.data[3] !== 0;
 		},
 	},
 

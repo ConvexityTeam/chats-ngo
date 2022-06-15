@@ -1,6 +1,7 @@
 <template>
   <div>
-    <bar-chart :data="barChartData" :options="barChartOptions" :height="320" />
+    <!-- <bar-chart :data="barChartData" :options="barChartOptions" :height="320" /> -->
+    <h3 class="no-record-dashboard text-center no-record">NO RECORD FOUND</h3>
   </div>
 </template>
 

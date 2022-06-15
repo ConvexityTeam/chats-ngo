@@ -7,6 +7,7 @@
 				:options="barChartOptions"
 				:height="320"
 			/>
+			<h3 v-else class="no-record-dashboard text-center no-record">NO RECORD FOUND</h3>
 		</div>
 	</div>
 </template>
@@ -36,7 +37,7 @@ export default {
 				datasets: [
 					{
 						label: 'Visits',
-						data: [],
+						data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
 						backgroundColor: '#27AE60',
 					},
 				],
@@ -95,7 +96,17 @@ export default {
 
 	computed: {
 		requiredData() {
-			return this.barChartData?.datasets[0]?.data?.length;
+			return this.barChartData?.datasets[0]?.data[0] ||
+			this.barChartData?.datasets[0]?.data[1] ||
+			this.barChartData?.datasets[0]?.data[2] ||
+			this.barChartData?.datasets[0]?.data[3] ||
+			this.barChartData?.datasets[0]?.data[4] ||
+			this.barChartData?.datasets[0]?.data[5] ||
+			this.barChartData?.datasets[0]?.data[6] ||
+			this.barChartData?.datasets[0]?.data[7] ||
+			this.barChartData?.datasets[0]?.data[8] ||
+			this.barChartData?.datasets[0]?.data[9] ||
+			this.barChartData?.datasets[0]?.data[10] !== 0;
 		},
 	},
 
