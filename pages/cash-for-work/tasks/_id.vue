@@ -1,6 +1,6 @@
 <template>
   <div class="pb-5">
-    <c4w-evidence-promp :rejected="true" :rejectedMessage="true" />
+    <!-- <c4w-evidence-promp :rejected="true" :rejectedMessage="true" /> -->
     <checkEvidence :details="details" />
     <div v-if="loading"></div>
 
@@ -134,7 +134,7 @@ import { mapGetters } from "vuex";
 import taskDetails from "~/components/tables/tasks/task-details.vue";
 import newTask from "~/components/modals/new-task";
 import checkEvidence from "~/components/modals/check-evidence";
-import c4wEvidencePromp from "~/components/modals/c4w-evidence-prompt";
+// import c4wEvidencePromp from "~/components/modals/c4w-evidence-prompt";
 
 let screenLoading;
 
@@ -143,8 +143,8 @@ export default {
   components: {
     taskDetails,
     newTask,
-    checkEvidence,
-    c4wEvidencePromp
+    checkEvidence
+    // c4wEvidencePromp
   },
 
   data: () => ({

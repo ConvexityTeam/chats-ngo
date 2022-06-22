@@ -722,15 +722,16 @@ export default {
           this.payload.user_profile.first_name = data.firstname;
           this.payload.user_profile.last_name = data.surname;
           this.payload.user_profile.gender = data.gender;
+        } else {
+          this.$toast.error(response?.message);
         }
-
         screenLoading.close();
 
         console.log("VERIFY IDENTITY RESPONSE::", response);
       } catch (err) {
         screenLoading.close();
-        console.log("VERIFYIDENTITYERR::", { err });
-        this.$toast.error(err?.response?.data?.message);
+        console.log("VERIFYIDENTITYERR::", err);
+        this.$toast.error(err?.message);
       }
     },
 
