@@ -79,7 +79,8 @@
 
                     <div class="ml-auto">
                         <p class="campaign-answers">
-                            $ {{ details.budget | formatCurrency }}
+                            {{ $currency }}
+                            {{ details.budget | formatCurrency }}
                         </p>
                     </div>
                 </div>

@@ -317,8 +317,10 @@ export default {
             }
         },
 
+        // View Task
         async view(task) {
             this.$bvModal.show("check-evidence");
+            console.log("task", task);
             try {
                 const response = await this.$axios.get(
                     `cash-for-work/${task.TaskAssignment.TaskId}/evidence/${task.TaskAssignment.UserId}`
@@ -329,6 +331,7 @@ export default {
                     this.task =
                         response.data?.Assignments[0].SubmittedEvidences[0];
                     this.rejectedDetails = response.data.Assignments[0];
+                    console.log("response", this.task);
                 }
             } catch (error) {
                 console.log("Approve Task Error:::", error);
