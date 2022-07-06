@@ -808,15 +808,14 @@ select.form-control {
 /* LOADERS HERE */
 
 .spinner {
-    position: absolute;
-    top: 0;
-    /* left: 0; */
-    bottom: 0;
-    right: 120px;
-    z-index: 1000;
     display: flex;
     justify-content: center;
     align-items: center;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
 }
 
 .no-complaints {
@@ -829,6 +828,13 @@ select.form-control {
     color: #666666;
     opacity: 0.6;
     padding: 50px 0px;
+}
+
+.no-record-dashboard {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }
 
 .no-record-dashboard {
