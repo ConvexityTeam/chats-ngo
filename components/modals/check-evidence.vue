@@ -52,60 +52,16 @@
                 </div>
 
                 <!-- Image -->
-                <div class="img-evidence-ctn mb-3">
+                <div class="img-evidence-ctn">
                     <label for="name">Photos</label>
-                    <div class="d-flex mb-3">
+                    <div class="d-flex row justify-content-between mx-1">
                         <!-- evidence 1 -->
-                        <div class="img-evidence">
-                            <b-img
-                                v-if="task.uploads[0]"
-                                :src="task.uploads[0]"
-                                fluid
-                            ></b-img>
-                            <img
-                                v-else
-                                src="~/assets/img/vectors/evidence-placeholder.svg"
-                                width="80"
-                            />
-                        </div>
-
-                        <!-- evidence 2 -->
-                        <div class="img-evidence ml-3">
-                            <b-img
-                                v-if="task.uploads[1]"
-                                :src="task.uploads[1]"
-                                fluid
-                            ></b-img>
-                            <img
-                                v-else
-                                src="~/assets/img/vectors/evidence-placeholder.svg"
-                                width="80"
-                            />
-                        </div>
-                    </div>
-
-                    <!-- evidence 3 -->
-                    <div class="d-flex">
-                        <div class="img-evidence">
-                            <b-img
-                                v-if="task.uploads[2]"
-                                :src="task.uploads[2]"
-                                fluid
-                            ></b-img>
-                            <img
-                                v-else
-                                src="~/assets/img/vectors/evidence-placeholder.svg"
-                                width="80"
-                            />
-                        </div>
-
-                        <!-- evidence 4 -->
-                        <div class="img-evidence ml-3" @click="showTask">
-                            <b-img
-                                v-if="task.uploads[3]"
-                                :src="task.uploads[3]"
-                                fluid
-                            ></b-img>
+                        <div
+                            v-for="(upload, index) in task.uploads"
+                            :key="index"
+                            class="img-evidence"
+                        >
+                            <b-img v-if="upload" :src="upload" fluid></b-img>
                             <img
                                 v-else
                                 src="~/assets/img/vectors/evidence-placeholder.svg"
@@ -115,7 +71,7 @@
                     </div>
                 </div>
 
-                <div v-if="btnStatus === true" class="d-flex buttons">
+                <div v-if="btnStatus" class="d-flex buttons">
                     <div class="save-btn">
                         <Button
                             type="submit"
@@ -159,7 +115,6 @@ export default {
         },
         btnStatus: {
             type: Boolean,
-            required: true,
         },
         campaignId: {
             type: Number,
@@ -182,12 +137,8 @@ export default {
     },
 
     methods: {
-        showTask() {
-            console.log("taskEDIVE", this.task);
-        },
         // Approve Task
         approveTask(task) {
-            // console.log('DISBURSE', task)
             this.$bvModal.hide("check-evidence");
             this.$bvModal.show("disburse-funds");
         },
