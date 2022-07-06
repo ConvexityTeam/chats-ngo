@@ -140,19 +140,11 @@
                                                     custom-styles="border-radius: 5px !important; font-size: 0.875rem !important; height: 33px !important; width: 136px !important; padding: 0px 15px !important"
                                                     @click="
                                                         task.Assigned_Status ==
-                                                        'completed'
-                                                            ? disburseFunds(
-                                                                  task
-                                                              )
-                                                            : task.Assigned_Status ==
-                                                              'rejected'
-                                                            ? reviewSubmission(
-                                                                  task
-                                                              )
-                                                            : task.Assigned_Status ==
-                                                              'disbursed'
+                                                        'disbursed'
                                                             ? view(task)
-                                                            : ''
+                                                            : reviewSubmission(
+                                                                  task
+                                                              )
                                                     "
                                                     :disabled="
                                                         task.Assigned_Status ==
@@ -263,9 +255,9 @@ export default {
                 case "pending":
                     return "Submission";
                 case "in progress":
-                    return "View";
+                    return "Review";
                 case "completed":
-                    return "Disburse";
+                    return "View";
                 case "disbursed":
                     return "View";
                 case "rejected":
@@ -301,6 +293,7 @@ export default {
         // View Submission
         async reviewSubmission(task) {
             this.$bvModal.show("check-evidence");
+            console.log("REVIEW", task);
 
             try {
                 const response = await this.$axios.get(
@@ -308,9 +301,10 @@ export default {
                 );
 
                 if (response.status == "success") {
-                    this.btnStatus = true;
-                    this.task = response.data?.Assignments[0];
-                    this.rejectedDetails = response.data.Assignments[0];
+                    this.task =
+                        response.data?.Assignments[0].SubmittedEvidences[0];
+                    this.rejectedDetails =
+                        response.data?.Assignments[0].SubmittedEvidences[0];
                 }
             } catch (error) {
                 console.log("Approve Task Error:::", error);
@@ -320,7 +314,7 @@ export default {
         // View Task
         async view(task) {
             this.$bvModal.show("check-evidence");
-            console.log("task", task);
+            console.log("VIEW", task);
             try {
                 const response = await this.$axios.get(
                     `cash-for-work/${task.TaskAssignment.TaskId}/evidence/${task.TaskAssignment.UserId}`
@@ -330,14 +324,15 @@ export default {
                     this.btnStatus = false;
                     this.task =
                         response.data?.Assignments[0].SubmittedEvidences[0];
-                    this.rejectedDetails = response.data.Assignments[0];
-                    console.log("response", this.task);
+                    this.rejectedDetails =
+                        response.data?.Assignments[0].SubmittedEvidences[0];
                 }
             } catch (error) {
                 console.log("Approve Task Error:::", error);
             }
         },
 
+        // Approve Task
         disburseFunds(task) {
             this.task = task;
             this.$bvModal.show("disburse-funds");
