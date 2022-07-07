@@ -1,6 +1,6 @@
 <template>
     <section>
-        <div v-if="loading" class="spinner">
+        <div v-if="loading" class="spinner age">
             <b-spinner class="primary" label="Spinning"></b-spinner>
         </div>
 
@@ -19,15 +19,17 @@
 
 <script>
 import barChart from "~/plugins/charts/barchart";
+import { mapGetters } from "vuex";
 export default {
     components: {
         barChart,
     },
     data() {
         return {
+            id: null,
             loading: false,
             barChartData: {
-                labels: ["1", "2", "3", "4", "5", "6"],
+                labels: ["18 - 29", "30 - 41", "42 - 53", "54 - 65", "66 ~"],
                 datasets: [
                     {
                         label: "Rice",
@@ -151,3 +153,9 @@ export default {
     },
 };
 </script>
+
+<style scoped>
+.age {
+    margin-right: 30px;
+}
+</style>

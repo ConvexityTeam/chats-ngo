@@ -250,7 +250,6 @@ input[type="number"] {
     background: #f1f1f1;
     color: #646a86;
 }
-
 .status.rejected {
     background: #ffcdc7;
     color: #e42c66;
@@ -265,9 +264,6 @@ input[type="number"] {
     background: #ffcdc7;
     color: #e42c66;
 }
-
-/* Progress Style */
-
 .tasks {
     color: #646a86;
     font-size: 0.875rem;
