@@ -32,7 +32,7 @@ export default {
                 datasets: [
                     {
                         label: ["18-29", "30-41", "42-53", "54-65", "66~"],
-                        data: [],
+                        data: [0, 0, 0, 0, 0],
                         backgroundColor: [
                             "#E8FCCF",
                             "#96E072",

@@ -276,17 +276,8 @@ export default {
                 this.loading = false;
             }
         },
-
         async fundCashForWork() {
             try {
-                this.openScreen();
-
-                const response = await this.$axios.post(
-                    `organisations/${this.id}/campaigns/${this.SelectedC4w.id}/fund`
-                );
-
-                screenLoading.close();
-
                 if (response.status == "success") {
                     this.$toast.success(response.message);
                     if (this.SelectedC4w.status == "pending") {

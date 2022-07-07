@@ -39,19 +39,24 @@
                         <th scope="col">Vendor</th>
                         <th scope="col">Sales Volume</th>
                         <th scope="col">Total Revenue</th>
-                        <th scope="col"></th>
+                        <th scope="col">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="product in products" :key="product.id">
-                        <td>{{ product.name }}</td>
+                    <tr
+                        v-for="(product, i) in resultQuery"
+                        :key="product.i"
+                        :class="{ selected: i % 2 == 0 }"
+                    >
+                        <td>{{ product.product_name }}</td>
                         <td>
-                            {{
-                                product.Vendor ? product.Vendor.store_name : " "
-                            }}
+                            {{ product.vendor_name }}
                         </td>
-                        <td>{{ product.quantity | formatCount }}</td>
-                        <td>$ {{ product.value | formatCurrency }}</td>
+                        <td>{{ product.sales_volume | formatCount }}</td>
+                        <td>
+                            {{ $currency }}
+                            {{ product.total_revenue | formatCurrency }}
+                        </td>
                         <td>
                             <button type="button" class="more-btn">
                                 <dot />
