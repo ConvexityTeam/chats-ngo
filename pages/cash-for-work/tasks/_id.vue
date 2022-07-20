@@ -290,7 +290,7 @@ export default {
             }
         },
 
-        // View Submission
+        // View Submissions
         async reviewSubmission(task) {
             this.$bvModal.show("check-evidence");
             console.log("REVIEW", task);
@@ -332,7 +332,7 @@ export default {
             }
         },
 
-        // Approve Task
+        // Approve Tasks
         disburseFunds(task) {
             this.task = task;
             this.$bvModal.show("disburse-funds");
