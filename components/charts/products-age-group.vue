@@ -1,15 +1,10 @@
 <template>
     <section>
-        <div v-if="loading" class="spinner age">
+        <div v-if="loading" class="spinner ">
             <b-spinner class="primary" label="Spinning"></b-spinner>
         </div>
 
-        <bar-chart
-            v-else-if="!requireData"
-            :data="barChartData"
-            :options="barChartOptions"
-            :height="300"
-        />
+        <bar-chart v-else-if="!requireData" :data="barChartData" :options="barChartOptions" :height="300" />
 
         <h3 v-else class="no-record-dashboard text-center no-record">
             NO RECORD FOUND
@@ -114,12 +109,14 @@ export default {
     },
 
     computed: {
+        ...mapGetters("authentication", ["user"]),
         requireData() {
-            return !!this.barChartData?.datasets[0]?.data?.length;
+            return !!this.barChartData?.datasets[0]?.data?.length || true;
         },
     },
 
     mounted() {
+        this.id = this.user?.AssociatedOrganisations[0]?.OrganisationId;
         this.updateChart();
     },
 
@@ -128,22 +125,26 @@ export default {
             try {
                 this.loading = true;
                 const response = await this.$axios.get(
-                    "/orders/product-purchased-age"
+                    `/orders/product-purchased-age/${this.id}`
                 );
 
-                // console.log('doughnutChartData:::', this.doughnutChartData.datasets[0].data);
+                console.log("Product Age BY Group:::", response);
 
+                // restructure payload
                 if (response.status == "success") {
                     const data = response.data;
-                    Object.values(data).forEach((item) => {
-                        this.barChartData.datasets[0].data.push(item);
-                    });
-                    console.log("AgeData:::", data);
+                    // Object.values(data[0]).forEach((item, index) => {
+                    //     this.barChartData.datasets[index].data = item;
+                    // });
+                    // console.log(
+                    //     "ITEM FiLLED:::",
+                    //     this.barChartData.datasets[0].data
+                    // );
                 }
 
                 this.loading = false;
 
-                console.log("GET AGE RESPONSE", response);
+                console.log("PRODUCT GET AGE RESPONSE", response);
             } catch (err) {
                 console.log("GETAGEERERR::", { err });
                 this.$toast.error(err?.response?.data?.message);
@@ -153,9 +154,3 @@ export default {
     },
 };
 </script>
-
-<style scoped>
-.age {
-    margin-right: 30px;
-}
-</style>
