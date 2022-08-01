@@ -70,8 +70,11 @@
         </div>
     </div>
 </template>
+
 <script>
 import dot from "~/components/icons/dot";
+import { mapGetters } from "vuex";
+
 export default {
     components: {
         dot,
@@ -81,9 +84,11 @@ export default {
         loading: false,
         searchQuery: "",
         products: [],
+        id: null,
     }),
 
     computed: {
+        ...mapGetters("authentication", ["user"]),
         resultQuery() {
             if (this.searchQuery) {
                 return this.products.filter((product) => {
@@ -93,8 +98,8 @@ export default {
                         .every(
                             (v) =>
                                 product &&
-                                product.name &&
-                                product.name.toLowerCase().includes(v)
+                                product.product_name &&
+                                product.product_name.toLowerCase().includes(v)
                         );
                 });
             } else {
@@ -104,6 +109,7 @@ export default {
     },
 
     mounted() {
+        this.id = this.user?.AssociatedOrganisations[0]?.OrganisationId;
         this.fetchProducts();
     },
 
@@ -111,12 +117,14 @@ export default {
         async fetchProducts() {
             try {
                 this.loading = true;
-                const response = await this.$axios.get("/vendors/products/all");
+                const response = await this.$axios.get(
+                    `/vendors/products/all/${this.id}`
+                );
                 if (response.status == "success") {
                     this.loading = false;
                     this.products = response.data;
                 }
-                console.log("response", response);
+                console.log("ALL PRODUCT TABLE:::", response.data);
             } catch (err) {
                 this.loading = false;
                 console.log(err);

@@ -32,7 +32,7 @@ export default {
                 datasets: [
                     {
                         label: ["18-29", "30-41", "42-53", "54-65", "66~"],
-                        data: [0, 0, 0, 0, 0],
+                        data: [],
                         backgroundColor: [
                             "#E8FCCF",
                             "#96E072",
@@ -94,8 +94,6 @@ export default {
                 const response = await this.$axios.get(
                     "/beneficiaries/age_group"
                 );
-
-                // console.log('doughnutChartData:::', this.doughnutChartData.datasets[0].data);
 
                 if (response.status == "success") {
                     const data = response.data;

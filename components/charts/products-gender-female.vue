@@ -4,13 +4,8 @@
             <b-spinner class="primary" label="Spinning"></b-spinner>
         </div>
 
-        <doughnut-chart
-            v-else-if="requiredData"
-            :data="doughnutChartData"
-            :options="doughnutChartOptions"
-            :height="220"
-            :width="250"
-        />
+        <doughnut-chart v-else-if="requiredData" :data="doughnutChartData" :options="doughnutChartOptions" :height="220"
+            :width="250" />
 
         <h3 v-else class="no-record-dashboard text-center no-record">
             NO RECORD FOUND
@@ -97,7 +92,7 @@ export default {
 
                 if (response.status == "success") {
                     const data = response.data;
-                    // this.doughnutChartData.datasets[0].data.push(data.female);
+                    this.doughnutChartData.datasets[0].data = data.female;
                     this.loading = false;
                 }
 
@@ -111,9 +106,3 @@ export default {
     },
 };
 </script>
-
-<style scoped>
-.female {
-    padding-right: 500px;
-}
-</style>

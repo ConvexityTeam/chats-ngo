@@ -1,16 +1,11 @@
 <template>
-    <section>
-        <div v-if="loading" class="spinner">
+    <section class="">
+        <div v-if="loading" class="spinner male">
             <b-spinner class="primary" label="Spinning"></b-spinner>
         </div>
 
-        <doughnut-chart
-            v-else-if="requiredData"
-            :data="doughnutChartData"
-            :options="doughnutChartOptions"
-            :height="220"
-            :width="250"
-        />
+        <doughnut-chart v-else-if="requiredData" :data="doughnutChartData" :options="doughnutChartOptions" :height="220"
+            :width="250" />
 
         <h3 v-else class="no-record-dashboard text-center no-record">
             NO RECORD FOUND
@@ -20,6 +15,8 @@
 
 <script>
 import doughnutChart from "~/plugins/charts/doughnutchart";
+import { mapGetters } from "vuex";
+
 export default {
     components: {
         doughnutChart,
@@ -76,12 +73,14 @@ export default {
     },
 
     computed: {
+        ...mapGetters("authentication", ["user"]),
         requiredData() {
             return !!this.doughnutChartData?.datasets[0]?.data?.length;
         },
     },
 
     mounted() {
+        this.id = this.user?.AssociatedOrganisations[0]?.OrganisationId;
         this.updateChart();
     },
 
@@ -90,24 +89,19 @@ export default {
             try {
                 this.loading = true;
                 const response = await this.$axios.get(
-                    "/Orders/product-purchased-age"
+                    `/orders/product-purchased-gender/${this.id}`
                 );
-
-                // console.log('doughnutChartData:::', this.doughnutChartData.datasets[0].data);
 
                 if (response.status == "success") {
                     const data = response.data;
-                    Object.values(data).forEach((item) => {
-                        this.doughnutChartData.datasets[0].data.push(item.male);
-                    });
-                    console.log("MaleData:::", data);
+                    // this.doughnutChartData.datasets[0].data = data.male;
+                    this.loading = false;
                 }
-                this.loading = false;
 
                 console.log("GET MALE RESPONSE", response);
             } catch (err) {
                 console.log("GETMALEERERR::", { err });
-                this.$toast.error(err.response.data.message);
+                this.$toast.error(err.response?.data?.message);
                 this.loading = false;
             }
         },
