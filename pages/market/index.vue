@@ -79,17 +79,8 @@
         <div class="cards__holder p-4">
           <h4 class="pb-2 gender-header">Products By Gender</h4>
           <div class="row d-flex justify-content-between h-100">
-            <div class="col-md-6">
-              <span class="description" style="font-weight: 500">
-                Female</span>
-
-              <products-gender-female />
-            </div>
-
-            <div class="col-md-6 ">
-              <span class="description" style="font-weight: 500">
-                Male</span>
-              <products-gender-male />
+            <div class="col-md-12">
+              <products-by-gender />
             </div>
           </div>
         </div>
@@ -112,8 +103,7 @@
 </template>
 
 <script>
-import productsGenderFemale from "~/components/charts/products-gender-female";
-import productsGenderMale from "~/components/charts/products-gender-male";
+import productsByGender from "~/components/charts/products-by-gender";
 import productsAgeGroup from "~/components/charts/products-age-group";
 import allProducts from "~/components/tables/all-products";
 import { mapGetters } from "vuex";
@@ -122,8 +112,7 @@ export default {
   layout: "dashboard",
   transition: "page",
   components: {
-    productsGenderFemale,
-    productsGenderMale,
+    productsByGender,
     productsAgeGroup,
     allProducts,
   },
