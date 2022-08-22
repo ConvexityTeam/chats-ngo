@@ -4,12 +4,7 @@
             <b-spinner class="primary" label="Spinning"></b-spinner>
         </div>
 
-        <bar-chart
-            v-else-if="requiredData"
-            :data="barChartData"
-            :options="barChartOptions"
-            :height="320"
-        />
+        <bar-chart v-else-if="requiredData" :data="barChartData" :options="barChartOptions" :height="320" />
 
         <h3 v-else class="no-record-dashboard text-center no-record">
             NO RECORD FOUND
@@ -102,7 +97,9 @@ export default {
 
     computed: {
         requiredData() {
-            return !!this.barChartData?.datasets[0]?.data?.length;
+            const data = this.barChartData?.datasets[0]?.data;
+            const hasValue = Object.values(data).some(value => value > 0);
+            return !!data.length && hasValue;
         },
     },
 

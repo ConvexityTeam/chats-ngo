@@ -7,7 +7,7 @@
         <doughnut-chart v-else-if="requiredData" :data="doughnutChartData" :options="doughnutChartOptions" :height="220"
             :width="250" />
 
-        <h3 v-else class="no-record-dashboard text-center no-record">
+        <h3 v-else class="text-center no-record">
             NO RECORD FOUND
         </h3>
     </section>
@@ -15,7 +15,6 @@
 
 <script>
 import doughnutChart from "~/plugins/charts/doughnutchart";
-import { mapGetters } from "vuex";
 
 export default {
     components: {
@@ -72,8 +71,14 @@ export default {
         };
     },
 
+    props: {
+        maleData: {
+            type: Array,
+            default: () => [],
+        },
+    },
+
     computed: {
-        ...mapGetters("authentication", ["user"]),
         requiredData() {
             return !!this.doughnutChartData?.datasets[0]?.data?.length;
         },
@@ -85,26 +90,12 @@ export default {
     },
 
     methods: {
-        async updateChart() {
-            try {
-                this.loading = true;
-                const response = await this.$axios.get(
-                    `/orders/product-purchased-gender/${this.id}`
-                );
-
-                if (response.status == "success") {
-                    const data = response.data;
-                    // this.doughnutChartData.datasets[0].data = data.male;
-                    this.loading = false;
-                }
-
-                console.log("GET MALE RESPONSE", response);
-            } catch (err) {
-                console.log("GETMALEERERR::", { err });
-                this.$toast.error(err.response?.data?.message);
-                this.loading = false;
-            }
-        },
+        updateChart() {
+            // Object.entries(this.maleData).forEach(([key, value]) => {
+            //     this.doughnutChartData.datasets[0].label.push(key);
+            //     this.doughnutChartData.datasets[0].data.push(value);
+            // });
+        }
     },
 };
 </script>
