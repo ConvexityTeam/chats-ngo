@@ -16,35 +16,21 @@
                         <div class="col-lg-5">
                             <!-- Search Box here -->
                             <div class="position-relative">
-                                <input
-                                    type="text"
-                                    class="form-controls search"
-                                    placeholder="Search tasks..."
-                                    v-model="searchQuery"
-                                />
-                                <img
-                                    src="~/assets/img/vectors/search.svg"
-                                    class="search-icon position-absolute"
-                                    alt="search"
-                                />
+                                <input type="text" class="form-controls search" placeholder="Search tasks..."
+                                    v-model="searchQuery" />
+                                <img src="~/assets/img/vectors/search.svg" class="search-icon position-absolute"
+                                    alt="search" />
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="ml-auto mx-3">
-                    <Button
-                        text="Create new"
-                        custom-styles="height:50px"
-                        v-b-modal.new-task
-                    />
+                    <Button text="Create new" custom-styles="height:50px" v-b-modal.new-task />
                 </div>
             </div>
 
             <div v-if="details.status == 'paused'" class="">
-                <banner
-                    :date="details.updatedAt"
-                    @resumeCampaign="resumeCampaign = true"
-                />
+                <banner :date="details.updatedAt" @resumeCampaign="resumeCampaign = true" />
             </div>
 
             <div class="row" :class="{ 'mt-3': details.status == 'paused' }">
@@ -52,15 +38,9 @@
                     <!-- Campaign beneficiaries here -->
                     <div>
                         <div class="table-holder mt-2">
-                            <div
-                                v-if="$fetchState.pending"
-                                class="text-center"
-                            ></div>
+                            <div v-if="$fetchState.pending" class="text-center"></div>
 
-                            <table
-                                v-else-if="resultQuery.length"
-                                class="table table-borderless"
-                            >
+                            <table v-else-if="resultQuery.length" class="table table-borderless">
                                 <thead>
                                     <tr>
                                         <th scope="col">Name</th>
@@ -71,36 +51,29 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr
-                                        v-for="(task, i) in resultQuery"
-                                        :key="task.id"
-                                        :class="{ selected: i % 2 == 0 }"
-                                    >
+                                    <tr v-for="(task, i) in resultQuery" :key="task.id"
+                                        :class="{ selected: i % 2 == 0 }">
                                         <td>
-                                            {{ task.name }}
+                                            {{  task.name  }}
                                         </td>
                                         <td class="entries">
-                                            {{ task.assignment_count }}
+                                            {{  task.assignment_count  }}
                                         </td>
                                         <td>
-                                            {{ task.amount | formatCurrency }}
+                                            {{  task.amount | formatCurrency  }}
                                         </td>
                                         <td class="max-width">
-                                            {{ task.createdAt | shortDate }}
+                                            {{  task.createdAt | shortDate  }}
                                         </td>
                                         <td>
                                             <div>
-                                                <Button
-                                                    text=" View"
-                                                    :has-icon="false"
-                                                    :has-border="true"
+                                                <Button text=" View" :has-icon="false" :has-border="true"
                                                     custom-styles="border: 1px solid #17CE89 !important; border-radius: 5px !important; font-size: 0.875rem !important; height: 33px !important;"
                                                     @click="
                                                         $router.push(
                                                             `/cash-for-work/tasks/${task.id}`
                                                         )
-                                                    "
-                                                />
+                                                    " />
                                             </div>
                                         </td>
                                     </tr>
@@ -116,13 +89,8 @@
 
                 <!-- Campaign details here -->
                 <div class="col-lg-4">
-                    <campaign-details
-                        :details="details"
-                        :location="location"
-                        :user="user"
-                        @reload="getDetails"
-                        :resumeCampaign="resumeCampaign"
-                    />
+                    <campaign-details :details="details" :location="location" :user="user" @reload="getDetails"
+                        :resumeCampaign="resumeCampaign" />
                 </div>
             </div>
         </div>
@@ -215,6 +183,7 @@ export default {
 
                 if (response.status == "success") {
                     this.details = response.data;
+                    console.log('DETAILS::', this.details);
                     this.beneficiaries = response.data.Beneficiaries;
                     this.loading = false;
                 }

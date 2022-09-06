@@ -11,9 +11,12 @@
             <h4 class="funds">
               {{ $currency
               }}{{
-                (wallet && wallet.MainWallet && wallet.MainWallet.balance) ||
-                  0 | formatCurrency
-              }}
+    (wallet) ||
+    0 | formatCurrency
+
+
+
+}}
             </h4>
           </div>
         </div>
@@ -77,10 +80,7 @@
           <!-- Beneficiaries Stats  here -->
           <div class="pb-3">
             <div class="stats-holder d-flex align-items-center px-3 w-50">
-              <img
-                src="~/assets/img/vectors/beneficiaries.svg"
-                alt="beneficiaries"
-              />
+              <img src="~/assets/img/vectors/beneficiaries.svg" alt="beneficiaries" />
 
               <div class="ml-2 pt-3">
                 <p class="beneficiaries">Beneficiaries</p>
@@ -153,28 +153,37 @@
         <div class="metric__holder p-4">
           <p class="total-count pb-2">Metrics</p>
 
-          <!-- Maximum Disbursement Date  here -->
-          <div>
-            <p class="beneficiaries">Maximum Disbursement Date</p>
-            <h4 class="date">12/04/2020</h4>
-          </div>
+          <div v-if="$fetchState.pending" class="loader"></div>
 
-          <!-- Minimum Disbursement Date stats here -->
-          <div class="mt-4">
-            <p class="beneficiaries">Minimum Disbursement Date</p>
-            <h4 class="date">12/04/2020</h4>
-          </div>
+          <div v-else-if="Object.values(metricsData)">
+            <!-- Maximum Disbursement Date  here -->
+            <div>
+              <div>
+                <p class="beneficiaries">Maximum Disbursement Date</p>
+                <h4 class="date"> {{ metricsData.maxDisbursedDate | formatDate }}</h4>
+              </div>
 
-          <!-- Maximum Spending Date Date stats here -->
-          <div class="mt-4">
-            <p class="beneficiaries">Maximum Spending Date</p>
-            <h4 class="date">12/04/2020</h4>
-          </div>
+              <!-- Minimum Disbursement Date stats here -->
+              <div class="mt-4">
+                <p class="beneficiaries">Minimum Disbursement Date</p>
+                <h4 class="date">{{ metricsData.minDisbursedDate | formatDate }}</h4>
+              </div>
 
-          <!-- Maximum Spending Date Date stats here -->
-          <div class="mt-4">
-            <p class="beneficiaries">Maximum Spending Date</p>
-            <h4 class="date">12/04/2020</h4>
+              <!-- Maximum Spending Date Date stats here -->
+              <div class="mt-4">
+                <p class="beneficiaries">Maximum Spending Date</p>
+                <h4 class="date">{{ metricsData.maxSpendDate | formatDate }}</h4>
+              </div>
+
+              <!-- Maximum Spending Date Date stats here -->
+              <div class="mt-4">
+                <p class="beneficiaries">Minimum Spending Date</p>
+                <h4 class="date">{{ metricsData.minSpendDate | formatDate }}</h4>
+              </div>
+            </div>
+          </div>
+          <div v-else>
+            <h3 class="text-center no-record">NO RECORD FOUND</h3>
           </div>
         </div>
       </div>
@@ -187,11 +196,7 @@
           <div v-if="$fetchState.pending" class="loader"></div>
 
           <div v-else-if="vendors.length">
-            <div
-              class="d-flex"
-              v-for="vendor in displayedVendors"
-              :key="vendor.id"
-            >
+            <div class="d-flex" v-for="vendor in displayedVendors" :key="vendor.id">
               <div>
                 <span class="vendor-name">
                   {{ vendor.first_name + " " + vendor.last_name }}
@@ -212,11 +217,7 @@
 
           <div class="d-flex" v-if="displayedVendors.length">
             <div class="">
-              <button
-                type="button"
-                @click="$router.push('/vendors')"
-                class="d-flex viewall align-items-center"
-              >
+              <button type="button" @click="$router.push('/vendors')" class="d-flex viewall align-items-center">
                 <img src="~/assets/img/vectors/eye.svg" alt="see" />
                 <span class="ml-2 pt-1">View All</span>
               </button>
@@ -243,6 +244,7 @@ import totalBalance from "~/components/icons/total-balance.vue";
 import disbursed from "~/components/icons/disbursed.vue";
 import countries from "~/plugins/countries";
 import { mapGetters } from "vuex";
+
 
 export default {
   layout: "dashboard",
@@ -271,6 +273,7 @@ export default {
       stats: {},
       wallet: {},
       campaignDetails: {},
+      metricsData: {},
       userLocation: {
         alphaCode: "",
         currencySymbol: "",
@@ -300,14 +303,23 @@ export default {
     this.vendors = vendors?.data ?? [];
 
     const wallet = await this.$axios.get(`/organisations/${id}/wallets`);
-    this.wallet = wallet?.data ?? {};
+    this.wallet = wallet?.data?.MainWallet?.balance ?? {};
 
     const campaignDetails = await this.$axios.get(
       `/organisations/campaigns/transaction`
     );
     this.campaignDetails = campaignDetails?.data ?? {};
 
+    const metricsData = await this.$axios.get(
+      `/organisations/matrics`
+    );
+    this.metricsData = metricsData?.data ?? {};
+
     console.log("walletData", wallet);
+    console.log("vendors:::", vendors);
+    console.log("beneficiaries:::", beneficiaries);
+    console.log("campaignDetails:::", campaignDetails);
+    console.log("metricsData:::", metricsData);
   },
 
   mounted() {
@@ -390,6 +402,10 @@ export default {
         .catch(error => {
           console.log("erroo", error);
         });
+    },
+
+    isEmpty(obj) {
+      return Object.keys(obj).length === 0;
     }
   }
 };
@@ -400,6 +416,7 @@ export default {
   height: calc(100vh - 72px);
   overflow-y: scroll;
 }
+
 .paginate {
   color: var(--secondary-black);
   font-size: 0.875rem;
@@ -431,22 +448,26 @@ export default {
   font-size: 1rem;
   line-height: 19px;
 }
+
 .beneficiaries-count {
   color: var(--primary-blue);
   font-size: 1.5rem;
   font-weight: 500;
 }
+
 .card__holder {
   background: #ffffff;
   box-shadow: 0px 4px 25px rgba(174, 174, 192, 0.15);
   border-radius: 10px;
 }
+
 .metric__holder {
   background: #ffffff;
   box-shadow: 0px 4px 25px rgba(174, 174, 192, 0.15);
   border-radius: 10px;
   height: 346px;
 }
+
 .cards__holder {
   background: #ffffff;
   box-shadow: 0px 4px 25px rgba(174, 174, 192, 0.15);
@@ -454,11 +475,13 @@ export default {
 
   height: 300px;
 }
+
 .text {
   color: #7c8db5;
   font-size: 0.875rem;
   font-weight: 500;
 }
+
 .funds {
   color: var(--primary-blue);
   font-size: 1.125rem;
@@ -466,10 +489,12 @@ export default {
   line-height: 0.563rem;
   word-break: break-all;
 }
+
 .percentage {
   color: #00bf6f;
   font-size: 0.8 75rem;
 }
+
 .total-count {
   color: #333333;
   font-weight: bold;
