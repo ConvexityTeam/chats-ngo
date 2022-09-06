@@ -1,101 +1,55 @@
 <template>
-    <section class="">
-        <div v-if="loading" class="spinner male">
-            <b-spinner class="primary" label="Spinning"></b-spinner>
-        </div>
+  <section class="">
+    <div v-if="loading" class="spinner gender">
+      <b-spinner class="primary" label="Spinning"></b-spinner>
+    </div>
 
-        <doughnut-chart v-else-if="requiredData" :data="doughnutChartData" :options="doughnutChartOptions" :height="220"
-            :width="250" />
+    <doughnut-chart
+      v-else-if="requiredData"
+      :data="maleDoughnutChartData"
+      :options="doughnutChartOptions"
+      :height="120"
+      :width="250"
+    />
 
-        <h3 v-else class="text-center no-record">
-            NO RECORD FOUND
-        </h3>
-    </section>
+    <!--  -->
+
+    <h3 v-else class="text-center no-record">
+      NO RECORD FOUND
+    </h3>
+    <!-- <button @click="updateChart">click</button> -->
+  </section>
 </template>
 
 <script>
 import doughnutChart from "~/plugins/charts/doughnutchart";
 
 export default {
-    components: {
-        doughnutChart,
-    },
-    data() {
-        return {
-            loading: false,
-            doughnutChartData: {
-                labels: ["Rice", "Beans", "Yam", "Crayfish", "Others"],
-                datasets: [
-                    {
-                        label: ["Rice", "Beans", "Yam", "Crayfish", "Others"],
-                        data: [],
-                        backgroundColor: [
-                            "#E8FCCF",
-                            "#96E072",
-                            "#3DA35D",
-                            "#3E8914",
-                            "#134611",
-                        ],
-                    },
-                ],
-            },
-            doughnutChartOptions: {
-                responsive: true,
-                legend: {
-                    display: true,
-                    position: "right",
+  components: {
+    doughnutChart
+  },
 
-                    labels: {
-                        fontColor: "#25396F",
-                        usePointStyle: true,
-                    },
-                },
-
-                // title: {
-                //   display: true,
-                //   text: 'Male',
-                //   fontSize: 16,
-                //   fontColor: '#333333',
-                //     align: 'center',
-                //     position: 'top'
-                // },
-                cutoutPercentage: 70,
-                rotation: Math.PI * 1,
-                animation: {
-                    animateScale: true,
-                },
-                tooltips: {
-                    backgroundColor: "#17BF62",
-                },
-            },
-        };
+  props: {
+    maleDoughnutChartData: {
+      type: Object,
+      default: () => {}
     },
 
-    props: {
-        maleData: {
-            type: Array,
-            default: () => [],
-        },
+    doughnutChartOptions: {
+      type: Object,
+      default: () => {}
     },
 
-    computed: {
-        requiredData() {
-            return !!this.doughnutChartData?.datasets[0]?.data?.length;
-        },
-    },
+    loading: {
+      type: Boolean,
+      default: false
+    }
+  },
 
-    mounted() {
-        this.id = this.user?.AssociatedOrganisations[0]?.OrganisationId;
-        this.updateChart();
-    },
-
-    methods: {
-        updateChart() {
-            // Object.entries(this.maleData).forEach(([key, value]) => {
-            //     this.doughnutChartData.datasets[0].label.push(key);
-            //     this.doughnutChartData.datasets[0].data.push(value);
-            // });
-        }
-    },
+  computed: {
+    requiredData() {
+      return !!this.maleDoughnutChartData?.datasets[0]?.data?.length;
+    }
+  }
 };
 </script>
