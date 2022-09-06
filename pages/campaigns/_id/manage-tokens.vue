@@ -118,6 +118,7 @@
           <Pdf
             :triggerDownload="triggerDownload"
             @download-complete="triggerDownload = false"
+            :campaignDetails="qrCodes"
           >
             <CompleteQrCodes :data="qrCodes" />
           </Pdf>
@@ -200,6 +201,8 @@ export default {
           )
         ]);
 
+        console.log("smsTokens:::", smsTokens);
+
         if (smsTokens.status == "success") {
           this.smsTokens = smsTokens.data?.tokens;
         }
@@ -208,12 +211,11 @@ export default {
           console.log("qrCodes", qrCodes.data.tokens);
           this.qrCodes = qrCodes.data?.tokens;
         }
-
-        this.loading = false;
       } catch (err) {
-        this.loading = false;
         console.log(err);
         this.$toast.error(err?.response?.data?.message);
+      } finally {
+        this.loading = false;
       }
     },
     async resendToken() {

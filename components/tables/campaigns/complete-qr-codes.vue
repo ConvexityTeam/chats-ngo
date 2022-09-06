@@ -4,7 +4,7 @@
       <div class="col-lg-4" v-for="(token, i) in data" :key="i">
         <div
           class="card-holder p-4"
-          :class="{ 'html2pdf__page-break': i % 9 === 0 }"
+          :class="{ 'html2pdf__page-break': i % 9 === 0 && data.length > 9 }"
         >
           <div class="row">
             <!-- QR code here -->

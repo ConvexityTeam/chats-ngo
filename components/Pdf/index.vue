@@ -39,6 +39,11 @@ export default {
     triggerDownload: {
       type: Boolean,
       default: false
+    },
+
+    campaignDetails: {
+      type: Array,
+      default: () => []
     }
   },
 
@@ -56,7 +61,9 @@ export default {
     },
 
     campaign() {
-      return "";
+      if (!!this.campaignDetails.length) {
+        return this.campaignDetails[0]?.Campaign?.title ?? "";
+      }
     }
   },
 
