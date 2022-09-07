@@ -4,11 +4,7 @@
             <div class="text-center position-relative pt-2">
                 <h3 class="header font-bold primary-blue">Task approved</h3>
                 <!--Close button here -->
-                <button
-                    type="button"
-                    class="close-btn position-absolute pb-3"
-                    @click="closeModal"
-                >
+                <button type="button" class="close-btn position-absolute pb-3" @click="closeModal">
                     <close />
                 </button>
             </div>
@@ -19,24 +15,17 @@
                 </div>
                 <p class="text-center message">
                     Task submission for
-                    <span class=" font-medium"
-                        >{{
-                            task.beneficiary_first_name +
-                                " " +
-                                task.beneficiary_last_name
-                        }}
+                    <span class=" font-medium">{{
+                    task.beneficiary_first_name +
+                    " " +
+                    task.beneficiary_last_name
+                    }}
                     </span>
                     has been successfully approved.
                 </p>
                 <div class="btn mx-auto">
-                    <Button
-                        :has-icon="false"
-                        text="Disburse"
-                        custom-styles="height:50px;  width: 100%;"
-                        :loading="loading"
-                        :disabled="loading"
-                        @click="disburseFunds"
-                    />
+                    <Button :has-icon="false" text="Disburse" custom-styles="height:50px;  width: 100%;"
+                        :loading="loading" :disabled="loading" @click="disburseFunds" />
                 </div>
             </div>
         </b-modal>
@@ -124,12 +113,14 @@ export default {
     color: var(--secondary-black);
     padding: 0 50px;
 }
+
 .btn {
     margin-top: 6px;
     display: flex;
     justify-content: center;
     align-content: center;
 }
+
 .icon {
     margin: 22px 0 20px 0;
 }
