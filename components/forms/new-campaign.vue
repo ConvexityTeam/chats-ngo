@@ -100,8 +100,11 @@
       <div class="row form-group mt-2 px-3">
         <!--Allow geofence   here -->
         <div class="">
-          <checkbox id="geofence" @input="checkValue" />
-          <!-- <input type="checkbox" id="geofence" /> -->
+          <checkbox
+            id="geofence"
+            @input="checkValue"
+            :disabled="!payload.title.length"
+          />
         </div>
 
         <div class="ml-2">
@@ -144,10 +147,19 @@ import { mapGetters } from "vuex";
 import DatePicker from "vue2-datepicker";
 import "vue2-datepicker/index.css";
 const greaterThanZero = value => value >= 100;
-
 let geocoder;
 
 export default {
+  head() {
+    return {
+      script: [
+        {
+          src: `https://maps.googleapis.com/maps/api/js?key=${process.env.GOOGLE_API}&libraries=geometry,drawing&v=weekly`
+        }
+      ]
+    };
+  },
+
   data() {
     return {
       present: new Date(),
@@ -195,6 +207,7 @@ export default {
       }
     }
   },
+
   components: { DatePicker },
 
   computed: {
@@ -203,7 +216,6 @@ export default {
 
   mounted() {
     this.id = this.user.AssociatedOrganisations[0].OrganisationId;
-    // this.formatCurrency(100000);
   },
 
   methods: {
@@ -216,7 +228,6 @@ export default {
     },
     formatNumbers(event, key, payload) {
       if (payload) {
-        console.log("payload", payload);
         if (this.$v.payload[key]) {
           this.$v.payload[key].$touch();
         }
@@ -247,15 +258,10 @@ export default {
         .replace(/\D/g, "")
         .replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 
-      console.log("formatter", x);
-
       return x;
     },
 
     async createCampaign() {
-      console.log("pd::", this.payload);
-      console.log("COORD", this.payload.location.coordinates);
-
       try {
         this.loading = true;
         this.$v.payload.$touch();
@@ -278,7 +284,6 @@ export default {
           this.closeModal();
           this.$toast.success(response.message);
         }
-        console.log("campaignResponse:::", response);
 
         this.loading = false;
       } catch (err) {
@@ -290,7 +295,8 @@ export default {
 
     // TODO:Try emiting fetch all campaigns method from parent and calling here
     runMap() {
-      const map = new google.maps.Map(document.getElementById("map_canvas"), {
+      const mapComponent = document.getElementById("map_canvas");
+      const map = new google.maps.Map(mapComponent, {
         center: { lat: 17.35297042396732, lng: 8.808737500000019 },
         zoom: 3,
         mapTypeId: google.maps.MapTypeId.ROADMAP

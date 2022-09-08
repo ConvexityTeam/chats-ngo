@@ -7,12 +7,11 @@
       class="focus:outline-none"
       :checked="checked"
       :value="value"
-      @change="$emit('input', $refs.checkbox.value)"
+      :disabled="disabled"
+      @change="$emit('input', $event.target.checked)"
     />
 
-    <!-- @change="$emit('input', $event.target.checked)" -->
-
-    <span></span>
+    <span :class="{ disabled: disabled }"></span>
   </label>
 </template>
 <script>
@@ -33,6 +32,10 @@ export default {
     height: {
       type: String,
       default: "16px"
+    },
+    disabled: {
+      type: Boolean,
+      default: false
     }
   }
 };
@@ -63,6 +66,10 @@ span:after {
   width: 6px;
   transform: rotate(45deg);
   visibility: hidden;
+}
+span.disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
 }
 input {
   display: none;
