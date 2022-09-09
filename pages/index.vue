@@ -147,17 +147,22 @@ export default {
 
         console.log("login response", response);
 
-        if (response?.status == "success") {
+        if (response.status === "success") {
+          let protectedLastRoute = localStorage.getItem("protectedLastRoute");
           this.commitToken(response.data.token);
           this.commitUser(response.data.user);
-          this.$router.push("/dashboard");
-        }
 
-        this.loading = false;
+          protectedLastRoute == undefined
+            ? (protectedLastRoute = "/dashboard")
+            : (protectedLastRoute = protectedLastRoute);
+
+          await this.$router.push(protectedLastRoute || "/dashboard");
+        }
       } catch (err) {
-        this.loading = false;
         console.log("ERRR::::", { err });
         this.$toast.error(err?.response?.data?.message);
+      } finally {
+        this.loading = false;
       }
     }
   }

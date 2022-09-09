@@ -328,6 +328,7 @@ export default {
         vendors: []
       };
       this.isEdit = false;
+      this.$v.payload.$reset()
     },
     async saveProductTags() {
       try {

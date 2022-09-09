@@ -20,6 +20,7 @@
 import topNav from "~/components/partials/navbar";
 import sideMenu from "~/components/partials/sidemenu";
 import IdleJs from "idle-js";
+let protectedLastRoute;
 
 export default {
   middleware: "authenticated",
@@ -28,14 +29,18 @@ export default {
     sideMenu
   },
 
+  watch: {
+    $route(to, from) {
+      protectedLastRoute = this.$route.fullPath;
+    }
+  },
+
   mounted() {
     const timeout = {
       dev: 600000, // 10 minutes
       staging: 300000, // 5 minutes
       prd: 180000 // 3 minutes
     };
-
-    console.log("check::", window.location.host);
     const host = window.location.host;
 
     var idle = new IdleJs({
@@ -48,6 +53,7 @@ export default {
       events: ["mousemove", "keydown", "mousedown", "touchstart"], // events that will trigger the idle resetter
 
       onIdle: () => {
+        localStorage.setItem("protectedLastRoute", protectedLastRoute);
         this.$store.dispatch("authentication/logout");
         this.$router.push("/");
       },

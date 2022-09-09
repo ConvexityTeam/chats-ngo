@@ -8,15 +8,9 @@
           <wallet-balance />
           <div class="ml-3">
             <p class="text">Wallet Balance</p>
+
             <h4 class="funds">
-              {{ $currency
-              }}{{
-    (wallet) ||
-    0 | formatCurrency
-
-
-
-}}
+              {{ $currency }}{{ wallet.balance || 0 | formatCurrency }}
             </h4>
           </div>
         </div>
@@ -80,7 +74,10 @@
           <!-- Beneficiaries Stats  here -->
           <div class="pb-3">
             <div class="stats-holder d-flex align-items-center px-3 w-50">
-              <img src="~/assets/img/vectors/beneficiaries.svg" alt="beneficiaries" />
+              <img
+                src="~/assets/img/vectors/beneficiaries.svg"
+                alt="beneficiaries"
+              />
 
               <div class="ml-2 pt-3">
                 <p class="beneficiaries">Beneficiaries</p>
@@ -153,35 +150,43 @@
         <div class="metric__holder p-4">
           <p class="total-count pb-2">Metrics</p>
 
-          <div v-if="$fetchState.pending" class="loader"></div>
+          <div v-if="$fetchState.pending" class="loader mt-5"></div>
 
           <div v-else-if="Object.values(metricsData)">
             <!-- Maximum Disbursement Date  here -->
+
             <div>
-              <div>
-                <p class="beneficiaries">Maximum Disbursement Date</p>
-                <h4 class="date"> {{ metricsData.maxDisbursedDate | formatDate }}</h4>
-              </div>
+              <p class="beneficiaries">Maximum Disbursement Date</p>
+              <h4 class="date">
+                {{ metricsData.maxDisbursedDate | formatDate }}
+              </h4>
+            </div>
 
-              <!-- Minimum Disbursement Date stats here -->
-              <div class="mt-4">
-                <p class="beneficiaries">Minimum Disbursement Date</p>
-                <h4 class="date">{{ metricsData.minDisbursedDate | formatDate }}</h4>
-              </div>
+            <!-- Minimum Disbursement Date stats here -->
+            <div class="mt-4">
+              <p class="beneficiaries">Minimum Disbursement Date</p>
+              <h4 class="date">
+                {{ metricsData.minDisbursedDate | formatDate }}
+              </h4>
+            </div>
 
-              <!-- Maximum Spending Date Date stats here -->
-              <div class="mt-4">
-                <p class="beneficiaries">Maximum Spending Date</p>
-                <h4 class="date">{{ metricsData.maxSpendDate | formatDate }}</h4>
-              </div>
+            <!-- Maximum Spending Date Date stats here -->
+            <div class="mt-4">
+              <p class="beneficiaries">Maximum Spending Date</p>
+              <h4 class="date">
+                {{ metricsData.maxSpendDate | formatDate }}
+              </h4>
+            </div>
 
-              <!-- Maximum Spending Date Date stats here -->
-              <div class="mt-4">
-                <p class="beneficiaries">Minimum Spending Date</p>
-                <h4 class="date">{{ metricsData.minSpendDate | formatDate }}</h4>
-              </div>
+            <!-- Maximum Spending Date Date stats here -->
+            <div class="mt-4">
+              <p class="beneficiaries">Minimum Spending Date</p>
+              <h4 class="date">
+                {{ metricsData.minSpendDate | formatDate }}
+              </h4>
             </div>
           </div>
+
           <div v-else>
             <h3 class="text-center no-record">NO RECORD FOUND</h3>
           </div>
@@ -191,36 +196,49 @@
       <!-- Vendors card here -->
       <div class="col-lg-6 pb-3">
         <div class="metric__holder p-4">
-          <p class="total-count pb-2">Vendors</p>
+          <div class="d-flex flex-column  h-100">
+            <p class="total-count pb-2">Vendors</p>
 
-          <div v-if="$fetchState.pending" class="loader"></div>
+            <div v-if="$fetchState.pending" class="loader"></div>
 
-          <div v-else-if="vendors.length">
-            <div class="d-flex" v-for="vendor in displayedVendors" :key="vendor.id">
-              <div>
-                <span class="vendor-name">
-                  {{ vendor.first_name + " " + vendor.last_name }}
-                </span>
-              </div>
+            <div v-else-if="vendors.length">
+              <div
+                class="d-flex"
+                v-for="vendor in displayedVendors"
+                :key="vendor.id"
+              >
+                <div>
+                  <span class="vendor-name">
+                    {{ vendor.first_name + " " + vendor.last_name }}
+                  </span>
+                </div>
 
-              <div class="ml-auto">
-                <button type="button" class="more-btn">
-                  <dot />
-                </button>
+                <div class="ml-auto">
+                  <button type="button" class="more-btn">
+                    <dot />
+                  </button>
+                </div>
               </div>
             </div>
-          </div>
 
-          <div v-else>
-            <h3 class="text-center no-record">NO RECORD FOUND</h3>
-          </div>
+            <div v-else>
+              <h3 class="text-center no-record">NO RECORD FOUND</h3>
+            </div>
 
-          <div class="d-flex" v-if="displayedVendors.length">
-            <div class="">
-              <button type="button" @click="$router.push('/vendors')" class="d-flex viewall align-items-center">
-                <img src="~/assets/img/vectors/eye.svg" alt="see" />
-                <span class="ml-2 pt-1">View All</span>
-              </button>
+            <div
+              class="d-flex h-100 align-items-end"
+              v-if="displayedVendors.length"
+            >
+              <div class="">
+                <button
+                  type="button"
+                  @click="$router.push('/vendors')"
+                  class="d-flex viewall align-items-center"
+                >
+                  <img src="~/assets/img/vectors/eye.svg" alt="see" />
+                  <span class="ml-2 pt-1">View All</span>
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -244,7 +262,6 @@ import totalBalance from "~/components/icons/total-balance.vue";
 import disbursed from "~/components/icons/disbursed.vue";
 import countries from "~/plugins/countries";
 import { mapGetters } from "vuex";
-
 
 export default {
   layout: "dashboard",
@@ -293,26 +310,21 @@ export default {
 
   async fetch() {
     const id = parseInt(this.user?.AssociatedOrganisations[0]?.OrganisationId);
-
     const beneficiaries = await this.$axios.get(
       `/organisation/${id}/beneficiaries`
     );
+
     const vendors = await this.$axios.get(`/organisations/${id}/vendors`);
-
-    this.beneficiaries = beneficiaries.data ?? [];
-    this.vendors = vendors?.data ?? [];
-
     const wallet = await this.$axios.get(`/organisations/${id}/wallets`);
-    this.wallet = wallet?.data?.MainWallet?.balance ?? {};
-
     const campaignDetails = await this.$axios.get(
       `/organisations/campaigns/transaction`
     );
-    this.campaignDetails = campaignDetails?.data ?? {};
+    const metricsData = await this.$axios.get(`/organisations/matrics`);
 
-    const metricsData = await this.$axios.get(
-      `/organisations/matrics`
-    );
+    this.beneficiaries = beneficiaries.data ?? [];
+    this.vendors = vendors?.data ?? [];
+    this.wallet = wallet?.data?.MainWallet ?? {};
+    this.campaignDetails = campaignDetails?.data ?? {};
     this.metricsData = metricsData?.data ?? {};
 
     console.log("walletData", wallet);

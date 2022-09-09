@@ -259,13 +259,14 @@ export default {
 
     async logOut() {
       try {
+        localStorage.removeItem("protectedLastRoute");
         await this.logout();
         this.$router.push("/");
       } catch (error) {
         this.$toast.error(error);
       }
-    },
-  },
+    }
+  }
 };
 </script>
 

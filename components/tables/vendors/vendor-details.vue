@@ -95,7 +95,7 @@ export default {
   height: 96px;
 }
 .logo-holder img {
-  object-fit: contain;
+  object-fit: cover;
 }
 </style>
 
