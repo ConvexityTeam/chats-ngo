@@ -1,12 +1,3 @@
-const host = window.location.host;
-const BASE_URL =
-  process.env.NODE_ENV === "development"
-    ? "https://staging-api.chats.cash/v1/"
-    : host.includes("chats.vercel.app")
-    ? "https://staging-api.chats.cash/v1/"
-    : "https://api.chats.cash/v1/";
-
-// const apiKey = process.env.GOOGLE_API;
 export default {
   // Disable server-side rendering (https://go.nuxtjs.dev/ssr-mode)
   ssr: false,
@@ -52,7 +43,7 @@ export default {
 
   // Axios module configuration (https://go.nuxtjs.dev/config-axios)
   axios: {
-    baseURL: BASE_URL,
+    baseURL: process.env.BASE_URL,
     https: true,
     progress: true,
     retry: { retries: 2 }
