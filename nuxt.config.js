@@ -1,13 +1,20 @@
+const BASE_URL = process.env.BASE_URL;
+
 export default {
   // Disable server-side rendering (https://go.nuxtjs.dev/ssr-mode)
   ssr: false,
 
   head: {
-    title: "frontend-ngo-web",
+    title: "Convexity Humanitarian Aids Transfer Solution - CHATS",
     meta: [
       { charset: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { hid: "description", name: "description", content: "" }
+      { name: "description", hid: "description", content: "" },
+      { name: "og:url", hid: "og-url", content: "" },
+      { name: "og:title", hid: "og-title", content: "" },
+      { name: "og:type", hid: "og-type", content: "" },
+      { name: "og:description", hid: "og-description", content: "" }
+      // { name: "og:image", hid: "og-image", content: "" }
     ],
     link: [
       { rel: "icon", type: "image/x-icon", href: "/favicon.ico" },
@@ -43,7 +50,7 @@ export default {
 
   // Axios module configuration (https://go.nuxtjs.dev/config-axios)
   axios: {
-    baseURL: process.env.BASE_URL,
+    baseURL: BASE_URL,
     https: true,
     progress: true,
     retry: { retries: 2 }
