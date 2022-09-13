@@ -1,3 +1,4 @@
+const host = window.location.host;
 const BASE_URL =
   process.env.NODE_ENV === "development"
     ? "https://staging-api.chats.cash/v1/"
