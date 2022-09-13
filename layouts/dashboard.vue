@@ -43,7 +43,7 @@ export default {
     };
     const host = window.location.host;
 
-    var idle = new IdleJs({
+    let idle = new IdleJs({
       idle:
         process.env.NODE_ENV === "development"
           ? timeout.dev

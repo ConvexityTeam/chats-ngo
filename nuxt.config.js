@@ -1,4 +1,10 @@
-const BASE_URL = "https://api.chats.cash/v1/";
+const BASE_URL =
+  process.env.NODE_ENV === "development"
+    ? "https://staging-api.chats.cash/v1/"
+    : host.includes("chats.vercel.app")
+    ? "https://staging-api.chats.cash/v1/"
+    : "https://api.chats.cash/v1/";
+
 // const apiKey = process.env.GOOGLE_API;
 export default {
   // Disable server-side rendering (https://go.nuxtjs.dev/ssr-mode)
