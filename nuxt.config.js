@@ -9,11 +9,20 @@ export default {
     meta: [
       { charset: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { name: "description", hid: "description", content: "" },
+      {
+        name: "description",
+        hid: "description",
+        content: "Dignifying Cash Voucher Assistance using the Blockchain"
+      },
+
       { name: "og:url", hid: "og-url", content: "" },
       { name: "og:title", hid: "og-title", content: "" },
       { name: "og:type", hid: "og-type", content: "" },
-      { name: "og:description", hid: "og-description", content: "" }
+      {
+        name: "og:description",
+        hid: "og-description",
+        content: "Dignifying Cash Voucher Assistance using the Blockchain"
+      }
       // { name: "og:image", hid: "og-image", content: "" }
     ],
     link: [
