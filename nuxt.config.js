@@ -12,7 +12,7 @@ export default {
       {
         name: "description",
         hid: "description",
-        content: "Dignifying Cash Voucher Assistance using the Blockchain"
+        content: "Dignifying Cash Voucher Assistance using the Blockchain",
       },
 
       { name: "og:url", hid: "og-url", content: "" },
@@ -21,8 +21,8 @@ export default {
       {
         name: "og:description",
         hid: "og-description",
-        content: "Dignifying Cash Voucher Assistance using the Blockchain"
-      }
+        content: "Dignifying Cash Voucher Assistance using the Blockchain",
+      },
       // { name: "og:image", hid: "og-image", content: "" }
     ],
     link: [
@@ -30,9 +30,9 @@ export default {
 
       {
         rel: "stylesheet",
-        href: "https://unpkg.com/element-ui/lib/theme-chalk/index.css"
-      }
-    ]
+        href: "https://unpkg.com/element-ui/lib/theme-chalk/index.css",
+      },
+    ],
   },
 
   css: ["~/assets/css/main.css", "~/assets/css/fonts.css"],
@@ -44,7 +44,7 @@ export default {
     "~/plugins/element-ui",
     // "~/plugins/freshdesk.js",
     { src: "~/plugins/vuex-persist", ssr: false },
-    "~/plugins/copy-to-clip.js"
+    "~/plugins/copy-to-clip.js",
   ],
 
   components: true,
@@ -54,7 +54,7 @@ export default {
     "bootstrap-vue/nuxt",
     "@nuxtjs/axios",
     "@nuxtjs/toast",
-    "@nuxtjs/dotenv"
+    "@nuxtjs/dotenv",
   ],
 
   // Axios module configuration (https://go.nuxtjs.dev/config-axios)
@@ -62,12 +62,12 @@ export default {
     baseURL: BASE_URL,
     https: true,
     progress: true,
-    retry: { retries: 2 }
+    retry: { retries: 2 },
   },
 
   toast: {
     position: "top-right",
-    duration: 3500
+    duration: 3500,
   },
 
   // Build Configuration (https://go.nuxtjs.dev/config-build)
@@ -77,9 +77,9 @@ export default {
       // https://github.com/terser/terser#compress-options
       terserOptions: {
         compress: {
-          drop_console: true
-        }
-      }
+          drop_console: true,
+        },
+      },
     },
 
     extend(config, ctx) {
@@ -87,9 +87,9 @@ export default {
         test: /\.(ogg|mp3|wav|mpe?g)$/i,
         loader: "file-loader",
         options: {
-          name: "[path][name].[ext]"
-        }
+          name: "[path][name].[ext]",
+        },
       });
-    }
-  }
+    },
+  },
 };

@@ -172,28 +172,28 @@ export default {
   props: {
     details: {
       type: Object,
-      default: () => {}
+      default: () => {},
     },
 
     count: {
       type: Number,
-      default: null
+      default: null,
     },
 
     location: {
       type: String,
-      default: ""
+      default: "",
     },
 
     user: {
       type: Object,
-      default: () => {}
+      default: () => {},
     },
 
     resumeCampaign: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
 
   data: () => ({
@@ -201,7 +201,7 @@ export default {
     status: "",
     orgId: 0,
     statuses: ["paused", "active"],
-    max: 100
+    max: 100,
   }),
 
   watch: {
@@ -209,11 +209,11 @@ export default {
       if (value) {
         this.handleCampaign("active");
       }
-    }
+    },
   },
 
   components: {
-    campaignPrompt
+    campaignPrompt,
   },
 
   mounted() {
@@ -253,7 +253,7 @@ export default {
         const response = await this.$axios.put(
           `organisations/${this.orgId}/campaigns/${this.$route.params.id}`,
           {
-            status: this.campaignStatus
+            status: this.campaignStatus,
           }
         );
 
@@ -276,10 +276,10 @@ export default {
       screenLoading = this.$loading({
         lock: true,
         spinner: "el-icon-loading",
-        background: "#0000009b"
+        background: "#0000009b",
       });
-    }
-  }
+    },
+  },
 };
 </script>
 
