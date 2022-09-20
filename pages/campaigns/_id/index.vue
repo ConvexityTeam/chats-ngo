@@ -326,9 +326,6 @@ export default {
     },
 
     query() {
-      // const valid =
-      //   this.tabIndex == 0 ? this.beneficiaries : this.unapprovedBeneficiaries;
-
       const valid =
         this.tabIndex === 0
           ? this.approvedBeneficiaries
@@ -341,11 +338,8 @@ export default {
           return this.searchQuery
             .toLowerCase()
             .split(" ")
-            .every(
-              (v) =>
-                benefactor &&
-                benefactor.User &&
-                benefactor.User.first_name.toLowerCase().includes(v)
+            .every((v) =>
+              benefactor?.User?.first_name?.toLowerCase().includes(v)
             );
         });
       } else {
