@@ -26,20 +26,20 @@ export default {
   middleware: "authenticated",
   components: {
     topNav,
-    sideMenu
+    sideMenu,
   },
 
   watch: {
     $route(to, from) {
       protectedLastRoute = this.$route.fullPath;
-    }
+    },
   },
 
   mounted() {
     const timeout = {
       dev: 600000, // 10 minutes
       staging: 300000, // 5 minutes
-      prd: 180000 // 3 minutes
+      prd: 180000, // 3 minutes
     };
     const host = window.location.host;
 
@@ -59,10 +59,10 @@ export default {
       },
 
       keepTracking: true, // set it to false if you want to be notified only on the first idleness change
-      startAtIdle: false // set it to true if you want to start in the idle state
+      startAtIdle: false, // set it to true if you want to start in the idle state
     });
 
     idle.start();
-  }
+  },
 };
 </script>

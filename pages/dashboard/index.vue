@@ -196,7 +196,7 @@
       <!-- Vendors card here -->
       <div class="col-lg-6 pb-3">
         <div class="metric__holder p-4">
-          <div class="d-flex flex-column  h-100">
+          <div class="d-flex flex-column h-100">
             <p class="total-count pb-2">Vendors</p>
 
             <div v-if="$fetchState.pending" class="loader"></div>
@@ -278,7 +278,7 @@ export default {
     leftArrow,
     walletBalance,
     totalBalance,
-    disbursed
+    disbursed,
   },
 
   data() {
@@ -295,8 +295,8 @@ export default {
         alphaCode: "",
         currencySymbol: "",
         currencyCode: "",
-        convertedValue: "5000"
-      }
+        convertedValue: "5000",
+      },
     };
   },
 
@@ -305,7 +305,7 @@ export default {
 
     displayedVendors() {
       return this.vendors.slice(0, 5);
-    }
+    },
   },
 
   async fetch() {
@@ -334,27 +334,6 @@ export default {
     console.log("metricsData:::", metricsData);
   },
 
-  mounted() {
-    // this.getIp();
-    // this.getStats();
-    //   async getWallet() {
-    //   try {
-    //     this.openScreen();
-    //     const response = await this.$axios.get(
-    //       `/organisations/${+this.organisationId}/wallets`
-    //     );
-    //     if (response.status == "success") {
-    //       console.log("WALLET", response.data);
-    //       this.wallet = response?.data;
-    //       screenLoading.close();
-    //     }
-    //   } catch (err) {
-    //     screenLoading.close();
-    //     console.log("Walleterr:::", err);
-    //   }
-    // },
-  },
-
   methods: {
     async getStats() {
       try {
@@ -373,20 +352,20 @@ export default {
     getIp() {
       this.$axios
         .get("http://ip-api.com/json")
-        .then(response => {
+        .then((response) => {
           console.log({ response: response.data.countryCode });
           this.userLocation.alphaCode = response.data.countryCode;
           this.setCurrency();
           this.convertCurrency();
         })
-        .catch(err => {
+        .catch((err) => {
           console.log(err);
         });
     },
 
     setCurrency() {
       const userCountry = countries.filter(
-        countries => countries.alpha2Code == this.userLocation.alphaCode
+        (countries) => countries.alpha2Code == this.userLocation.alphaCode
       );
 
       this.userLocation.currencySymbol = userCountry[0].currencies[0].symbol;
@@ -398,28 +377,28 @@ export default {
           params: {
             from: "USD",
             to: this.userLocation.currencyCode,
-            amount: this.amount
+            amount: this.amount,
           },
           headers: {
             "x-rapidapi-key":
               "53a42b6342msha5eeed4491364b5p1c9fb1jsn357450c321a9",
-            "x-rapidapi-host": "fixer-fixer-currency-v1.p.rapidapi.com"
-          }
+            "x-rapidapi-host": "fixer-fixer-currency-v1.p.rapidapi.com",
+          },
         })
 
-        .then(response => {
+        .then((response) => {
           // this.userLocation.convertedValue = response.data.result
         })
 
-        .catch(error => {
+        .catch((error) => {
           console.log("erroo", error);
         });
     },
 
     isEmpty(obj) {
       return Object.keys(obj).length === 0;
-    }
-  }
+    },
+  },
 };
 </script>
 
