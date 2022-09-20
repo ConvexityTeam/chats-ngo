@@ -140,7 +140,7 @@
                 <!-- Approve Button here -->
                 <div
                   class="ml-auto mr-5"
-                  v-if="unapprovedBeneficiaries.length && tabIndex == 1"
+                  v-if="pendingBeneficiaries.length && tabIndex == 1"
                 >
                   <Button
                     text="Approve"
@@ -304,17 +304,24 @@ export default {
 
   computed: {
     ...mapGetters("authentication", ["user"]),
-    unapprovedBeneficiaries() {
-      return this.beneficiaries.filter((benefactor) => !benefactor.approved);
+
+    approvedBeneficiaries() {
+      return (
+        this.beneficiaries.filter((benefactor) => benefactor.approved) || []
+      );
     },
 
     rejectedBeneficiaries() {
-      return this.beneficiaries.filter((benefactor) => benefactor.rejected);
+      return (
+        this.beneficiaries.filter((benefactor) => benefactor.rejected) || []
+      );
     },
 
     pendingBeneficiaries() {
-      return this.beneficiaries.filter(
-        (benefactor) => !benefactor.rejected && !benefactor.approved
+      return (
+        this.beneficiaries.filter(
+          (benefactor) => !benefactor.rejected && !benefactor.approved
+        ) || []
       );
     },
 
@@ -324,7 +331,7 @@ export default {
 
       const valid =
         this.tabIndex === 0
-          ? this.beneficiaries
+          ? this.approvedBeneficiaries
           : this.tabIndex === 1
           ? this.pendingBeneficiaries
           : this.rejectedBeneficiaries;
@@ -438,6 +445,7 @@ export default {
 
         if (response.status == "success") {
           this.getCampaignBeneficiaries();
+          this.$toast.success(response.message);
           screenLoading.close();
         }
       } catch (err) {
