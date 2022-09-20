@@ -1,31 +1,31 @@
 import Vue from "vue";
 import moment from "moment";
-const capitalize = value => {
+const capitalize = (value) => {
   if (value) {
     return value
       .split(" ")
-      .map(val => val.charAt(0).toUpperCase() + val.slice(1))
+      .map((val) => val.charAt(0).toUpperCase() + val.slice(1))
       .join(" ");
   }
   return "";
 };
-const formatDateOnly = value => {
+const formatDateOnly = (value) => {
   if (!value) return "";
   return moment(value).format("DD/MM/YYYY");
 };
-const formatDateText = value => {
+const formatDateText = (value) => {
   if (!value) return "";
   return moment(value).format(" dddd, MMMM DD, YYYY ");
 };
-const formatDate = value => {
+const formatDate = (value) => {
   if (!value) return "";
   return moment(value).format("DD MMMM, YYYY ");
 };
-const shortDate = value => {
+const shortDate = (value) => {
   if (!value) return "";
   return moment(value).format("DD MMM, YYYY ");
 };
-const formatNumber = value => {
+const formatNumber = (value) => {
   if (value) {
     return value
       .toString()
@@ -34,13 +34,20 @@ const formatNumber = value => {
   }
   return 0;
 };
-const formatCurrency = value => {
-  let val = (value / 1).toFixed(2).replace(".", ".");
-  return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+const formatCurrency = (value) => {
+  if (value) {
+    let val = (value / 1).toFixed(2).replace(".", ".");
+    return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  }
+  return 0;
 };
-const formatCount = value => {
-  let val = (value / 1).toFixed().replace(".", ".");
-  return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
+const formatCount = (value) => {
+  if (value) {
+    let val = (value / 1).toFixed().replace(".", ".");
+    return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  }
+  return 0;
 };
 
 Vue.filter("capitalize", capitalize);

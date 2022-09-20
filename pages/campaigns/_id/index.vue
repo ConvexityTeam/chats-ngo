@@ -61,7 +61,7 @@
               @click="
                 $router.push({
                   path: `/campaigns/${$route.params.id}/manage-tokens`,
-                  query: { method: 'sms' }
+                  query: { method: 'sms' },
                 })
               "
             >
@@ -288,7 +288,7 @@ export default {
     drawer: false,
     remount: false,
     direction: "rtl",
-    statuses: ["pending", "completed", "ongoing"]
+    statuses: ["pending", "completed", "ongoing"],
   }),
 
   components: {
@@ -299,25 +299,43 @@ export default {
     addProduct,
     rejectBenefactor,
     campaignVendors,
-    campaignProducts
+    campaignProducts,
   },
 
   computed: {
     ...mapGetters("authentication", ["user"]),
     unapprovedBeneficiaries() {
-      return this.beneficiaries.filter(benefactor => !benefactor.approved);
+      return this.beneficiaries.filter((benefactor) => !benefactor.approved);
     },
+
+    rejectedBeneficiaries() {
+      return this.beneficiaries.filter((benefactor) => benefactor.rejected);
+    },
+
+    pendingBeneficiaries() {
+      return this.beneficiaries.filter(
+        (benefactor) => !benefactor.rejected && !benefactor.approved
+      );
+    },
+
     query() {
+      // const valid =
+      //   this.tabIndex == 0 ? this.beneficiaries : this.unapprovedBeneficiaries;
+
       const valid =
-        this.tabIndex == 0 ? this.beneficiaries : this.unapprovedBeneficiaries;
+        this.tabIndex === 0
+          ? this.beneficiaries
+          : this.tabIndex === 1
+          ? this.pendingBeneficiaries
+          : this.rejectedBeneficiaries;
 
       if (this.searchQuery) {
-        return valid.filter(benefactor => {
+        return valid.filter((benefactor) => {
           return this.searchQuery
             .toLowerCase()
             .split(" ")
             .every(
-              v =>
+              (v) =>
                 benefactor &&
                 benefactor.User &&
                 benefactor.User.first_name.toLowerCase().includes(v)
@@ -326,7 +344,7 @@ export default {
       } else {
         return valid;
       }
-    }
+    },
   },
 
   mounted() {
@@ -427,15 +445,23 @@ export default {
       }
     },
     async rejectBenefactor() {
+      console.log("activeBenefactor:::", this.activeBenefactor);
       try {
         this.openScreen();
         const response = await this.$axios.put(
           `/organisation/${this.orgId}/campaigns/${this.$route.params.id}/beneficiaries`,
           {
             beneficiary_id: this.activeBenefactor?.UserId,
-            approved: false
+            approved: false,
+            rejected: true,
           }
         );
+
+        if (response.status === "success") {
+          this.getCampaignBeneficiaries();
+          this.$toast.success(response.message);
+          screenLoading.close();
+        }
       } catch (err) {
         screenLoading.close();
       }
@@ -445,10 +471,10 @@ export default {
       screenLoading = this.$loading({
         lock: true,
         spinner: "el-icon-loading",
-        background: "#0000009b"
+        background: "#0000009b",
       });
-    }
-  }
+    },
+  },
 };
 </script>
 

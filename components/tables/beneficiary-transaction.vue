@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="row pt-4 ">
+    <div class="row pt-4">
       <div class="col-lg-8">
         <div class="row">
           <div class="col-lg-5">
@@ -34,7 +34,7 @@
         </div>
       </div>
 
-      <div class=" ml-auto mx-3">
+      <div class="ml-auto mx-3">
         <csv :data="computedData" name="beneficiary-transactions" />
       </div>
     </div>
@@ -68,22 +68,14 @@
                   approval: transaction.transaction_type == 'approval',
                   pending: transaction.transaction_type == 'spent',
                   withdrawal: transaction.transaction_type == 'withdrawal',
-                  progress: transaction.transaction_type == 'transfer'
+                  progress: transaction.transaction_type == 'transfer',
                 }"
               >
                 {{ transaction.transaction_type | capitalize }}
               </div>
             </td>
             <td>
-              {{
-                transaction &&
-                transaction.Beneficiary &&
-                transaction.Beneficiary
-                  ? transaction.Beneficiary.first_name +
-                    " " +
-                    transaction.Beneficiary.last_name
-                  : "-"
-              }}
+              {{ getBeneficiaryName(transaction) }}
             </td>
             <td>{{ transaction.createdAt | shortDate }}</td>
           </tr>
@@ -108,18 +100,18 @@ export default {
     loading: false,
     id: "",
     searchQuery: "",
-    transactions: []
+    transactions: [],
   }),
 
   computed: {
     ...mapGetters("authentication", ["user"]),
     resultQuery() {
       if (this.searchQuery) {
-        return this.transactions.filter(data => {
+        return this.transactions.filter((data) => {
           return this.searchQuery
             .toLowerCase()
             .split(" ")
-            .every(v => data.reference.toLowerCase().includes(v));
+            .every((v) => data.reference.toLowerCase().includes(v));
         });
       } else {
         return this.transactions;
@@ -127,7 +119,7 @@ export default {
     },
     computedData() {
       const data = this.transactions || [];
-      return data.map(transaction => {
+      return data.map((transaction) => {
         return {
           Reference: transaction.reference,
           Amount: transaction.amount,
@@ -137,10 +129,10 @@ export default {
             transaction?.Beneficiary?.last_name,
 
           Type: transaction.transaction_type,
-          Created: moment(transaction.createdAt).format("dddd, MMMM DD, YYYY")
+          Created: moment(transaction.createdAt).format("dddd, MMMM DD, YYYY"),
         };
       });
-    }
+    },
   },
 
   mounted() {
@@ -168,14 +160,24 @@ export default {
       }
     },
 
+    getBeneficiaryName(transaction) {
+      if (
+        transaction?.Beneficiary?.first_name &&
+        transaction?.Beneficiary?.last_name
+      ) {
+        return `${transaction?.Beneficiary?.first_name} ${transaction?.Beneficiary?.last_name}`;
+      }
+      return "-";
+    },
+
     openScreen() {
       screenLoading = this.$loading({
         lock: true,
         spinner: "el-icon-loading",
-        background: "#0000009b"
+        background: "#0000009b",
       });
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -201,5 +203,10 @@ select.form-control {
 
 .form-controls {
   height: 50px;
+}
+
+.status {
+  width: 72px;
+  max-width: 90px;
 }
 </style>

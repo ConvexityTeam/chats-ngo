@@ -45,13 +45,13 @@
                   completed: complaint.status == 'resolved',
                 }"
               >
-                <span class="">{{ complaint.status }}</span>
+                <span class="">{{ complaint.status | capitalize }}</span>
               </div>
             </td>
             <td>
               <div>
                 <Button
-                  text="View complaint"
+                  text="View"
                   :has-icon="false"
                   :has-border="true"
                   custom-styles="border: 1px solid #17CE89 !important; border-radius: 5px !important; font-size: 0.875rem !important; height: 33px !important"
@@ -108,5 +108,9 @@ export default {
   display: block;
   word-wrap: break-word;
   max-width: 12rem;
+}
+
+.status {
+  width: 80px;
 }
 </style>

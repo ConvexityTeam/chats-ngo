@@ -34,7 +34,7 @@
         </div>
       </div>
 
-      <div class=" ml-auto mx-3">
+      <div class="ml-auto mx-3">
         <csv :data="computedData" :name="`${name} campaigns`" />
       </div>
     </div>
@@ -79,7 +79,8 @@
                 :class="{
                   pending: campaign.status === 'pending',
                   progress: campaign.status === 'active',
-                  completed: campaign.status === 'completed'
+                  ongoing: campaign.status === 'ongoing',
+                  completed: campaign.status === 'completed',
                 }"
               >
                 {{ campaign.status | capitalize }}
@@ -113,13 +114,13 @@ export default {
   props: {
     campaigns: {
       type: Array,
-      default: () => []
+      default: () => [],
     },
 
     name: {
       type: String,
-      default: ""
-    }
+      default: "",
+    },
   },
 
   data: () => ({
@@ -129,42 +130,42 @@ export default {
       { value: null, text: "Filter" },
       { value: "all", text: "All" },
       { value: "inprogress", text: "In Progress" },
-      { value: "completed", text: "Completed" }
-    ]
+      { value: "completed", text: "Completed" },
+    ],
   }),
 
   computed: {
     resultQuery() {
       if (this.searchQuery) {
         const data = this.campaigns ? this.campaigns : [];
-        return data.filter(campaign => {
+        return data.filter((campaign) => {
           return this.searchQuery
             .toLowerCase()
             .split(" ")
-            .every(v => campaign.title.toLowerCase().includes(v));
+            .every((v) => campaign.title.toLowerCase().includes(v));
         });
       } else {
         return this.campaigns;
       }
     },
     computedData() {
-      return this.campaigns.map(campaign => {
+      return this.campaigns.map((campaign) => {
         return {
           Name: campaign.title,
           Budget: campaign.budget,
           Start_Date: moment(campaign.start_date).format(" MMMM DD, YYYY"),
           End_Date: moment(campaign.end_date).format(" MMMM DD, YYYY"),
-          Status: campaign.status
+          Status: campaign.status,
         };
       });
-    }
+    },
   },
 
   methods: {
     handleTempCampaign(campaign) {
       this.$router.push(`/campaigns/${campaign.id}`);
-    }
-  }
+    },
+  },
 };
 </script>
 

@@ -10,12 +10,12 @@
             <!-- QR code here -->
             <div class="col-lg-6">
               <div class="qr-holder p-2 d-flex">
-                <qrcode-vue
-                  value="https://example.com"
-                  level="H"
-                  :size="120"
-                  render-as="svg"
+                <img
+                  :src="token.token"
+                  height="150"
+                  width="150"
                   class="m-auto"
+                  alt=""
                 />
               </div>
             </div>
@@ -24,13 +24,15 @@
             <div class="col-lg-6">
               <!-- Beneficiary -->
               <div class="mb-2 pb-1">
-                <p class="text-xs primary-gray ">BENEFICIARY</p>
+                <p class="text-xs primary-gray">BENEFICIARY</p>
                 <p class="primary-blue text-sm font-medium">
                   {{
                     token.Beneficiary
-                      ? `${token.Beneficiary.first_name +
+                      ? `${
+                          token.Beneficiary.first_name +
                           " " +
-                          token.Beneficiary.last_name}`
+                          token.Beneficiary.last_name
+                        }`
                       : ""
                   }}
                 </p>
@@ -38,15 +40,15 @@
 
               <!-- Campaign -->
               <div class="mb-2 pb-1">
-                <p class="text-xs primary-gray ">CAMPAIGN</p>
+                <p class="text-xs primary-gray">CAMPAIGN</p>
                 <p class="primary-blue text-sm font-medium">
                   {{ token.Campaign ? token.Campaign.title : "" }}
                 </p>
               </div>
 
               <!-- AMOUNT -->
-              <div class="mb-2 ">
-                <p class="text-xs primary-gray ">AMOUNT</p>
+              <div class="mb-2">
+                <p class="text-xs primary-gray">AMOUNT</p>
                 <p class="primary-blue text-sm font-medium">
                   {{ $currency }}{{ token.amount | formatCurrency }}
                 </p>
@@ -69,9 +71,9 @@ export default {
   props: {
     data: {
       type: Array,
-      default: () => []
-    }
-  }
+      default: () => [],
+    },
+  },
 };
 </script>
 
@@ -87,7 +89,9 @@ export default {
 .qr-holder {
   border: 1px solid #f5f6f8;
   border-radius: 8px;
-  height: 145px;
+  height: 155px;
+  justify-content: center;
+  align-items: center;
 }
 
 .col-md-4 {
