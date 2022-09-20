@@ -86,7 +86,10 @@
     </div>
 
     <div class="mt-2">
-      <all-vendors :allVendors="allVendors" @handleReload="getallVendors" />
+      <all-vendors
+        :allVendors="allVendors"
+        @handleReload="getallVendors(orgId)"
+      />
     </div>
   </div>
 </template>
@@ -106,21 +109,23 @@ export default {
     vendorTransaction,
     totalBalance,
     allVendors,
-    AllVendors
+    AllVendors,
   },
 
   data: () => ({
+    orgId: "",
     count: "",
     summary: {},
-    vendors: []
+    vendors: [],
   }),
 
   computed: {
     ...mapGetters("authentication", ["user"]),
-    ...mapGetters("vendors", ["allVendors"])
+    ...mapGetters("vendors", ["allVendors"]),
   },
 
   mounted() {
+    this.orgId = this.user?.AssociatedOrganisations[0]?.OrganisationId;
     this.getallVendors(this.user?.AssociatedOrganisations[0]?.OrganisationId);
     this.getSummary();
   },
@@ -129,11 +134,10 @@ export default {
     ...mapActions("vendors", ["getallVendors"]),
     async getSummary() {
       try {
-        const id = this.user?.AssociatedOrganisations[0]?.OrganisationId;
         this.openScreen();
 
         const response = await this.$axios.get(
-          `organisations/${id}/vendors/summary`
+          `organisations/${this.orgId}/vendors/summary`
         );
 
         console.log("Vendor Summary", response);
@@ -152,10 +156,10 @@ export default {
       screenLoading = this.$loading({
         lock: true,
         spinner: "el-icon-loading",
-        background: "#0000009b"
+        background: "#0000009b",
       });
-    }
-  }
+    },
+  },
 };
 </script>
 

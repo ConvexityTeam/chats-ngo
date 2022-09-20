@@ -1,10 +1,15 @@
 <template>
   <section>
-    <div v-if="loading" class="spinner ">
+    <div v-if="loading" class="spinner">
       <b-spinner class="primary" label="Spinning"></b-spinner>
     </div>
 
-    <bar-chart v-else-if="!requireData" :data="barChartData" :options="barChartOptions" :height="300" />
+    <bar-chart
+      v-else-if="requireData"
+      :data="barChartData"
+      :options="barChartOptions"
+      :height="300"
+    />
 
     <h3 v-else class="no-record-dashboard text-center no-record">
       NO RECORD FOUND
@@ -102,7 +107,7 @@ export default {
     ...mapGetters("authentication", ["user"]),
     requireData() {
       const data = this.barChartData?.datasets;
-      const hasValue = Object.values(data).some(value => value > 0);
+      const hasValue = Object.values(data).some((value) => value > 0);
       return !!data.length && hasValue;
     },
   },
@@ -124,19 +129,25 @@ export default {
 
         if (response.status == "success") {
           const data = response.data;
-          const colors = ["#134611", "#3E8914", "#3DA35D", "#96E072", "#E8FCCF"]
+          const colors = [
+            "#134611",
+            "#3E8914",
+            "#3DA35D",
+            "#96E072",
+            "#E8FCCF",
+          ];
 
-          this.barChartData.labels = data.ageRange
+          this.barChartData.labels = data.ageRange;
           const mapData = data?.data.map((item, index) => {
             return {
               label: item.label,
               data: item.data,
-              backgroundColor: colors[index] || "#134611"
+              backgroundColor: colors[index] || "#134611",
             };
           });
 
-          this.barChartData.datasets = mapData
-          console.log('mapData', mapData);
+          this.barChartData.datasets = mapData;
+          console.log("mapData", mapData);
         }
 
         this.loading = false;

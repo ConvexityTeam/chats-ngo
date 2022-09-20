@@ -1,17 +1,10 @@
 <template>
-  <div class="d-flex">
-    <div v-if="$fetchState.pending"></div>
+  <div>
+    <div v-if="$fetchState.pending" class="loader mx-auto my-5"></div>
+
     <!-- form here -->
-    <div class="" v-else-if="Object.keys(payload).length">
-      <div class="pt-2 pb-3 w-75 text-center m-auto">
-        <span class="font-medium primary-gray">
-          Select product or services and assign vendors and price tags.
-        </span>
-      </div>
-
-      {{ payload.ProductVendors }}
-
-      <form class="px-3">
+    <div v-else-if="Object.keys(payload).length">
+      <form class="mt-5 px-3">
         <!-- product/service here -->
         <div class="mb-3">
           <label for="product">Product / Service</label>
@@ -39,15 +32,11 @@
             <input
               type="text"
               class="form"
-              :class="{ error: $v.payload.tag.$error }"
               id="tag"
-              :placeholder="
-                `Enter ${
-                  !payload.type ? 'product or service' : payload.type
-                }  name`
-              "
+              :placeholder="`Enter ${
+                !payload.type ? 'product or service' : payload.type
+              }  name`"
               v-model="payload.tag"
-              @blur="$v.payload.tag.$touch()"
             />
           </div>
         </div>
@@ -59,29 +48,30 @@
             <input
               type="number"
               class="form"
-              :class="{ error: $v.payload.cost.$error }"
               id="cost"
               placeholder="NGN 0.00"
               v-model="payload.cost"
-              @blur="$v.payload.cost.$touch()"
             />
           </div>
         </div>
 
         <!-- Vendor here -->
         <div class="mb-3">
-          <label for="vendor">Vendor</label>
+          <label for="vendor">
+            {{ payload.ProductVendors.length === 1 ? "Vendor" : "Vendors" }}
+          </label>
           <div id="product" class="w-100">
             <el-select
-              v-model="payload.ProductVendors"
+              v-model="vendorIds"
               id="vendor"
               placeholder="—Select — "
               multiple
+              disabled
             >
               <el-option
-                v-for="(vendor, i) in allVendors"
-                :key="vendor.id + i"
-                :label="vendor.first_name + ' ' + vendor.last_name"
+                v-for="vendor in payload.ProductVendors"
+                :key="vendor.id"
+                :label="vendor.VendorName"
                 :value="vendor.id"
               >
               </el-option>
@@ -96,31 +86,39 @@
             custom-styles="height:41px; border-radius: 5px; padding: 0px 20px !important; width: 100% !important"
             :has-border="false"
             :has-icon="false"
-            :disabled="!isComplete"
-            @click="createProduct"
+            :loading="loading"
+            :disabled="loading"
+            @click="saveProduct"
           />
         </div>
       </form>
     </div>
-    <div v-else></div>
+    <div v-else class="no-record text-center">Data not found</div>
   </div>
 </template>
 
 <script>
-import { required } from "vuelidate/lib/validators";
-import noProducts from "~/components/icons/no-products.vue";
-import { mapActions, mapGetters } from "vuex";
-let screenLoading;
-
-const greaterThanZero = value => value >= 0;
+import { mapGetters } from "vuex";
 
 export default {
   props: {
     product: {
       type: Object,
-      default: () => {}
-    }
+      default: () => {},
+    },
   },
+
+  computed: {
+    ...mapGetters("authentication", ["user"]),
+  },
+
+  data: () => ({
+    loading: false,
+    options: ["product", "service"],
+    orgId: "",
+    payload: {},
+    vendorIds: [],
+  }),
 
   async fetch() {
     const response = await this.$axios.get(
@@ -129,168 +127,43 @@ export default {
 
     if (response.status == "success") {
       this.payload = response.data;
+      this.vendorIds = this.payload?.ProductVendors?.map((vendor) => vendor.id);
     }
-
     console.log("SINGLE PRD:::", response);
   },
 
-  data: () => ({
-    options: ["product", "service"],
-    isEdit: false,
-    isSuccessful: false,
-    products: [],
-    orgId: "",
-
-    payload: {
-      // type: "",
-      // tag: "",
-      // cost: "",
-      // vendors: []
-    }
-  }),
-
-  validations: {
-    payload: {
-      type: {
-        required
-      },
-
-      tag: {
-        required
-      },
-
-      cost: {
-        required,
-        greaterThanZero
-      },
-
-      vendors: {
-        required
-      }
-    }
-  },
-
-  components: { noProducts },
-
   mounted() {
-    (this.orgId = this.user.AssociatedOrganisations[0].OrganisationId),
-      this.getallVendors(this.orgId);
-    console.log("computedVendors", this.computedVendors);
-    console.log("AVAIL", this.payload?.ProductVendors);
-  },
-
-  computed: {
-    ...mapGetters("authentication", ["user"]),
-    ...mapGetters("vendors", ["allVendors"]),
-
-    computedVendors() {
-      // return only the vendors whose id is not in payload.vendors
-      return this.allVendors.filter(vendor => {
-        return this.payload.ProductVendors;
-        // return !this.payload?.ProductVendors?.includes(vendor.id) ?? "";
-      });
-    },
-
-    isComplete() {
-      // return (
-      //   this.payload.type &&
-      //   this.payload.tag &&
-      //   this.payload.cost &&
-      //   this.payload.vendors.length
-      // );
-
-      return false;
-    }
+    this.orgId = this.user?.AssociatedOrganisations[0]?.OrganisationId;
   },
 
   methods: {
-    ...mapActions("vendors", ["getallVendors"]),
-    findVendor(id) {
-      const vendors = this.allVendors.length ? this.allVendors : [];
-      const foundVendor = vendors.filter(vendor => vendor.id === id);
-      return foundVendor[0].first_name + " " + foundVendor[0].last_name;
-    },
-    createProduct() {
-      this.$v.payload.$touch();
-      console.log("PL:", this.payload);
-      if (this.$v.payload.$error === true) {
-        return this.$toast.error("Please fill in appropriately");
-      }
-
-      if (this.isEdit) {
-        this.products[this.payload] = this.payload;
-        this.payload = {
-          type: "",
-          tag: "",
-          cost: "",
-          vendors: []
-        };
-        return (this.isEdit = false);
-      }
-
-      this.products.push(this.payload);
-      this.payload = {
-        type: "",
-        tag: "",
-        cost: "",
-        vendors: []
-      };
-      this.isEdit = false;
-    },
-    async saveProductTags() {
+    async saveProduct() {
       try {
-        console.log("PRODUCTS::", this.products);
-        this.openScreen();
         this.loading = true;
-
         const response = await this.$axios.post(
-          `/organisations/${this.orgId}/campaigns/${this.$route.params.id}/products`,
-
-          this.products
+          `organisations/product/${this.orgId}/${this.$route.params.id}/update`,
+          {
+            ProductId: this.payload?.id,
+            tag: this.payload?.tag,
+            cost: this.payload?.cost,
+            type: this.payload?.type,
+          }
         );
 
         if (response.status == "success") {
-          this.$emit("close");
-          screenLoading.close();
+          this.$bvModal.hide("edit-product");
           this.$toast.success(response.message);
+          this.$emit("product-updated");
         }
 
-        console.log("SAVE TAG RESPONSE::", response);
-      } catch (err) {
-        console.log("SAVE TAG ERR::", err);
-        screenLoading.close();
-        this.$toast.error(err.response.data?.message);
+        console.log("UPDATERESPONSE:;", response);
+      } catch (error) {
+        console.log("ERROR:::", error);
+      } finally {
+        this.loading = false;
       }
     },
-
-    editProduct(product) {
-      this.isEdit = true;
-      this.payload = product;
-    },
-    deleteProduct(product) {
-      const index = this.products.indexOf(product);
-      if (index > -1) {
-        if (this.isEdit) {
-          this.payload = {
-            type: "",
-            tag: "",
-            cost: "",
-            vendors: []
-          };
-        }
-        this.isEdit = false;
-        this.products.splice(index, 1);
-      }
-    },
-
-    openScreen() {
-      screenLoading = this.$loading({
-        lock: true,
-        spinner: "el-icon-loading",
-        background: "#0000009b"
-      });
-    }
-  }
+  },
 };
 </script>
 

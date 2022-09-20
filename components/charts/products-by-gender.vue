@@ -1,15 +1,19 @@
 <template>
   <section class="d-flex w-100">
     <div class="w-50 h-100">
-      <span class="description" style="font-weight: 500"> Female</span>
-      <Female :loading="loading" :femaleDoughnutChartData="femaleDoughnutChartData"
-        :doughnutChartOptions="doughnutChartOptions" />
+      <Female
+        :loading="loading"
+        :femaleDoughnutChartData="femaleDoughnutChartData"
+        :doughnutChartOptions="doughnutChartOptions"
+      />
     </div>
 
     <div class="w-50 h-100">
-      <span class="description" style="font-weight: 500"> Male</span>
-      <Male :loading="loading" :maleDoughnutChartData="maleDoughnutChartData"
-        :doughnutChartOptions="doughnutChartOptions" />
+      <Male
+        :loading="loading"
+        :maleDoughnutChartData="maleDoughnutChartData"
+        :doughnutChartOptions="doughnutChartOptions"
+      />
     </div>
   </section>
 </template>
@@ -22,7 +26,7 @@ import Male from "~/components/charts/products-gender-male";
 export default {
   components: {
     Female,
-    Male
+    Male,
   },
 
   data() {
@@ -41,19 +45,19 @@ export default {
 
           labels: {
             fontColor: "#25396F",
-            usePointStyle: true
-          }
+            usePointStyle: true,
+          },
         },
 
         cutoutPercentage: 70,
         rotation: Math.PI * 1,
         animation: {
-          animateScale: true
+          animateScale: true,
         },
         tooltips: {
-          backgroundColor: "#17BF62"
-        }
-      }
+          backgroundColor: "#17BF62",
+        },
+      },
     };
   },
 
@@ -71,10 +75,10 @@ export default {
               "#96E072",
               "#3DA35D",
               "#3E8914",
-              "#134611"
-            ]
-          }
-        ]
+              "#134611",
+            ],
+          },
+        ],
       };
     },
 
@@ -89,12 +93,12 @@ export default {
               "#96E072",
               "#3DA35D",
               "#3E8914",
-              "#134611"
-            ]
-          }
-        ]
+              "#134611",
+            ],
+          },
+        ],
       };
-    }
+    },
   },
 
   mounted() {
@@ -132,8 +136,8 @@ export default {
       const data = value.male || value.female;
 
       if (data.length) {
-        data.forEach(item => {
-          Object.keys(item).forEach(key => {
+        data.forEach((item) => {
+          Object.keys(item).forEach((key) => {
             if (!this.labels.includes(key)) {
               this.labels.push(key);
             }
@@ -145,14 +149,14 @@ export default {
     abstractData(data) {
       const mapped = [];
       if (data.length) {
-        data.forEach(item => {
-          Object.values(item).forEach(value => {
+        data.forEach((item) => {
+          Object.values(item).forEach((value) => {
             mapped.push(value);
           });
         });
       }
       return mapped;
-    }
-  }
+    },
+  },
 };
 </script>

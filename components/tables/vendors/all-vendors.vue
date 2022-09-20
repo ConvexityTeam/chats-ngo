@@ -26,12 +26,12 @@
         </div>
       </div>
 
-      <div class=" ml-auto d-flex mx-3">
+      <div class="ml-auto d-flex mx-3">
         <csv
           :has-border="true"
           :data="computedData"
           :green-csv="true"
-          name="vendors"
+          :name="`${organisationName} vendors`"
         />
 
         <div class="ml-3">
@@ -67,18 +67,12 @@
         <tbody>
           <tr v-for="vendor in resultQuery" :key="vendor.id">
             <td class="d-flex align-items-center">
-              <img
-                :src="
-                  vendor.profile_pic == null || !vendor.profile_pic
-                    ? img
-                    : vendor.profile_pic
-                "
-                width="30"
-                height="30"
-                class="rounded-circle"
-                :alt="vendor.first_name"
-                loading="lazy"
-              />
+              <b-avatar
+                :src="vendor.profile_pic"
+                size="30px"
+                class="img-fluid p-1"
+                variant="light"
+              ></b-avatar>
 
               <span class="mx-3 pt-1">
                 {{ vendor.first_name + " " + vendor.last_name }}
@@ -119,14 +113,14 @@ import moment from "moment";
 export default {
   layout: "dashboard",
   components: {
-    addVendor
+    addVendor,
   },
 
   props: {
     allVendors: {
       type: Array,
-      default: () => []
-    }
+      default: () => [],
+    },
   },
 
   data() {
@@ -135,19 +129,27 @@ export default {
       isCheckAll: false,
       img: require("~/assets/img/user.png"),
       data: [],
-      searchQuery: ""
+      searchQuery: "",
     };
+  },
+
+  mounted() {
+    console.log("allVendors", this.user);
   },
 
   computed: {
     ...mapGetters("authentication", ["user"]),
+
+    organisationName() {
+      return this.user?.AssociatedOrganisations[0]?.Organisation?.name;
+    },
     resultQuery() {
       if (this.searchQuery) {
-        return this.allVendors.filter(vendor => {
+        return this.allVendors.filter((vendor) => {
           return this.searchQuery
             .toLowerCase()
             .split(" ")
-            .every(v => vendor.first_name.toLowerCase().includes(v));
+            .every((v) => vendor.first_name.toLowerCase().includes(v));
         });
       } else {
         return this.allVendors;
@@ -156,25 +158,21 @@ export default {
 
     computedData() {
       const data = this.allVendors || [];
-      return data.map(vendor => {
+      return data.map((vendor) => {
         return {
           Name: vendor.first_name + " " + vendor.last_name,
           Phone_Number: vendor.phone,
           Store: vendor.Store ? vendor.Store.store_name : "",
           Email_Address: vendor.email,
-          //   location: vendor.Store
-          //     ? JSON.parse(
-          //         vendor?.Store?.location?.country +
-          //           "," +
-          //           vendor?.Store?.location?.state
-          //       )
-          //     : "",
+          location: vendor.Store
+            ? JSON.parse(vendor?.Store?.location).country
+            : "",
           Address: vendor.Store ? vendor.Store.address : "",
-          Created: moment(vendor.createdAt).format("DD MMMM, YYYY")
+          Created: moment(vendor.createdAt).format("DD MMMM, YYYY"),
         };
       });
-    }
-  }
+    },
+  },
 };
 </script>
 

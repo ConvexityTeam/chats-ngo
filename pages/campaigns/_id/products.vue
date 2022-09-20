@@ -6,12 +6,12 @@
 
     <!-- Modal here -->
     <div>
-      <Modal id="edit-product" title="Edit Product / Service">
-        <editProduct :product="activeProduct" />
+      <Modal id="edit-product" :title="`Edit ${activeProduct.type}`">
+        <editProduct :product="activeProduct" @product-updated="$fetch" />
       </Modal>
 
       <Modal id="delete-product" :title="`Delete ${activeProduct.type}`">
-        <deleteProduct :product="activeProduct" @handleDelete="handleDelete" />
+        <deleteProduct :product="activeProduct" @product-deleted="$fetch" />
       </Modal>
     </div>
 
@@ -40,7 +40,7 @@
     </div>
 
     <!-- Table here -->
-    <div class=" mt-4">
+    <div class="mt-4">
       <div v-if="$fetchState.pending" class="text-center loader mb-5"></div>
 
       <!-- Products here -->
@@ -86,7 +86,13 @@
                     <!-- Vendors here -->
                     <div class="col-lg-5">
                       <div class="mb-3">
-                        <span class="primary-gray text-xs">VENDOR(s)</span>
+                        <span class="primary-gray text-xs">
+                          {{
+                            product.ProductVendors.length == 1
+                              ? "VENDOR"
+                              : "VENDORS"
+                          }}
+                        </span>
 
                         <h6
                           class="word-content primary-blue font-medium"
@@ -156,18 +162,18 @@ import { mapGetters } from "vuex";
 import editProduct from "~/components/forms/edit-product.vue";
 import deleteProduct from "~/components/forms/delete-product.vue";
 
-let screenLoading;
-
 export default {
+  name: "Campaign Products",
   layout: "dashboard",
   components: { editProduct, deleteProduct },
 
   data() {
     return {
+      orgId: "",
       searchQuery: "",
       products: [],
       activeProduct: {},
-      statuses: ["ongoing", "active", "completed"]
+      statuses: ["ongoing", "active", "completed"],
     };
   },
 
@@ -175,22 +181,22 @@ export default {
     ...mapGetters("authentication", ["user"]),
     resultQuery() {
       if (this.searchQuery) {
-        return this.products.filter(product => {
+        return this.products.filter((product) => {
           return this.searchQuery
             .toLowerCase()
             .split(" ")
-            .every(v => product && product.tag.toLowerCase().includes(v));
+            .every((v) => product && product.tag.toLowerCase().includes(v));
         });
       } else {
         return this.products;
       }
-    }
+    },
   },
 
   async fetch() {
-    const id = this.user?.AssociatedOrganisations[0]?.OrganisationId;
+    this.orgId = this.user?.AssociatedOrganisations[0]?.OrganisationId;
     const response = await this.$axios.get(
-      `organisations/${id}/campaigns/${this.$route.params.id}/products`
+      `organisations/${this.orgId}/campaigns/${this.$route.params.id}/products`
     );
     this.products = response.data;
   },
@@ -200,24 +206,7 @@ export default {
       this.activeProduct = product;
       this.$bvModal.show(`${action}-product`);
     },
-    async handleDelete() {
-      try {
-        this.openScreen();
-        const response = await this.$axios.post(``);
-      } catch (err) {
-        screenLoading.close();
-        console.log(err);
-      }
-    },
-
-    openScreen() {
-      screenLoading = this.$loading({
-        lock: true,
-        spinner: "el-icon-loading",
-        background: "#0000009b"
-      });
-    }
-  }
+  },
 };
 </script>
 

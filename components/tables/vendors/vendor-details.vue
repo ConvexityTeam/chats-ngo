@@ -1,23 +1,18 @@
 <template>
   <div class="campaign-details-holder p-4">
-    <h4 class="campaign-details-header  poppins pt-2">Personal Details</h4>
+    <h4 class="campaign-details-header poppins pt-2">Personal Details</h4>
 
     <!-- details region here -->
-    <div class="campaign-details-inner  mt-4 p-4">
+    <div class="campaign-details-inner mt-4 p-4">
       <div
-        class=" d-flex justify-content-center mx-auto align-items-center logo-holder "
+        class="d-flex justify-content-center mx-auto align-items-center logo-holder"
       >
-        <img
-          :src="
-            user.profile_pic == null || !user.profile_pic
-              ? img
-              : user.profile_pic
-          "
-          width="100"
-          height="100"
-          alt=""
-          class="rounded-circle "
-        />
+        <b-avatar
+          :src="user.profile_pic"
+          size="100px"
+          class="img-fluid p-1"
+          variant="light"
+        ></b-avatar>
       </div>
 
       <div class="text-center my-4">
@@ -68,13 +63,13 @@ export default {
   props: {
     user: {
       type: Object,
-      default: () => {}
-    }
+      default: () => {},
+    },
   },
 
   data: () => ({
-    img: require("~/assets/img/lady.svg")
-  })
+    img: require("~/assets/img/lady.svg"),
+  }),
 };
 </script>
 

@@ -4,17 +4,17 @@
       <b-spinner class="primary" label="Spinning"></b-spinner>
     </div>
 
-    <doughnut-chart
-      v-else-if="requiredData"
-      :data="doughnutChartData"
-      :options="doughnutChartOptions"
-      :height="120"
-      :width="250"
-    />
+    <div v-else-if="requiredData">
+      <span class="primary-blue" style="font-weight: 500"> Female</span>
+      <doughnut-chart
+        :data="doughnutChartData"
+        :options="doughnutChartOptions"
+        :height="120"
+        :width="250"
+      />
+    </div>
 
-    <h3 v-else class="text-center no-record">
-      NO RECORD FOUND
-    </h3>
+    <h3 v-else class="text-center no-record my-4">NO RECORD FOUND</h3>
   </section>
 </template>
 
@@ -22,30 +22,30 @@
 import doughnutChart from "~/plugins/charts/doughnutchart";
 export default {
   components: {
-    doughnutChart
+    doughnutChart,
   },
 
   props: {
     femaleDoughnutChartData: {
       type: Object,
-      default: () => {}
+      default: () => {},
     },
 
     doughnutChartOptions: {
       type: Object,
-      default: () => {}
+      default: () => {},
     },
 
     loading: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
 
   computed: {
     requiredData() {
       return !!this.femaleDoughnutChartData?.datasets[0]?.data?.length;
-    }
-  }
+    },
+  },
 };
 </script>

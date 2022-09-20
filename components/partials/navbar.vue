@@ -28,7 +28,7 @@
               style="cursor: pointer"
             >
               <svg
-                @click="drawer = true"
+                @click="drawer = false"
                 width="24"
                 height="24"
                 viewBox="0 0 24 24"
@@ -66,7 +66,7 @@ export default {
     title: "",
     isNotification: false,
     drawer: false,
-    direction: "rtl"
+    direction: "rtl",
   }),
 
   computed: {
@@ -76,7 +76,7 @@ export default {
       return (
         this.user?.AssociatedOrganisations[0]?.Organisation?.logo_link ?? ""
       );
-    }
+    },
   },
 
   watch: {
@@ -100,7 +100,7 @@ export default {
       } else {
         this.title = this.$router.history.current.name;
       }
-    }
+    },
   },
   mounted() {
     if (this.$router.history.current.name.includes("vendors")) {
@@ -126,7 +126,7 @@ export default {
       "use::",
       this.user.AssociatedOrganisations[0].Organisation.logo_link
     );
-  }
+  },
 };
 </script>
 

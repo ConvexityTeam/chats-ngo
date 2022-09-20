@@ -36,29 +36,57 @@
 </template>
 
 <script>
-import close from "~/components/icons/close";
+import { mapGetters } from "vuex";
+let screenLoading;
 
 export default {
-  name: "campaign-prompts",
   props: {
     product: {
       type: Object,
-      default: () => {}
-    }
+      default: () => {},
+    },
   },
 
-  components: { close },
+  computed: {
+    ...mapGetters("authentication", ["user"]),
+  },
 
   methods: {
     closeModal() {
       this.$bvModal.hide("delete-product");
     },
 
-    handleDelete() {
-      this.$emit("handleDelete");
-      this.closeModal();
-    }
-  }
+    async handleDelete() {
+      try {
+        this.openScreen();
+        const orgId = this.user?.AssociatedOrganisations[0]?.OrganisationId;
+        const response = await this.$axios.post(
+          `organisations/product/${orgId}/${this.$route.params.id}/destroy`,
+          {
+            ProductId: this.product.id,
+          }
+        );
+
+        if (response.status == "success") {
+          this.closeModal();
+          this.$toast.success(response.message);
+          this.$emit("product-deleted");
+        }
+      } catch (err) {
+        console.log(err);
+      } finally {
+        screenLoading.close();
+      }
+    },
+
+    openScreen() {
+      screenLoading = this.$loading({
+        lock: true,
+        spinner: "el-icon-loading",
+        background: "#0000009b",
+      });
+    },
+  },
 };
 </script>
 
