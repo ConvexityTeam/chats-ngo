@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-drawer :visible.sync="drawer" :direction="direction">
+    <el-drawer :visible.sync="drawer" direction="rtl">
       <span>Hi, there!</span>
     </el-drawer>
 
@@ -66,7 +66,6 @@ export default {
     title: "",
     isNotification: false,
     drawer: false,
-    direction: "rtl",
   }),
 
   computed: {

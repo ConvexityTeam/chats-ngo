@@ -1,4 +1,4 @@
-export default async function(parameters) {
+export default async function (parameters) {
   const { store, redirect, $toast, from } = parameters;
 
   console.log("PARAM", parameters);
@@ -7,8 +7,10 @@ export default async function(parameters) {
 
   if (session) {
     try {
-      $toast.error("You are already logged In");
-      if (from.fullPath === "/") return redirect("/dashboard");
+      if (from.fullPath === "/") {
+        $toast.error("You are already logged In");
+        return redirect("/dashboard");
+      }
       return redirect(from.fullPath);
     } catch (error) {
       localStorage.clear();

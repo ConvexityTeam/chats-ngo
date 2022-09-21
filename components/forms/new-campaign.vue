@@ -1,5 +1,11 @@
 <template>
   <div class="mt-4 px-3">
+    <!-- Sidebar Here -->
+
+    <!-- <MapSideBar :drawer="drawer" @hidden="drawer = false" /> -->
+
+    <!-- Form Here -->
+
     <form @submit.prevent="createCampaign">
       <!-- Name field  here -->
       <div class="form-group">
@@ -9,7 +15,7 @@
           type="text"
           class="form-controls"
           :class="{
-            error: $v.payload.title.$error
+            error: $v.payload.title.$error,
           }"
           placeholder="Enter name of campaign"
           v-model="payload.title"
@@ -26,7 +32,7 @@
           class="form-controls p-2"
           placeholder="Short description"
           :class="{
-            error: $v.payload.description.$error
+            error: $v.payload.description.$error,
           }"
           cols="30"
           rows="3"
@@ -45,7 +51,7 @@
               type="number"
               class="form-controls"
               :class="{
-                error: $v.payload.budget.$error
+                error: $v.payload.budget.$error,
               }"
               id="total-amount"
               placeholder="0.00"
@@ -76,7 +82,7 @@
               format="DD-MM-YYYY"
               placeholder="DD-MM-YYYY"
               valueType="format"
-              :disabled-date="present => present <= new Date()"
+              :disabled-date="(present) => present <= new Date()"
             ></date-picker>
           </div>
         </div>
@@ -91,7 +97,7 @@
               format="DD-MM-YYYY"
               placeholder="DD-MM-YYYY"
               valueType="format"
-              :disabled-date="present => present <= new Date()"
+              :disabled-date="(present) => present <= new Date()"
             ></date-picker>
           </div>
         </div>
@@ -146,7 +152,9 @@ import { required, minValue } from "vuelidate/lib/validators";
 import { mapGetters } from "vuex";
 import DatePicker from "vue2-datepicker";
 import "vue2-datepicker/index.css";
-const greaterThanZero = value => value >= 100;
+import MapSideBar from "./map-sidebar.vue";
+import { allSettled } from "q";
+const greaterThanZero = (value) => value >= 100;
 let geocoder;
 
 export default {
@@ -154,14 +162,15 @@ export default {
     return {
       script: [
         {
-          src: `https://maps.googleapis.com/maps/api/js?key=${process.env.GOOGLE_API}&libraries=geometry,drawing&v=weekly`
-        }
-      ]
+          src: `https://maps.googleapis.com/maps/api/js?key=${process.env.GOOGLE_API}&libraries=geometry,drawing&v=weekly`,
+        },
+      ],
     };
   },
 
   data() {
     return {
+      drawer: false,
       present: new Date(),
       loading: false,
       isGeofence: false,
@@ -173,26 +182,26 @@ export default {
         budget: "",
         location: [],
         start_date: "",
-        end_date: ""
+        end_date: "",
       },
 
       location: {
-        coordinates: []
-      }
+        coordinates: [],
+      },
     };
   },
 
   validations: {
     payload: {
       title: {
-        required
+        required,
       },
       description: {
-        required
+        required,
       },
       budget: {
         required,
-        greaterThanZero
+        greaterThanZero,
       },
       //   location: {
       //     coordinates: {
@@ -200,18 +209,18 @@ export default {
       //     }
       //   },
       start_date: {
-        required
+        required,
       },
       end_date: {
-        required
-      }
-    }
+        required,
+      },
+    },
   },
 
-  components: { DatePicker },
+  components: { DatePicker, MapSideBar },
 
   computed: {
-    ...mapGetters("authentication", ["user"])
+    ...mapGetters("authentication", ["user"]),
   },
 
   mounted() {
@@ -225,6 +234,9 @@ export default {
 
     checkValue(value) {
       this.isGeofence = value;
+      if (this.isGeofence) {
+        this.drawer = true;
+      }
     },
     formatNumbers(event, key, payload) {
       if (payload) {
@@ -236,7 +248,7 @@ export default {
           "$ " +
           new Intl.NumberFormat("en-US", {
             minimumFractionDigits: 2,
-            maximumFractionDigits: 2
+            maximumFractionDigits: 2,
           }).format(this.payload[key]);
       } else {
         if (this.$v[key]) {
@@ -247,7 +259,7 @@ export default {
           "$ " +
           new Intl.NumberFormat("en-US", {
             minimumFractionDigits: 2,
-            maximumFractionDigits: 2
+            maximumFractionDigits: 2,
           }).format(this[key]);
       }
     },
@@ -289,7 +301,7 @@ export default {
       } catch (err) {
         console.log({ err });
         this.loading = false;
-        this.$toast.error(err.response.data?.message);
+        this.$toast.error(err?.response?.data?.message);
       }
     },
 
@@ -299,17 +311,17 @@ export default {
       const map = new google.maps.Map(mapComponent, {
         center: { lat: 17.35297042396732, lng: 8.808737500000019 },
         zoom: 3,
-        mapTypeId: google.maps.MapTypeId.ROADMAP
+        mapTypeId: google.maps.MapTypeId.ROADMAP,
       });
 
-      var all_overlays = [];
-      var selectedShape;
-      var drawingManager = new google.maps.drawing.DrawingManager({
+      let all_overlays = [];
+      let selectedShape;
+      let drawingManager = new google.maps.drawing.DrawingManager({
         drawingMode: google.maps.drawing.OverlayType.POLYGON,
         drawingControl: true,
         drawingControlOptions: {
           position: google.maps.ControlPosition.TOP_CENTER,
-          drawingModes: [google.maps.drawing.OverlayType.POLYGON]
+          drawingModes: [google.maps.drawing.OverlayType.POLYGON],
         },
 
         polygonOptions: {
@@ -317,8 +329,8 @@ export default {
           draggable: true,
           editable: true,
           fillColor: "",
-          fillOpacity: 0.35
-        }
+          fillOpacity: 0.35,
+        },
       });
 
       const clearSelection = () => {
@@ -328,7 +340,7 @@ export default {
         }
       };
 
-      const setSelection = shape => {
+      const setSelection = (shape) => {
         clearSelection();
         selectedShape = shape;
         shape.setEditable(true);
@@ -336,14 +348,15 @@ export default {
 
       const deleteSelectedShape = () => {
         if (selectedShape) {
-          this.payload.location.coordinates = [];
+          // this.payload.location.coordinates = [];
+          this.payload.location = [];
           selectedShape.setMap(null);
         }
       };
 
       const CenterControl = (controlDiv, map) => {
         // Set CSS for the control border.
-        var controlUI = document.createElement("div");
+        let controlUI = document.createElement("div");
         controlUI.style.backgroundColor = "#17CE89";
         controlUI.style.border = "none";
         controlUI.style.borderRadius = "10px";
@@ -355,7 +368,7 @@ export default {
         controlDiv.appendChild(controlUI);
 
         // Set CSS for the control interior.
-        var controlText = document.createElement("div");
+        let controlText = document.createElement("div");
         controlText.style.color = "#fff";
         controlText.style.fontWeight = 500;
         controlText.style.fontSize = "1rem";
@@ -365,7 +378,7 @@ export default {
         controlUI.appendChild(controlText);
 
         // Setup the click event listeners: simply set the map to Chicago.
-        controlUI.addEventListener("click", function() {
+        controlUI.addEventListener("click", function () {
           deleteSelectedShape();
         });
       };
@@ -375,64 +388,75 @@ export default {
       google.maps.event.addListener(
         drawingManager,
         "polygoncomplete",
-        event => {
+        (event) => {
           const vertices = event.getPath();
           for (let i = 0; i < vertices.getLength(); i++) {
             const coordinates = vertices.getAt(i).toUrlValue(6);
             // reassign into array
             // this.payload.location.coordinates.length = 0
-            this.payload.location.coordinates.push(coordinates);
+            // this.payload.location.coordinates.push(coordinates);
+            this.payload.location.push(coordinates);
+            console.log("PAYLOAD1::", this.payload.location);
           }
 
           // event.getPath().getLength();
           google.maps.event.addListener(event.getPath(), "insert_at", () => {
-            var len = event.getPath().getLength();
-            for (var i = 0; i < len; i++) {
+            let len = event.getPath().getLength();
+            for (let i = 0; i < len; i++) {
               const coordinates = vertices.getAt(i).toUrlValue(6);
               // push into array
-              this.payload.location.coordinates.push(coordinates);
+
+              // this.payload.location.coordinates.push(coordinates);
+              this.payload.location.push(coordinates);
+              console.log("PAYLOAD2::", this.payload.location);
             }
           });
 
           google.maps.event.addListener(event.getPath(), "set_at", () => {
-            var len = event.getPath().getLength();
-            for (var i = 0; i < len; i++) {
+            let len = event.getPath().getLength();
+            for (let i = 0; i < len; i++) {
               const coordinates = vertices.getAt(i).toUrlValue(6);
               // reassign into array
               // this.payload.location.coordinates.length = 0
-              this.payload.location.coordinates.push(coordinates);
+              // this.payload.location.coordinates.push(coordinates);
+              this.payload.location = coordinates;
+              console.log("PAYLOAD3::", this.payload.location);
             }
           });
         }
       );
 
-      google.maps.event.addListener(drawingManager, "overlaycomplete", function(
-        event
-      ) {
-        all_overlays.push(event);
-        if (event.type !== google.maps.drawing.OverlayType.MARKER) {
-          drawingManager.setDrawingMode(null);
-          //Write code to select the newly selected object.
+      google.maps.event.addListener(
+        drawingManager,
+        "overlaycomplete",
+        function (event) {
+          all_overlays.push(event);
+          if (event.type !== google.maps.drawing.OverlayType.MARKER) {
+            drawingManager.setDrawingMode(null);
+            //Write code to select the newly selected object.
 
-          var newShape = event.overlay;
-          newShape.type = event.type;
-          google.maps.event.addListener(newShape, "click", function() {
+            let newShape = event.overlay;
+            newShape.type = event.type;
+            google.maps.event.addListener(newShape, "click", function () {
+              setSelection(newShape);
+            });
+
+            console.log("HERE::", newShape);
+
             setSelection(newShape);
-          });
-
-          setSelection(newShape);
+          }
         }
-      });
+      );
 
-      var centerControlDiv = document.createElement("div");
-      var centerControl = new CenterControl(centerControlDiv, map);
+      let centerControlDiv = document.createElement("div");
+      let centerControl = new CenterControl(centerControlDiv, map);
 
       centerControlDiv.index = 1;
       map.controls[google.maps.ControlPosition.BOTTOM_CENTER].push(
         centerControlDiv
       );
-    }
-  }
+    },
+  },
 };
 </script>
 

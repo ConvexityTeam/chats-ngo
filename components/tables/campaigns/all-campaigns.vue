@@ -87,7 +87,7 @@
                     campaign.status == 'pending' || campaign.status == 'paused',
                   progress: campaign.status == 'active',
                   ongoing: campaign.status == 'ongoing',
-                  done: campaign.status == 'completed'
+                  done: campaign.status == 'completed',
                 }"
               >
                 {{ campaign.status | capitalize }}
@@ -136,7 +136,7 @@ let screenLoading;
 
 export default {
   components: {
-    newCampaign
+    newCampaign,
   },
 
   data() {
@@ -152,9 +152,9 @@ export default {
         { value: null, text: "Filter" },
         { value: "all", text: "All" },
         { value: "inprogress", text: "In Progress" },
-        { value: "completed", text: "Completed" }
+        { value: "completed", text: "Completed" },
       ],
-      statuses: ["active", "completed", "ongoing"]
+      statuses: ["active", "completed", "ongoing"],
     };
   },
 
@@ -162,16 +162,16 @@ export default {
     ...mapGetters("authentication", ["user"]),
     resultQuery() {
       if (this.searchQuery) {
-        return this.campaigns.filter(campaign => {
+        return this.campaigns.filter((campaign) => {
           return this.searchQuery
             .toLowerCase()
             .split(" ")
-            .every(v => campaign.title.toLowerCase().includes(v));
+            .every((v) => campaign.title.toLowerCase().includes(v));
         });
       } else {
         return this.campaigns;
       }
-    }
+    },
   },
 
   mounted() {
@@ -188,7 +188,7 @@ export default {
         const response = await this.$axios.put(
           `organisations/${this.id}/campaigns/${campaign.id}`,
           {
-            status: "active"
+            status: "active",
           }
         );
 
@@ -234,10 +234,10 @@ export default {
       screenLoading = this.$loading({
         lock: true,
         spinner: "el-icon-loading",
-        background: "#0000009b"
+        background: "#0000009b",
       });
-    }
-  }
+    },
+  },
 };
 </script>
 
