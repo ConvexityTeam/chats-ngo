@@ -54,7 +54,7 @@
                     placeholder="United States"
                     class="country"
                     :class="{
-                      error: $v.payload.organisation_profile.country.$error
+                      error: $v.payload.organisation_profile.country.$error,
                     }"
                   >
                     <el-option
@@ -81,7 +81,7 @@
                     placeholder="State"
                     class="country"
                     :class="{
-                      error: $v.payload.organisation_profile.state.$error
+                      error: $v.payload.organisation_profile.state.$error,
                     }"
                   >
                     <el-option
@@ -107,7 +107,7 @@
                   placeholder="Address"
                   class="form-controls px-3"
                   :class="{
-                    error: $v.payload.organisation_profile.address.$error
+                    error: $v.payload.organisation_profile.address.$error,
                   }"
                   v-model="payload.organisation_profile.address"
                   @blur="$v.payload.organisation_profile.address.$touch()"
@@ -124,7 +124,7 @@
                   class="form-controls px-3"
                   :class="{
                     error:
-                      $v.payload.organisation_profile.year_of_inception.$error
+                      $v.payload.organisation_profile.year_of_inception.$error,
                   }"
                   placeholder="YYYY"
                   v-model="payload.organisation_profile.year_of_inception"
@@ -146,7 +146,7 @@
                   placeholder="Website"
                   class="form-controls px-3"
                   :class="{
-                    error: $v.payload.organisation_profile.website_url.$error
+                    error: $v.payload.organisation_profile.website_url.$error,
                   }"
                   v-model="payload.organisation_profile.website_url"
                   @blur="$v.payload.organisation_profile.website_url.$touch()"
@@ -165,21 +165,35 @@
                   disabled
                 />
               </div>
+            </div>
 
-              <!-- Store name here -->
-              <div class="col-lg-12 mb-2 mt-1">
-                <div class="save-btn">
-                  <Button
-                    type="submit"
-                    :has-icon="false"
-                    fontSize="1rem"
-                    text="Save"
-                    custom-styles="height:50px;  width: 100%"
-                    :loading="loading"
-                    :disabled="loading"
-                  />
-                </div>
-              </div>
+            <!-- About Organisation Here -->
+            <div class="mb-4">
+              <label for="about">About </label>
+              <textarea
+                id="about"
+                placeholder="Short bio here..."
+                class="form-controls p-3"
+                cols="30"
+                rows="4"
+                :class="{
+                  error: $v.payload.organisation_profile.about.$error,
+                }"
+                v-model="payload.organisation_profile.about"
+                @blur="$v.payload.organisation_profile.about.$touch()"
+              ></textarea>
+            </div>
+
+            <div class="save-btn mb-2 mt-1">
+              <Button
+                type="submit"
+                :has-icon="false"
+                fontSize="1rem"
+                text="Save"
+                custom-styles="height:50px;  width: 100%"
+                :loading="loading"
+                :disabled="loading"
+              />
             </div>
           </form>
 
@@ -242,9 +256,7 @@
                   <el-option
                     v-for="(currencyCode, i) in countries"
                     :key="i"
-                    :label="
-                      `${currencyCode.currencyCode} - ${currencyCode.countryName}`
-                    "
+                    :label="`${currencyCode.currencyCode} - ${currencyCode.countryName}`"
                     :value="currencyCode.currencyCode"
                   >
                   </el-option>
@@ -276,7 +288,7 @@
                     placeholder="Juliana"
                     class="form-controls px-3"
                     :class="{
-                      error: $v.payload.user_profile.first_name.$error
+                      error: $v.payload.user_profile.first_name.$error,
                     }"
                     v-model="payload.user_profile.first_name"
                     @blur="$v.payload.user_profile.first_name.$touch()"
@@ -292,7 +304,7 @@
                     placeholder="Orji"
                     class="form-controls px-3"
                     :class="{
-                      error: $v.payload.user_profile.last_name.$error
+                      error: $v.payload.user_profile.last_name.$error,
                     }"
                     v-model="payload.user_profile.last_name"
                     @blur="$v.payload.user_profile.last_name.$touch()"
@@ -358,7 +370,7 @@
                     format="DD-MM-YYYY"
                     placeholder="DD-MM-YYYY"
                     id="dob"
-                    :disabled-date="present => present >= new Date()"
+                    :disabled-date="(present) => present >= new Date()"
                   ></date-picker>
                 </div>
               </div>
@@ -367,7 +379,7 @@
             <section v-if="payload.user_profile.country == 'NG'">
               <!-- NIN Here -->
               <div class="row">
-                <div class="col-lg-6  mb-4">
+                <div class="col-lg-6 mb-4">
                   <label for="state">National Identity Number</label>
                   <input
                     type="number"
@@ -377,18 +389,18 @@
                     v-model="payload.user_profile.nin"
                     @blur="$v.payload.user_profile.nin.$touch()"
                     :class="{
-                      error: $v.payload.user_profile.nin.$error
+                      error: $v.payload.user_profile.nin.$error,
                     }"
                   />
                 </div>
 
-                <div class="col-lg-6 align-self-center  mb-4 mt-lg-4">
+                <div class="col-lg-6 align-self-center mb-4 mt-lg-4">
                   <button
                     class="pointer verify-btn poppins"
                     @click="verifyIdentity"
                     :disabled="
                       !payload.user_profile.nin ||
-                        payload.user_profile.nin.length < 11
+                      payload.user_profile.nin.length < 11
                     "
                   >
                     Verify NIN
@@ -412,7 +424,7 @@
                     placeholder="Juliana"
                     class="form-controls px-3"
                     :class="{
-                      error: $v.payload.user_profile.first_name.$error
+                      error: $v.payload.user_profile.first_name.$error,
                     }"
                     v-model="payload.user_profile.first_name"
                     @blur="$v.payload.user_profile.first_name.$touch()"
@@ -429,7 +441,7 @@
                     placeholder="Orji"
                     class="form-controls px-3"
                     :class="{
-                      error: $v.payload.user_profile.last_name.$error
+                      error: $v.payload.user_profile.last_name.$error,
                     }"
                     v-model="payload.user_profile.last_name"
                     @blur="$v.payload.user_profile.last_name.$touch()"
@@ -512,7 +524,7 @@
         <b-card-title
           class="mt-4 d-flex justify-content-center text-center pb-1"
         >
-          <h6 class="font-bold primary-blue ">
+          <h6 class="font-bold primary-blue">
             {{ organisationName | capitalize }}
           </h6>
         </b-card-title>
@@ -557,7 +569,7 @@ export default {
   components: {
     Camera,
     DatePicker,
-    email
+    email,
   },
 
   data: () => ({
@@ -565,7 +577,7 @@ export default {
     marital_status: [
       { name: "single" },
       { name: "married" },
-      { name: "divorced" }
+      { name: "divorced" },
     ],
     gender: [{ name: "male" }, { name: "female" }],
 
@@ -582,7 +594,8 @@ export default {
         state: "",
         address: "",
         year_of_inception: "",
-        website_url: ""
+        website_url: "",
+        about: "",
       },
       user_profile: {
         first_name: "",
@@ -595,10 +608,10 @@ export default {
         gender: "",
         marital_status: "",
         dob: "",
-        nin: ""
+        nin: "",
       },
-      logo: {}
-    }
+      logo: {},
+    },
   }),
 
   validations: {
@@ -607,19 +620,21 @@ export default {
         country: { required },
         state: { required },
         address: { required },
+
         year_of_inception: {
           required,
           maxLength: maxLength(4),
-          numeric
+          numeric,
         },
-        website_url: { required }
+        website_url: { required },
+        about: { required, maxLength: maxLength(300) },
       },
       user_profile: {
         first_name: { required },
         last_name: { required },
-        nin: { maxLength: maxLength(11), numeric, required }
-      }
-    }
+        nin: { maxLength: maxLength(11), numeric, required },
+      },
+    },
   },
 
   async fetch() {
@@ -636,7 +651,7 @@ export default {
       console.log("setCountry", setCountry);
       if (setCountry) {
         return countriesRegions.find(
-          country => setCountry === country.countryName
+          (country) => setCountry === country.countryName
         )?.regions;
       }
 
@@ -663,7 +678,7 @@ export default {
         this.user?.AssociatedOrganisations[0]?.Organisation?.registration_id ??
         ""
       );
-    }
+    },
   },
 
   mounted() {
@@ -745,7 +760,7 @@ export default {
           "https://api.myidentitypay.com/api/v1/biometrics/merchant/data/verification/nin_wo_face",
 
           {
-            number: nin
+            number: nin,
           }
         );
 
@@ -781,7 +796,7 @@ export default {
       this.objectAliaser(this.payload.user_profile, this.user);
     },
     objectAliaser(oldObj, newObj) {
-      return Object.keys(oldObj).forEach(item => {
+      return Object.keys(oldObj).forEach((item) => {
         oldObj[item] = newObj?.[item];
         if (item === "dob") {
           oldObj[item] = new Date(newObj?.[item]);
@@ -823,10 +838,10 @@ export default {
       screenLoading = this.$loading({
         lock: true,
         spinner: "el-icon-loading",
-        background: "#0000009b"
+        background: "#0000009b",
       });
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -956,10 +971,6 @@ a {
   margin-top: 1.7rem;
 }
 
-.save-btn:focus {
-  outline: none;
-}
-
 .form-holder {
   background: #ffffff;
   box-shadow: 0px 4px 30px rgba(174, 174, 192, 0.2);
@@ -1027,5 +1038,9 @@ section {
 
 h6 {
   font-size: 1.125rem;
+}
+
+textarea {
+  resize: none;
 }
 </style>

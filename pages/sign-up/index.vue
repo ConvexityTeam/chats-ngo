@@ -69,7 +69,7 @@
           </div>
 
           <!-- Password here -->
-          <div class="form-group">
+          <div class="form-group last">
             <label for="password">Password</label>
             <input
               :type="showpassword ? 'text' : 'password'"
@@ -94,21 +94,22 @@
             </div>
           </div>
 
-          <!-- Terms here -->
-          <!-- <div class="form-group d-flex" style="align-items: flex-end">
-            <checkbox id="terms" @input="checkTerms" />
+          <!--Password Validity here  -->
+          <div class="password-validity">
+            <template v-if="!payload.password.length">
+              <p class="pt-2">
+                Make sure it's at least 8 characters including a number, special
+                character and an uppercase letter.
+              </p>
+            </template>
 
-            <div class="ml-3">
-              <label for="terms" class="terms"
-                >By creating an account, you agree to our
-                <span> <a href="#"> Terms of use</a></span> and acknowledge our
-                <span> <a href="#"> Privacy Policy.</a></span>
-              </label>
-            </div>
-          </div> -->
+            <template v-else>
+              <PasswordValidation :validations="$v.payload.password" />
+            </template>
+          </div>
 
           <!-- Submit button here -->
-          <div class="text-center mt-3">
+          <div class="text-center mt-4">
             <button :disabled="loading" class="onboarding-btn">
               <span v-if="loading">
                 <img
@@ -142,7 +143,7 @@ import globeIcon from "~/components/icons/globe-icon.vue";
 import lockIcon from "~/components/icons/lock-icon.vue";
 import eyeClosed from "~/components/icons/eye-closed.vue";
 import eyeOpen from "~/components/icons/eye-open.vue";
-import checkbox from "~/components/generic/checkbox.vue";
+import PasswordValidation from "~/components/forms/password-validation.vue";
 
 export default {
   layout: "default",
@@ -152,9 +153,9 @@ export default {
     emailIcon,
     globeIcon,
     lockIcon,
-    checkbox,
     eyeClosed,
     eyeOpen,
+    PasswordValidation,
   },
 
   data() {
@@ -192,7 +193,11 @@ export default {
       // },
       password: {
         required,
-        minLength: minLength(6),
+        minLength: minLength(8),
+        containsUppercase: (value) => /[A-Z]/.test(value),
+        containsLowercase: (value) => /[a-z]/.test(value),
+        containsNumber: (value) => /[0-9]/.test(value),
+        containsSpecial: (value) => /[!@#$%^&*(),.?":{}|<>]/.test(value),
       },
     },
   },
@@ -200,10 +205,6 @@ export default {
   methods: {
     ...mapActions("authentication", ["commitToken", "commitUser"]),
 
-    checkTerms(value) {
-      this.payload.terms = value;
-      console.log("PLS:::", this.payload.terms);
-    },
     async registerUser() {
       try {
         this.loading = true;
@@ -211,7 +212,6 @@ export default {
 
         if (this.$v.payload.$error === true) {
           this.loading = false;
-          // this.$toast.error("Please fill in appropriately");
           return;
         }
 
@@ -226,18 +226,16 @@ export default {
           this.$toast.success(response.message);
           this.loginUser();
         }
-
-        this.loading = false;
       } catch (err) {
-        this.$toast.error(err.response.data?.message);
+        this.$toast.error(err?.response?.data?.message);
 
         if (
-          err.response.data.message ==
+          err?.response?.data?.message ==
           "Email Already Exists, Recover Your Account"
         ) {
           this.$router.push("/");
         }
-
+      } finally {
         this.loading = false;
       }
     },
@@ -316,6 +314,12 @@ label > span > a {
   color: #277ef0;
   font-weight: 500;
   text-decoration: none;
+}
+
+.password-validity {
+  font-size: 0.75rem;
+  color: #9da8b6;
+  font-weight: 500;
 }
 
 @media (max-width: 575.98px) {

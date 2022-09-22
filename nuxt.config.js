@@ -55,6 +55,7 @@ export default {
     "@nuxtjs/axios",
     "@nuxtjs/toast",
     "@nuxtjs/dotenv",
+    "@nuxtjs/i18n",
   ],
 
   // Axios module configuration (https://go.nuxtjs.dev/config-axios)

@@ -391,6 +391,10 @@ p.form-input__error span {
   position: relative;
 }
 
+.form-group.last {
+  margin-bottom: 0.15rem !important;
+}
+
 .icon-left {
   bottom: 14px;
   left: 14px;
@@ -421,6 +425,10 @@ p.form-input__error span {
   border-radius: 5px;
   transition: all 0.3s ease;
   outline: none;
+}
+
+textarea.form-controls {
+  height: auto !important;
 }
 
 .form-controls.search {
