@@ -149,12 +149,14 @@ export default {
 
         if (response.status === "success") {
           let protectedLastRoute = localStorage.getItem("protectedLastRoute");
+          const invalidRoutes = ["/", "undefined"];
+
           this.commitToken(response.data.token);
           this.commitUser(response.data.user);
 
-          protectedLastRoute == undefined
-            ? (protectedLastRoute = "/dashboard")
-            : (protectedLastRoute = protectedLastRoute);
+          if (invalidRoutes.includes(protectedLastRoute)) {
+            protectedLastRoute = "/dashboard";
+          }
 
           await this.$router.push(protectedLastRoute || "/dashboard");
         }
@@ -163,6 +165,7 @@ export default {
         this.$toast.error(err?.response?.data?.message);
       } finally {
         this.loading = false;
+        localStorage.removeItem("protectedLastRoute");
       }
     },
   },

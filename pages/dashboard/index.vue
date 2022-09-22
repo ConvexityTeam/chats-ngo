@@ -213,11 +213,11 @@
                   </span>
                 </div>
 
-                <div class="ml-auto">
+                <!-- <div class="ml-auto">
                   <button type="button" class="more-btn">
                     <dot />
                   </button>
-                </div>
+                </div> -->
               </div>
             </div>
 
@@ -256,7 +256,6 @@ import beneficiaryLocation from "~/components/charts/beneficiary-location";
 import dot from "~/components/icons/dot";
 import rightArrow from "~/components/icons/right-arrow";
 import leftArrow from "~/components/icons/left-arrow";
-import locateMixin from "~/components/mixins/locate";
 import walletBalance from "~/components/icons/wallet-balance.vue";
 import totalBalance from "~/components/icons/total-balance.vue";
 import disbursed from "~/components/icons/disbursed.vue";
@@ -265,7 +264,6 @@ import { mapGetters } from "vuex";
 
 export default {
   layout: "dashboard",
-  mixins: [locateMixin],
 
   components: {
     beneficiaryAge,

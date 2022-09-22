@@ -38,6 +38,7 @@ export default {
   mounted() {
     const timeout = {
       dev: 600000, // 10 minutes
+      // dev: 10000, // 30 seconds
       staging: 300000, // 5 minutes
       prd: 180000, // 3 minutes
     };

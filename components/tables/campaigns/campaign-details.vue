@@ -133,6 +133,16 @@
             </p>
           </div>
         </div>
+
+        <div class="d-flex campaign-divider mb-3">
+          <p class="campaign-captions">Beneficiary Share:</p>
+
+          <div class="ml-auto">
+            <p class="campaign-answers">
+              {{ $currency }}{{ share | formatCurrency }}
+            </p>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -214,6 +224,18 @@ export default {
 
   components: {
     campaignPrompt,
+  },
+
+  computed: {
+    share() {
+      const result =
+        this.details?.budget / this.details?.beneficiaries_count || 0;
+
+      if (result == Infinity) {
+        return 0;
+      }
+      return result;
+    },
   },
 
   mounted() {
