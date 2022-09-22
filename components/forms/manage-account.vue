@@ -1,7 +1,7 @@
 <template>
   <div class="container">
-    <div class="d-flex col-lg-12  w-full h-5">
-      <newSubadmin />
+    <div class="d-flex col-lg-12 w-full h-5">
+      <newSubadmin @reload="getMembers" />
       <!-- Transactions Table here -->
       <div class="holder">
         <div class="child-holder">
@@ -22,7 +22,7 @@
             </thead>
             <tbody class="text-left primary-blue">
               <tr class="d-flex sub-heading font-medium pr-3">
-                <td class="col-2 ">First Name</td>
+                <td class="col-2">First Name</td>
                 <td class="col-2">Last Name</td>
                 <td class="col-3">Email</td>
                 <td class="col-2">Role</td>
@@ -45,15 +45,15 @@
                 </td>
                 <td class="col-2">
                   <span class="text-xs" :class="{ pill: true }">{{
-                    member.role
+                    member.role | capitalize
                   }}</span>
                 </td>
                 <td class="col-2">
                   {{ member.User.phone || "-" }}
                 </td>
-                <td class="col-1 text-right">
+                <!-- <td class="col-1 text-right">
                   <button type="button" class="more-btn"><dot /></button>
-                </td>
+                </td> -->
               </tr>
             </tbody>
           </table>
@@ -67,26 +67,26 @@ import dot from "~/components/icons/dot";
 import rightArrow from "~/components/icons/right-arrow";
 import leftArrow from "~/components/icons/left-arrow";
 import newSubadmin from "~/components/modals/new-subadmin";
-import { mapGetters, mapActions } from "vuex";
+import { mapGetters } from "vuex";
 
 export default {
   components: {
     dot,
     rightArrow,
     leftArrow,
-    newSubadmin
+    newSubadmin,
   },
   data() {
     return {
       orgId: "",
       payload: {
-        members: []
-      }
+        members: [],
+      },
     };
   },
 
   computed: {
-    ...mapGetters("authentication", ["user"])
+    ...mapGetters("authentication", ["user"]),
   },
 
   mounted() {
@@ -102,7 +102,7 @@ export default {
         console.log("Members:::", response);
 
         if (response.status == "success") {
-          this.payload.members = response.data;
+          this.payload.members = response.data.reverse();
         }
         console.log("MOUNTED MEMBERS", this.payload.members);
 
@@ -119,10 +119,10 @@ export default {
       screenLoading = this.$loading({
         lock: true,
         spinner: "el-icon-loading",
-        background: "#0000009b"
+        background: "#0000009b",
       });
-    }
-  }
+    },
+  },
 };
 </script>
 
