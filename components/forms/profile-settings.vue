@@ -70,7 +70,7 @@
 
               <!-- State Here  -->
               <div class="col-lg-6 mb-4">
-                <label for="state">State</label>
+                <label for="state-dropdown">State</label>
 
                 <div>
                   <el-select
@@ -210,7 +210,7 @@
                     id="dropdown"
                     v-model="payload.user_profile.country"
                     filterable
-                    placeholder="Country"
+                    placeholder="United States"
                     input-class="form-controls"
                     @change="
                       (payload.user_profile.first_name = ''),
@@ -537,13 +537,13 @@
 
         <!-- websiteUrl here -->
         <b-card-text
-          class="profile-card-website-url secondary-black text-sm d-flex justify-content-center"
+          class="profile-card-website-url text-sm d-flex justify-content-center"
         >
           <a
             :href="websiteUrl"
             target="_blank"
             rel="noreferrer"
-            class="secondary-black font-medium"
+            class="primary-gray font-medium"
           >
             {{ websiteUrl }}</a
           >
@@ -620,15 +620,11 @@ export default {
         country: { required },
         state: { required },
         address: { required },
-
-        year_of_inception: {
-          required,
-          maxLength: maxLength(4),
-          numeric,
-        },
+        year_of_inception: { required, maxLength: maxLength(4), numeric },
         website_url: { required },
         about: { required, maxLength: maxLength(300) },
       },
+
       user_profile: {
         first_name: { required },
         last_name: { required },
@@ -1042,5 +1038,10 @@ h6 {
 
 textarea {
   resize: none;
+}
+
+a:hover {
+  color: inherit;
+  text-decoration: none;
 }
 </style>

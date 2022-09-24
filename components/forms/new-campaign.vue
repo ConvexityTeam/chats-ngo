@@ -47,7 +47,7 @@
           <!--Budget field  here -->
           <div class="">
             <label for="total-amount">Budget</label>
-            <input
+            <!-- <input
               type="number"
               class="form-controls"
               :class="{
@@ -57,6 +57,26 @@
               placeholder="0.00"
               @blur="$v.payload.budget.$touch()"
               v-model="payload.budget"
+            /> -->
+
+            <input
+              type="number"
+              class="form-controls"
+              :class="{
+                error: $v.payload.budget.$error,
+              }"
+              id="total-amount"
+              placeholder="0.00"
+              v-model="payload.budget"
+              @wheel="$event.target.blur()"
+              @blur="formatNumbers($event, 'budget', payload)"
+              @focus="
+                payload.budget = String(payload.budget).replace(
+                  /[,]|[$]|[' ']|[a-z]/g,
+                  ''
+                );
+                $event.target.type = 'number';
+              "
             />
             <!--  -->
 
@@ -69,6 +89,8 @@
               " -->
           </div>
         </div>
+
+        <!-- <CurrencyInput :value="test" /> -->
       </div>
 
       <!-- Date fields here -->
@@ -148,12 +170,11 @@
 </template>
 
 <script>
-import { required, minValue } from "vuelidate/lib/validators";
+import { required, minValue, maxLength } from "vuelidate/lib/validators";
 import { mapGetters } from "vuex";
 import DatePicker from "vue2-datepicker";
 import "vue2-datepicker/index.css";
 import MapSideBar from "./map-sidebar.vue";
-import { allSettled } from "q";
 const greaterThanZero = (value) => value >= 100;
 let geocoder;
 
@@ -170,6 +191,7 @@ export default {
 
   data() {
     return {
+      test: "123",
       drawer: false,
       present: new Date(),
       loading: false,
@@ -193,27 +215,11 @@ export default {
 
   validations: {
     payload: {
-      title: {
-        required,
-      },
-      description: {
-        required,
-      },
-      budget: {
-        required,
-        greaterThanZero,
-      },
-      //   location: {
-      //     coordinates: {
-      //       required
-      //     }
-      //   },
-      start_date: {
-        required,
-      },
-      end_date: {
-        required,
-      },
+      title: { required },
+      description: { required, maxLength: maxLength(250) },
+      budget: { required, greaterThanZero },
+      start_date: { required },
+      end_date: { required },
     },
   },
 
@@ -264,15 +270,6 @@ export default {
       }
     },
 
-    formatCurrency(value) {
-      let x = value
-        .toString()
-        .replace(/\D/g, "")
-        .replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-
-      return x;
-    },
-
     async createCampaign() {
       try {
         this.loading = true;
@@ -286,6 +283,11 @@ export default {
           ? JSON.stringify(this.payload.location)
           : "";
 
+        // amount: this.payload.amount
+        //     .replace(/[,]|[$]|[' ']|[a-z]/g, "")
+        //     .toString()
+        //     .toString()
+
         const response = await this.$axios.post(
           `/organisations/${+this.id}/campaigns`,
           this.payload
@@ -296,12 +298,12 @@ export default {
           this.closeModal();
           this.$toast.success(response.message);
         }
-
-        this.loading = false;
       } catch (err) {
         console.log({ err });
-        this.loading = false;
+
         this.$toast.error(err?.response?.data?.message);
+      } finally {
+        this.loading = false;
       }
     },
 

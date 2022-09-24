@@ -140,6 +140,10 @@ button:focus {
   outline: none;
 }
 
+button:disabled {
+  cursor: not-allowed;
+}
+
 .more-btn {
   border: none;
   background: inherit;

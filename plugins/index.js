@@ -14,34 +14,45 @@ Vue.use(VueTelInput, {
   mode: "international",
   validCharactersOnly: true,
   inputOptions: {
-    autocomplete: "off"
-  }
+    autocomplete: "off",
+  },
 });
 
 export default ({ app, store }, inject) => {
+  /* Currency Symbol  Here */
   const user = store.getters["authentication/user"];
   const currencyCode = user?.currency || "NGN";
 
   const country = countries.find(
-    country => country?.currencies[0]?.code === currencyCode
+    (country) => country?.currencies[0]?.code === currencyCode
   );
 
   const currencySymbol = country
     ? country.currencies[0]?.symbol
     : country.currencies[0]?.code;
 
-  inject("currency", currencySymbol);
-};
+  /* Copy  text  Here */
+  const copy = (value) => {
+    if (value.length) {
+      navigator.clipboard.writeText(value);
+      app.$toast.success("Copied to clipboard");
+    }
+    return;
+  };
 
-// if (payload) {
-//   if (this.$v.payload[key]) {
-//     this.$v.payload[key].$touch();
-//   }
-//   e.target.type = "text";
-//   this.payload[key] =
-//     "$ " +
-//     new Intl.NumberFormat("en-US", {
-//       minimumFractionDigits: 2,
-//       maximumFractionDigits: 2
-//     }).format(this.payload[key]);
-// }
+  // Format Currency Input here
+
+  const formatNumbers = (event, key, payload) => {
+    console.log("event", event, "key", key, "payload", payload);
+    console.log("app: ", app);
+
+    event.target.type = "text";
+    event.target.value = `${currencySymbol}${event.target.value
+      .toString()
+      .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`;
+  };
+
+  inject("copy", copy);
+  inject("currency", currencySymbol);
+  inject("formatNumberss", formatNumbers);
+};
