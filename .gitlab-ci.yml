@@ -23,6 +23,6 @@ deploy_production:
   - eval $(ssh-agent -s)
   - chmod 600 $SSH_PRIVATE_KEY
   - ssh-add $SSH_PRIVATE_KEY
-    - ssh $USER@$APP_URL -o StrictHostKeyChecking=no ". ssh-restart.sh && ssh-add .ssh/convexityApps && cd frontend-ngo-web && git pull origin production && docker-compose build dashboard && docker-compose up -d && exit"
+  - ssh $USER@$APP_URL -o StrictHostKeyChecking=no ". ssh-restart.sh && ssh-add .ssh/convexityApps && cd frontend-ngo-web && git pull origin production && docker-compose build dashboard && docker-compose up -d && exit"
   only:
     - production
