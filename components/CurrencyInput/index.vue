@@ -1,56 +1,91 @@
 <template>
   <div>
     <input
+      class="form-controls"
       type="text"
-      v-model="displayValue"
-      @blur="isInputActive = false"
-      @focus="isInputActive = true"
+      :class="{ error: error }"
+      :placeholder="placeholder"
+      :style="customStyles"
+      :ref="id"
+      :id="id"
+      :disabled="disabled"
+      @input="handleInput($event.target.value)"
+      @keypress="isNumber($event)"
+      v-bind="$attrs"
+      v-on="inputListeners"
     />
   </div>
 </template>
 
 <script>
 export default {
+  name: "Currency-input",
+  inheritAttrs: false,
+
+  model: {
+    prop: "value",
+    event: "input",
+  },
+
   props: {
-    value: {
-      type: Number,
-      default: 0,
+    id: {
+      type: String,
+      default: "",
+      required: true,
+    },
+    placeholder: {
+      type: String,
+      default: "",
+    },
+    disabled: {
+      type: Boolean,
+      default: false,
+    },
+    customStyles: {
+      type: [String, Object],
+      default: "",
+    },
+    error: {
+      type: Boolean,
+      default: false,
     },
   },
 
-  data: () => ({
-    isInputActive: false,
-    test: 10,
-  }),
+  data: () => ({ mounted: false }),
+
+  mounted: function () {
+    this.mounted = true;
+  },
 
   computed: {
-    displayValue: {
-      get: function () {
-        if (this.isInputActive) {
-          // Cursor is inside the input field. unformat display value for user
-          return this.value.toString();
-        } else {
-          // User is not modifying now. Format display value for user interface
-          return (
-            "$ " +
-            this.value.toFixed(2).replace(/(\d)(?=(\d{3})+(?:\.\d+)?$)/g, "$1,")
-          );
-        }
-      },
-      set: function (modifiedValue) {
-        // Recalculate value after ignoring "$" and "," in user input
-        let newValue = parseFloat(modifiedValue?.replace(/[^\d\.]/g, ""));
-        // Ensure that it is not NaN
-        if (isNaN(newValue)) {
-          newValue = 0;
-        }
-        // Note: we cannot set this.value as it is a "prop". It needs to be passed to parent component
-        // $emit the event so that parent component gets it
-        this.$emit("input", newValue);
-      },
+    inputListeners() {
+      const vm = this;
+      return Object.assign({}, this.$listeners, {
+        input(event) {
+          vm.handleInput(event.target.value);
+        },
+      });
     },
   },
 
-  methods: {},
+  methods: {
+    handleInput(value) {
+      if (value) {
+        value = value
+          .toString()
+          .replace(/\D/g, "")
+          .replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
+        this.$emit("input", `${this.$currency} ${value}`);
+      }
+    },
+
+    isNumber(event) {
+      const charCode = event.which ? event.which : event.keyCode;
+      if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+        event.preventDefault();
+      }
+    },
+  },
 };
 </script>

@@ -48,7 +48,7 @@ export default {
       idle:
         process.env.NODE_ENV === "development"
           ? timeout.dev
-          : host.includes("chats.vercel.app")
+          : host.includes("https://staging.chats.cash/")
           ? timeout.staging
           : timeout.prd, // idle time in ms
       events: ["mousemove", "keydown", "mousedown", "touchstart"], // events that will trigger the idle resetter

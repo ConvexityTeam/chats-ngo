@@ -814,6 +814,11 @@ select.form-control {
   background: inherit !important;
 }
 
+#c4w > .mx-datepicker > .mx-input-wrapper > .mx-input.error {
+  border: 1px solid #ee3934 !important;
+  background: inherit !important;
+}
+
 /* LOADERS HERE */
 
 .spinner {

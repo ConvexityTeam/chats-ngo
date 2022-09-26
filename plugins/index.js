@@ -40,19 +40,6 @@ export default ({ app, store }, inject) => {
     return;
   };
 
-  // Format Currency Input here
-
-  const formatNumbers = (event, key, payload) => {
-    console.log("event", event, "key", key, "payload", payload);
-    console.log("app: ", app);
-
-    event.target.type = "text";
-    event.target.value = `${currencySymbol}${event.target.value
-      .toString()
-      .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`;
-  };
-
   inject("copy", copy);
   inject("currency", currencySymbol);
-  inject("formatNumberss", formatNumbers);
 };

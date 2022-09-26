@@ -3,16 +3,13 @@
     <!-- Name field  here -->
     <div class="form-group">
       <label for="amount">Amount to fund</label>
-      <input
-        type="number"
-        class="form-controls"
-        :class="{
-          error: $v.amount.$error,
-        }"
+      <CurrencyInput
         id="amount"
         placeholder="0.00"
-        v-model="amount"
+        :customStyles="`height: 41px; border: 1px solid #7c8db5; background: white; padding: 0.75rem`"
+        :error="$v.amount.$error"
         @blur="$v.amount.$touch()"
+        v-model="amount"
       />
     </div>
 
@@ -90,7 +87,8 @@ export default {
         const response = await this.$axios.post(
           `organisations/${this.orgId}/wallets/paystack-deposit`,
           {
-            amount: this.amount,
+            amount: this.amount.replace(/[^0-9.]/g, ""),
+            // TODO: We need to find a way around this.
             currency: "NGN",
           }
         );
