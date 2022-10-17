@@ -67,7 +67,7 @@
       </div>
 
       <!-- Buttons here -->
-      <div class="d-flex  justify-content-end mt-4 pt-3">
+      <div class="d-flex justify-content-end mt-4 pt-3">
         <Button
           :hasBorder="true"
           :hasIcon="false"
@@ -145,7 +145,7 @@
 <script>
 import { mapGetters } from "vuex";
 import FundCampaign from "~/components/forms/fund-campaign";
-import FundCampaignSuccess from "~/components/forms/fund-campaign-success";
+import FundCampaignSuccess from "~/components/forms/FundCampaignSuccess";
 let screenLoading;
 
 export default {
@@ -162,30 +162,30 @@ export default {
         name: "Wallet",
         description: "Distribute funds to beneficiaries wallets (Mobile app)",
         image: require("~/assets/img/vectors/wallet.svg"),
-        tag: "wallet"
+        tag: "wallet",
       },
 
       {
         name: "SMS Token",
         description: "Generate and send SMS token to beneficiaries",
         image: require("~/assets/img/vectors/sms.svg"),
-        tag: "sms"
+        tag: "sms",
       },
 
       {
         name: "QR Code",
         description: "Generate and share unique QR codes to beneficiaries",
         image: require("~/assets/img/vectors/qr.svg"),
-        tag: "qr"
-      }
-    ]
+        tag: "qr",
+      },
+    ],
   }),
 
   computed: {
     ...mapGetters("authentication", ["user"]),
     displayManageTokens() {
       return this.tokenType === "sms" || this.tokenType === "qr";
-    }
+    },
   },
 
   mounted() {
@@ -232,8 +232,8 @@ export default {
         path: `/campaigns/${this.$route.params.id}/manage-tokens`,
         query: { method: this.tokenType || "sms" },
         meta: {
-          reload: true
-        }
+          reload: true,
+        },
       });
     },
 
@@ -241,10 +241,10 @@ export default {
       screenLoading = this.$loading({
         lock: true,
         spinner: "el-icon-loading",
-        background: "#0000009b"
+        background: "#0000009b",
       });
-    }
-  }
+    },
+  },
 };
 </script>
 

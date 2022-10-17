@@ -50,7 +50,7 @@
                     (wallet &&
                       wallet.MainWallet &&
                       wallet.MainWallet.balance) ||
-                      0 | formatCurrency
+                    0 | formatCurrency
                   }}
                 </h4>
               </div>
@@ -65,7 +65,7 @@
       </div>
 
       <div class="col-lg-4">
-        <wallet @getWallet="getWallet" />
+        <wallet @getWallet="reloadData" />
       </div>
     </div>
   </div>
@@ -86,26 +86,34 @@ export default {
     wallet,
 
     disbursed,
-    totalBalance
+    totalBalance,
   },
 
   data: () => ({
     loading: false,
-    wallet: {}
+    wallet: {},
   }),
 
   computed: {
-    ...mapGetters("authentication", ["user"])
+    ...mapGetters("authentication", ["user"]),
   },
 
   mounted() {
-    this.organisationId = this.user?.AssociatedOrganisations[0]?.Organisation?.id;
+    this.organisationId =
+      this.user?.AssociatedOrganisations[0]?.Organisation?.id;
     this.getWallet();
   },
 
   methods: {
+    reloadData() {
+      setTimeout(() => {
+        window.location.reload();
+      }, 300);
+    },
+
     async getWallet() {
       try {
+        console.log("getting wallet2:");
         this.openScreen();
         const response = await this.$axios.get(
           `/organisations/${+this.organisationId}/wallets`
@@ -126,10 +134,10 @@ export default {
       screenLoading = this.$loading({
         lock: true,
         spinner: "el-icon-loading",
-        background: "#0000009b"
+        background: "#0000009b",
       });
-    }
-  }
+    },
+  },
 };
 </script>
 

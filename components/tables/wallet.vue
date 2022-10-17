@@ -205,9 +205,10 @@ export default {
       }, 300);
     },
 
-    async getWallet() {
+    getWallet() {
       this.$emit("getWallet");
     },
+
     copy(value) {
       if (value.length) {
         navigator.clipboard.writeText(value);
