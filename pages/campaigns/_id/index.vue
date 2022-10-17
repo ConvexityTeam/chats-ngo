@@ -377,7 +377,7 @@ export default {
         this.openScreen();
 
         const response = await this.$axios.post(
-          `organisations/${this.orgId}/campaigns/${this.details.id}/fund`
+          `organisations/${this.orgId}/campaigns/${this.details?.id}/fund-campaign`
         );
 
         screenLoading.close();
