@@ -22,7 +22,7 @@
         <label for="description">Description</label>
         <textarea
           id="description"
-          class="form-controls p-2"
+          class="form-controls"
           placeholder="Short description"
           :class="{
             error: $v.payload.description.$error,
@@ -40,17 +40,13 @@
           <!--Amount field  here -->
           <div class="">
             <label for="total-amount">Amount</label>
-            <input
-              type="number"
-              class="form-controls"
-              :class="{
-                error: $v.payload.amount.$error,
-              }"
+            <CurrencyInput
               id="total-amount"
               placeholder="0.00"
-              v-model="payload.amount"
+              :customStyles="`height: 41px; border: 1px solid #7c8db5; background: white; padding: 0.75rem`"
+              :error="$v.payload.amount.$error"
               @blur="$v.payload.amount.$touch()"
-              ref="budget"
+              v-model="payload.amount"
             />
           </div>
         </div>
@@ -161,11 +157,10 @@
 </template>
 
 <script>
-import { required, minValue } from "vuelidate/lib/validators";
+import { required, minValue, maxLength } from "vuelidate/lib/validators";
 import { mapGetters } from "vuex";
 import DatePicker from "vue2-datepicker";
 import "vue2-datepicker/index.css";
-const validAmount = (value) => value >= 100;
 
 export default {
   props: {
@@ -198,23 +193,11 @@ export default {
 
   validations: {
     payload: {
-      name: {
-        required,
-      },
-      description: {
-        required,
-      },
-      amount: {
-        required,
-        validAmount,
-      },
-      assignment_count: {
-        required,
-        minValue: minValue(1),
-      },
-      require_evidence: {
-        required,
-      },
+      name: { required },
+      description: { required, maxLength: maxLength(250) },
+      amount: { required },
+      assignment_count: { required, minValue: minValue(1) },
+      require_evidence: { required },
     },
   },
 
@@ -269,6 +252,8 @@ export default {
           currentCampaignId = this.$route?.params?.id;
         }
 
+        this.payload.amount = this.payload.amount.replace(/[^0-9.]/g, "");
+
         const response = await this.$axios.post(
           `tasks/${this.id}/${currentCampaignId}`,
           [this.payload]
@@ -321,6 +306,7 @@ label.approval {
 textarea.form-controls {
   height: auto;
   resize: none;
+  padding: 0.75rem;
 }
 
 /* Chrome, Safari, Edge, Opera */

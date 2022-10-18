@@ -60,6 +60,7 @@
                     :type="showpassword ? 'text' : 'password'"
                     class="form-controls px-5"
                     placeholder="Enter old password"
+                    autocomplete="current-password"
                     :class="{ error: $v.payload.old_password.$error }"
                     id="password"
                     v-model="payload.old_password"
@@ -90,6 +91,7 @@
                     :type="showpassword2 ? 'text' : 'password'"
                     class="form-controls px-5"
                     placeholder="Enter new password"
+                    autocomplete="new-password"
                     :class="{ error: $v.payload.new_password.$error }"
                     id="new_password"
                     v-model="payload.new_password"
@@ -120,6 +122,7 @@
                     :type="showpassword3 ? 'text' : 'password'"
                     class="form-controls px-5"
                     placeholder="Re-Enter new password"
+                    autocomplete="new-password"
                     :class="{ error: $v.payload.confirm_newpassword.$error }"
                     id="confirm_password"
                     v-model="payload.confirm_newpassword"
@@ -234,12 +237,8 @@ import eyeClosed from "~/components/icons/eye-closed.vue";
 import eyeOpen from "~/components/icons/eye-open.vue";
 import toggleOff from "~/components/icons/toggle-off";
 import toggleOn from "~/components/icons/toggle-on";
-import copy from "~/components/icons/copy";
-import check from "~/components/icons/check";
 import addGoogleTwoFa from "~/components/forms/add-twofa-email.vue";
 import { mapGetters, mapActions } from "vuex";
-import Check from "../icons/check.vue";
-import Copy from "../icons/copy.vue";
 
 export default {
   name: "SecuritySettings",
@@ -250,10 +249,6 @@ export default {
     toggleOff,
     toggleOn,
     addGoogleTwoFa,
-    copy,
-    check,
-    Check,
-    Copy
   },
 
   data: () => ({
@@ -272,36 +267,36 @@ export default {
     payload: {
       old_password: "",
       new_password: "",
-      confirm_newpassword: ""
-    }
+      confirm_newpassword: "",
+    },
   }),
 
   validations: {
     payload: {
       old_password: {
-        required
+        required,
       },
 
       new_password: {
         required,
-        minLength: minLength(6)
+        minLength: minLength(6),
       },
 
       confirm_newpassword: {
         required,
-        sameAs: sameAs(vm => {
+        sameAs: sameAs((vm) => {
           return vm.new_password;
-        })
-      }
-    }
+        }),
+      },
+    },
   },
 
   watch: {
-    toggleOn: function(val) {
+    toggleOn: function (val) {
       if (val) {
         this.$bvModal.show("addGoogleTwoFa");
       }
-    }
+    },
   },
 
   methods: {
@@ -333,8 +328,8 @@ export default {
         console.log("RESET PASSWORD::", err);
         this.$toast.error(err.response?.data?.message);
       }
-    }
-  }
+    },
+  },
 };
 </script>
 

@@ -71,6 +71,15 @@
 
           <div class="mr-4">
             <Button
+              v-if="details.status === 'pending'"
+              text="Fund Campaign"
+              :has-icon="false"
+              custom-styles="height:50px"
+              @click="fundCampaign"
+            />
+
+            <Button
+              v-else
               text="Disburse Funds"
               :has-icon="false"
               custom-styles="height:50px"
@@ -368,7 +377,7 @@ export default {
         this.openScreen();
 
         const response = await this.$axios.post(
-          `organisations/${this.orgId}/campaigns/${this.details.id}/fund`
+          `organisations/${this.orgId}/campaigns/${this.details?.id}/fund-campaign`
         );
 
         screenLoading.close();

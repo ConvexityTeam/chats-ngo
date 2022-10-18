@@ -140,6 +140,10 @@ button:focus {
   outline: none;
 }
 
+button:disabled {
+  cursor: not-allowed;
+}
+
 .more-btn {
   border: none;
   background: inherit;
@@ -807,6 +811,11 @@ select.form-control {
 
 #c4w > .mx-datepicker > .mx-input-wrapper > .mx-input {
   border: 1px solid #7c8db5 !important;
+  background: inherit !important;
+}
+
+#c4w > .mx-datepicker > .mx-input-wrapper > .mx-input.error {
+  border: 1px solid #ee3934 !important;
   background: inherit !important;
 }
 

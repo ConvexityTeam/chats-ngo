@@ -1,7 +1,12 @@
 <template>
   <div class="pb-5">
     <disburseFunds :task="task" :campaignId="campaignId" />
-    <checkEvidence :task="task" :details="rejectedDetails" :btnStatus="btnStatus" :campaignId="campaignId" />
+    <checkEvidence
+      :task="task"
+      :details="rejectedDetails"
+      :btnStatus="btnStatus"
+      :campaignId="campaignId"
+    />
     <div v-if="loading"></div>
 
     <div class="main container transparent pt-4 mt-2 pb-5" v-else>
@@ -14,8 +19,17 @@
             <div class="col-lg-5">
               <!-- Search Box here -->
               <div class="position-relative">
-                <input type="text" class="form-controls search" placeholder="Search tasks..." v-model="searchQuery" />
-                <img src="~/assets/img/vectors/search.svg" class="search-icon position-absolute" alt="search" />
+                <input
+                  type="text"
+                  class="form-controls search"
+                  placeholder="Search tasks..."
+                  v-model="searchQuery"
+                />
+                <img
+                  src="~/assets/img/vectors/search.svg"
+                  class="search-icon position-absolute"
+                  alt="search"
+                />
               </div>
             </div>
           </div>
@@ -41,92 +55,82 @@
                   </tr>
                 </thead>
                 <tbody>
-                  <tr v-for="(task, i) in resultQuery" :key="task.id" :class="{ selected: i % 2 == 0 }">
+                  <tr
+                    v-for="(task, i) in resultQuery"
+                    :key="task.id"
+                    :class="{ selected: i % 2 == 0 }"
+                  >
                     <td>
                       <div class="d-flex align-items-center">
-                        <b-avatar :src="task.profile_pic" size="32px" class="img-fluid p-1" variant="light"></b-avatar>
+                        <b-avatar
+                          :src="task.profile_pic"
+                          size="32px"
+                          class="img-fluid p-1"
+                          variant="light"
+                        ></b-avatar>
                         <span class="pl-3">{{
-                            task.first_name +
-                            " " +
-                            task.last_name
+                          task.first_name + " " + task.last_name
                         }}</span>
                       </div>
                     </td>
                     <td>
-                      <div class="status px-1" :class="{
-                        pending_approval:
-                          task.Assigned_Status ==
-                          'pending',
-                        progress:
-                          task.Assigned_Status ==
-                          'in progress',
-                        completed:
-                          task.Assigned_Status ==
-                          'completed',
-                        disbursed:
-                          task.Assigned_Status ==
-                          'disbursed',
-                        rejected:
-                          task.Assigned_Status ==
-                          'rejected',
-                      }">
-                        {{
-                            task.Assigned_Status
-                            | capitalize
-                        }}
+                      <div
+                        class="status px-1"
+                        :class="{
+                          pending_approval: task.Assigned_Status == 'pending',
+                          progress: task.Assigned_Status == 'in progress',
+                          completed: task.Assigned_Status == 'completed',
+                          disbursed: task.Assigned_Status == 'disbursed',
+                          rejected: task.Assigned_Status == 'rejected',
+                        }"
+                      >
+                        {{ task.Assigned_Status | capitalize }}
                       </div>
                     </td>
                     <td class="d-flex justify-content-center">
                       <span v-if="task.Assigned_UpdatedAt">
-                        {{
-                            task.Assigned_UpdatedAt
-                            | shortDate
-                        }}</span>
-                      <span v-else class="text-center">-
-                      </span>
+                        {{ task.Assigned_UpdatedAt | shortDate }}</span
+                      >
+                      <span v-else class="text-center">- </span>
                     </td>
                     <td>
                       <div>
-                        <Button :loading="loading" :isGray="
-                          task.Assigned_Status ==
-                          'in progress'
-                        " :text="
-  handleText(
-    task.Assigned_Status
-  )
-" :has-icon="false" :has-border="true"
+                        <Button
+                          :loading="loading"
+                          :isGray="task.Assigned_Status == 'in progress'"
+                          :text="handleText(task.Assigned_Status)"
+                          :has-icon="false"
+                          :has-border="true"
                           custom-styles="border-radius: 5px !important; font-size: 0.875rem !important; height: 33px !important; width: 136px !important; padding: 0px 15px !important"
                           @click="
-                            task.Assigned_Status ==
-                              'disbursed'
+                            task.Assigned_Status == 'disbursed'
                               ? view(task)
-                              : reviewSubmission(
-                                task
-                              )
-                          " :disabled="
-  task.Assigned_Status ==
-  'in progress'
-" />
+                              : reviewSubmission(task)
+                          "
+                          :disabled="task.Assigned_Status == 'in progress'"
+                        />
                       </div>
                     </td>
                   </tr>
                 </tbody>
               </table>
               <div v-else-if="loading" class="text-center"></div>
-              <h3 v-else class="text-center no-record">
-                NO RECORD FOUND
-              </h3>
+              <h3 v-else class="text-center no-record">NO RECORD FOUND</h3>
             </div>
           </div>
         </div>
 
         <!-- Campaign details here -->
         <div class="col-lg-4">
-          <task-details :details="details" :count="
-            details.AssignedWorkers
-              ? details.AssignedWorkers.length
-              : 0
-          " :location="location" :user="user" :resumeCampaign="resumeCampaign" />
+          <TaskDetails
+            :details="details"
+            :count="
+              details.AssignedWorkers ? details.AssignedWorkers.length : 0
+            "
+            :location="location"
+            :user="user"
+            :resumeCampaign="resumeCampaign"
+          />
         </div>
       </div>
     </div>
@@ -135,7 +139,7 @@
 
 <script>
 import { mapGetters } from "vuex";
-import taskDetails from "~/components/tables/tasks/task-details.vue";
+import TaskDetails from "~/components/tables/tasks/task-details";
 import newTask from "~/components/modals/new-task";
 import checkEvidence from "~/components/modals/check-evidence";
 import disburseFunds from "~/components/modals/disburse-funds";
@@ -144,7 +148,7 @@ let screenLoading;
 export default {
   layout: "dashboard",
   components: {
-    taskDetails,
+    TaskDetails,
     newTask,
     checkEvidence,
     disburseFunds,
@@ -251,8 +255,7 @@ export default {
         );
 
         if (response.status == "success") {
-          this.task =
-            response.data?.Assignments[0].SubmittedEvidences[0];
+          this.task = response.data?.Assignments[0].SubmittedEvidences[0];
           this.rejectedDetails =
             response.data?.Assignments[0].SubmittedEvidences[0];
         }
@@ -272,8 +275,7 @@ export default {
 
         if (response.status == "success") {
           this.btnStatus = !this.btnStatus;
-          this.task =
-            response.data?.Assignments[0].SubmittedEvidences[0];
+          this.task = response.data?.Assignments[0].SubmittedEvidences[0];
           this.rejectedDetails =
             response.data?.Assignments[0].SubmittedEvidences[0];
         }

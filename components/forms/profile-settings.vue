@@ -15,24 +15,14 @@
           <div class="d-flex mb-3 w-full ctn-mgt-btn">
             <div class="mgt-btn-container">
               <transition name="slide">
-                <button
-                  @click="step = 1"
-                  type="button"
-                  class="mgt-btn one"
-                  :class="{ active: step === 1 }"
-                >
+                <button @click="step = 1" type="button" class="mgt-btn one" :class="{ active: step === 1 }">
                   Organisation Profile
                 </button>
               </transition>
             </div>
 
             <div class="mgt-btn-container">
-              <button
-                @click="step = 2"
-                type="button"
-                class="mgt-btn two"
-                :class="{ active: step === 2 }"
-              >
+              <button @click="step = 2" type="button" class="mgt-btn two" :class="{ active: step === 2 }">
                 User Profile
               </button>
             </div>
@@ -46,23 +36,13 @@
                 <label for="country">Country</label>
 
                 <div>
-                  <el-select
-                    id="dropdown"
-                    v-model="payload.organisation_profile.country"
-                    @blur="$v.payload.organisation_profile.country.$touch()"
-                    filterable
-                    placeholder="United States"
-                    class="country"
-                    :class="{
+                  <el-select id="dropdown" v-model="payload.organisation_profile.country"
+                    @blur="$v.payload.organisation_profile.country.$touch()" filterable placeholder="United States"
+                    class="country" :class="{
                       error: $v.payload.organisation_profile.country.$error,
-                    }"
-                  >
-                    <el-option
-                      v-for="(country, i) in countries"
-                      :key="i"
-                      :label="country.countryName"
-                      :value="country.countryName"
-                    >
+                    }">
+                    <el-option v-for="(country, i) in countries" :key="i" :label="country.countryName"
+                      :value="country.countryName">
                     </el-option>
                   </el-select>
                 </div>
@@ -70,26 +50,15 @@
 
               <!-- State Here  -->
               <div class="col-lg-6 mb-4">
-                <label for="state">State</label>
+                <label for="state-dropdown">State</label>
 
                 <div>
-                  <el-select
-                    id="dropdown"
-                    v-model="payload.organisation_profile.state"
-                    @blur="$v.payload.organisation_profile.state.$touch()"
-                    filterable
-                    placeholder="State"
-                    class="country"
-                    :class="{
+                  <el-select id="dropdown" v-model="payload.organisation_profile.state"
+                    @blur="$v.payload.organisation_profile.state.$touch()" filterable placeholder="State"
+                    class="country" :class="{
                       error: $v.payload.organisation_profile.state.$error,
-                    }"
-                  >
-                    <el-option
-                      v-for="(state, i) in states"
-                      :key="i"
-                      :label="state.name"
-                      :value="state.name"
-                    >
+                    }">
+                    <el-option v-for="(state, i) in states" :key="i" :label="state.name" :value="state.name">
                     </el-option>
                   </el-select>
                 </div>
@@ -101,37 +70,21 @@
               <!-- Address  here  -->
               <div class="col-lg-6 mb-4">
                 <label for="address">Address</label>
-                <input
-                  type="text"
-                  id="address"
-                  placeholder="Address"
-                  class="form-controls px-3"
-                  :class="{
-                    error: $v.payload.organisation_profile.address.$error,
-                  }"
-                  v-model="payload.organisation_profile.address"
-                  @blur="$v.payload.organisation_profile.address.$touch()"
-                />
+                <input type="text" id="address" placeholder="Address" class="form-controls px-3" :class="{
+                  error: $v.payload.organisation_profile.address.$error,
+                }" v-model="payload.organisation_profile.address"
+                  @blur="$v.payload.organisation_profile.address.$touch()" />
               </div>
 
               <!-- Year Founded here  -->
               <div class="col-lg-6 mb-4">
                 <label id="year_founded" for="year">Year Founded</label>
-                <input
-                  type="number"
-                  @wheel="$event.target.blur()"
-                  id="year_founded"
-                  class="form-controls px-3"
-                  :class="{
-                    error:
-                      $v.payload.organisation_profile.year_of_inception.$error,
-                  }"
-                  placeholder="YYYY"
-                  v-model="payload.organisation_profile.year_of_inception"
-                  @blur="
+                <input type="number" @wheel="$event.target.blur()" id="year_founded" class="form-controls px-3" :class="{
+                  error:
+                    $v.payload.organisation_profile.year_of_inception.$error,
+                }" placeholder="YYYY" v-model="payload.organisation_profile.year_of_inception" @blur="
                     $v.payload.organisation_profile.year_of_inception.$touch()
-                  "
-                />
+                  " />
               </div>
             </div>
 
@@ -140,60 +93,32 @@
               <!-- Website here  -->
               <div class="col-lg-6 mb-4">
                 <label for="address">Website</label>
-                <input
-                  type="url"
-                  id="website"
-                  placeholder="Website"
-                  class="form-controls px-3"
-                  :class="{
-                    error: $v.payload.organisation_profile.website_url.$error,
-                  }"
-                  v-model="payload.organisation_profile.website_url"
-                  @blur="$v.payload.organisation_profile.website_url.$touch()"
-                />
+                <input type="url" id="website" placeholder="Website" class="form-controls px-3" :class="{
+                  error: $v.payload.organisation_profile.website_url.$error,
+                }" v-model="payload.organisation_profile.website_url"
+                  @blur="$v.payload.organisation_profile.website_url.$touch()" />
               </div>
 
               <!-- Registration ID here  -->
               <div class="col-lg-6 mb-4">
                 <label for="address">Registration ID</label>
-                <input
-                  type="url"
-                  id="registration_id"
-                  placeholder="CHATS115009"
-                  class="form-controls px-3"
-                  :value="registrationId"
-                  disabled
-                />
+                <input type="url" id="registration_id" placeholder="CHATS115009" class="form-controls px-3"
+                  :value="registrationId" disabled />
               </div>
             </div>
 
             <!-- About Organisation Here -->
             <div class="mb-4">
               <label for="about">About </label>
-              <textarea
-                id="about"
-                placeholder="Short bio here..."
-                class="form-controls p-3"
-                cols="30"
-                rows="4"
-                :class="{
-                  error: $v.payload.organisation_profile.about.$error,
-                }"
-                v-model="payload.organisation_profile.about"
-                @blur="$v.payload.organisation_profile.about.$touch()"
-              ></textarea>
+              <textarea id="about" placeholder="Short bio here..." class="form-controls p-3" cols="30" rows="4" :class="{
+                error: $v.payload.organisation_profile.about.$error,
+              }" v-model="payload.organisation_profile.about"
+                @blur="$v.payload.organisation_profile.about.$touch()"></textarea>
             </div>
 
             <div class="save-btn mb-2 mt-1">
-              <Button
-                type="submit"
-                :has-icon="false"
-                fontSize="1rem"
-                text="Save"
-                custom-styles="height:50px;  width: 100%"
-                :loading="loading"
-                :disabled="loading"
-              />
+              <Button type="submit" :has-icon="false" fontSize="1rem" text="Save"
+                custom-styles="height:50px;  width: 100%" :loading="loading" :disabled="loading" />
             </div>
           </form>
 
@@ -206,23 +131,13 @@
                 <label for="country">Country </label>
 
                 <div>
-                  <el-select
-                    id="dropdown"
-                    v-model="payload.user_profile.country"
-                    filterable
-                    placeholder="Country"
-                    input-class="form-controls"
-                    @change="
+                  <el-select id="dropdown" v-model="payload.user_profile.country" filterable placeholder="United States"
+                    input-class="form-controls" @change="
                       (payload.user_profile.first_name = ''),
                         (payload.user_profile.last_name = '')
-                    "
-                  >
-                    <el-option
-                      v-for="(country, i) in countries"
-                      :key="i"
-                      :label="country.countryName"
-                      :value="country.countryCode"
-                    >
+                    ">
+                    <el-option v-for="(country, i) in countries" :key="i" :label="country.countryName"
+                      :value="country.countryCode">
                     </el-option>
                   </el-select>
                 </div>
@@ -231,13 +146,8 @@
               <!-- Phone number Here  -->
               <div class="col-lg-6 mb-4">
                 <label for="phone">Phone Number</label>
-                <vue-tel-input
-                  id="phone"
-                  mode="international"
-                  class="form-controls phone"
-                  :inputOptions="options"
-                  v-model="payload.user_profile.phone"
-                ></vue-tel-input>
+                <vue-tel-input id="phone" mode="international" class="form-controls phone" :inputOptions="options"
+                  v-model="payload.user_profile.phone"></vue-tel-input>
               </div>
             </div>
 
@@ -246,19 +156,11 @@
               <!-- Currency Code  -->
               <div class="col-lg-6 mb-4">
                 <label for="country">Default currency</label>
-                <el-select
-                  autocomplete="new-password"
-                  id="dropdown"
-                  v-model="payload.user_profile.currency"
-                  filterable
-                  placeholder="Currency Code"
-                >
-                  <el-option
-                    v-for="(currencyCode, i) in countries"
-                    :key="i"
+                <el-select autocomplete="new-password" id="dropdown" v-model="payload.user_profile.currency" filterable
+                  placeholder="Currency Code">
+                  <el-option v-for="(currencyCode, i) in countries" :key="i"
                     :label="`${currencyCode.currencyCode} - ${currencyCode.countryName}`"
-                    :value="currencyCode.currencyCode"
-                  >
+                    :value="currencyCode.currencyCode">
                   </el-option>
                 </el-select>
               </div>
@@ -266,13 +168,8 @@
               <!-- Address Here  -->
               <div class="col-lg-6 mb-4">
                 <label for="state">Address</label>
-                <input
-                  type="text"
-                  class="form-controls px-3"
-                  id="address"
-                  placeholder="Address"
-                  v-model="payload.user_profile.address"
-                />
+                <input type="text" class="form-controls px-3" id="address" placeholder="Address"
+                  v-model="payload.user_profile.address" />
               </div>
             </div>
 
@@ -282,33 +179,17 @@
                 <!-- First Name  -->
                 <div class="col-lg-6 mb-4">
                   <label for="first_name">First Name</label>
-                  <input
-                    type="text"
-                    id="first_name"
-                    placeholder="Juliana"
-                    class="form-controls px-3"
-                    :class="{
-                      error: $v.payload.user_profile.first_name.$error,
-                    }"
-                    v-model="payload.user_profile.first_name"
-                    @blur="$v.payload.user_profile.first_name.$touch()"
-                  />
+                  <input type="text" id="first_name" placeholder="Juliana" class="form-controls px-3" :class="{
+                    error: $v.payload.user_profile.first_name.$error,
+                  }" v-model="payload.user_profile.first_name" @blur="$v.payload.user_profile.first_name.$touch()" />
                 </div>
 
                 <!-- Last Name -->
                 <div class="col-lg-6 mb-4">
                   <label for="last_name">Last Name</label>
-                  <input
-                    type="text"
-                    id="last_name"
-                    placeholder="Orji"
-                    class="form-controls px-3"
-                    :class="{
-                      error: $v.payload.user_profile.last_name.$error,
-                    }"
-                    v-model="payload.user_profile.last_name"
-                    @blur="$v.payload.user_profile.last_name.$touch()"
-                  />
+                  <input type="text" id="last_name" placeholder="Orji" class="form-controls px-3" :class="{
+                    error: $v.payload.user_profile.last_name.$error,
+                  }" v-model="payload.user_profile.last_name" @blur="$v.payload.user_profile.last_name.$touch()" />
                 </div>
               </div>
 
@@ -318,19 +199,10 @@
                 <div class="col-lg-6 mb-4">
                   <label for="state">Gender</label>
                   <div>
-                    <el-select
-                      id="dropdown"
-                      v-model="payload.user_profile.gender"
-                      filterable
-                      placeholder="Gender"
-                      class=""
-                    >
-                      <el-option
-                        v-for="(status, i) in gender"
-                        :key="i"
-                        :label="status.name | capitalize"
-                        :value="status.name"
-                      >
+                    <el-select id="dropdown" v-model="payload.user_profile.gender" filterable placeholder="Gender"
+                      class="">
+                      <el-option v-for="(status, i) in gender" :key="i" :label="status.name | capitalize"
+                        :value="status.name">
                       </el-option>
                     </el-select>
                   </div>
@@ -340,19 +212,10 @@
                 <div class="col-lg-6 mb-4">
                   <label for="state">Marital Status</label>
                   <div>
-                    <el-select
-                      id="dropdown"
-                      v-model="payload.user_profile.marital_status"
-                      filterable
-                      placeholder="Marital Status"
-                      class=""
-                    >
-                      <el-option
-                        v-for="(type, i) in marital_status"
-                        :key="i"
-                        :label="type.name | capitalize"
-                        :value="type.name"
-                      >
+                    <el-select id="dropdown" v-model="payload.user_profile.marital_status" filterable
+                      placeholder="Marital Status" class="">
+                      <el-option v-for="(type, i) in marital_status" :key="i" :label="type.name | capitalize"
+                        :value="type.name">
                       </el-option>
                     </el-select>
                   </div>
@@ -364,14 +227,8 @@
                 <!-- Date of Birth Here  -->
                 <div class="col-lg-6 mb-4">
                   <label for="state">Date of Birth</label>
-                  <date-picker
-                    v-model="payload.user_profile.dob"
-                    input-class=""
-                    format="DD-MM-YYYY"
-                    placeholder="DD-MM-YYYY"
-                    id="dob"
-                    :disabled-date="(present) => present >= new Date()"
-                  ></date-picker>
+                  <date-picker v-model="payload.user_profile.dob" input-class="" format="DD-MM-YYYY"
+                    placeholder="DD-MM-YYYY" id="dob" :disabled-date="(present) => present >= new Date()"></date-picker>
                 </div>
               </div>
             </section>
@@ -381,31 +238,20 @@
               <div class="row">
                 <div class="col-lg-6 mb-4">
                   <label for="state">National Identity Number</label>
-                  <input
-                    type="number"
-                    class="form-controls px-3"
-                    id="address"
-                    placeholder="Enter NIN"
-                    v-model="payload.user_profile.nin"
-                    @blur="$v.payload.user_profile.nin.$touch()"
-                    :class="{
+                  <input type="number" class="form-controls px-3" id="address" placeholder="Enter NIN"
+                    v-model="payload.user_profile.nin" @blur="$v.payload.user_profile.nin.$touch()" :class="{
                       error: $v.payload.user_profile.nin.$error,
-                    }"
-                  />
+                    }" />
                 </div>
 
                 <div class="col-lg-6 align-self-center mb-4 mt-lg-4">
-                  <button
-                    class="pointer verify-btn poppins"
-                    @click="verifyIdentity"
-                    :disabled="
-                      !payload.user_profile.nin ||
-                      payload.user_profile.nin.length < 11
-                    "
-                  >
+                  <button class="pointer verify-btn poppins" @click="verifyIdentity" :disabled="
+                    !payload.user_profile.nin ||
+                    payload.user_profile.nin.length < 11
+                  ">
                     Verify NIN
                   </button>
-                  <!-- 
+                  <!--
                      :disabled="
                       !payload.user_profile.nin ||
                         payload.user_profile.nin.length < 11
@@ -418,35 +264,19 @@
                 <!-- First Name  -->
                 <div class="col-lg-6 mb-4">
                   <label for="first_name">First Name</label>
-                  <input
-                    type="text"
-                    id="first_name"
-                    placeholder="Juliana"
-                    class="form-controls px-3"
-                    :class="{
-                      error: $v.payload.user_profile.first_name.$error,
-                    }"
-                    v-model="payload.user_profile.first_name"
-                    @blur="$v.payload.user_profile.first_name.$touch()"
-                    disabled
-                  />
+                  <input type="text" id="first_name" placeholder="Juliana" class="form-controls px-3" :class="{
+                    error: $v.payload.user_profile.first_name.$error,
+                  }" v-model="payload.user_profile.first_name" @blur="$v.payload.user_profile.first_name.$touch()"
+                    disabled />
                 </div>
 
                 <!-- Last Name -->
                 <div class="col-lg-6 mb-4">
                   <label for="last_name">Last Name</label>
-                  <input
-                    type="text"
-                    id="last_name"
-                    placeholder="Orji"
-                    class="form-controls px-3"
-                    :class="{
-                      error: $v.payload.user_profile.last_name.$error,
-                    }"
-                    v-model="payload.user_profile.last_name"
-                    @blur="$v.payload.user_profile.last_name.$touch()"
-                    disabled
-                  />
+                  <input type="text" id="last_name" placeholder="Orji" class="form-controls px-3" :class="{
+                    error: $v.payload.user_profile.last_name.$error,
+                  }" v-model="payload.user_profile.last_name" @blur="$v.payload.user_profile.last_name.$touch()"
+                    disabled />
                 </div>
               </div>
             </section>
@@ -454,26 +284,15 @@
             <!-- Save Button -->
             <div class="col-lg-12 row mb-2 mt-2">
               <div v-if="payload.user_profile.country == 'NG'">
-                <Button
-                  :has-icon="false"
-                  fontSize="1rem"
-                  text="Verify liveness"
+                <Button :has-icon="false" fontSize="1rem" text="Verify liveness"
                   custom-styles="height:50px; width: 100%; font-weight: 600!important; padding:0 1.5rem !important;"
-                  :disabled="loading || !isIdentityVerified"
-                  @click="$bvModal.show('camera-modal')"
-                />
+                  :disabled="loading || !isIdentityVerified" @click="$bvModal.show('camera-modal')" />
               </div>
 
               <div class="save-btn" v-else>
-                <Button
-                  type="submit"
-                  fontSize="1rem"
-                  :has-icon="false"
-                  text="Save"
-                  custom-styles="height:50px; width: 100%; font-weight: 600!important;"
-                  :loading="loading"
-                  :disabled="loading"
-                />
+                <Button type="submit" fontSize="1rem" :has-icon="false" text="Save"
+                  custom-styles="height:50px; width: 100%; font-weight: 600!important;" :loading="loading"
+                  :disabled="loading" />
               </div>
 
               <!--  -->
@@ -486,67 +305,37 @@
     <!-- Logo Here -->
     <div class="col-lg-3">
       <b-card class="profile-card pb-2">
-        <div
-          class="d-flex profile-card-image-holder justify-content-center mx-auto"
-        >
-          <div
-            class="d-flex align-items-center just profile-card-image-holder m-auto overflow-hidden"
-          >
+        <div class="d-flex profile-card-image-holder justify-content-center mx-auto">
+          <div class="d-flex align-items-center just profile-card-image-holder m-auto overflow-hidden">
             <!--Organisation Photo here -->
-            <b-avatar
-              :src="file"
-              size="150px"
-              class="img-fluid p-1"
-              variant="light"
-            ></b-avatar>
+            <b-avatar :src="file" size="150px" class="img-fluid p-1" variant="light"></b-avatar>
 
             <label>
-              <button
-                type="button"
-                class="profile-card-btn"
-                @click="$refs.fileInput.click()"
-              >
+              <button type="button" class="profile-card-btn" @click="$refs.fileInput.click()">
                 <Camera />
               </button>
 
-              <input
-                type="file"
-                accept="image/png, .pdf"
-                @change="handlePhotoUpdate"
-                ref="fileInput"
-                style="display: none"
-              />
+              <input type="file" accept="image/png, .pdf" @change="handlePhotoUpdate" ref="fileInput"
+                style="display: none" />
             </label>
           </div>
         </div>
 
         <!-- organisation title here -->
-        <b-card-title
-          class="mt-4 d-flex justify-content-center text-center pb-1"
-        >
+        <b-card-title class="mt-4 d-flex justify-content-center text-center pb-1">
           <h6 class="font-bold primary-blue">
             {{ organisationName | capitalize }}
           </h6>
         </b-card-title>
 
         <!-- reg.ID here -->
-        <b-card-text
-          class="profile-card-id text-input d-flex justify-content-center pb-1"
-          >{{ registrationId }}
+        <b-card-text class="profile-card-id text-input d-flex justify-content-center pb-1">{{ registrationId }}
         </b-card-text>
 
         <!-- websiteUrl here -->
-        <b-card-text
-          class="profile-card-website-url secondary-black text-sm d-flex justify-content-center"
-        >
-          <a
-            :href="websiteUrl"
-            target="_blank"
-            rel="noreferrer"
-            class="secondary-black font-medium"
-          >
-            {{ websiteUrl }}</a
-          >
+        <b-card-text class="profile-card-website-url text-sm d-flex justify-content-center">
+          <a :href="websiteUrl" target="_blank" rel="noreferrer" class="primary-gray font-medium">
+            {{ websiteUrl }}</a>
         </b-card-text>
       </b-card>
     </div>
@@ -620,15 +409,11 @@ export default {
         country: { required },
         state: { required },
         address: { required },
-
-        year_of_inception: {
-          required,
-          maxLength: maxLength(4),
-          numeric,
-        },
+        year_of_inception: { required, maxLength: maxLength(4), numeric },
         website_url: { required },
         about: { required, maxLength: maxLength(300) },
       },
+
       user_profile: {
         first_name: { required },
         last_name: { required },
@@ -1042,5 +827,10 @@ h6 {
 
 textarea {
   resize: none;
+}
+
+a:hover {
+  color: inherit;
+  text-decoration: none;
 }
 </style>

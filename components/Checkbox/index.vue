@@ -20,24 +20,25 @@ export default {
   props: {
     id: {
       type: String,
-      default: ""
+      default: "",
     },
     value: {
-      type: Number
+      type: [Boolean, Number],
+      default: false,
     },
     checked: {
       type: Boolean,
-      default: false
+      default: false,
     },
     height: {
       type: String,
-      default: "16px"
+      default: "16px",
     },
     disabled: {
       type: Boolean,
-      default: false
-    }
-  }
+      default: false,
+    },
+  },
 };
 </script>
 

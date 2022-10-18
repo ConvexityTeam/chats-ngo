@@ -14,34 +14,32 @@ Vue.use(VueTelInput, {
   mode: "international",
   validCharactersOnly: true,
   inputOptions: {
-    autocomplete: "off"
-  }
+    autocomplete: "off",
+  },
 });
 
 export default ({ app, store }, inject) => {
+  /* Currency Symbol  Here */
   const user = store.getters["authentication/user"];
   const currencyCode = user?.currency || "NGN";
 
   const country = countries.find(
-    country => country?.currencies[0]?.code === currencyCode
+    (country) => country?.currencies[0]?.code === currencyCode
   );
 
   const currencySymbol = country
     ? country.currencies[0]?.symbol
     : country.currencies[0]?.code;
 
+  /* Copy  text  Here */
+  const copy = (value) => {
+    if (value.length) {
+      navigator.clipboard.writeText(value);
+      app.$toast.success("Copied to clipboard");
+    }
+    return;
+  };
+
+  inject("copy", copy);
   inject("currency", currencySymbol);
 };
-
-// if (payload) {
-//   if (this.$v.payload[key]) {
-//     this.$v.payload[key].$touch();
-//   }
-//   e.target.type = "text";
-//   this.payload[key] =
-//     "$ " +
-//     new Intl.NumberFormat("en-US", {
-//       minimumFractionDigits: 2,
-//       maximumFractionDigits: 2
-//     }).format(this.payload[key]);
-// }

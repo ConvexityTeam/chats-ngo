@@ -152,7 +152,7 @@
 
           <div v-if="$fetchState.pending" class="loader mt-5"></div>
 
-          <div v-else-if="Object.values(metricsData)">
+          <div v-else-if="isMetricData">
             <!-- Maximum Disbursement Date  here -->
 
             <div>
@@ -188,7 +188,7 @@
           </div>
 
           <div v-else>
-            <h3 class="text-center no-record">NO RECORD FOUND</h3>
+            <h3 class="text-center no-record my-4">NO RECORD FOUND</h3>
           </div>
         </div>
       </div>
@@ -222,7 +222,7 @@
             </div>
 
             <div v-else>
-              <h3 class="text-center no-record">NO RECORD FOUND</h3>
+              <h3 class="text-center no-record my-4">NO RECORD FOUND</h3>
             </div>
 
             <div
@@ -303,6 +303,11 @@ export default {
 
     displayedVendors() {
       return this.vendors.slice(0, 5);
+    },
+
+    isMetricData() {
+      // check if the properties of the object have values
+      return Object.values(this.metricsData).every((x) => x != null);
     },
   },
 

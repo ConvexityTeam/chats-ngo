@@ -137,13 +137,13 @@
 <script>
 import { required, email, minLength } from "vuelidate/lib/validators";
 import { mapActions } from "vuex";
-import organisationIcon from "~/components/icons/organisation-icon.vue";
+import organisationIcon from "~/components/icons/organisation-icon";
 import emailIcon from "~/components/icons/email-icon.vue";
-import globeIcon from "~/components/icons/globe-icon.vue";
+import globeIcon from "~/components/icons/globe-icon";
 import lockIcon from "~/components/icons/lock-icon.vue";
 import eyeClosed from "~/components/icons/eye-closed.vue";
 import eyeOpen from "~/components/icons/eye-open.vue";
-import PasswordValidation from "~/components/forms/password-validation.vue";
+import PasswordValidation from "~/components/forms/password-validation";
 
 export default {
   layout: "default",
@@ -169,7 +169,7 @@ export default {
       payload: {
         organisation_name: "",
         email: "",
-        website_url: "",
+        website_url: "http://",
         // terms: false,
         password: "",
       },
@@ -197,7 +197,8 @@ export default {
         containsUppercase: (value) => /[A-Z]/.test(value),
         containsLowercase: (value) => /[a-z]/.test(value),
         containsNumber: (value) => /[0-9]/.test(value),
-        containsSpecial: (value) => /[!@#$%^&*(),.?":{}|<>]/.test(value),
+        containsSpecial: (value) =>
+          /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(value),
       },
     },
   },

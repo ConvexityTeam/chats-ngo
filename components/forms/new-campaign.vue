@@ -29,7 +29,7 @@
         <label for="description">Description</label>
         <textarea
           id="description"
-          class="form-controls p-2"
+          class="form-controls"
           placeholder="Short description"
           :class="{
             error: $v.payload.description.$error,
@@ -42,33 +42,16 @@
       </div>
 
       <!--Budget field  here -->
-      <div class="row form-group">
-        <div class="col-lg-12">
-          <!--Budget field  here -->
-          <div class="">
-            <label for="total-amount">Budget</label>
-            <input
-              type="number"
-              class="form-controls"
-              :class="{
-                error: $v.payload.budget.$error,
-              }"
-              id="total-amount"
-              placeholder="0.00"
-              @blur="$v.payload.budget.$touch()"
-              v-model="payload.budget"
-            />
-            <!--  -->
-
-            <!-- @focus="
-                payload.budget = String(payload.budget).replace(
-                  /[,]|[$]|[' ']|[a-z]/g,
-                  ''
-                );
-                $event.target.type = 'number';
-              " -->
-          </div>
-        </div>
+      <div class="form-group">
+        <label for="total-amount">Budget</label>
+        <CurrencyInput
+          id="total-amount"
+          placeholder="0.00"
+          :customStyles="`height: 41px; border: 1px solid #7c8db5; background: white; padding: 0.75rem`"
+          :error="$v.payload.budget.$error"
+          @blur="$v.payload.budget.$touch()"
+          v-model="payload.budget"
+        />
       </div>
 
       <!-- Date fields here -->
@@ -79,9 +62,13 @@
             <label for="start-date">Start Date</label>
             <date-picker
               v-model="payload.start_date"
+              :input-class="`mx-input  ${
+                $v.payload.start_date.$error ? 'error' : ''
+              }`"
               format="DD-MM-YYYY"
               placeholder="DD-MM-YYYY"
               valueType="format"
+              @blur="$v.payload.start_date.$touch()"
               :disabled-date="(present) => present <= new Date()"
             ></date-picker>
           </div>
@@ -94,9 +81,13 @@
 
             <date-picker
               v-model="payload.end_date"
+              :input-class="`mx-input  ${
+                $v.payload.end_date.$error ? 'error' : ''
+              }`"
               format="DD-MM-YYYY"
               placeholder="DD-MM-YYYY"
               valueType="format"
+              @blur="$v.payload.end_date.$touch()"
               :disabled-date="(present) => present <= new Date()"
             ></date-picker>
           </div>
@@ -148,13 +139,12 @@
 </template>
 
 <script>
-import { required, minValue } from "vuelidate/lib/validators";
+import { required, maxLength } from "vuelidate/lib/validators";
 import { mapGetters } from "vuex";
 import DatePicker from "vue2-datepicker";
 import "vue2-datepicker/index.css";
 import MapSideBar from "./map-sidebar.vue";
-import { allSettled } from "q";
-const greaterThanZero = (value) => value >= 100;
+
 let geocoder;
 
 export default {
@@ -170,6 +160,7 @@ export default {
 
   data() {
     return {
+      test: "123",
       drawer: false,
       present: new Date(),
       loading: false,
@@ -193,27 +184,11 @@ export default {
 
   validations: {
     payload: {
-      title: {
-        required,
-      },
-      description: {
-        required,
-      },
-      budget: {
-        required,
-        greaterThanZero,
-      },
-      //   location: {
-      //     coordinates: {
-      //       required
-      //     }
-      //   },
-      start_date: {
-        required,
-      },
-      end_date: {
-        required,
-      },
+      title: { required },
+      description: { required, maxLength: maxLength(250) },
+      budget: { required },
+      start_date: { required },
+      end_date: { required },
     },
   },
 
@@ -238,47 +213,13 @@ export default {
         this.drawer = true;
       }
     },
-    formatNumbers(event, key, payload) {
-      if (payload) {
-        if (this.$v.payload[key]) {
-          this.$v.payload[key].$touch();
-        }
-        event.target.type = "text";
-        this.payload[key] =
-          "$ " +
-          new Intl.NumberFormat("en-US", {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2,
-          }).format(this.payload[key]);
-      } else {
-        if (this.$v[key]) {
-          this.$v[key].$touch();
-        }
-        event.target.type = "text";
-        this[key] =
-          "$ " +
-          new Intl.NumberFormat("en-US", {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2,
-          }).format(this[key]);
-      }
-    },
-
-    formatCurrency(value) {
-      let x = value
-        .toString()
-        .replace(/\D/g, "")
-        .replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-
-      return x;
-    },
 
     async createCampaign() {
       try {
         this.loading = true;
         this.$v.payload.$touch();
 
-        if (this.$v.payload.$error === true) {
+        if (this.$v.payload.$error) {
           return (this.loading = false);
         }
 
@@ -288,7 +229,11 @@ export default {
 
         const response = await this.$axios.post(
           `/organisations/${+this.id}/campaigns`,
-          this.payload
+          {
+            ...this.payload,
+            budget: this.payload.budget.replace(/[^0-9.]/g, ""),
+          }
+          // this.payload
         );
 
         if (response.status == "success") {
@@ -296,12 +241,11 @@ export default {
           this.closeModal();
           this.$toast.success(response.message);
         }
-
-        this.loading = false;
       } catch (err) {
         console.log({ err });
-        this.loading = false;
         this.$toast.error(err?.response?.data?.message);
+      } finally {
+        this.loading = false;
       }
     },
 
@@ -472,7 +416,7 @@ label {
 }
 
 .form-group {
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem !important;
 }
 
 .form-controls {
@@ -491,6 +435,7 @@ label {
 textarea.form-controls {
   height: auto;
   resize: none;
+  padding: 0.75rem;
 }
 
 /* Chrome, Safari, Edge, Opera */

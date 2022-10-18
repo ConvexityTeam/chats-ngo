@@ -1,6 +1,6 @@
 FROM node:lts as builder
 
-WORKDIR /app
+WORKDIR /frontend
 
 COPY . .
 
@@ -21,9 +21,9 @@ RUN rm -rf node_modules && \
 
 FROM node:lts
 
-WORKDIR /app
+WORKDIR /frontend
 
-COPY --from=builder /app  .
+COPY --from=builder /frontend  .
 
 ENV HOST 0.0.0.0
 

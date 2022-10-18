@@ -44,7 +44,6 @@ export default {
     "~/plugins/element-ui",
     // "~/plugins/freshdesk.js",
     { src: "~/plugins/vuex-persist", ssr: false },
-    "~/plugins/copy-to-clip.js",
   ],
 
   components: true,

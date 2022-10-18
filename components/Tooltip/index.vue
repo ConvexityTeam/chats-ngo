@@ -2,8 +2,8 @@
   <div class="holder">
     <span v-b-tooltip.hover.top="`${content}`" variant="primary">
       <svg
-        width="24"
-        height="24"
+        width="21"
+        height="21"
         viewBox="0 0 24 24"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"

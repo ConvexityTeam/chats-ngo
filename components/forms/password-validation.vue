@@ -78,10 +78,10 @@ export default {
           isValid: this.validations.containsUppercase,
         },
 
-        // {
-        //   text: "a lowercase letter",
-        //   isValid: this.validations.containsLowercase,
-        // },
+        {
+          text: "a lowercase letter",
+          isValid: this.validations.containsLowercase,
+        },
       ];
 
       return validators;
