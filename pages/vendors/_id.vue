@@ -55,7 +55,7 @@
                     {{ $currency
                     }}{{
                       vendor.total_received - vendor.total_spent ||
-                        0 | formatCurrency
+                      0 | formatCurrency
                     }}
                   </h4>
                 </div>
@@ -74,7 +74,7 @@
 
         <!-- Personal details here -->
         <div class="col-lg-4">
-          <Vendor-Details :user="vendor" />
+          <VendorDetails :user="vendor" />
         </div>
       </div>
     </div>
@@ -85,8 +85,8 @@
 import { mapGetters } from "vuex";
 import totalBalance from "~/components/icons/total-balance.vue";
 import disbursed from "~/components/icons/disbursed.vue";
-import VendorDetails from "~/components/tables/vendors/vendor-details.vue";
-import VendorProducts from "~/components/tables/vendors/vendor-products.vue";
+import VendorDetails from "~/components/tables/vendors/vendor-details";
+import VendorProducts from "~/components/tables/vendors/vendor-products";
 
 let screenLoading;
 
@@ -97,14 +97,14 @@ export default {
     disbursed,
     totalBalance,
     VendorDetails,
-    VendorProducts
+    VendorProducts,
   },
 
   data: () => ({
     id: "",
     loading: false,
     vendor: {},
-    products: []
+    products: [],
   }),
 
   mounted() {
@@ -114,7 +114,7 @@ export default {
   },
 
   computed: {
-    ...mapGetters("authentication", ["user"])
+    ...mapGetters("authentication", ["user"]),
   },
 
   methods: {
@@ -147,10 +147,10 @@ export default {
       screenLoading = this.$loading({
         lock: true,
         spinner: "el-icon-loading",
-        background: "#0000009b"
+        background: "#0000009b",
       });
-    }
-  }
+    },
+  },
 };
 </script>
 

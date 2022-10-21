@@ -31,12 +31,14 @@
       <div class="row">
         <div class="form-group col">
           <input
-            type="text"
+            type="email"
             class="form-controls"
             name="email"
             id="email"
             placeholder="Email Address"
-            :class="{}"
+            :class="{
+              error: $v.payload.email.$error,
+            }"
             v-model="payload.email"
             @blur="$v.payload.email.$touch()"
           />
@@ -48,7 +50,6 @@
             placeholder="Phone"
             mode="international"
             class="form-controls phone"
-            :inputOptions="options"
             v-model="payload.contact.phone"
           ></vue-tel-input>
         </div>
@@ -96,7 +97,7 @@
 </template>
 
 <script>
-import { required } from "vuelidate/lib/validators";
+import { email, required } from "vuelidate/lib/validators";
 
 export default {
   name: "Support",
@@ -104,7 +105,6 @@ export default {
   data() {
     return {
       loading: false,
-      // options: { placeholder: "Phone number" },
       payload: {
         email: "",
         subject: "",
@@ -124,6 +124,7 @@ export default {
     payload: {
       email: {
         required,
+        email,
       },
       subject: {
         required,
@@ -156,12 +157,12 @@ export default {
         );
 
         if (response.status == "success") {
-          this.loading = false;
           this.$toast.success(response.message);
         }
       } catch (error) {
         console.log(error);
         this.$toast.error(error?.response?.data?.message);
+      } finally {
         this.loading = false;
       }
     },
@@ -175,10 +176,6 @@ export default {
   overflow-y: scroll;
 }
 
-.container {
-  margin-left: -30px;
-}
-
 .holder {
   background: #ffffff;
   box-shadow: 0px 4px 30px rgba(174, 174, 192, 0.2);
@@ -188,10 +185,19 @@ export default {
   padding: 30px;
 }
 
+.form-controls {
+  padding: 0 0.75rem;
+}
+
+.form-controls::placeholder {
+  color: #7c8db5;
+  font-size: 1rem;
+}
+
 .txt-area {
   width: 100%;
   height: 10rem;
-  padding: 1rem 2.5rem;
+  padding: 1rem 0.75rem;
   font-size: 1rem;
   font-weight: 500;
   line-height: 1.5;
@@ -205,12 +211,14 @@ export default {
 
 .txt-area::placeholder {
   color: #7c8db5;
+  font-size: 1rem;
 }
 
 .txt-area:focus {
   border: 1px solid var(--primary-color) !important;
 }
 </style>
+<<<<<<< HEAD
 
 <style>
 .phone {
@@ -220,3 +228,4 @@ export default {
   padding: 0rem 0.7rem;
 }
 </style>
+======= >>>>>>> cfc73d2234d2e36e36102d9ec6cf5ba572f47b8b
