@@ -218,8 +218,6 @@ export default {
   border: 1px solid var(--primary-color) !important;
 }
 </style>
-<<<<<<< HEAD
-
 <style>
 .phone {
   border: none;
@@ -228,4 +226,3 @@ export default {
   padding: 0rem 0.7rem;
 }
 </style>
-======= >>>>>>> cfc73d2234d2e36e36102d9ec6cf5ba572f47b8b
