@@ -44,15 +44,14 @@
           />
         </div>
         <div class="form-group col">
-          <input
-            type="number"
-            class="form-controls"
-            :class="{}"
-            name="phone"
+          <vue-tel-input
             id="phone"
+            name="phone"
             placeholder="Phone"
+            mode="international"
+            class="form-controls phone"
             v-model="payload.contact.phone"
-          />
+          ></vue-tel-input>
         </div>
       </div>
       <!-- Subject -->
@@ -98,7 +97,7 @@
 </template>
 
 <script>
-import { required, email } from "vuelidate/lib/validators";
+import { email, required } from "vuelidate/lib/validators";
 
 export default {
   name: "Support",
@@ -217,5 +216,13 @@ export default {
 
 .txt-area:focus {
   border: 1px solid var(--primary-color) !important;
+}
+</style>
+<style>
+.phone {
+  border: none;
+  background-color: none;
+  border-radius: 5px;
+  padding: 0rem 0.7rem;
 }
 </style>
