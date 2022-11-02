@@ -12,6 +12,7 @@
             id="name"
             placeholder="First Name"
             v-model="payload.contact.first_name"
+            disabled
           />
         </div>
         <div class="form-group col">
@@ -23,6 +24,7 @@
             id="name"
             placeholder="Last Name"
             v-model="payload.contact.last_name"
+            disabled
           />
         </div>
       </div>
@@ -41,6 +43,7 @@
             }"
             v-model="payload.email"
             @blur="$v.payload.email.$touch()"
+            disabled
           />
         </div>
         <div class="form-group col">
@@ -49,8 +52,9 @@
             name="phone"
             placeholder="Phone"
             mode="international"
-            class="form-controls phone"
+            class="form-controls phone_disabled phone"
             v-model="payload.contact.phone"
+            disabled
           ></vue-tel-input>
         </div>
       </div>
@@ -98,6 +102,7 @@
 
 <script>
 import { email, required } from "vuelidate/lib/validators";
+import { mapGetters } from "vuex";
 
 export default {
   name: "Support",
@@ -109,14 +114,15 @@ export default {
         email: "",
         subject: "",
         departmentId: "661286000000006907",
-        phone: "",
+        phone: this.phone,
         contact: {
-          email: "",
-          first_name: "",
-          last_name: "",
+          email: this.email,
+          first_name: this.firstName,
+          last_name: this.lastName,
         },
         description: "",
       },
+      userData: "",
     };
   },
 
@@ -133,6 +139,27 @@ export default {
         required,
       },
     },
+  },
+
+  computed: {
+    ...mapGetters("authentication", ["user"]),
+
+    firstName() {
+      return this.user?.first_name ?? "";
+    },
+    lastName() {
+      return this.user?.last_name ?? "";
+    },
+    email() {
+      return this.user?.email ?? "";
+    },
+    phone() {
+      return this.user?.last_name ?? "";
+    },
+  },
+
+  mounted() {
+    console.log("USER::", this.user);
   },
 
   methods: {
@@ -217,7 +244,20 @@ export default {
 .txt-area:focus {
   border: 1px solid var(--primary-color) !important;
 }
+
+.form-controls:disabled {
+  background: #ccced1;
+  /* opacity: 0.35; */
+  color: #646a86;
+}
+
+.phone_disabled {
+  background: #ccced1;
+  /* opacity: 0.35; */
+  color: #646a86;
+}
 </style>
+
 <style>
 .phone {
   border: none;
