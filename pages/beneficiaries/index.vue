@@ -134,19 +134,19 @@
 </template>
 
 <script>
+import { mapActions, mapGetters } from "vuex";
 import beneficiaryAge from "~/components/charts/beneficiary-age";
-import beneficiaryGender from "~/components/charts/beneficiary-gender";
-import beneficiaryPerVendor from "~/components/charts/beneficiary-per-vendor";
 import beneficiaryBalances from "~/components/charts/beneficiary-balances";
+import beneficiaryGender from "~/components/charts/beneficiary-gender";
 import beneficiaryLocation from "~/components/charts/beneficiary-location";
 import beneficiaryMarital from "~/components/charts/beneficiary-marital";
-import dot from "~/components/icons/dot";
-import rightArrow from "~/components/icons/right-arrow";
-import leftArrow from "~/components/icons/left-arrow";
-import totalBalance from "~/components/icons/total-balance.vue";
+import beneficiaryPerVendor from "~/components/charts/beneficiary-per-vendor";
 import disbursed from "~/components/icons/disbursed.vue";
+import dot from "~/components/icons/dot";
+import leftArrow from "~/components/icons/left-arrow";
+import rightArrow from "~/components/icons/right-arrow";
+import totalBalance from "~/components/icons/total-balance.vue";
 import beneficiaryTransaction from "~/components/tables/beneficiary-transaction";
-import { mapActions, mapGetters } from "vuex";
 
 export default {
   layout: "dashboard",
@@ -154,7 +154,7 @@ export default {
     return {
       loading: false,
       id: "",
-      stats: {}
+      stats: {},
     };
   },
   components: {
@@ -169,7 +169,7 @@ export default {
     leftArrow,
     beneficiaryTransaction,
     disbursed,
-    totalBalance
+    totalBalance,
   },
 
   mounted() {
@@ -182,7 +182,7 @@ export default {
 
   computed: {
     ...mapGetters("authentication", ["user"]),
-    ...mapGetters("beneficiaries", ["beneficiaries"])
+    ...mapGetters("beneficiaries", ["beneficiaries"]),
   },
 
   methods: {
@@ -193,8 +193,8 @@ export default {
         this.loading = true;
         const response = await this.$axios.get("/users/info/statistics");
         if (response.status == "success") {
-          this.loading = false;
           this.stats = response.data[0];
+          this.loading = false;
         }
         console.log("statsresponse:::", response);
       } catch (err) {
@@ -206,17 +206,17 @@ export default {
       try {
         this.loading = true;
         const response = await this.$axios.get("/users/info/chart");
-        // if (response.data.code == 200) {
-        //   this.loading = false;
-        //   this.stats = response.data.data[0];
-        // }
+        if (response.stats === "success") {
+          // this.stats = response.data.data[0];
+          this.loading = false;
+        }
         console.log("chatresponse:::", response);
       } catch (err) {
         this.loading = false;
         console.log("chsrtserr:::", err);
       }
-    }
-  }
+    },
+  },
 };
 </script>
 
