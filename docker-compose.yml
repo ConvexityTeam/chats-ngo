@@ -6,8 +6,6 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    volumes: 
-      - ./:/dashboard
     ports:
       - 3000:3000
     networks:
