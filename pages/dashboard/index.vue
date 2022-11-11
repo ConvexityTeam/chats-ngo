@@ -248,19 +248,19 @@
 </template>
 
 <script>
-import beneficiaryAge from "~/components/charts/beneficiary-age";
-import beneficiaryGender from "~/components/charts/beneficiary-gender";
-import beneficiaryVendor from "~/components/charts/beneficiary-vendor";
-import beneficiaryBalances from "~/components/charts/beneficiary-balances";
-import beneficiaryLocation from "~/components/charts/beneficiary-location";
-import dot from "~/components/icons/dot";
-import rightArrow from "~/components/icons/right-arrow";
-import leftArrow from "~/components/icons/left-arrow";
-import walletBalance from "~/components/icons/wallet-balance.vue";
-import totalBalance from "~/components/icons/total-balance.vue";
-import disbursed from "~/components/icons/disbursed.vue";
-import countries from "~/plugins/countries";
 import { mapGetters } from "vuex";
+import beneficiaryAge from "~/components/charts/beneficiary-age";
+import beneficiaryBalances from "~/components/charts/beneficiary-balances";
+import beneficiaryGender from "~/components/charts/beneficiary-gender";
+import beneficiaryLocation from "~/components/charts/beneficiary-location";
+import beneficiaryVendor from "~/components/charts/beneficiary-vendor";
+import disbursed from "~/components/icons/disbursed.vue";
+import dot from "~/components/icons/dot";
+import leftArrow from "~/components/icons/left-arrow";
+import rightArrow from "~/components/icons/right-arrow";
+import totalBalance from "~/components/icons/total-balance.vue";
+import walletBalance from "~/components/icons/wallet-balance.vue";
+import countries from "~/plugins/countries";
 
 export default {
   layout: "dashboard",
@@ -309,6 +309,10 @@ export default {
       // check if the properties of the object have values
       return Object.values(this.metricsData).every((x) => x != null);
     },
+  },
+
+  mounted() {
+    this.getStats();
   },
 
   async fetch() {

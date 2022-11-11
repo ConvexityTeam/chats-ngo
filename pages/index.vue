@@ -143,7 +143,10 @@ export default {
           return;
         }
 
-        const response = await this.$axios.post("/auth/login", this.payload);
+        const response = await this.$axios.post(
+          "/auth/ngo-login",
+          this.payload
+        );
 
         console.log("login response", response);
 
