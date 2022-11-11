@@ -21,3 +21,4 @@ deploy_production:
   - ssh $USER@$APP_URL -o StrictHostKeyChecking=no ". ssh-restart.sh && ssh-add .ssh/convexityApps && cd frontend && docker-compose down && git pull origin production && docker-compose build dashboard && docker-compose up -d && exit"
   only:
     - production
+    
