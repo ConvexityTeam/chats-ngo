@@ -9,7 +9,6 @@
       :key="text"
       class="d-flex align-items-center mt-2 mr-2"
     >
-      <!-- <div> -->
       <svg
         width="13"
         height="16"
@@ -35,7 +34,7 @@
           />
         </template>
       </svg>
-      <!-- </div> -->
+
       <div class="ml-2">
         <span
           :class="`validity-text  ${isValid ? 'text-grey-200' : 'text-red'}`"
