@@ -55,6 +55,8 @@
             </div>
           </div>
 
+          <recaptcha />
+
           <div class="mt-4 pt-2 text-center">
             <button :disabled="loading" class="onboarding-btn">
               <span v-if="loading">
@@ -97,13 +99,7 @@ import eyeOpen from "~/components/icons/eye-open.vue";
 export default {
   layout: "default",
   middleware: ["loginguard"],
-
-  components: {
-    emailIcon,
-    lockIcon,
-    eyeClosed,
-    eyeOpen,
-  },
+  components: { emailIcon, lockIcon, eyeClosed, eyeOpen },
 
   data() {
     return {
@@ -114,24 +110,21 @@ export default {
       payload: {
         email: "",
         password: "",
+        token: "",
       },
     };
   },
 
   validations: {
     payload: {
-      email: {
-        required,
-        email,
-      },
-      password: {
-        required,
-      },
+      email: { required, email },
+      password: { required },
     },
   },
 
   methods: {
     ...mapActions("authentication", ["commitToken", "commitUser"]),
+
     async loginUser() {
       try {
         this.loading = true;
@@ -142,6 +135,9 @@ export default {
           this.$toast.error("Please fill in appropriately");
           return;
         }
+
+        const token = await this.$recaptcha.getResponse();
+        this.payload.token = token;
 
         const response = await this.$axios.post(
           "/auth/ngo-login",
@@ -168,6 +164,7 @@ export default {
         this.$toast.error(err?.response?.data?.message);
       } finally {
         this.loading = false;
+        await this.$recaptcha.reset();
         localStorage.removeItem("protectedLastRoute");
       }
     },
