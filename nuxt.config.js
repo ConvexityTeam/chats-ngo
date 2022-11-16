@@ -55,7 +55,14 @@ export default {
     "@nuxtjs/toast",
     "@nuxtjs/dotenv",
     "@nuxtjs/i18n",
+    "@nuxtjs/recaptcha",
   ],
+
+  recaptcha: {
+    siteKey: process.env.RECAPTCHA_SITE_KEY,
+    version: 2,
+    size: "invisible",
+  },
 
   // Axios module configuration (https://go.nuxtjs.dev/config-axios)
   axios: {

@@ -29,6 +29,10 @@ html {
   scroll-behavior: smooth;
 }
 
+.grecaptcha-badge {
+  visibility: hidden;
+}
+
 .poppins {
   font-family: "Poppins", sans-serif;
 }
