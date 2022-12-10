@@ -143,7 +143,7 @@ import { required, maxLength } from "vuelidate/lib/validators";
 import { mapGetters } from "vuex";
 import DatePicker from "vue2-datepicker";
 import "vue2-datepicker/index.css";
-import MapSideBar from "./map-sidebar.vue";
+import MapSideBar from "./map-sidebar";
 
 let geocoder;
 
@@ -251,6 +251,7 @@ export default {
 
     // TODO:Try emiting fetch all campaigns method from parent and calling here
     runMap() {
+      let google = window.google;
       const mapComponent = document.getElementById("map_canvas");
       const map = new google.maps.Map(mapComponent, {
         center: { lat: 17.35297042396732, lng: 8.808737500000019 },

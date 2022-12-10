@@ -7,11 +7,16 @@
     :style="customStyles"
     :disabled="disabled"
   >
-    <i v-if="hasIcon">
+    <i v-if="hasIcon && !loading">
       <img v-if="hasEye" src="~/assets/img/vectors/eye.svg" alt="eye" />
       <img v-else-if="csv" src="~/assets/img/vectors/csv.svg" alt="csv" />
       <img v-else-if="greenCsv" src="~/assets/img/vectors/csv2.svg" alt="csv" />
       <img v-else-if="isGreen" src="~/assets/img/vectors/add2.svg" alt="add" />
+      <img
+        v-else-if="isImport"
+        src="~/assets/img/vectors/import.svg"
+        alt="add"
+      />
       <img v-else src="~/assets/img/vectors/add.svg" alt="add" />
     </i>
 
@@ -32,61 +37,65 @@ export default {
   props: {
     text: {
       type: String,
-      default: ""
+      default: "",
     },
     type: {
       type: String,
-      default: "button"
+      default: "button",
     },
     hasIcon: {
       type: Boolean,
-      default: true
+      default: true,
     },
     fill: {
       type: String,
-      default: "white"
+      default: "white",
     },
     hasBorder: {
       type: Boolean,
-      default: false
+      default: false,
     },
     customStyles: {
       type: String,
-      default: ""
+      default: "",
     },
     hasEye: {
       type: Boolean,
-      default: false
+      default: false,
     },
     csv: {
       type: Boolean,
-      default: false
+      default: false,
     },
     greenCsv: {
       type: Boolean,
-      default: false
+      default: false,
     },
     isGreen: {
       type: Boolean,
-      default: false
+      default: false,
+    },
+    isImport: {
+      type: Boolean,
+      default: false,
     },
     disabled: {
       type: Boolean,
-      default: false
+      default: false,
     },
     isGray: {
       type: Boolean,
-      default: false
+      default: false,
     },
     loading: {
       type: Boolean,
-      default: false
+      default: false,
     },
     fontSize: {
       type: String,
-      default: "0.875rem"
-    }
-  }
+      default: "0.875rem",
+    },
+  },
 };
 </script>
 

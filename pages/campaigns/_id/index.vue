@@ -5,15 +5,27 @@
     <div class="main container transparent pt-4 mt-2 pb-5" v-else>
       <!-- Modas Here -->
       <section>
+        <!-- Public Funding -->
         <Modal id="funding" title="Fund through Crypto">
           <funding />
         </Modal>
 
+        <!-- Reject Benefactor -->
         <Modal id="reject-benefactor" title="Reject Benefactor">
           <reject-benefactor
             :benefactor="activeBenefactor"
             @rejectBenefactor="rejectBenefactor"
           />
+        </Modal>
+
+        <!-- Funding Prompt  -->
+        <Modal id="funding-prompt" title="Fund Campaign">
+          <FundingPrompt @handleFunding="fundCampaign" />
+        </Modal>
+
+        <!-- Import Beneficiaries -->
+        <Modal id="import-beneficiaries" title="Import Beneficiaries">
+          <ImportBeneficiaries :orgId="orgId" @imported="updateList" />
         </Modal>
       </section>
 
@@ -71,11 +83,12 @@
 
           <div class="mr-4">
             <Button
-              v-if="details.status === 'pending'"
+              v-if="details.status === 'pending' || !details.is_funded"
               text="Fund Campaign"
               :has-icon="false"
               custom-styles="height:50px"
-              @click="fundCampaign"
+              @click="$bvModal.show('funding-prompt')"
+              :disabled="details.status === 'pending' && details.is_funded"
             />
 
             <Button
@@ -131,7 +144,7 @@
               </div>
 
               <!-- tabs here -->
-              <div class="mx-2 mb-3 d-flex">
+              <div class="mb-3 d-flex">
                 <b-tabs content-class="mt-1" v-model="tabIndex">
                   <!-- All  beneficiaries here -->
                   <b-tab title="All" active title-link-class="beneficiary">
@@ -147,17 +160,29 @@
                 </b-tabs>
 
                 <!-- Approve Button here -->
-                <div
-                  class="ml-auto mr-5"
-                  v-if="pendingBeneficiaries.length && tabIndex == 1"
-                >
-                  <Button
-                    text="Approve"
-                    :has-icon="false"
-                    :has-border="true"
-                    custom-styles="border: 1px solid #17CE89 !important; border-radius: 5px !important; font-size: 0.875rem !important; height: 33px !important"
-                    @click="approveBeneficiaries"
-                  />
+                <div class="d-flex align-items-center ml-auto mr-5">
+                  <!-- Approve Button Here -->
+                  <div v-if="pendingBeneficiaries.length && tabIndex == 1">
+                    <Button
+                      text="Approve"
+                      :has-icon="false"
+                      :has-border="true"
+                      custom-styles="border: 1px solid #17CE89 !important; border-radius: 5px !important; font-size: 0.875rem !important; height: 33px !important"
+                      @click="approveBeneficiaries"
+                    />
+                  </div>
+
+                  <!-- Import Button Here -->
+                  <div class="ml-4">
+                    <Button
+                      text="Import beneficiaries"
+                      :has-icon="true"
+                      :is-import="true"
+                      :has-border="true"
+                      custom-styles="border: 1px solid #17CE89 !important; border-radius: 5px !important; font-size: 0.875rem !important; height: 33px !important; padding: 0 10px !important"
+                      @click="$bvModal.show('import-beneficiaries')"
+                    />
+                  </div>
                 </div>
               </div>
 
@@ -265,8 +290,6 @@
   </div>
 </template>
 
-<!--  -->
-
 <script>
 import { mapGetters } from "vuex";
 import beneficiaryComplaints from "~/components/tables/campaigns/beneficiary-complaints";
@@ -277,6 +300,8 @@ import addProduct from "~/components/forms/add-product.vue";
 import rejectBenefactor from "~/components/forms/reject-benefactor.vue";
 import campaignVendors from "~/components/tables/campaigns/campaign-vendors.vue";
 import campaignProducts from "~/components/tables/campaigns/campaign-products.vue";
+import FundingPrompt from "./funding-prompt";
+import ImportBeneficiaries from "./import-beneficiaries.vue";
 
 let screenLoading;
 export default {
@@ -309,6 +334,8 @@ export default {
     rejectBenefactor,
     campaignVendors,
     campaignProducts,
+    FundingPrompt,
+    ImportBeneficiaries,
   },
 
   computed: {
@@ -364,14 +391,6 @@ export default {
   },
 
   methods: {
-    closeDrawer() {
-      this.drawer = false;
-      this.remount = true;
-    },
-
-    showModal() {
-      this.$bvModal.show("funding");
-    },
     async fundCampaign() {
       try {
         this.openScreen();
@@ -476,6 +495,17 @@ export default {
       } catch (err) {
         screenLoading.close();
       }
+    },
+
+    updateList() {
+      this.$bvModal.hide("import-beneficiaries");
+      this.tabIndex = 1;
+      this.getCampaignBeneficiaries();
+    },
+
+    closeDrawer() {
+      this.drawer = false;
+      this.remount = true;
     },
 
     openScreen() {

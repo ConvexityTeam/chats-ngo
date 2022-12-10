@@ -108,6 +108,8 @@
             </template>
           </div>
 
+          <recaptcha />
+
           <!-- Submit button here -->
           <div class="text-center mt-4">
             <button :disabled="loading" class="onboarding-btn">
@@ -130,7 +132,6 @@
         </div>
       </div>
     </div>
-    //TODO:Add Length Validation and sort for Password on registration
   </div>
 </template>
 
@@ -170,7 +171,6 @@ export default {
         organisation_name: "",
         email: "",
         website_url: "http://",
-        // terms: false,
         password: "",
       },
     };
@@ -178,19 +178,9 @@ export default {
 
   validations: {
     payload: {
-      organisation_name: {
-        required,
-      },
-      email: {
-        required,
-        email,
-      },
-      website_url: {
-        required,
-      },
-      // terms: {
-      //   required
-      // },
+      organisation_name: { required },
+      email: { required, email },
+      website_url: { required },
       password: {
         required,
         minLength: minLength(8),
@@ -243,14 +233,14 @@ export default {
 
     async loginUser() {
       try {
+        const token = await this.$recaptcha.getResponse();
         const data = {
           email: this.payload.email,
           password: this.payload.password,
+          token,
         };
 
         const response = await this.$axios.post("/auth/login", data);
-
-        console.log("login response", response);
 
         if (response.status == "success") {
           this.commitToken(response.data.token);
@@ -258,8 +248,9 @@ export default {
           this.$router.push("/settings");
         }
       } catch (err) {
-        this.loading = false;
         this.$toast.error(err.response?.data?.message);
+      } finally {
+        await this.$recaptcha.reset();
       }
     },
   },
