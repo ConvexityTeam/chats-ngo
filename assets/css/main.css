@@ -30,7 +30,7 @@ html {
 }
 
 .grecaptcha-badge {
-  visibility: hidden;
+  /* visibility: hidden; */
 }
 
 .poppins {
