@@ -59,6 +59,7 @@ export default {
   ],
 
   recaptcha: {
+    hideBadge: true,
     siteKey: process.env.RECAPTCHA_SITE_KEY,
     version: 2,
     size: "invisible",

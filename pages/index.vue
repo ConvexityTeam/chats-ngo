@@ -55,9 +55,8 @@
             </div>
           </div>
 
-          <recaptcha />
-
           <div class="mt-4 pt-2 text-center">
+            <recaptcha />
             <button :disabled="loading" class="onboarding-btn">
               <span v-if="loading">
                 <img
@@ -137,12 +136,10 @@ export default {
         }
 
         const token = await this.$recaptcha.getResponse();
-        this.payload.token = token;
-
-        const response = await this.$axios.post(
-          "/auth/ngo-login",
-          this.payload
-        );
+        const response = await this.$axios.post("/auth/ngo-login", {
+          ...this.payload,
+          token,
+        });
 
         console.log("login response", response);
 
@@ -159,12 +156,14 @@ export default {
 
           await this.$router.push(protectedLastRoute || "/dashboard");
         }
+
+        await this.$recaptcha.reset();
       } catch (err) {
         console.log("ERRR::::", { err });
         this.$toast.error(err?.response?.data?.message);
       } finally {
         this.loading = false;
-        await this.$recaptcha.reset();
+
         localStorage.removeItem("protectedLastRoute");
       }
     },
