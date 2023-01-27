@@ -253,6 +253,7 @@ export default {
     runMap() {
       let google = window.google;
       const mapComponent = document.getElementById("map_canvas");
+      if (!mapComponent) return;
       const map = new google.maps.Map(mapComponent, {
         center: { lat: 17.35297042396732, lng: 8.808737500000019 },
         zoom: 3,
