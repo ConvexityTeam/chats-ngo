@@ -1,5 +1,5 @@
 <template>
-  <label :style="{ height: height }">
+  <label :style="{ height: height }" :class="{ readonly }">
     <input
       type="checkbox"
       ref="checkbox"
@@ -9,9 +9,10 @@
       :value="value"
       :disabled="disabled"
       @change="$emit('input', $event.target.checked)"
+      :readonly="readonly"
     />
 
-    <span :class="{ disabled: disabled }"></span>
+    <span :class="{ disabled }"></span>
   </label>
 </template>
 <script>
@@ -38,6 +39,11 @@ export default {
       type: Boolean,
       default: false,
     },
+
+    readonly: {
+      type: Boolean,
+      default: false,
+    },
   },
 };
 </script>
@@ -46,6 +52,9 @@ export default {
 label {
   position: relative;
   display: flex !important;
+}
+label.readonly {
+  pointer-events: none;
 }
 span {
   width: 20px;
@@ -72,6 +81,7 @@ span.disabled {
   cursor: not-allowed;
   opacity: 0.5;
 }
+
 input {
   display: none;
 }

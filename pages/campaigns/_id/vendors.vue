@@ -115,7 +115,7 @@ export default {
       orgId: "",
       vendors: [],
       searchQuery: "",
-      img: require("~/assets/img/user.png")
+      img: require("~/assets/img/user.png"),
     };
   },
 
@@ -123,12 +123,12 @@ export default {
     ...mapGetters("authentication", ["user"]),
     resultQuery() {
       if (this.searchQuery) {
-        return this.vendors.filter(vendor => {
+        return this.vendors.filter((vendor) => {
           return this.searchQuery
             .toLowerCase()
             .split(" ")
             .every(
-              v =>
+              (v) =>
                 vendor &&
                 vendor.Vendor &&
                 vendor.Vendor.first_name.toLowerCase().includes(v)
@@ -137,7 +137,7 @@ export default {
       } else {
         return this.vendors;
       }
-    }
+    },
   },
 
   async fetch() {
@@ -147,7 +147,7 @@ export default {
     );
 
     this.vendors = response.data;
-  }
+  },
 };
 </script>
 
@@ -181,43 +181,5 @@ select.form-control {
 
 .form-controls {
   height: 50px;
-}
-</style>
-
-<style>
-.table-holder {
-  background: #ffffff;
-  box-shadow: 0px 4px 30px rgba(174, 174, 192, 0.2);
-  border-radius: 10px;
-}
-
-.table-title {
-  padding: 1rem 1.5rem;
-}
-
-.table-title h4 {
-  font-weight: bold;
-  letter-spacing: 0.01em;
-  font-size: 1.125rem;
-  color: var(--primary-blue);
-}
-
-.table thead th {
-  color: var(--primary-blue);
-  background: #f7f7f7;
-  letter-spacing: 0.01em;
-  font-size: 1rem;
-  font-weight: 500;
-  padding: 1rem 1.5rem;
-}
-
-.table td {
-  color: var(--primary-blue);
-  padding: 1rem 1.5rem;
-  font-size: 1rem;
-  vertical-align: middle;
-}
-.selected {
-  background: #fcfcfe;
 }
 </style>

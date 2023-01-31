@@ -623,8 +623,30 @@ select.form-control {
   color: #646a86;
 }
 
+#campaign-form > .el-select > .el-input > .el-input__inner {
+  width: 100%;
+  border: 1px solid #17CE89;
+  height: 38px;
+  border-radius: 8px;
+  color: #222222;
+  font-weight: 500;
+  min-height: 38px !important;
+  font-size: 1rem;
+}
+
+#campaign-form > .el-select > .el-input > ::placeholder {
+  letter-spacing: 0.01em;
+  font-size: 0.875rem;
+  color: #646a86;
+}
+
 .el-select-dropdown__item .el-icon-arrow-up {
   content: url("../img/vectors/chevron.svg");
+}
+
+.el-select .el-input .el-select__caret {
+  color: #646A86 !important;
+  font-weight: bold; 
 }
 
 .el-input__icon {
@@ -640,6 +662,8 @@ select.form-control {
   color: #333333 !important;
   font-weight: 500;
   font-size: 1rem;
+  height: 42px  !important;
+  padding: 6px 20px !important;
 }
 
 .el-select .el-tag__close.el-icon-close {
@@ -700,6 +724,43 @@ select.form-control {
 
 .el-input__inner:focus {
   border: 1px solid var(--primary-color);
+}
+
+/* TABLE HERE */
+.table-holder {
+  background: #ffffff;
+  box-shadow: 0px 4px 30px rgba(174, 174, 192, 0.2);
+  border-radius: 10px;
+}
+
+.table-title {
+  padding: 1rem 1.5rem;
+}
+
+.table-title h4 {
+  font-weight: bold;
+  letter-spacing: 0.01em;
+  font-size: 1.125rem;
+  color: var(--primary-blue);
+}
+
+.table thead th {
+  color: var(--primary-blue);
+  background: #f7f7f7;
+  letter-spacing: 0.01em;
+  font-size: 1rem;
+  font-weight: 500;
+  padding: 1rem 1.5rem;
+}
+
+.table td {
+  color: var(--primary-blue);
+  padding: 1rem 1.5rem;
+  font-size: 1rem;
+  vertical-align: middle;
+}
+.selected {
+  background: #fcfcfe;
 }
 
 /* TOAST HERE */

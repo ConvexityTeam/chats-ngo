@@ -98,7 +98,7 @@
             :data="resultQuery"
             :isCleared="isCleared"
             @resendToken="handleSingleToken"
-            @handleSelected="data => (selectedTokens = data)"
+            @handleSelected="(data) => (selectedTokens = data)"
           />
         </b-tab>
 
@@ -147,7 +147,7 @@ export default {
     searchQuery: "",
     smsTokens: [],
     qrCodes: [],
-    selectedTokens: []
+    selectedTokens: [],
   }),
 
   computed: {
@@ -155,11 +155,11 @@ export default {
     resultQuery() {
       const data = this.tokenType === "sms" ? this.smsTokens : this.qrCodes;
       if (this.searchQuery) {
-        return data.filter(benefactor => {
+        return data.filter((benefactor) => {
           return this.searchQuery
             .toLowerCase()
             .split(" ")
-            .every(v =>
+            .every((v) =>
               benefactor?.Beneficiary?.first_name?.toLowerCase().includes(v)
             );
         });
@@ -170,15 +170,15 @@ export default {
 
     tokenType() {
       return this.$route.query.method;
-    }
+    },
   },
 
   watch: {
-    "route.meta.reload": function(value) {
+    "route.meta.reload": function (value) {
       if (value) {
         this.fetchTokens();
       }
-    }
+    },
   },
 
   mounted() {
@@ -198,7 +198,7 @@ export default {
           ),
           this.$axios.get(
             `/organisations/${orgId}/${campaignId}/papertoken/tokens/1`
-          )
+          ),
         ]);
 
         console.log("smsTokens:::", smsTokens);
@@ -224,7 +224,7 @@ export default {
         const response = await this.$axios.post(
           `organisations/beneficiaries/sms-token`,
           {
-            beneficiaryIds: this.selectedTokens
+            beneficiaryIds: this.selectedTokens,
           }
         );
         console.log("REsponse:::", response);
@@ -247,7 +247,7 @@ export default {
     },
     handleSingleToken(id) {
       if (this.selectedTokens.includes(id)) {
-        this.selectedTokens = this.selectedTokens.filter(v => v != id);
+        this.selectedTokens = this.selectedTokens.filter((v) => v != id);
       } else {
         this.selectedTokens.push(id);
         this.resendToken();
@@ -257,7 +257,7 @@ export default {
     handleTabClick(tokenType) {
       this.$router.replace({
         path: this.$route.path,
-        query: { method: tokenType }
+        query: { method: tokenType },
       });
     },
 
@@ -265,10 +265,10 @@ export default {
       screenLoading = this.$loading({
         lock: true,
         spinner: "el-icon-loading",
-        background: "#0000009b"
+        background: "#0000009b",
       });
-    }
-  }
+    },
+  },
 };
 </script>
 
