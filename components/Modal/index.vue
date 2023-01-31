@@ -7,6 +7,7 @@
         <button
           type="button"
           class="close-btn position-absolute"
+          :class="{ buttonModified }"
           @click="closeModal"
         >
           <close />
@@ -29,24 +30,29 @@ export default {
     id: {
       type: String,
       default: "",
-      required: true
+      required: true,
     },
 
     title: {
       type: String,
       default: "",
-      required: true
+      required: true,
     },
 
     size: {
       type: String,
-      default: "md"
+      default: "md",
     },
 
     centered: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
+
+    buttonModified: {
+      type: Boolean,
+      default: false,
+    },
   },
 
   components: { close },
@@ -58,8 +64,8 @@ export default {
     },
     showModal() {
       this.$bvModal.show(`${this.id}`);
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -80,5 +86,9 @@ export default {
   background: inherit;
   bottom: 25px;
   right: -5px;
+}
+
+.close-btn.buttonModified {
+  bottom: -5px;
 }
 </style>

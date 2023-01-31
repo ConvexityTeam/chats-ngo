@@ -1,6 +1,6 @@
 <template>
   <div class="d-flex">
-    <label :class="{ disabled: disabled }" :style="labelStyles">
+    <label :class="{ disabled: disabled, readonly }" :style="labelStyles">
       <input
         :name="name"
         :id="value"
@@ -8,11 +8,12 @@
         ref="radio"
         :value="value"
         :checked="isChecked"
+        :readonly="readonly"
         @change="changed"
         :disabled="disabled"
         v-bind="$attrs"
       />
-      <span :class="{ disabled: disabled }"></span>
+      <span :class="{ disabled: disabled, readonly }"></span>
     </label>
 
     <div class="d-flex align-items-center">
@@ -36,72 +37,78 @@ export default {
 
   model: {
     prop: "modelValue",
-    event: "change"
+    event: "change",
   },
 
   props: {
     label: {
       type: String,
-      default: ""
+      default: "",
     },
 
     modelValue: {
-      default: ""
+      default: "",
     },
 
     value: {
       type: [String, Boolean],
-      default: ""
+      default: "",
     },
 
     disabled: {
       type: Boolean,
-      default: false
+      default: false,
     },
 
     name: {
       type: String,
       default: "",
-      required: false
+      required: false,
     },
 
     customStyles: {
       type: String,
-      default: ""
+      default: "",
     },
 
     labelStyles: {
       type: String,
-      default: ""
+      default: "",
     },
 
     extraText: {
       type: String,
-      default: ""
-    }
+      default: "",
+    },
+
+    readonly: {
+      type: Boolean,
+      default: false,
+    },
   },
 
   data: () => ({ mounted: false }),
 
-  mounted: function() {
+  mounted: function () {
     this.mounted = true;
   },
 
   computed: {
-    isChecked: function() {
+    isChecked: function () {
       if (this.mounted) return this.modelValue == this.$refs.radio.value;
       else return false;
     },
-    computedValue: function() {
+    computedValue: function () {
       return !this.value ? this.label : this.value;
-    }
+    },
   },
 
   methods: {
-    changed: function() {
+    changed: function () {
+      if (this.disabled || this.readonly) return;
       this.$emit("change", this.$refs.radio.value);
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -128,6 +135,11 @@ span {
     #f6f6f8;
   transition: all linear 0.3s;
 }
+
+span.readonly {
+  border: 1px solid #17ce89;
+}
+
 span.disabled {
   border: 2px solid #9b9b9b;
 }
@@ -155,6 +167,7 @@ input:checked ~ span {
 input:checked ~ span:after {
   visibility: visible;
 }
+
 .label {
   font-size: 0.875rem;
   color: #25282a;
@@ -164,7 +177,11 @@ input:checked ~ span:after {
 
 .disabled {
   opacity: 0.6;
-  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.readonly {
+  pointer-events: none;
 }
 
 .extra-text {
