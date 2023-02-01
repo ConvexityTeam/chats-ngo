@@ -100,7 +100,7 @@
               :has-icon="false"
               custom-styles="height:50px"
               @click="$bvModal.show('funding-prompt')"
-              :disabled="details.status === 'pending' && details.is_funded"
+              :disabled="details.status === 'pending'"
             />
 
             <Button
@@ -538,15 +538,15 @@ export default {
           `organisations/${this.orgId}/campaigns/${this.details?.id}/fund-campaign`
         );
 
-        screenLoading.close();
-
         if (response.status == "success") {
           this.$toast.success(response.message);
-          this.getDetails();
+          this.$bvModal.hide("funding-prompt");
+          window.location.reload();
         }
       } catch (err) {
-        screenLoading.close();
         this.$toast.error(err?.response?.data?.message);
+      } finally {
+        screenLoading.close();
       }
     },
 

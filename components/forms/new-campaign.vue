@@ -94,7 +94,28 @@
         </div>
       </div>
 
-      <div class="row form-group mt-2 px-3">
+      <!-- Campaign Form here -->
+
+      <div class="form-group">
+        <label for="campaign-form">Campaign form</label>
+        <div id="product" class="w-100">
+          <el-select
+            v-model="payload.formId"
+            id="vendor"
+            placeholder="—Select — "
+          >
+            <el-option
+              v-for="form in forms"
+              :key="form.id"
+              :label="form.title"
+              :value="form.id"
+            >
+            </el-option>
+          </el-select>
+        </div>
+      </div>
+
+      <div class="row form-group pt-3 px-3">
         <!--Allow geofence   here -->
         <div class="">
           <checkbox
@@ -157,6 +178,7 @@ export default {
       ],
     };
   },
+  components: { DatePicker, MapSideBar },
 
   data() {
     return {
@@ -166,6 +188,7 @@ export default {
       loading: false,
       isGeofence: false,
       id: 0,
+      forms: [],
       payload: {
         type: "campaign",
         title: "",
@@ -174,6 +197,7 @@ export default {
         location: [],
         start_date: "",
         end_date: "",
+        formId: "",
       },
 
       location: {
@@ -192,7 +216,16 @@ export default {
     },
   },
 
-  components: { DatePicker, MapSideBar },
+  async fetch() {
+    this.id = this.user?.AssociatedOrganisations[0]?.OrganisationId;
+    const response = await this.$axios.get(
+      `organisations/${this.id}/campaign_form`
+    );
+
+    if (response.status === "success") {
+      this.forms = response.data;
+    }
+  },
 
   computed: {
     ...mapGetters("authentication", ["user"]),
@@ -253,6 +286,7 @@ export default {
     runMap() {
       let google = window.google;
       const mapComponent = document.getElementById("map_canvas");
+      if (!mapComponent) return;
       const map = new google.maps.Map(mapComponent, {
         center: { lat: 17.35297042396732, lng: 8.808737500000019 },
         zoom: 3,

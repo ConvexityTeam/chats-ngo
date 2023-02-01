@@ -26,21 +26,23 @@ export default async function ({ $axios, app }) {
 
   $axios.onResponse((response) => {
     // Extra check for pagination
-    const { data } = response;
-    const { totalPages, totalItems, currentPage } = data?.data;
 
-    if (totalPages) {
-      return {
-        data: data?.data?.data,
-        totalPages,
-        totalItems,
-        currentPage,
-        status: data.status,
-        code: data.code,
-      };
-    }
+    // console.log("response:::", response);
+    // const { data } = response;
+    // const { totalPages, totalItems, currentPage } = data?.data;
 
-    return data;
+    // if (totalPages) {
+    //   return {
+    //     data: data?.data?.data,
+    //     totalPages,
+    //     totalItems,
+    //     currentPage,
+    //     status: data.status,
+    //     code: data.code,
+    //   };
+    // }
+
+    return response.data;
 
     // const crypt = new JSEncrypt();
     // crypt.setPrivateKey(privateKey);
