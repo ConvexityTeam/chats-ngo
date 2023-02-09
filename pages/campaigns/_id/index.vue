@@ -30,6 +30,19 @@
           />
         </Modal>
 
+        <!-- Benefactor Details -->
+        <Modal id="benefactor-details" title="Benefactor Details">
+          <benefactorDetails :benefactor="selectedBenefactor" />
+        </Modal>
+
+        <!-- Benefactor Questions and Answers -->
+        <Modal id="benefactor-q-and-a" title="">
+          <benefactorQandA
+            @handleAction="handleAction"
+            :questionsAndAnswers="[selectedBenefactor]"
+          />
+        </Modal>
+
         <!-- Funding Prompt  -->
         <Modal id="funding-prompt" title="Fund Campaign">
           <FundingPrompt @handleFunding="fundCampaign" />
@@ -223,120 +236,184 @@
                 </div>
               </div>
 
-              <!-- Table Here -->
-              <table v-if="query.length" class="table table-borderless">
-                <thead>
-                  <tr>
-                    <th scope="col" v-if="tabIndex === 1">
-                      <checkbox
-                        @input="handleSelectAll"
-                        :checked="selectedBenefactors.length === query.length"
-                      />
-                    </th>
-                    <th scope="col">Beneficiary</th>
-                    <th scope="col">Phone Number</th>
-                    <th scope="col">
-                      {{ tabIndex == 0 ? "Email Address" : "Origination" }}
-                    </th>
-                    <th scope="col">
-                      {{ tabIndex == 0 || 2 ? "" : "Actions" }}
-                    </th>
-                  </tr>
-                </thead>
+              <div v-if="query.length">
+                <!-- Table Here -->
+                <div>
+                  <table class="table table-borderless">
+                    <thead>
+                      <tr>
+                        <th scope="col" v-if="tabIndex === 1">
+                          <checkbox
+                            @input="handleSelectAll"
+                            :checked="
+                              selectedBenefactors.length === query.length
+                            "
+                          />
+                        </th>
+                        <th scope="col">Beneficiary</th>
+                        <th scope="col">Phone Number</th>
+                        <th scope="col">
+                          {{ tabIndex == 0 ? "Email Address" : "Origination" }}
+                        </th>
+                        <th scope="col">
+                          {{ tabIndex == 0 || 2 ? "" : "Actions" }}
+                        </th>
+                      </tr>
+                    </thead>
 
-                <tbody>
-                  <tr v-for="(benefactor, i) in query" :key="i">
-                    <td v-if="tabIndex === 1">
-                      <checkbox
-                        @input="handleCheckbox(benefactor.UserId)"
-                        :value="benefactor.UserId"
-                        :checked="
-                          selectedBenefactorsId.includes(benefactor.UserId)
-                        "
-                      />
-                    </td>
-                    <td>
-                      {{
-                        benefactor && benefactor.User
-                          ? benefactor.User.first_name +
-                            " " +
-                            benefactor.User.last_name
-                          : ""
-                      }}
-                    </td>
-                    <td>
-                      {{
-                        benefactor && benefactor.User && benefactor.User.phone
-                      }}
-                    </td>
-                    <td>
-                      <span v-if="tabIndex == 0">{{
-                        benefactor && benefactor.User && benefactor.User.email
-                      }}</span>
-                      <span v-else>
-                        {{ benefactor.source || "-" | capitalize }}
-                      </span>
-                    </td>
-                    <td>
-                      <div v-if="tabIndex == 0">
-                        <Button
-                          text="View"
-                          :has-icon="false"
-                          :has-border="true"
-                          custom-styles="border: 1px solid #17CE89 !important; border-radius: 5px !important; font-size: 0.875rem !important; height: 33px !important"
+                    <tbody>
+                      <tr
+                        v-for="(benefactor, i) in query"
+                        :key="i"
+                        class="table-row"
+                      >
+                        <td v-if="tabIndex === 1">
+                          <checkbox
+                            @input="handleCheckbox(benefactor.UserId)"
+                            :value="benefactor.UserId"
+                            :checked="
+                              selectedBenefactorsId.includes(benefactor.UserId)
+                            "
+                          />
+                        </td>
+                        <td
                           @click="
-                            $router.push(`/beneficiaries/${benefactor.UserId}`)
+                            tabIndex === 1
+                              ? displayBenefactorsQandA(benefactor)
+                              : null
                           "
-                        />
-                      </div>
+                        >
+                          {{
+                            benefactor && benefactor.User
+                              ? benefactor.User.first_name +
+                                " " +
+                                benefactor.User.last_name
+                              : ""
+                          }}
+                        </td>
 
-                      <!-- Add accept benefactor button here to accept a single benefactor -->
-                      <div v-if="tabIndex == 1">
-                        <el-dropdown>
-                          <el-button type="primary"> Action </el-button>
+                        <td
+                          @click="
+                            tabIndex === 1
+                              ? getBenefactorDetails(benefactor)
+                              : null
+                          "
+                        >
+                          {{
+                            benefactor &&
+                            benefactor.User &&
+                            benefactor.User.phone
+                          }}
+                        </td>
+                        <td
+                          @click="
+                            tabIndex === 1
+                              ? getBenefactorDetails(benefactor)
+                              : null
+                          "
+                        >
+                          <span v-if="tabIndex == 0">
+                            {{
+                              benefactor &&
+                              benefactor.User &&
+                              benefactor.User.email
+                            }}
+                          </span>
+                          <span v-else>
+                            {{ benefactor.source || "-" | capitalize }}
+                          </span>
+                        </td>
 
-                          <el-dropdown-menu slot="dropdown">
-                            <el-dropdown-item>
-                              <div
-                                style="
-                                  color: #17ce89 !important;
-                                  font-weight: 500 !important;
-                                "
-                                class="text-primary"
-                                @click="
-                                  handleSingleBenefactorModal(
-                                    'approve',
-                                    benefactor
-                                  )
-                                "
-                              >
-                                Approve
-                              </div>
-                            </el-dropdown-item>
+                        <td>
+                          <div v-if="tabIndex == 0">
+                            <Button
+                              text="View"
+                              :has-icon="false"
+                              :has-border="true"
+                              custom-styles="border: 1px solid #17CE89 !important; border-radius: 5px !important; font-size: 0.875rem !important; height: 33px !important"
+                              @click="
+                                $router.push(
+                                  `/beneficiaries/${benefactor.UserId}`
+                                )
+                              "
+                            />
+                          </div>
 
-                            <el-dropdown-item>
-                              <div
-                                style="
-                                  color: #e42c66 !important;
-                                  font-weight: 500 !important;
-                                "
-                                @click="
-                                  handleSingleBenefactorModal(
-                                    'reject',
-                                    benefactor
-                                  )
-                                "
-                              >
-                                Reject
-                              </div>
-                            </el-dropdown-item>
-                          </el-dropdown-menu>
-                        </el-dropdown>
-                      </div>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+                          <!-- Add accept benefactor button here to accept a single benefactor -->
+                          <div
+                            v-if="
+                              tabIndex == 1 && selectedBenefactors.length < 1
+                            "
+                          >
+                            <!-- action dropdown here -->
+                            <el-dropdown>
+                              <el-button type="primary"> Action </el-button>
+
+                              <el-dropdown-menu slot="dropdown">
+                                <el-dropdown-item>
+                                  <div
+                                    style="
+                                      color: #17ce89 !important;
+                                      font-weight: 500 !important;
+                                    "
+                                    class="text-primary"
+                                    @click="
+                                      handleSingleBenefactorModal(
+                                        'approve',
+                                        benefactor
+                                      )
+                                    "
+                                  >
+                                    Approve
+                                  </div>
+                                </el-dropdown-item>
+
+                                <el-dropdown-item>
+                                  <div
+                                    style="
+                                      color: #e42c66 !important;
+                                      font-weight: 500 !important;
+                                    "
+                                    @click="
+                                      handleSingleBenefactorModal(
+                                        'reject',
+                                        benefactor
+                                      )
+                                    "
+                                  >
+                                    Reject
+                                  </div>
+                                </el-dropdown-item>
+                              </el-dropdown-menu>
+                            </el-dropdown>
+
+                            <!-- view for button here -->
+                            <!-- <Button
+                              text="View Form"
+                              :has-icon="false"
+                              :has-border="true"
+                              custom-styles="border: 1px solid #17CE89 !important; border-radius: 5px !important; font-size: 0.875rem !important; height: 33px !important"
+                              @click="displayBenefactorsQandA(benefactor)"
+                            /> -->
+                          </div>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+
+                <!-- pagination here -->
+                <!-- show pgination if number of pages is greater than 1 -->
+                <div v-if="totalNumOfPages > 1">
+                  <pagination
+                    :currentPageNum="currentPageNum"
+                    :numOfItemsPerPage="numOfItemsPerPage"
+                    :totalNumOfItems="totalNumOfItems"
+                    @updatePage="updatePage"
+                  />
+                </div>
+              </div>
+
               <div v-else-if="loading" class="text-center"></div>
               <h3 v-else class="text-center no-record">NO RECORD FOUND</h3>
             </div>
@@ -390,6 +467,9 @@ import campaignVendors from "~/components/tables/campaigns/campaign-vendors.vue"
 import campaignProducts from "~/components/tables/campaigns/campaign-products.vue";
 import FundingPrompt from "./funding-prompt";
 import ImportBeneficiaries from "./import-beneficiaries.vue";
+import benefactorDetails from "~/components/forms/campaign/benefactor-details.vue";
+import benefactorQandA from "~/components/forms/campaign/benefactor-q-and-a.vue";
+
 let screenLoading;
 
 export default {
@@ -415,6 +495,9 @@ export default {
     remount: false,
     direction: "rtl",
     statuses: ["pending", "completed", "ongoing"],
+    currentPageNum: 1,
+    numOfItemsPerPage: 5,
+    totalNumOfItems: 65,
   }),
 
   components: {
@@ -429,10 +512,23 @@ export default {
     campaignProducts,
     FundingPrompt,
     ImportBeneficiaries,
+    benefactorDetails,
+    benefactorQandA,
   },
 
   computed: {
     ...mapGetters("authentication", ["user"]),
+
+    totalNumOfPages: function () {
+      const remainder = this.totalNumOfItems % this.numOfItemsPerPage;
+      const numOfPages = Math.floor(
+        (this.totalNumOfItems - remainder) / this.numOfItemsPerPage
+      );
+
+      //
+      if (remainder < 1) return numOfPages;
+      if (remainder >= 1) return numOfPages + 1;
+    },
 
     approvedBeneficiaries() {
       return (
@@ -484,6 +580,28 @@ export default {
   },
 
   methods: {
+    // displays benefactors details
+    getBenefactorDetails(benefactor) {
+      this.selectedBenefactor = benefactor;
+      setTimeout(() => {
+        this.$bvModal.show(`benefactor-details`);
+      }, 300);
+    },
+
+    // displays benefactor questions and answers modal
+    displayBenefactorsQandA(benefactor) {
+      this.selectedBenefactor = benefactor;
+
+      setTimeout(() => {
+        this.$bvModal.show(`benefactor-q-and-a`);
+      }, 300);
+    },
+
+    //  Benefactor Questions and Answers action buttons
+    handleAction(action) {
+      this.handleSingleBenefactorModal(action, this.selectedBenefactor);
+    },
+
     handleCheckbox(value) {
       const index = this.selectedBenefactorsId.indexOf(value);
 
@@ -579,6 +697,8 @@ export default {
           `/organisation/${this.orgId}/campaigns/${this.$route.params.id}/beneficiaries`
         );
 
+        // console.log("RESPONSE: ", response);
+
         if (response.status == "success") {
           screenLoading.close();
           this.beneficiaries = response.data;
@@ -664,6 +784,11 @@ export default {
       }
     },
 
+    updatePage(action) {
+      this.currentPageNum =
+        action === "prev" ? this.currentPageNum - 1 : this.currentPageNum + 1;
+    },
+
     updateList() {
       this.$bvModal.hide("import-beneficiaries");
       this.tabIndex = 1;
@@ -704,5 +829,15 @@ export default {
 .el-dropdown-link {
   cursor: pointer;
   color: #409eff;
+}
+
+tr.table-row:nth-child(even) {
+  background: #fafafc;
+}
+tr.table-row:nth-child(even):hover {
+  background: #fafafc70;
+}
+tr.table-row:nth-child(odd) {
+  background: #ffffff70;
 }
 </style>
