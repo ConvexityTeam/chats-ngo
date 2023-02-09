@@ -1,12 +1,14 @@
 <template>
   <div class="pb-5">
     <disburseFunds :task="task" :campaignId="campaignId" />
+
     <checkEvidence
       :task="task"
       :details="rejectedDetails"
       :btnStatus="btnStatus"
       :campaignId="campaignId"
     />
+
     <div v-if="loading"></div>
 
     <div class="main container transparent pt-4 mt-2 pb-5" v-else>
@@ -42,9 +44,11 @@
           <div>
             <div class="table-holder mt-2">
               <div class="d-flex align-items-center table-title">
+                <h4></h4>
                 <div class="ml-auto"></div>
               </div>
 
+              <!-- v-if="resultQuery.length" -->
               <table v-if="resultQuery.length" class="table table-borderless">
                 <thead>
                   <tr>
@@ -114,6 +118,7 @@
                   </tr>
                 </tbody>
               </table>
+
               <div v-else-if="loading" class="text-center"></div>
               <h3 v-else class="text-center no-record">NO RECORD FOUND</h3>
             </div>
