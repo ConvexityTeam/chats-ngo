@@ -38,9 +38,13 @@
               :key="index"
               class="mb-4 d-flex"
             >
-              <Checkbox readonly :value="false" />
+              <Checkbox
+                readonly
+                :value="false"
+                v-if="question.question.options[index].option"
+              />
               <span class="primary-blue ml-3">
-                {{ question.question.options[index] }}
+                {{ question.question.options[index].option }}
               </span>
             </div>
           </div>
@@ -52,9 +56,13 @@
               :key="index"
               class="mb-3 d-flex"
             >
-              <Radio readonly :value="false" />
-              <span class="primary-blue ml-3 mt-1">
-                {{ question.question.options[index] }}
+              <Radio
+                readonly
+                :value="false"
+                v-if="question.question.options[index].option"
+              />
+              <span class="primary-blue ml-3">
+                {{ question.question.options[index].option }}
               </span>
             </div>
           </div>
