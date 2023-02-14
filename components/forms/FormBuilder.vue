@@ -13,6 +13,7 @@
         />
       </div>
     </div>
+
     <!-- Form Builder Here -->
     <section class="mt-4">
       <!-- Cards Here -->
@@ -41,13 +42,13 @@
           </div>
 
           <!-- Value -->
-          <div class="mt-3">
+          <div class="mt-3" v-if="question.type == 'short'">
             <div class="d-flex">
               <label
                 class="font-medium primary-blue"
                 for="value"
                 style="margin-top: 1px"
-                >Value</label
+                >Reward</label
               >
 
               <span class="ml-2">
@@ -112,7 +113,7 @@
                       ].$error,
                   }"
                   :placeholder="`Option ${index + 1}`"
-                  v-model="question.question.options[index]"
+                  v-model="question.question.options[index].option"
                   @blur="
                     $v.payload.questions.$each[i].question.options.$each[
                       index
@@ -120,11 +121,27 @@
                   "
                 />
 
-                <div class="mt-1 pointer" @click="deleteOption(i)">
-                  <img
-                    src="~/assets/img/vectors/delete-icon-2.svg"
-                    alt="delete-icon"
-                  />
+                <!-- Reward Here -->
+                <div class="d-flex align-items-end ml-2">
+                  <label for="reward" class="font-medium primary-blue"
+                    >Reward</label
+                  >
+                  <div class="ml-2 reward-holder">
+                    <CurrencyInput
+                      id="value"
+                      :customStyles="rewardStyles"
+                      placeholder="$0.00"
+                      v-model="option.reward"
+                      :disabled="!question.question.options[index].option"
+                    />
+                  </div>
+
+                  <div class="ml-3 mt-1 pointer" @click="deleteOption(i)">
+                    <img
+                      src="~/assets/img/vectors/delete-icon-2.svg"
+                      alt="delete-icon"
+                    />
+                  </div>
                 </div>
               </div>
 
@@ -206,7 +223,17 @@ export default {
           required: false,
           question: {
             title: "",
-            options: ["", ""],
+            options: [
+              {
+                option: "",
+                reward: "",
+              },
+
+              {
+                option: "",
+                reward: "",
+              },
+            ],
           },
         },
 
@@ -216,7 +243,16 @@ export default {
           required: false,
           question: {
             title: "",
-            options: ["", ""],
+            options: [
+              {
+                option: "",
+                reward: "",
+              },
+              {
+                option: "",
+                reward: "",
+              },
+            ],
           },
         },
 
@@ -240,10 +276,8 @@ export default {
           question: {
             title: { required },
             options: {
-              required,
               $each: {
-                required,
-                minLength: minLength(1),
+                option: { required, minLength: minLength(1) },
               },
             },
           },
@@ -272,6 +306,10 @@ export default {
 
     customStyles() {
       return "height: 38px; border: 1px solid #17CE89; border-radius: 8px; background: #FFFFFF; padding: 1rem";
+    },
+
+    rewardStyles() {
+      return "height: 38px; border: 1px solid #C4CDD4; border-radius: 8px; background: #FFFFFF; padding: 1rem";
     },
 
     disabled() {
@@ -324,14 +362,17 @@ export default {
     },
 
     addOption(index) {
-      this.payload.questions[index]?.question?.options?.push("");
+      this.payload.questions[index]?.question?.options?.push({
+        option: "",
+        reward: "",
+      });
     },
 
     deleteOption(index) {
       const { options } = this.payload.questions[index]?.question;
 
       if (options.length > 2) {
-        options.pop();
+        options.splice(index, 1);
       } else {
         this.$toast.error("You need at least two options");
       }
@@ -438,5 +479,13 @@ export default {
 .delete-icon {
   cursor: pointer;
   right: -60px;
+}
+
+.reward-holder {
+  width: 55%;
+}
+
+.reward-holder > label {
+  font-size: 1rem;
 }
 </style>

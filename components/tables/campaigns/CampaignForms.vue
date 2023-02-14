@@ -1,6 +1,6 @@
 <template>
   <section class="table-holder mt-5">
-    <div class="flex align-items-center table-title">
+    <div class="flex align-items-center table-title" v-if="resultQuery.length">
       <h4>Forms</h4>
       <div class="ml-auto"></div>
     </div>
