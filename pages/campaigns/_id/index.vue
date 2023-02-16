@@ -1,59 +1,59 @@
 <template>
   <div class="pb-5">
+    <!-- Modals Here -->
+    <section>
+      <!-- Public Funding -->
+      <Modal id="funding" title="Fund through Crypto">
+        <funding />
+      </Modal>
+
+      <!-- Approve Benefactors -->
+      <Modal id="approve-benefactors" title="Approve Benefactors">
+        <approve-benefactors
+          :benefactors="
+            isSingleRequest ? [selectedBenefactor] : selectedBenefactors
+          "
+          @approveBenefactors="approveBenefactors"
+        />
+      </Modal>
+
+      <!-- Reject Benefactors -->
+      <Modal id="reject-benefactors" title="Reject Benefactors">
+        <reject-benefactors
+          :benefactors="
+            isSingleRequest ? [selectedBenefactor] : selectedBenefactors
+          "
+          @rejectBenefactors="rejectBenefactors"
+        />
+      </Modal>
+
+      <!-- Benefactor Details -->
+      <Modal id="benefactor-details" title="Benefactor Details">
+        <benefactorDetails :benefactor="selectedBenefactor" />
+      </Modal>
+
+      <!-- Benefactor Questions and Answers -->
+      <Modal id="benefactor-q-and-a" title="">
+        <benefactorQandA
+          @handleAction="handleAction"
+          :questionsAndAnswers="[selectedBenefactor]"
+        />
+      </Modal>
+
+      <!-- Funding Prompt  -->
+      <Modal id="funding-prompt" title="Fund Campaign">
+        <FundingPrompt @handleFunding="fundCampaign" />
+      </Modal>
+
+      <!-- Import Beneficiaries -->
+      <Modal id="import-beneficiaries" title="Import Beneficiaries">
+        <ImportBeneficiaries :orgId="orgId" @imported="updateList" />
+      </Modal>
+    </section>
+
     <div v-if="loading"></div>
 
     <div class="main container transparent pt-4 mt-2 pb-5" v-else>
-      <!-- Modas Here -->
-      <section>
-        <!-- Public Funding -->
-        <Modal id="funding" title="Fund through Crypto">
-          <funding />
-        </Modal>
-
-        <!-- Approve Benefactors -->
-        <Modal id="approve-benefactors" title="Approve Benefactors">
-          <approve-benefactors
-            :benefactors="
-              isSingleRequest ? [selectedBenefactor] : selectedBenefactors
-            "
-            @approveBenefactors="approveBenefactors"
-          />
-        </Modal>
-
-        <!-- Reject Benefactors -->
-        <Modal id="reject-benefactors" title="Reject Benefactors">
-          <reject-benefactors
-            :benefactors="
-              isSingleRequest ? [selectedBenefactor] : selectedBenefactors
-            "
-            @rejectBenefactors="rejectBenefactors"
-          />
-        </Modal>
-
-        <!-- Benefactor Details -->
-        <Modal id="benefactor-details" title="Benefactor Details">
-          <benefactorDetails :benefactor="selectedBenefactor" />
-        </Modal>
-
-        <!-- Benefactor Questions and Answers -->
-        <Modal id="benefactor-q-and-a" title="">
-          <benefactorQandA
-            @handleAction="handleAction"
-            :questionsAndAnswers="[selectedBenefactor]"
-          />
-        </Modal>
-
-        <!-- Funding Prompt  -->
-        <Modal id="funding-prompt" title="Fund Campaign">
-          <FundingPrompt @handleFunding="fundCampaign" />
-        </Modal>
-
-        <!-- Import Beneficiaries -->
-        <Modal id="import-beneficiaries" title="Import Beneficiaries">
-          <ImportBeneficiaries :orgId="orgId" @imported="updateList" />
-        </Modal>
-      </section>
-
       <!-- Drawer Here -->
       <el-drawer
         :visible.sync="drawer"
@@ -154,11 +154,16 @@
       </div>
 
       <!-- Banner Here -->
-      <div v-if="details.status === 'paused'" class="">
+      <div v-if="details.status === 'paused'">
         <banner
           :date="details.updatedAt"
           @resumeCampaign="resumeCampaign = true"
         />
+      </div>
+
+      <!-- Campaign-Privacy Here -->
+      <div v-else>
+        <PrivacyHolder :organisationId="orgId" :campaignId="campaignId" />
       </div>
 
       <div class="row mt-3">
@@ -458,17 +463,14 @@
 import { mapGetters } from "vuex";
 import beneficiaryComplaints from "~/components/tables/campaigns/beneficiary-complaints";
 import campaignDetails from "~/components/tables/campaigns/campaign-details";
-import banner from "~/components/generic/banner.vue";
-import funding from "~/components/forms/funding.vue";
-import addProduct from "~/components/forms/add-product.vue";
-import approveBenefactors from "~/components/forms/approve-benefactors.vue";
-import rejectBenefactors from "~/components/forms/reject-benefactors.vue";
-import campaignVendors from "~/components/tables/campaigns/campaign-vendors.vue";
-import campaignProducts from "~/components/tables/campaigns/campaign-products.vue";
+import banner from "~/components/generic/banner";
+import funding from "~/components/forms/funding";
+import addProduct from "~/components/forms/add-product";
+import campaignVendors from "~/components/tables/campaigns/campaign-vendors";
+import campaignProducts from "~/components/tables/campaigns/campaign-products";
 import FundingPrompt from "./funding-prompt";
-import ImportBeneficiaries from "./import-beneficiaries.vue";
-import benefactorDetails from "~/components/forms/campaign/benefactor-details.vue";
-import benefactorQandA from "~/components/forms/campaign/benefactor-q-and-a.vue";
+import ImportBeneficiaries from "./import-beneficiaries";
+import PrivacyHolder from "~/components/generic/privacy-holder";
 
 let screenLoading;
 
@@ -478,6 +480,7 @@ export default {
     tabIndex: 1,
     loading: false,
     orgId: "",
+    campaignId: "",
     searchQuery: "",
     checkedNames: [],
     SelectedCampaign: {},
@@ -506,14 +509,11 @@ export default {
     banner,
     funding,
     addProduct,
-    approveBenefactors,
-    rejectBenefactors,
     campaignVendors,
     campaignProducts,
     FundingPrompt,
     ImportBeneficiaries,
-    benefactorDetails,
-    benefactorQandA,
+    PrivacyHolder,
   },
 
   computed: {
@@ -575,6 +575,7 @@ export default {
 
   mounted() {
     this.orgId = this.user?.AssociatedOrganisations[0]?.OrganisationId;
+    this.campaignId = this.$route.params.id;
     this.getDetails();
     this.getCampaignBeneficiaries();
   },
@@ -674,7 +675,7 @@ export default {
         this.loading = true;
 
         const response = await this.$axios.get(
-          `/organisations/${this.orgId}/campaigns/${this.$route.params.id}`
+          `/organisations/${this.orgId}/campaigns/${this.campaignId}`
         );
 
         if (response.status == "success") {
@@ -694,7 +695,7 @@ export default {
       try {
         this.openScreen();
         const response = await this.$axios.get(
-          `/organisation/${this.orgId}/campaigns/${this.$route.params.id}/beneficiaries`
+          `/organisation/${this.orgId}/campaigns/${this.campaignId}/beneficiaries`
         );
 
         // console.log("RESPONSE: ", response);
@@ -769,8 +770,12 @@ export default {
       try {
         this.openScreen();
         const response = await this.$axios.put(
-          `organisation/${this.orgId}/campaigns/${this.$route.params.id}/beneficiaries/reject`,
-          { ids: benefactorsId }
+          `/organisation/${this.orgId}/campaigns/${this.campaignId}/beneficiaries`,
+          {
+            beneficiary_id: this.activeBenefactor?.UserId,
+            approved: false,
+            rejected: true,
+          }
         );
 
         if (response.status == "success") {
