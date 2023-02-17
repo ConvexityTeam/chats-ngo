@@ -163,7 +163,7 @@
 
       <!-- Campaign-Privacy Here -->
       <div v-else>
-        <PrivacyHolder :organisationId="orgId" :campaignId="campaignId" />
+        <PrivacyHolder :organisationId="orgId" :campaignId="campaignId" :is_public="details?.is_public" />
       </div>
 
       <div class="row mt-3">
@@ -677,7 +677,7 @@ export default {
         const response = await this.$axios.get(
           `/organisations/${this.orgId}/campaigns/${this.campaignId}`
         );
-
+ 
         if (response.status == "success") {
           screenLoading.close();
           this.details = response.data;
