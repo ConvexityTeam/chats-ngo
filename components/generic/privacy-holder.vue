@@ -3,7 +3,7 @@
     <!-- Modas Here -->
     <section>
       <Modal id="invite-donor" title="Invite donor to campaign">
-        <InviteDonorVue @sendInvite="sendInvite" />
+        <InviteDonorVue @sendInvite="sendInvite" :loading="loading" />
       </Modal>
     </section>
 
@@ -76,6 +76,8 @@ export default {
 
   data: () => ({
     isCampaignPublic: false,
+    loading: false,
+    campaignLink: "https://chats.cash/organisation",
   }),
 
   computed: {
@@ -111,27 +113,22 @@ export default {
     },
 
     async sendInvite(payload) {
-      const { inviteeEmail, message } = payload;
+      this.loading = true;
       const link = "https://www.chats.cash";
-      const testPayload = { inviteeEmail, link, message };
-
-      this.$bvModal.hide("invite-donor");
-      if (inviteeEmail.length < 1)
-        return this.$toast.error("Email field cannot be empty !!!");
 
       try {
-        this.openScreen();
-
         const response = await this.$axios.post(
           `/auth/${this.organisationId}/invite/${this.campaignId}`,
-          testPayload
+          { ...payload, link }
         );
 
+        this.loading = false;
         this.$toast.success(response.message);
-        return screenLoading.close();
+        return this.$bvModal.hide("invite-donor");
       } catch (err) {
         this.$toast.error(err.message);
-        screenLoading.close();
+        this.loading = false;
+        return this.$bvModal.hide("invite-donor");
       }
     },
     openModal(modalId) {
