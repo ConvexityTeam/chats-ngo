@@ -77,7 +77,6 @@ export default {
   data: () => ({
     isCampaignPublic: false,
     loading: false,
-    campaignLink: "https://chats.cash/organisation",
   }),
 
   computed: {

@@ -72,13 +72,19 @@
         <div class="mt-4 ot-2 text-center">
           <p class="account">
             Don’t have an account?
-            <nuxt-link class="font-bold login" to="/sign-up"
-              >Create one</nuxt-link
+
+            <span
+              class="font-bold primary login pointer"
+              @click="$router.push('/sign-up')"
             >
+              Create one
+            </span>
           </p>
-          <p class="">
-            <nuxt-link class="forgot" to="/forgot-password"
-              >Forgot password?</nuxt-link
+          <p>
+            <span
+              class="forgot pointer"
+              @click="$router.push('/forgot-password')"
+              >Forgot password?</span
             >
           </p>
         </div>
@@ -173,22 +179,22 @@ export default {
 
 <style scoped>
 .forgot {
-  color: #277ef0;
+  color: #17ce89;
   font-size: 0.75rem;
   font-weight: 600;
-  font-family: "Noto Sans", sans-serif;
+  font-family: "Poppins", sans-serif;
+  text-decoration: none;
 }
 
 .account {
   color: #0b0b0b;
   font-size: 0.875rem;
   font-weight: 700;
-  font-family: "Noto Sans", sans-serif;
+  font-family: "Poppins", sans-serif;
 }
 
 .account.login {
-  text-decoration: none;
-  color: #277ef0;
+  text-decoration: none !important;
 }
 
 .welcome {

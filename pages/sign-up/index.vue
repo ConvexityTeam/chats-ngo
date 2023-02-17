@@ -127,7 +127,12 @@
         <div class="mt-4 text-center">
           <p class="account">
             Have an account?
-            <nuxt-link class="font-bold login" to="/">Login</nuxt-link>
+            <span
+              class="font-bold login primary pointer"
+              @click="$router.push('/')"
+            >
+              Login
+            </span>
           </p>
         </div>
       </div>
@@ -262,12 +267,11 @@ export default {
   color: #0b0b0b;
   font-size: 0.875rem;
   font-weight: 700;
-  font-family: "Noto Sans", sans-serif;
+  font-family: "Poppins", sans-serif;
 }
 
 .account.login {
-  text-decoration: none;
-  color: #277ef0;
+  text-decoration: none !important;
 }
 
 .welcome {
