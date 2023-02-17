@@ -14,16 +14,16 @@
         <img
           src="~/assets/img/vectors/link.svg"
           alt="link"
-          @click="$copy(copiapleLink)"
+          @click="$copy(copiableLink)"
         />
 
         <span class="primary-blue text-truncate ml-2">
           Campaign link:
 
           <span>
-            <a href="#" @click="$copy(copiapleLink)">
-              {{ `${campaignLink}/${campaignId}` }}
-            </a>
+            <span @click="$copy(copiableLink)" class="copy-link">
+              {{ copiableLink }}
+            </span>
           </span>
         </span>
       </div>
@@ -68,25 +68,48 @@ export default {
       type: String | Number,
       required: true,
     },
+    is_public: {
+      type: Boolean | null,
+      required: true,
+    },
   },
 
   data: () => ({
     isCampaignPublic: false,
-    campaignLink: "https://chats.cash/organisation",
   }),
 
   computed: {
-    copiapleLink() {
+    campaignLink() {
+      return this.isCampaignPublic
+        ? "https://chats.cash/organisation/public"
+        : "https://chats.cash/organisation/private";
+    },
+    copiableLink() {
       return `${this.campaignLink}/${this.campaignId}`;
     },
   },
 
-  methods: {
-    toggle(value) {
-      this.isCampaignPublic = value;
+  mounted() {
+    this.isCampaignPublic = this.is_public;
+  },
 
-      console.log(this.isCampaignPublic);
+  methods: {
+    async toggle(value) {
+      try {
+        this.openScreen();
+        const response = await this.$axios.patch(
+          `/organisation/${this.organisationId}/campaigns/${this.campaignId}`
+        );
+
+        this.$toast.success(response.message);
+        this.isCampaignPublic = value;
+        return screenLoading.close();
+      } catch (err) {
+        this.$toast.error(err.message);
+        screenLoading.close();
+      }
     },
+
     async sendInvite(payload) {
       const { inviteeEmail, message } = payload;
       const link = "https://www.chats.cash";
@@ -158,5 +181,9 @@ a {
 .action__container .action_2 {
   color: #17ce89;
   cursor: pointer;
+}
+.copy-link {
+  color: #2f80ed !important;
+  cursor: copy;
 }
 </style>
