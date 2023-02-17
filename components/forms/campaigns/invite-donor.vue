@@ -10,15 +10,11 @@
       <div class="form-group">
         <label for="name"> Email Addresses </label>
 
-        <el-select
+        <InputTag
           v-model="inviteeEmail"
-          type="email"
-          multiple
-          filterable
-          allow-create
-          placeholder="Choose tags for your article"
-        >
-        </el-select>
+          :validate="validateInput"
+          placeholder="Enter Email(s)"
+        />
       </div>
 
       <!--Message field  here -->
@@ -50,24 +46,32 @@
 </template>
 
 <script>
+import InputTag from "vue-input-tag";
+
 export default {
   emits: ["sendInvite"],
+  components: { InputTag },
+  props: {
+    loading: {
+      default: false,
+    },
+  },
   data() {
     return {
-      loading: false,
       message: "",
       inviteeEmail: [],
-      options: [],
     };
   },
   methods: {
-    checkText(event) {
-      console.log(event);
+    validateInput(value) {
+      return /[-a-zA-Z0-9@:%.\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%\+.~#?&//=]*)/.test(
+        value
+      );
     },
     async sendInvite() {
       const payload = {
         inviteeEmail: this.inviteeEmail,
-        message: this.message || null,
+        message: this.message,
       };
 
       this.$emit("sendInvite", payload);
