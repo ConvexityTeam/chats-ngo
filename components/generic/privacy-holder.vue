@@ -121,13 +121,12 @@ export default {
           { ...payload, link }
         );
 
-        this.loading = false;
         this.$toast.success(response.message);
         return this.$bvModal.hide("invite-donor");
       } catch (err) {
-        this.$toast.error(err.message);
+        this.$toast.error(err?.message);
+      } finally {
         this.loading = false;
-        return this.$bvModal.hide("invite-donor");
       }
     },
     openModal(modalId) {
