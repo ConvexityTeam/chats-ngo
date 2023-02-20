@@ -54,7 +54,7 @@
           <div class="form-group">
             <label for="email">Website</label>
             <input
-              type="website"
+              type="url"
               class="form-controls"
               placeholder="http://www.example.com"
               :class="{ form__input__error: $v.payload.website_url.$error }"

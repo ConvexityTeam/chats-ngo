@@ -200,6 +200,7 @@
 import { required, minLength } from "vuelidate/lib/validators";
 
 export default {
+  name: "CampaignFormBuilder",
   layout: "dashboard",
 
   props: {
@@ -286,14 +287,14 @@ export default {
     },
   },
 
-  watch: {
-    payload: {
-      handler: function (newVal, oldVal) {
-        localStorage.setItem("campaignForm", JSON.stringify(newVal));
-      },
-      deep: true,
-    },
-  },
+  // watch: {
+  //   payload: {
+  //     handler: function (newVal, oldVal) {
+  //       localStorage.setItem("campaignForm", JSON.stringify(newVal));
+  //     },
+  //     deep: true,
+  //   },
+  // },
 
   computed: {
     isEdit() {
@@ -410,6 +411,23 @@ export default {
         this.$toast.error("Please fill all the options");
         return;
       }
+
+      localStorage.setItem("campaignForm", JSON.stringify(this.payload));
+
+      // Set the reward to type number
+      this.payload.questions.forEach((question) => {
+        if (question.type == "multiple" || question.type == "optional") {
+          question.question.options.forEach((option) => {
+            if (option.reward)
+              option.reward = +option.reward.replace(/[^0-9]/g, "");
+          });
+        }
+
+        if (question.type == "short") {
+          if (question.value)
+            question.value = +question.value.replace(/[^0-9]/g, "");
+        }
+      });
 
       this.$emit("submit", this.payload);
     },
