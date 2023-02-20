@@ -4,7 +4,7 @@ export default ({ store }) => {
   new VuexPersistence({
     key: "chats",
     reducer(val) {
-      if (val.authentication.token === "") {
+      if (!val.authentication.token) {
         return {};
       }
       return val;
