@@ -135,10 +135,8 @@ export default {
         this.loading = true;
         this.$v.payload.$touch();
 
-        if (this.$v.payload.$error === true) {
-          this.loading = false;
-          this.$toast.error("Please fill in appropriately");
-          return;
+        if (!!this.$v.payload.$error) {
+          return (this.loading = false);
         }
 
         const token = await this.$recaptcha.getResponse();

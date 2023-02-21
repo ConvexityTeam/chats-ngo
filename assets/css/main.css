@@ -1003,7 +1003,7 @@ select.form-control {
 }
 
 .vue-input-tag-wrapper.input-tag::placeholder {
-    font-size: 0.75rem !important;
+    font-size: 0.875rem !important;
     color: #646a86 !important;
     
 }
@@ -1013,15 +1013,15 @@ select.form-control {
     border-radius: 4px !important;
     border: none !important;
     color: #7c8db5 !important;
-    font-size: 0.75rem !important;
-    padding: 7px !important;
+    font-size: 0.875rem !important;
+    padding: 5px !important;
     margin-right: 5px !important;
     font-family: "Gilroy" !important;
 }
 
 .vue-input-tag-wrapper .input-tag .remove {
-    color: #7c8db5;
-    margin-left: 8px;
+    color: #7c8db5 !important;
+    margin-left: 8px !important;
     font-family: "Gilroy" !important;
 }
 

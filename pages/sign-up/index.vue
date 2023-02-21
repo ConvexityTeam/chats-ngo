@@ -175,7 +175,7 @@ export default {
       payload: {
         organisation_name: "",
         email: "",
-        website_url: "http://",
+        website_url: "https://",
         password: "",
       },
     };
