@@ -9,7 +9,7 @@
 
       <!-- Approve Benefactors -->
       <Modal id="approve-benefactors" title="Approve Benefactors">
-        <approve-benefactors
+        <ApproveBenefactorsVue
           :benefactors="
             isSingleRequest ? [selectedBenefactor] : selectedBenefactors
           "
@@ -19,7 +19,7 @@
 
       <!-- Reject Benefactors -->
       <Modal id="reject-benefactors" title="Reject Benefactors">
-        <reject-benefactors
+        <RejectBenefactorsVue
           :benefactors="
             isSingleRequest ? [selectedBenefactor] : selectedBenefactors
           "
@@ -29,14 +29,14 @@
 
       <!-- Benefactor Details -->
       <Modal id="benefactor-details" title="Benefactor Details">
-        <benefactorDetails :benefactor="selectedBenefactor" />
+        <BenefactorDetailsVue :benefactor="selectedBenefactor" />
       </Modal>
 
       <!-- Benefactor Questions and Answers -->
       <Modal id="benefactor-q-and-a" title="">
-        <benefactorQandA
+        <BenefactorQAndAVue
           @handleAction="handleAction"
-          :questionsAndAnswers="[selectedBenefactor]"
+          :questionsAndAnswers="selectedBenefactor?.User?.Answers"
         />
       </Modal>
 
@@ -163,7 +163,11 @@
 
       <!-- Campaign-Privacy Here -->
       <div v-else>
-        <PrivacyHolder :organisationId="orgId" :campaignId="campaignId" :is_public="details?.is_public" />
+        <PrivacyHolder
+          :organisationId="orgId"
+          :campaignId="campaignId"
+          :is_public="details?.is_public"
+        />
       </div>
 
       <div class="row mt-3">
@@ -284,7 +288,7 @@
                         <td
                           @click="
                             tabIndex === 1
-                              ? displayBenefactorsQandA(benefactor)
+                              ? getBenefactorDetails(benefactor)
                               : null
                           "
                         >
@@ -350,56 +354,67 @@
                               tabIndex == 1 && selectedBenefactors.length < 1
                             "
                           >
-                            <!-- action dropdown here -->
-                            <el-dropdown>
-                              <el-button type="primary"> Action </el-button>
+                            <div
+                              v-if="
+                                benefactor.User?.Answers[0]?.questions?.length <
+                                1
+                              "
+                            >
+                              <!-- action dropdown here -->
+                              <el-dropdown>
+                                <el-button type="primary"> Action </el-button>
 
-                              <el-dropdown-menu slot="dropdown">
-                                <el-dropdown-item>
-                                  <div
-                                    style="
-                                      color: #17ce89 !important;
-                                      font-weight: 500 !important;
-                                    "
-                                    class="text-primary"
-                                    @click="
-                                      handleSingleBenefactorModal(
-                                        'approve',
-                                        benefactor
-                                      )
-                                    "
-                                  >
-                                    Approve
-                                  </div>
-                                </el-dropdown-item>
+                                <el-dropdown-menu slot="dropdown">
+                                  <el-dropdown-item>
+                                    <div
+                                      style="
+                                        color: #17ce89 !important;
+                                        font-weight: 500 !important;
+                                      "
+                                      class="text-primary"
+                                      @click="
+                                        handleSingleBenefactorModal(
+                                          'approve',
+                                          benefactor
+                                        )
+                                      "
+                                    >
+                                      Approve
+                                    </div>
+                                  </el-dropdown-item>
 
-                                <el-dropdown-item>
-                                  <div
-                                    style="
-                                      color: #e42c66 !important;
-                                      font-weight: 500 !important;
-                                    "
-                                    @click="
-                                      handleSingleBenefactorModal(
-                                        'reject',
-                                        benefactor
-                                      )
-                                    "
-                                  >
-                                    Reject
-                                  </div>
-                                </el-dropdown-item>
-                              </el-dropdown-menu>
-                            </el-dropdown>
+                                  <el-dropdown-item>
+                                    <div
+                                      style="
+                                        color: #e42c66 !important;
+                                        font-weight: 500 !important;
+                                      "
+                                      @click="
+                                        handleSingleBenefactorModal(
+                                          'reject',
+                                          benefactor
+                                        )
+                                      "
+                                    >
+                                      Reject
+                                    </div>
+                                  </el-dropdown-item>
+                                </el-dropdown-menu>
+                              </el-dropdown>
+                            </div>
 
                             <!-- view for button here -->
-                            <!-- <Button
+                            <Button
+                              v-if="
+                                benefactor.User?.Answers[0]?.questions
+                                  ?.length >= 1
+                              "
                               text="View Form"
                               :has-icon="false"
                               :has-border="true"
                               custom-styles="border: 1px solid #17CE89 !important; border-radius: 5px !important; font-size: 0.875rem !important; height: 33px !important"
                               @click="displayBenefactorsQandA(benefactor)"
-                            /> -->
+                            />
                           </div>
                         </td>
                       </tr>
@@ -471,6 +486,10 @@ import campaignProducts from "~/components/tables/campaigns/campaign-products";
 import FundingPrompt from "./funding-prompt";
 import ImportBeneficiaries from "./import-beneficiaries";
 import PrivacyHolder from "~/components/generic/privacy-holder";
+import ApproveBenefactorsVue from "~/components/forms/approve-benefactors.vue";
+import RejectBenefactorsVue from "~/components/forms/reject-benefactors.vue";
+import BenefactorDetailsVue from "~/components/forms/campaign/benefactor-details.vue";
+import BenefactorQAndAVue from "~/components/forms/campaign/benefactor-q-and-a.vue";
 
 let screenLoading;
 
@@ -514,6 +533,10 @@ export default {
     FundingPrompt,
     ImportBeneficiaries,
     PrivacyHolder,
+    ApproveBenefactorsVue,
+    RejectBenefactorsVue,
+    BenefactorDetailsVue,
+    BenefactorQAndAVue,
   },
 
   computed: {
@@ -677,7 +700,7 @@ export default {
         const response = await this.$axios.get(
           `/organisations/${this.orgId}/campaigns/${this.campaignId}`
         );
- 
+
         if (response.status == "success") {
           screenLoading.close();
           this.details = response.data;
@@ -698,8 +721,6 @@ export default {
           `/organisation/${this.orgId}/campaigns/${this.campaignId}/beneficiaries`
         );
 
-        // console.log("RESPONSE: ", response);
-
         if (response.status == "success") {
           screenLoading.close();
           this.beneficiaries = response.data;
@@ -712,6 +733,8 @@ export default {
     handleSingleBenefactorModal(action, benefactor) {
       this.isSingleRequest = true;
       this.selectedBenefactor = benefactor;
+
+      console.log(this.selectedBenefactor);
 
       setTimeout(() => {
         this.$bvModal.show(`${action}-benefactors`);

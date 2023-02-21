@@ -1,7 +1,7 @@
 <template>
   <div>
     <div
-      v-for="(qandA, index) in qsAndAs"
+      v-for="(qandA, index) in questionsAndAnswers[0]?.questions"
       :key="`${qandA.question}_${index}`"
       class="mt-3 border-bottom text px-4 py-2"
     >
@@ -76,10 +76,7 @@ export default {
     },
 
     handleAction(action) {
-      //  if (action === 'approve')
       this.$emit("handleAction", action);
-      //  if (action === 'reject') this.$emit("rejectBenefactor");
-
       this.closeModal();
     },
   },
