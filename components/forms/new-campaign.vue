@@ -3,9 +3,28 @@
     <!-- Sidebar Here -->
 
     <!-- <MapSideBar :drawer="drawer" @hidden="drawer = false" /> -->
+    <!-- Toggler here -->
+    <div class="d-flex mb-3 w-full ctn-mgt-btn">
+      <div class="mgt-btn-container" @click="activeCampaignForm = 'campaigns'">
+        <span
+          class="mgt-btn"
+          :class="(activeCampaignForm === 'campaigns' && 'active')"
+        >
+          Cash Campaign
+        </span>
+      </div>
 
-    <!-- Form Here -->
+      <div class="mgt-btn-container" @click="activeCampaignForm = 'items'">
+        <span
+          class="mgt-btn"
+          :class="(activeCampaignForm === 'items' && 'active')"
+        >
+          Item Campaign
+        </span>
+      </div>
+    </div>
 
+    <!-- Cash Campaign Form Here -->
     <form @submit.prevent="createCampaign">
       <!-- Name field  here -->
       <div class="form-group">
@@ -41,16 +60,29 @@
         ></textarea>
       </div>
 
-      <!--Budget field  here -->
-      <div class="form-group">
+      <!-- I'm having issues validating the this field under a certain condition -->
+      <!--Budget field  here  for cash based campaign  -->
+      <div class="form-group" v-if="activeCampaignForm === 'campaigns'">
         <label for="total-amount">Budget</label>
         <CurrencyInput
           id="total-amount"
           placeholder="0.00"
           :customStyles="`height: 41px; border: 1px solid #7c8db5; background: white; padding: 0.75rem`"
-          :error="$v.payload.budget.$error"
-          @blur="$v.payload.budget.$touch()"
           v-model="payload.budget"
+        />
+      </div>
+
+      <!-- I'm having issues validating the this field under a certain condition -->
+      <!--Items field  here for item based campaign -->
+      <div class="form-group" v-if="activeCampaignForm === 'items'">
+        <label for="nu-of-products">Number of products</label>
+        <input
+          id="item"
+          type="number"
+          class="form-controls"
+          placeholder="0"
+          v-model="payload.no_of_products"
+          @mouseenter.once="runMap"
         />
       </div>
 
@@ -95,7 +127,6 @@
       </div>
 
       <!-- Campaign Form here -->
-
       <div class="form-group">
         <label for="campaign-form">Campaign form</label>
         <div id="product" class="w-100">
@@ -182,7 +213,7 @@ export default {
 
   data() {
     return {
-      test: "123",
+      activeCampaignForm: "campaigns",
       drawer: false,
       present: new Date(),
       loading: false,
@@ -194,6 +225,7 @@ export default {
         title: "",
         description: "",
         budget: "",
+        no_of_products: "",
         location: [],
         start_date: "",
         end_date: "",
@@ -211,6 +243,8 @@ export default {
       title: { required },
       description: { required, maxLength: maxLength(250) },
       budget: { required },
+      // budget: () => (activeCampaignForm == "campaigns" ? required : null),
+      // no_of_products: () => (activeCampaignForm == "items" ? required : null),
       start_date: { required },
       end_date: { required },
     },
@@ -233,6 +267,7 @@ export default {
 
   mounted() {
     this.id = this.user.AssociatedOrganisations[0].OrganisationId;
+    this.activeCampaignForm = this.$route.query.section;
   },
 
   methods: {
@@ -242,43 +277,43 @@ export default {
 
     checkValue(value) {
       this.isGeofence = value;
-      if (this.isGeofence) {
-        this.drawer = true;
-      }
+      if (this.isGeofence) this.drawer = true;
     },
 
     async createCampaign() {
-      try {
-        this.loading = true;
-        this.$v.payload.$touch();
+      // no logic to send request if new campaign type is item based
+      if (this.activeCampaignForm == "items")
+        return console.log(`${this.activeCampaignForm} based campaign`);
+      else {
+        try {
+          this.loading = true;
+          this.$v.payload.$touch();
 
-        if (this.$v.payload.$error) {
-          return (this.loading = false);
-        }
+          if (this.$v.payload.$error) return (this.loading = false);
 
-        this.payload.location = this.payload.location
-          ? JSON.stringify(this.payload.location)
-          : "";
+          this.payload.location = this.payload.location
+            ? JSON.stringify(this.payload.location)
+            : "";
 
-        const response = await this.$axios.post(
-          `/organisations/${+this.id}/campaigns`,
-          {
-            ...this.payload,
-            budget: this.payload.budget.replace(/[^0-9.]/g, ""),
+          const response = await this.$axios.post(
+            `/organisations/${+this.id}/campaigns`,
+            {
+              ...this.payload,
+              budget: this.payload.budget.replace(/[^0-9.]/g, ""),
+            }
+          );
+
+          if (response.status == "success") {
+            this.$emit("reload");
+            this.closeModal();
+            this.$toast.success(response.message);
           }
-          // this.payload
-        );
-
-        if (response.status == "success") {
-          this.$emit("reload");
-          this.closeModal();
-          this.$toast.success(response.message);
+        } catch (err) {
+          console.log({ err });
+          this.$toast.error(err?.response?.data?.message);
+        } finally {
+          this.loading = false;
         }
-      } catch (err) {
-        console.log({ err });
-        this.$toast.error(err?.response?.data?.message);
-      } finally {
-        this.loading = false;
       }
     },
 
@@ -483,5 +518,41 @@ input::-webkit-inner-spin-button {
 /* Firefox */
 input[type="number"] {
   -moz-appearance: textfield;
+}
+
+/* Campaign form toggler */
+.ctn-mgt-btn {
+  border-radius: 10px;
+  background: #f5f6f8;
+}
+
+.mgt-btn-container {
+  width: 50%;
+  display: flex;
+  align-content: center;
+  text-align: center;
+  cursor: pointer;
+  justify-content: center;
+  user-select: none;
+}
+
+.mgt-btn {
+  border: none;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #333333;
+  background: inherit;
+  border-radius: 10px;
+  padding: 0.6rem;
+  display: inline-block;
+}
+
+.mgt-btn.active {
+  color: #fff;
+  font-weight: 500;
+  background: #9dadca;
+  border: none;
+  border-radius: 10px;
+  width: 100%;
 }
 </style>
