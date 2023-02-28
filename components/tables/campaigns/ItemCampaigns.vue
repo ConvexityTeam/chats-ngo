@@ -36,7 +36,7 @@
 
             <td>
               <div
-                class="status px-1"
+                class="status px-2"
                 :class="{
                   pending:
                     campaign.status == 'pending' || campaign.status == 'paused',

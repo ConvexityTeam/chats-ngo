@@ -169,9 +169,9 @@
           />
         </banner>
 
-        <banner v-if="details.is_processing">
+        <!-- <banner v-if="details.is_processing">
           <ProcessingFunding @reload="getDetails" />
-        </banner>
+        </banner> -->
       </section>
 
       <!-- Campaign-Privacy Here -->
