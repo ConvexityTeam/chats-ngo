@@ -116,7 +116,9 @@
               :has-icon="false"
               custom-styles="height:50px"
               @click="$bvModal.show('funding-prompt')"
-              :disabled="details.status === 'pending'"
+              :disabled="
+                details.status === 'pending' || !details.beneficiaries_count
+              "
             />
 
             <Button
