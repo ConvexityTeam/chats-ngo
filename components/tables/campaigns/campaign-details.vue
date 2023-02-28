@@ -154,7 +154,10 @@
     </div>
 
     <!-- button region here -->
-    <div v-if="statuses.includes(details.status)" class="mt-3">
+    <div
+      v-if="statuses.includes(details.status) && !details.processing"
+      class="mt-3"
+    >
       <div class="d-flex">
         <Button
           :text="

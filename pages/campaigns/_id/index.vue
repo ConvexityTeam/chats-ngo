@@ -161,15 +161,21 @@
       </div>
 
       <!-- Banner Here -->
-      <div v-if="details.status === 'paused'">
-        <banner
-          :date="details.updatedAt"
-          @resumeCampaign="resumeCampaign = true"
-        />
-      </div>
+      <section>
+        <banner v-if="details.status === 'paused'">
+          <PauseCampaign
+            @resumeCampaign="resumeCampaign = true"
+            :date="details.updatedAt"
+          />
+        </banner>
+
+        <banner v-if="details.processing">
+          <ProcessingFunding @reload="getDetails" />
+        </banner>
+      </section>
 
       <!-- Campaign-Privacy Here -->
-      <div v-else>
+      <div :class="{ hidden: details.status == 'paused' }">
         <PrivacyHolder
           :organisationId="orgId"
           :campaignId="campaignId"
@@ -493,10 +499,12 @@ import campaignProducts from "~/components/tables/campaigns/campaign-products";
 import FundingPrompt from "./funding-prompt";
 import ImportBeneficiaries from "./import-beneficiaries";
 import PrivacyHolder from "~/components/generic/privacy-holder";
-import ApproveBenefactorsVue from "~/components/forms/approve-benefactors.vue";
-import RejectBenefactorsVue from "~/components/forms/reject-benefactors.vue";
-import BenefactorDetailsVue from "~/components/forms/campaign/benefactor-details.vue";
-import BenefactorQAndAVue from "~/components/forms/campaign/benefactor-q-and-a.vue";
+import ApproveBenefactorsVue from "~/components/forms/approve-benefactors";
+import RejectBenefactorsVue from "~/components/forms/reject-benefactors";
+import BenefactorDetailsVue from "~/components/forms/campaign/benefactor-details";
+import BenefactorQAndAVue from "~/components/forms/campaign/benefactor-q-and-a";
+import PauseCampaign from "~/components/generic/PauseCampaign";
+import ProcessingFunding from "~/components/generic/ProcessingFunding";
 
 let screenLoading;
 
@@ -545,6 +553,8 @@ export default {
     RejectBenefactorsVue,
     BenefactorDetailsVue,
     BenefactorQAndAVue,
+    PauseCampaign,
+    ProcessingFunding,
   },
 
   computed: {
@@ -874,5 +884,9 @@ tr.table-row:nth-child(even):hover {
 }
 tr.table-row:nth-child(odd) {
   background: #ffffff70;
+}
+
+.hidden {
+  display: none;
 }
 </style>
