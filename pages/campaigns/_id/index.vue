@@ -459,7 +459,7 @@
         <div class="col-lg-4">
           <campaign-details
             :details="details"
-            :count="details.Beneficiaries ? details.Beneficiaries.length : 0"
+            :count="details.beneficiaries_count"
             :location="location"
             :user="user"
             @reload="getDetails"
