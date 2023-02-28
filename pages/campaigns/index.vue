@@ -66,6 +66,7 @@
             :loading="$fetchState.pending"
             :id="id"
             @reload="$fetch"
+            @activateCampaign="activateCampaign"
           />
         </b-tab>
 
@@ -80,6 +81,7 @@
             :loading="$fetchState.pending"
             :id="id"
             @reload="$fetch"
+            @activateCampaign="activateCampaign"
           />
         </b-tab>
 
@@ -101,13 +103,16 @@
   </div>
 </template>
 <script>
-import CampaignTable from "~/components/tables/campaigns/all-campaigns.vue";
+import CampaignTable from "~/components/tables/campaigns/AllCampaigns.vue";
 import CampaignForms from "~/components/tables/campaigns/CampaignForms.vue";
 import ItemCampaigns from "~/components/tables/campaigns/ItemCampaigns.vue";
 import { mapGetters } from "vuex";
 
+let screenLoading;
+
 export default {
   layout: "dashboard",
+  name: "Campaigns",
   components: { CampaignTable, CampaignForms, ItemCampaigns },
 
   data: () => ({
@@ -166,6 +171,30 @@ export default {
   },
 
   methods: {
+    async activateCampaign(campaign) {
+      try {
+        this.openScreen();
+
+        const response = await this.$axios.put(
+          `organisations/${this.id}/campaigns/${campaign.id}`,
+          {
+            status: "active",
+          }
+        );
+
+        if (response.status == "success") {
+          this.$toast.success(response.message);
+          this.$fetch();
+        }
+
+        console.log("ACTIVATED", response);
+      } catch (err) {
+        console.log(err);
+      } finally {
+        screenLoading.close();
+      }
+    },
+
     handleTabClick(section) {
       // check if user is already on the same tab
       if (this.section === section) return;
@@ -178,6 +207,14 @@ export default {
     handleNewForm() {
       localStorage.removeItem("campaignForm");
       this.$router.push("/campaigns/forms/new");
+    },
+
+    openScreen() {
+      screenLoading = this.$loading({
+        lock: true,
+        spinner: "el-icon-loading",
+        background: "#0000009b",
+      });
     },
   },
 };

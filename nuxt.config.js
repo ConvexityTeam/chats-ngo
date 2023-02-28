@@ -33,6 +33,12 @@ export default {
         href: "https://unpkg.com/element-ui/lib/theme-chalk/index.css",
       },
     ],
+
+    script: [
+      {
+        src: `https://maps.googleapis.com/maps/api/js?key=${process.env.GOOGLE_API}&libraries=geometry,drawing&v=weekly`,
+      },
+    ],
   },
 
   css: ["~/assets/css/main.css", "~/assets/css/fonts.css"],

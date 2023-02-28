@@ -4,20 +4,20 @@
 
     <!-- <MapSideBar :drawer="drawer" @hidden="drawer = false" /> -->
     <!-- Toggler here -->
-    <div class="d-flex mb-3 w-full ctn-mgt-btn">
-      <div class="mgt-btn-container" @click="activeCampaignForm = 'campaigns'">
+    <div class="d-flex mb-4 w-full ctn-mgt-btn">
+      <div class="mgt-btn-container" @click="handleSwitch('campaigns')">
         <span
           class="mgt-btn"
-          :class="(activeCampaignForm === 'campaigns' && 'active')"
+          :class="activeCampaignForm === 'campaigns' && 'active'"
         >
           Cash Campaign
         </span>
       </div>
 
-      <div class="mgt-btn-container" @click="activeCampaignForm = 'items'">
+      <div class="mgt-btn-container" @click="handleSwitch('items')">
         <span
           class="mgt-btn"
-          :class="(activeCampaignForm === 'items' && 'active')"
+          :class="activeCampaignForm === 'items' && 'active'"
         >
           Item Campaign
         </span>
@@ -60,30 +60,33 @@
         ></textarea>
       </div>
 
-      <!-- I'm having issues validating the this field under a certain condition -->
       <!--Budget field  here  for cash based campaign  -->
-      <div class="form-group" v-if="activeCampaignForm === 'campaigns'">
-        <label for="total-amount">Budget</label>
-        <CurrencyInput
-          id="total-amount"
-          placeholder="0.00"
-          :customStyles="`height: 41px; border: 1px solid #7c8db5; background: white; padding: 0.75rem`"
-          v-model="payload.budget"
-        />
-      </div>
+      <div class="form-group">
+        <label :for="computedId"> {{ campaignLabel }} </label>
+        <template v-if="activeCampaignForm === 'campaigns'">
+          <CurrencyInput
+            :id="computedId"
+            placeholder="0.00"
+            :customStyles="`height: 41px; border: 1px solid #7c8db5; background: white; padding: 0.75rem`"
+            :error="$v.payload.budget.$error"
+            v-model="payload.budget"
+          />
+        </template>
 
-      <!-- I'm having issues validating the this field under a certain condition -->
-      <!--Items field  here for item based campaign -->
-      <div class="form-group" v-if="activeCampaignForm === 'items'">
-        <label for="nu-of-products">Number of products</label>
-        <input
-          id="item"
-          type="number"
-          class="form-controls"
-          placeholder="0"
-          v-model="payload.no_of_products"
-          @mouseenter.once="runMap"
-        />
+        <template v-else>
+          <input
+            :id="computedId"
+            type="number"
+            class="form-controls"
+            min="1"
+            :class="{
+              error: $v.payload.minting_limit.$error,
+            }"
+            placeholder="0"
+            @blur="$v.payload.minting_limit.$touch()"
+            v-model="payload.minting_limit"
+          />
+        </template>
       </div>
 
       <!-- Date fields here -->
@@ -191,7 +194,12 @@
 </template>
 
 <script>
-import { required, maxLength } from "vuelidate/lib/validators";
+import {
+  required,
+  maxLength,
+  requiredIf,
+  minValue,
+} from "vuelidate/lib/validators";
 import { mapGetters } from "vuex";
 import DatePicker from "vue2-datepicker";
 import "vue2-datepicker/index.css";
@@ -200,15 +208,6 @@ import MapSideBar from "./map-sidebar";
 let geocoder;
 
 export default {
-  head() {
-    return {
-      script: [
-        {
-          src: `https://maps.googleapis.com/maps/api/js?key=${process.env.GOOGLE_API}&libraries=geometry,drawing&v=weekly`,
-        },
-      ],
-    };
-  },
   components: { DatePicker, MapSideBar },
 
   data() {
@@ -221,11 +220,11 @@ export default {
       id: 0,
       forms: [],
       payload: {
-        type: "campaign",
+        type: "",
         title: "",
         description: "",
         budget: "",
-        no_of_products: "",
+        minting_limit: "",
         location: [],
         start_date: "",
         end_date: "",
@@ -242,9 +241,17 @@ export default {
     payload: {
       title: { required },
       description: { required, maxLength: maxLength(250) },
-      budget: { required },
-      // budget: () => (activeCampaignForm == "campaigns" ? required : null),
-      // no_of_products: () => (activeCampaignForm == "items" ? required : null),
+      budget: {
+        required: requiredIf(function () {
+          return this.activeCampaignForm === "campaigns";
+        }),
+      },
+      minting_limit: {
+        minValue: minValue(1),
+        required: requiredIf(function () {
+          return this.activeCampaignForm === "items";
+        }),
+      },
       start_date: { required },
       end_date: { required },
     },
@@ -263,65 +270,79 @@ export default {
 
   computed: {
     ...mapGetters("authentication", ["user"]),
+
+    campaignLabel() {
+      return this.activeCampaignForm === "items"
+        ? "Number of products"
+        : "Budget";
+    },
+
+    computedId() {
+      return this.activeCampaignForm === "items" ? "No_of_products" : "Budget";
+    },
+
+    campaignType() {
+      return this.activeCampaignForm === "items" ? "item" : "campaign";
+    },
   },
 
   mounted() {
     this.id = this.user.AssociatedOrganisations[0].OrganisationId;
-    this.activeCampaignForm = this.$route.query.section;
+
+    const { section } = this.$route.query;
+    if (section) this.activeCampaignForm = section;
   },
 
   methods: {
-    closeModal() {
-      this.$bvModal.hide("new-campaign");
-    },
-
-    checkValue(value) {
-      this.isGeofence = value;
-      if (this.isGeofence) this.drawer = true;
+    handleSwitch(section) {
+      this.activeCampaignForm = section;
+      this.$v.payload.$reset();
+      for (const prop of Object.getOwnPropertyNames(this.payload)) {
+        this.payload[prop] = "";
+      }
     },
 
     async createCampaign() {
-      // no logic to send request if new campaign type is item based
-      if (this.activeCampaignForm == "items")
-        return console.log(`${this.activeCampaignForm} based campaign`);
-      else {
-        try {
-          this.loading = true;
-          this.$v.payload.$touch();
+      try {
+        this.loading = true;
+        this.$v.payload.$touch();
 
-          if (this.$v.payload.$error) return (this.loading = false);
-
-          this.payload.location = this.payload.location
-            ? JSON.stringify(this.payload.location)
-            : "";
-
-          const response = await this.$axios.post(
-            `/organisations/${+this.id}/campaigns`,
-            {
-              ...this.payload,
-              budget: this.payload.budget.replace(/[^0-9.]/g, ""),
-            }
-          );
-
-          if (response.status == "success") {
-            this.$emit("reload");
-            this.closeModal();
-            this.$toast.success(response.message);
-          }
-        } catch (err) {
-          console.log({ err });
-          this.$toast.error(err?.response?.data?.message);
-        } finally {
-          this.loading = false;
+        if (this.$v.payload.$error) {
+          return (this.loading = false);
         }
+
+        this.payload.location = this.payload.location
+          ? JSON.stringify(this.payload.location)
+          : "";
+
+        const response = await this.$axios.post(
+          `/organisations/${+this.id}/campaigns`,
+          {
+            ...this.payload,
+            budget: this.payload.budget.replace(/[^0-9.]/g, ""),
+            type: this.campaignType,
+          }
+        );
+
+        if (response.status == "success") {
+          this.$emit("reload");
+          this.closeModal();
+          this.$toast.success(response.message);
+        }
+      } catch (err) {
+        console.log({ err });
+        this.$toast.error(err?.response?.data?.message);
+      } finally {
+        this.loading = false;
       }
     },
 
     // TODO:Try emiting fetch all campaigns method from parent and calling here
     runMap() {
-      let google = window.google;
+      let google = window?.google;
       const mapComponent = document.getElementById("map_canvas");
-      if (!mapComponent) return;
+
+      if (!mapComponent || !google) return;
       const map = new google.maps.Map(mapComponent, {
         center: { lat: 17.35297042396732, lng: 8.808737500000019 },
         zoom: 3,
@@ -470,6 +491,15 @@ export default {
         centerControlDiv
       );
     },
+
+    closeModal() {
+      this.$bvModal.hide("new-campaign");
+    },
+
+    checkValue(value) {
+      this.isGeofence = value;
+      if (this.isGeofence) this.drawer = true;
+    },
   },
 };
 </script>
@@ -540,7 +570,7 @@ input[type="number"] {
   border: none;
   font-size: 1rem;
   font-weight: 500;
-  color: #333333;
+  color: #646a86;
   background: inherit;
   border-radius: 10px;
   padding: 0.6rem;
@@ -549,7 +579,7 @@ input[type="number"] {
 
 .mgt-btn.active {
   color: #fff;
-  font-weight: 500;
+  font-weight: bold;
   background: #9dadca;
   border: none;
   border-radius: 10px;

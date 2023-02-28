@@ -2,8 +2,9 @@
   <div>
     <div class="mt-3 text-center">
       <p class="primary-gray py-3 font-medium">
-        You are about to fund this campaign confirm to continue, cancel to
-        discard it.
+        You are about to
+        {{ details.type == "item" ? "create items for" : "fund" }} this campaign
+        confirm to continue, cancel to discard it.
       </p>
     </div>
 
@@ -37,5 +38,16 @@
 </template>
 
 <script>
-export default {};
+export default {
+  props: {
+    details: {
+      type: Object,
+      default: () => {},
+    },
+  },
+
+  computed: {
+    text() {},
+  },
+};
 </script>

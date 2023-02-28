@@ -41,8 +41,11 @@
       </Modal>
 
       <!-- Funding Prompt  -->
-      <Modal id="funding-prompt" title="Fund Campaign">
-        <FundingPrompt @handleFunding="fundCampaign" />
+      <Modal
+        id="funding-prompt"
+        :title="details.type == 'item' ? 'Create Items' : 'Fund Campaign'"
+      >
+        <FundingPrompt @handleFunding="fundCampaign" :details="details" />
       </Modal>
 
       <!-- Import Beneficiaries -->
@@ -109,7 +112,7 @@
           <div class="mr-4">
             <Button
               v-if="details.status === 'pending' || !details.is_funded"
-              text="Fund Campaign"
+              :text="details.type == 'item' ? 'Create Items' : 'Fund Campaign'"
               :has-icon="false"
               custom-styles="height:50px"
               @click="$bvModal.show('funding-prompt')"
@@ -118,7 +121,9 @@
 
             <Button
               v-else
-              text="Disburse Funds"
+              :text="
+                details.type == 'item' ? 'Distribute Items' : 'Disburse Funds'
+              "
               :has-icon="false"
               custom-styles="height:50px"
               @click="
@@ -131,7 +136,7 @@
             />
           </div>
 
-          <div>
+          <div v-if="details.type !== 'item'">
             <Button
               text="Add Products"
               custom-styles="height:50px; border: 1px solid #17ce89 !important; font-weight: 600!important;"
@@ -495,6 +500,7 @@ let screenLoading;
 
 export default {
   layout: "dashboard",
+  name: "CampaignProperties",
   data: () => ({
     tabIndex: 1,
     loading: false,
@@ -706,11 +712,10 @@ export default {
           this.details = response.data;
           this.location = JSON.parse(response.data?.location?.country);
         }
-
-        this.loading = false;
       } catch (err) {
-        this.loading = false;
+      } finally {
         screenLoading.close();
+        this.loading = false;
       }
     },
 

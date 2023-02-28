@@ -793,6 +793,10 @@ select.form-control {
     background: #fcfcfe;
 }
 
+.campaign-title {
+    max-width: 12rem;
+  }
+
 
 /* TOAST HERE */
 

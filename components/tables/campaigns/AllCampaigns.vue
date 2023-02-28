@@ -7,7 +7,10 @@
 
     <!-- Table here -->
     <section class="table-holder mt-5">
-      <div v-if="campaigns.length" class="flex align-items-center table-title">
+      <div
+        v-if="resultQuery.length"
+        class="flex align-items-center table-title"
+      >
         <h4>Campaigns</h4>
         <div class="ml-auto"></div>
       </div>
@@ -61,7 +64,7 @@
                   custom-styles=" border-radius: 5px !important;
                   height:33px; border: 1px solid #17ce89 !important; font-size:
                   0.875rem !important; padding:0px 15px !important"
-                  @click="activateCampaign(campaign)"
+                  @click="$emit('activateCampaign', campaign)"
                   :disabled="statuses.includes(campaign.status)"
                 />
               </div>
@@ -93,7 +96,6 @@
 
 <script>
 import newCampaign from "~/components/forms/new-campaign.vue";
-let screenLoading;
 
 export default {
   components: {
@@ -121,7 +123,6 @@ export default {
     return {
       amount: 0,
       SelectedCampaign: {},
-      campaigns: [],
       selected: null,
       searchQuery: "",
       options: [
@@ -133,45 +134,5 @@ export default {
       statuses: ["active", "completed", "ongoing"],
     };
   },
-
-  methods: {
-    async activateCampaign(campaign) {
-      try {
-        this.openScreen();
-
-        const response = await this.$axios.put(
-          `organisations/${this.id}/campaigns/${campaign.id}`,
-          {
-            status: "active",
-          }
-        );
-
-        if (response.status == "success") {
-          screenLoading.close();
-          this.$toast.success(response.message);
-          this.$emit("reload");
-        }
-
-        console.log("ACTIVATED", response);
-      } catch (err) {
-        screenLoading.close();
-        console.log(err);
-      }
-    },
-
-    openScreen() {
-      screenLoading = this.$loading({
-        lock: true,
-        spinner: "el-icon-loading",
-        background: "#0000009b",
-      });
-    },
-  },
 };
 </script>
-
-<style scoped>
-.campaign-title {
-  max-width: 12rem;
-}
-</style>

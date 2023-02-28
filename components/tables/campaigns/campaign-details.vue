@@ -72,7 +72,10 @@
 
       <!-- Details -->
       <div class="mt-4">
-        <div class="d-flex campaign-divider mb-3">
+        <div
+          class="d-flex campaign-divider mb-3"
+          v-if="details.type !== 'item'"
+        >
           <p class="campaign-captions">Budget:</p>
 
           <div class="ml-auto">
@@ -138,7 +141,11 @@
           <p class="campaign-captions">Beneficiary Share:</p>
 
           <div class="ml-auto">
-            <p class="campaign-answers">
+            <p class="campaign-answers" v-if="details.type == 'item'">
+              {{ details.amount_disbursed }}
+            </p>
+
+            <p class="campaign-answers" v-else>
               {{ $currency }}{{ share | formatCurrency }}
             </p>
           </div>
@@ -222,9 +229,7 @@ export default {
     },
   },
 
-  components: {
-    campaignPrompt,
-  },
+  components: { campaignPrompt },
 
   computed: {
     share() {
@@ -333,6 +338,7 @@ export default {
 .campaign-answers {
   color: #25396f;
   font-size: 0.875rem;
+  text-align: right;
 }
 
 .campaign-divider {

@@ -25,7 +25,8 @@
       <!-- Header text here -->
       <div>
         <h1 class="text-md primary-blue font-bold">
-          How do you want to disburse funds to beneficiary?
+          How do you want to disburse
+          {{ details.type == "item" ? "items" : "funds" }} to beneficiary?
         </h1>
         <p class="text-sm primary-gray">
           Select a disbursement method that best fits your campaign and
@@ -204,14 +205,13 @@ export default {
         );
 
         if (response.status == "success") {
-          screenLoading.close();
           this.details = response.data;
           this.location = JSON.parse(response.data?.location?.country);
         }
-
-        this.loading = false;
       } catch (err) {
+      } finally {
         this.loading = false;
+
         screenLoading.close();
       }
     },
