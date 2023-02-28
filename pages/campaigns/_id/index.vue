@@ -169,7 +169,7 @@
           />
         </banner>
 
-        <banner v-if="details.processing">
+        <banner v-if="details.is_processing">
           <ProcessingFunding @reload="getDetails" />
         </banner>
       </section>

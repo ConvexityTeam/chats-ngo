@@ -155,7 +155,7 @@
 
     <!-- button region here -->
     <div
-      v-if="statuses.includes(details.status) && !details.processing"
+      v-if="statuses.includes(details.status) && !details.is_processing"
       class="mt-3"
     >
       <div class="d-flex">
