@@ -47,7 +47,7 @@
         />
       </div>
 
-      <div class="row" :class="{ 'mt-3': details.status == 'paused' }">
+      <div class="row mt-3" :class="{ 'mt-3': details.status == 'paused' }">
         <div class="col-lg-8">
           <!-- Campaign beneficiaries here -->
           <div>

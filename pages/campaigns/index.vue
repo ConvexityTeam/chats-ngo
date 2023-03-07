@@ -102,11 +102,12 @@
     </section>
   </div>
 </template>
+
 <script>
-import CampaignTable from "~/components/tables/campaigns/AllCampaigns.vue";
-import CampaignForms from "~/components/tables/campaigns/CampaignForms.vue";
-import ItemCampaigns from "~/components/tables/campaigns/ItemCampaigns.vue";
 import { mapGetters } from "vuex";
+import CampaignTable from "~/components/tables/campaigns/AllCampaigns";
+import CampaignForms from "~/components/tables/campaigns/CampaignForms";
+import ItemCampaigns from "~/components/tables/campaigns/ItemCampaigns";
 
 let screenLoading;
 

@@ -122,9 +122,9 @@
             <!-- Buttons here -->
             <div class="d-flex justify-content-between mt-2">
               <Button
+                text="Create task"
                 :has-border="true"
                 :has-icon="false"
-                text="Create task"
                 custom-styles="height:41px; font-weight: 600; border-radius: 5px; font-size: 0.875rem"
                 @click="handleNewTask(campaign)"
               />
@@ -221,8 +221,7 @@ export default {
       ).toFixed(0);
     },
 
-    async activateCampaign() {
-      console.log("SELECTED CAMPAIGN", this.SelectedC4w.id);
+    async activateCampaign(source) {
       try {
         this.openScreen();
 
@@ -234,33 +233,33 @@ export default {
         );
 
         if (response.status == "success") {
-          screenLoading.close();
-          this.$toast.success(response.message);
+          if (source != "funding") {
+            this.$toast.success(response.message);
+          }
           this.fetchAllCampaigns();
         }
       } catch (err) {
-        screenLoading.close();
         console.log(err);
+      } finally {
+        screenLoading.close();
       }
     },
+
     async fetchAllCampaigns() {
       try {
-        this.loading = true;
         this.openScreen();
-
         const response = await this.$axios.get(
           `/organisations/${+this.id}/campaigns/all?type=cash-for-work`
         );
 
         if (response.status == "success") {
-          this.loading = false;
           this.campaigns = response.data.reverse();
           console.log("ALL CAMPAIGNS", response.data);
-          screenLoading.close();
         }
       } catch (err) {
+        console.log({ error: err });
+      } finally {
         screenLoading.close();
-        this.loading = false;
       }
     },
 
@@ -272,19 +271,19 @@ export default {
           `organisations/${this.id}/campaigns/${this.SelectedC4w.id}/fund-campaign`
         );
 
-        screenLoading.close();
-
         if (response.status == "success") {
           this.$toast.success(response.message);
+
           if (this.SelectedC4w.status == "pending") {
-            return this.activateCampaign(this.SelectedC4w.id);
+            await this.activateCampaign("funding");
           }
           this.fetchAllCampaigns();
         }
       } catch (err) {
-        screenLoading.close();
         this.$toast.error(err.message);
         console.log({ error: err });
+      } finally {
+        screenLoading.close();
       }
     },
 

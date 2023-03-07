@@ -95,7 +95,7 @@
 </template>
 
 <script>
-import newCampaign from "~/components/forms/new-campaign.vue";
+import newCampaign from "~/components/forms/new-campaign";
 
 export default {
   components: {
