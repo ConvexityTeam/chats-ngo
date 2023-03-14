@@ -215,8 +215,8 @@ input[type="number"] {
 }
 
 .status.ended {
-    background: #e8d3ff;
-    color: #9747ff;
+    background: #FCDEFF;
+    color: #4A0051;
 }
 
 .status.pending {

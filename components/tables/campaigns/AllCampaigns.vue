@@ -31,7 +31,7 @@
           <tr
             v-for="(campaign, i) in resultQuery"
             :key="i"
-            style="cursor: pointer;"
+            style="cursor: pointer"
             :class="{ selected: i % 2 == 0 }"
           >
             <td class="campaign-title">{{ campaign.title }}</td>
@@ -97,6 +97,7 @@
 
 <script>
 import newCampaign from "~/components/forms/new-campaign";
+import { statuses } from "@/utils/constants";
 
 export default {
   components: {
@@ -122,6 +123,7 @@ export default {
 
   data() {
     return {
+      statuses: statuses,
       amount: 0,
       SelectedCampaign: {},
       selected: null,
@@ -132,7 +134,6 @@ export default {
         { value: "inprogress", text: "In Progress" },
         { value: "completed", text: "Completed" },
       ],
-      statuses: ["active", "completed", "ongoing"],
     };
   },
 };
