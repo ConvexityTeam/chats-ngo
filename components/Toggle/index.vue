@@ -2,6 +2,7 @@
   <div>
     <span
       class="toggle-wrapper"
+      :class="disabled && 'disabled'"
       role="checkbox"
       :aria-checked="value.toString()"
       tabindex="0"
@@ -21,6 +22,9 @@ export default {
       type: Boolean,
       required: true,
     },
+    disabled: {
+      type: Boolean,
+    },
   },
   computed: {
     backgroundStyles() {
@@ -37,6 +41,7 @@ export default {
   },
   methods: {
     toggle() {
+      if (this.disabled) return;
       this.$emit("toggle", !this.value);
     },
   },
@@ -60,9 +65,14 @@ export default {
   height: 18px;
   border-radius: 9999px;
 }
-
 .toggle-wrapper:focus {
   outline: 0;
+}
+.toggle-wrapper.disabled {
+  cursor: not-allowed;
+}
+.toggle-wrapper.disabled:focus {
+  cursor: not-allowed;
 }
 
 .toggle-background {
@@ -84,5 +94,8 @@ export default {
   border-radius: 9999px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   transition: transform 0.4s ease;
+}
+.disabled {
+  cursor: not-allowed !important;
 }
 </style>
