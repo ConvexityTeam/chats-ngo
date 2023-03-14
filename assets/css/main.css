@@ -214,6 +214,11 @@ input[type="number"] {
     padding: 0 10px;
 }
 
+.status.ended {
+    background: #e8d3ff;
+    color: #9747ff;
+}
+
 .status.pending {
     background: #ffcdc7;
     color: #5e0e03;
@@ -795,7 +800,7 @@ select.form-control {
 
 .campaign-title {
     max-width: 12rem;
-  }
+}
 
 
 /* TOAST HERE */
@@ -1009,7 +1014,6 @@ select.form-control {
 .vue-input-tag-wrapper.input-tag::placeholder {
     font-size: 0.875rem !important;
     color: #646a86 !important;
-    
 }
 
 .vue-input-tag-wrapper .input-tag {
@@ -1031,11 +1035,9 @@ select.form-control {
 
 .vue-input-tag-wrapper .new-tag {
     color: #222222 !important;
-    font-size:0.75rem !important;
+    font-size: 0.75rem !important;
     font-family: "Gilroy" !important;
 }
-
-
 
 @-webkit-keyframes spin {
     0% {
