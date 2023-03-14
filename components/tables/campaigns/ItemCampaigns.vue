@@ -26,7 +26,7 @@
           <tr
             v-for="(campaign, i) in resultQuery"
             :key="i"
-            style="cursor: pointer"
+            style="cursor: pointer;"
             :class="{ selected: i % 2 == 0 }"
           >
             <td class="campaign-title">{{ campaign.title }}</td>
@@ -43,6 +43,7 @@
                   progress: campaign.status == 'active',
                   ongoing: campaign.status == 'ongoing',
                   done: campaign.status == 'completed',
+                  ended: campaign.status == 'ended',
                 }"
               >
                 {{ campaign.status | capitalize }}
