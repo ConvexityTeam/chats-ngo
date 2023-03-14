@@ -1,26 +1,36 @@
 <template>
-  <div class="main container transparent pb-5">
-    <div class="row pt-4 mt-2">
-      <div class="col-lg-8">
-        <div class="row">
-          <div class="col-lg-5">
-            <!-- Search Box here -->
-            <div class="position-relative">
-              <input
-                type="text"
-                class="form-controls search"
-                :placeholder="`Search ${section}...`"
-                v-model="searchQuery"
-              />
-              <img
-                src="~/assets/img/vectors/search.svg"
-                class="search-icon position-absolute"
-                alt="search"
-              />
-            </div>
-          </div>
+  <div>
+    <!-- modals here -->
+    <Modal size="lg" id="select-campaign-type" title="Select campaign type">
+      <SelectCampaignTypeVue @selectCampaignType="selectCampaignType" />
+    </Modal>
+    <!--  -->
+    <Modal id="new-campaign-form" title="New Campaign">
+      <NewCampaignVue :selectedCampaign="selectedCampaign" />
+    </Modal>
 
-          <!-- <div class="position-relative">
+    <div class="main container transparent pb-5">
+      <div class="row pt-4 mt-2">
+        <div class="col-lg-8">
+          <div class="row">
+            <div class="col-lg-5">
+              <!-- Search Box here -->
+              <div class="position-relative">
+                <input
+                  type="text"
+                  class="form-controls search"
+                  :placeholder="`Search ${section}...`"
+                  v-model="searchQuery"
+                />
+                <img
+                  src="~/assets/img/vectors/search.svg"
+                  class="search-icon position-absolute"
+                  alt="search"
+                />
+              </div>
+            </div>
+
+            <!-- <div class="position-relative">
             <span class="filter position-absolute">
               <img src="~/assets/img/vectors/filter.svg" alt="filter" />
             </span>
@@ -31,94 +41,109 @@
               plain
             ></b-form-select>
           </div> -->
+          </div>
+        </div>
+
+        <div class="ml-auto mx-3">
+          <Button
+            v-if="section === 'campaigns' || section === 'items'"
+            text="Create campaign"
+            custom-styles="height:50px"
+            @click="$bvModal.show('select-campaign-type')"
+          />
+
+          <Button
+            v-if="section === 'forms'"
+            text="New form"
+            custom-styles="height:50px"
+            @click="handleNewForm"
+          />
         </div>
       </div>
 
-      <div class="ml-auto mx-3">
-        <Button
-          v-if="section === 'campaigns' || section === 'items'"
-          text="Create campaign"
-          custom-styles="height:50px"
-          @click="$bvModal.show('new-campaign')"
-        />
+      <!-- Tabs Here -->
+      <section class="mt-4">
+        <b-tabs
+          content-class="mt-1"
+          id="profile-tab"
+          nav-class
+          nav-wrapper-class
+        >
+          <!-- Campaigns tab here -->
+          <b-tab
+            title="Cash Campaigns"
+            :active="section === 'campaigns'"
+            class="nav-links"
+            @click="handleTabClick('campaigns')"
+          >
+            <CampaignTable
+              :resultQuery="resultQuery"
+              :loading="$fetchState.pending"
+              :id="id"
+              @reload="$fetch"
+              @activateCampaign="activateCampaign"
+            />
+          </b-tab>
 
-        <Button
-          v-if="section === 'forms'"
-          text="New form"
-          custom-styles="height:50px"
-          @click="handleNewForm"
-        />
-      </div>
+          <b-tab
+            title="Item Campaign"
+            :active="section === 'items'"
+            class="nav-links"
+            @click="handleTabClick('items')"
+          >
+            <ItemCampaigns
+              :resultQuery="resultQuery"
+              :loading="$fetchState.pending"
+              :id="id"
+              @reload="$fetch"
+              @activateCampaign="activateCampaign"
+            />
+          </b-tab>
+
+          <!-- Campaign forms here -->
+          <b-tab
+            title="Campaign forms"
+            :active="section === 'forms'"
+            @click="handleTabClick('forms')"
+          >
+            <CampaignForms
+              :resultQuery="resultQuery"
+              :loading="$fetchState.pending"
+              :id="id"
+              @reload="$fetch"
+            />
+          </b-tab>
+        </b-tabs>
+      </section>
     </div>
-
-    <!-- Tabs Here -->
-    <section class="mt-4">
-      <b-tabs content-class="mt-1" id="profile-tab" nav-class nav-wrapper-class>
-        <!-- Campaigns tab here -->
-        <b-tab
-          title="Cash Campaigns"
-          :active="section === 'campaigns'"
-          class="nav-links"
-          @click="handleTabClick('campaigns')"
-        >
-          <CampaignTable
-            :resultQuery="resultQuery"
-            :loading="$fetchState.pending"
-            :id="id"
-            @reload="$fetch"
-            @activateCampaign="activateCampaign"
-          />
-        </b-tab>
-
-        <b-tab
-          title="Item Campaign"
-          :active="section === 'items'"
-          class="nav-links"
-          @click="handleTabClick('items')"
-        >
-          <ItemCampaigns
-            :resultQuery="resultQuery"
-            :loading="$fetchState.pending"
-            :id="id"
-            @reload="$fetch"
-            @activateCampaign="activateCampaign"
-          />
-        </b-tab>
-
-        <!-- Campaign forms here -->
-        <b-tab
-          title="Campaign forms"
-          :active="section === 'forms'"
-          @click="handleTabClick('forms')"
-        >
-          <CampaignForms
-            :resultQuery="resultQuery"
-            :loading="$fetchState.pending"
-            :id="id"
-            @reload="$fetch"
-          />
-        </b-tab>
-      </b-tabs>
-    </section>
   </div>
 </template>
 
 <script>
 import { mapGetters } from "vuex";
-import CampaignTable from "~/components/tables/campaigns/AllCampaigns";
-import CampaignForms from "~/components/tables/campaigns/CampaignForms";
-import ItemCampaigns from "~/components/tables/campaigns/ItemCampaigns";
+import SelectCampaignTypeVue from "~/components/forms/campaigns/SelectCampaignType.vue";
+import CampaignTable from "~/components/tables/campaigns/AllCampaigns.vue";
+import CampaignForms from "~/components/tables/campaigns/CampaignForms.vue";
+import ItemCampaigns from "~/components/tables/campaigns/ItemCampaigns.vue";
+import NewCampaignVue from "~/components/forms/new-campaign.vue";
 
 let screenLoading;
 
 export default {
   layout: "dashboard",
   name: "Campaigns",
-  components: { CampaignTable, CampaignForms, ItemCampaigns },
+  components: {
+    CampaignTable,
+    CampaignForms,
+    ItemCampaigns,
+    SelectCampaignTypeVue,
+    NewCampaignVue,
+  },
 
   data: () => ({
     id: "",
     searchQuery: "",
+    selectedCampaign: "",
     campaigns: [],
     forms: [],
     items: [],
@@ -172,6 +197,12 @@ export default {
   },
 
   methods: {
+    selectCampaignType(campaign_type) {
+      console.log(campaign_type);
+      this.selectedCampaign = campaign_type;
+      this.$bvModal.hide("select-campaign-type");
+      this.$bvModal.show("new-campaign-form");
+    },
     async activateCampaign(campaign) {
       try {
         this.openScreen();

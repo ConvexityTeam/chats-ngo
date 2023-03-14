@@ -5,10 +5,10 @@
     <!-- <MapSideBar :drawer="drawer" @hidden="drawer = false" /> -->
     <!-- Toggler here -->
     <div class="d-flex mb-4 w-full ctn-mgt-btn">
-      <div class="mgt-btn-container" @click="handleSwitch('campaigns')">
+      <div class="mgt-btn-container" @click="handleSwitch('cash')">
         <span
           class="mgt-btn"
-          :class="activeCampaignForm === 'campaigns' && 'active'"
+          :class="activeCampaignForm === 'cash' && 'active'"
         >
           Cash Campaign
         </span>
@@ -19,7 +19,7 @@
           class="mgt-btn"
           :class="activeCampaignForm === 'items' && 'active'"
         >
-          Item Campaign
+          Items Campaign
         </span>
       </div>
     </div>
@@ -63,7 +63,7 @@
       <!--Budget field  here  for cash based campaign  -->
       <div class="form-group">
         <label :for="computedId"> {{ campaignLabel }} </label>
-        <template v-if="activeCampaignForm === 'campaigns'">
+        <template v-if="activeCampaignForm === 'cash'">
           <CurrencyInput
             :id="computedId"
             placeholder="0.00"
@@ -210,9 +210,15 @@ let geocoder;
 export default {
   components: { DatePicker, MapSideBar },
 
+  props: {
+    selectedCampaign: {
+      type: String,
+    },
+  },
+
   data() {
     return {
-      activeCampaignForm: "campaigns",
+      activeCampaignForm: "",
       drawer: false,
       present: new Date(),
       loading: false,
@@ -243,7 +249,7 @@ export default {
       description: { required, maxLength: maxLength(250) },
       budget: {
         required: requiredIf(function () {
-          return this.activeCampaignForm === "campaigns";
+          return this.activeCampaignForm === "cash";
         }),
       },
       minting_limit: {
@@ -288,9 +294,7 @@ export default {
 
   mounted() {
     this.id = this.user.AssociatedOrganisations[0].OrganisationId;
-
-    const { section } = this.$route.query;
-    if (section) this.activeCampaignForm = section;
+    this.activeCampaignForm = this.selectedCampaign;
   },
 
   methods: {

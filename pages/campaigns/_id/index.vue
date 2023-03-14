@@ -180,6 +180,7 @@
           :organisationId="orgId"
           :campaignId="campaignId"
           :is_public="details?.is_public"
+          :campaignStatus="details?.status"
         />
       </div>
 

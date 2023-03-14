@@ -24,7 +24,6 @@
 
 <script>
 import close from "~/components/icons/close";
-
 export default {
   props: {
     id: {

@@ -38,12 +38,20 @@
           <span class="mr-2"> Make public </span>
 
           <span class="d-flex align-items-center h-100">
-            <toggle class="mb-n1" :value="isCampaignPublic" @toggle="toggle" />
+            <toggle
+              class="mb-n1"
+              :value="isCampaignPublic"
+              @toggle="toggle"
+              :disabled="campaignStatus == 'completed'"
+              :title="campaignStatus == 'completed' && 'Campaign completed'"
+            />
           </span>
         </div>
 
         <span
           class="d-flex align-items-center justify-content-center action_2 flex-fill h-100 px-1"
+          :class="campaignStatus == 'completed' && 'disabled-invite-btn'"
+          :title="campaignStatus == 'completed' && 'Campaign completed'"
           @click="openModal('invite-donor')"
         >
           Invite Donor
@@ -69,8 +77,12 @@ export default {
       required: true,
     },
     is_public: {
-      type: Boolean | null,
-      required: true,
+      type: Boolean  ,
+      default: false,
+    },
+    campaignStatus: {
+      type: String,
+      default: "",
     },
   },
 
@@ -130,6 +142,7 @@ export default {
       }
     },
     openModal(modalId) {
+      if (this.campaignStatus == "completed") return;
       this.$bvModal.show(modalId);
     },
     openScreen() {
@@ -180,5 +193,14 @@ a {
 .copy-link {
   color: #2f80ed !important;
   cursor: copy;
+}
+
+.disabled-invite-btn {
+  cursor: not-allowed !important ;
+  color: #7c8db5 !important;
+}
+
+.disabled-cursor {
+  cursor: not-allowed !important ;
 }
 </style>
