@@ -212,12 +212,6 @@
                     {{ vendor.first_name + " " + vendor.last_name }}
                   </span>
                 </div>
-
-                <!-- <div class="ml-auto">
-                  <button type="button" class="more-btn">
-                    <dot />
-                  </button>
-                </div> -->
               </div>
             </div>
 
@@ -255,12 +249,10 @@ import beneficiaryGender from "~/components/charts/beneficiary-gender";
 import beneficiaryLocation from "~/components/charts/beneficiary-location";
 import beneficiaryVendor from "~/components/charts/beneficiary-vendor";
 import disbursed from "~/components/icons/disbursed.vue";
-import dot from "~/components/icons/dot";
 import leftArrow from "~/components/icons/left-arrow";
 import rightArrow from "~/components/icons/right-arrow";
 import totalBalance from "~/components/icons/total-balance.vue";
 import walletBalance from "~/components/icons/wallet-balance.vue";
-import countries from "~/plugins/countries";
 
 export default {
   layout: "dashboard",
@@ -271,7 +263,6 @@ export default {
     beneficiaryVendor,
     beneficiaryBalances,
     beneficiaryLocation,
-    dot,
     rightArrow,
     leftArrow,
     walletBalance,
@@ -284,17 +275,9 @@ export default {
       loading: false,
       beneficiaries: [],
       vendors: [],
-      amount: "5000",
-      stats: {},
       wallet: {},
       campaignDetails: {},
       metricsData: {},
-      userLocation: {
-        alphaCode: "",
-        currencySymbol: "",
-        currencyCode: "",
-        convertedValue: "5000",
-      },
     };
   },
 
@@ -309,10 +292,6 @@ export default {
       // check if the properties of the object have values
       return Object.values(this.metricsData).every((x) => x != null);
     },
-  },
-
-  mounted() {
-    this.getStats();
   },
 
   async fetch() {
@@ -339,72 +318,6 @@ export default {
     console.log("beneficiaries:::", beneficiaries);
     console.log("campaignDetails:::", campaignDetails);
     console.log("metricsData:::", metricsData);
-  },
-
-  methods: {
-    async getStats() {
-      try {
-        this.loading = true;
-        const response = await this.$axios.get("/users/info/statistics");
-        if (response.status == "success") {
-          this.loading = false;
-          this.stats = response.data[0];
-        }
-        console.log("statsresponse:::", response);
-      } catch (err) {
-        this.loading = false;
-        console.log("statserr:::", err);
-      }
-    },
-    getIp() {
-      this.$axios
-        .get("http://ip-api.com/json")
-        .then((response) => {
-          console.log({ response: response.data.countryCode });
-          this.userLocation.alphaCode = response.data.countryCode;
-          this.setCurrency();
-          this.convertCurrency();
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    },
-
-    setCurrency() {
-      const userCountry = countries.filter(
-        (countries) => countries.alpha2Code == this.userLocation.alphaCode
-      );
-
-      this.userLocation.currencySymbol = userCountry[0].currencies[0].symbol;
-      this.userLocation.currencyCode = userCountry[0].currencies[0].code;
-    },
-    convertCurrency() {
-      this.$axios
-        .get(`https://fixer-fixer-currency-v1.p.rapidapi.com/convert`, {
-          params: {
-            from: "USD",
-            to: this.userLocation.currencyCode,
-            amount: this.amount,
-          },
-          headers: {
-            "x-rapidapi-key":
-              "53a42b6342msha5eeed4491364b5p1c9fb1jsn357450c321a9",
-            "x-rapidapi-host": "fixer-fixer-currency-v1.p.rapidapi.com",
-          },
-        })
-
-        .then((response) => {
-          // this.userLocation.convertedValue = response.data.result
-        })
-
-        .catch((error) => {
-          console.log("erroo", error);
-        });
-    },
-
-    isEmpty(obj) {
-      return Object.keys(obj).length === 0;
-    },
   },
 };
 </script>
