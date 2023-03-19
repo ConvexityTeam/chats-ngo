@@ -52,7 +52,7 @@
         </div>
 
         <!-- Pay with Crypto here -->
-        <div class="option-holder py-4 px-3 mb-3">
+        <div class="option-holder none py-4 px-3 mb-3">
           <div>
             <h5 class="option-header">Fund through Crypto</h5>
             <p class="description">
@@ -248,6 +248,10 @@ export default {
   border: 1px solid #42c18e;
   box-sizing: border-box;
   border-radius: 10px;
+}
+
+.none {
+  display: none;
 }
 
 .wallet-header {

@@ -86,10 +86,6 @@
         </tbody>
       </table>
 
-      <div v-else-if="loading">
-        <FullScreenLoader :loading="loading" />
-      </div>
-
       <h3 v-else class="text-center no-record">NO RECORD FOUND</h3>
     </section>
   </div>

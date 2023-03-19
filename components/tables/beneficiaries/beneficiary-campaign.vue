@@ -81,6 +81,7 @@
                   progress: campaign.status === 'active',
                   ongoing: campaign.status === 'ongoing',
                   completed: campaign.status === 'completed',
+                  ended: campaign.status == 'ended',
                 }"
               >
                 {{ campaign.status | capitalize }}

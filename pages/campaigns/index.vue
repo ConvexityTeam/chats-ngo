@@ -69,50 +69,57 @@
           nav-class
           nav-wrapper-class
         >
-          <!-- Campaigns tab here -->
-          <b-tab
-            title="Cash Campaigns"
-            :active="section === 'campaigns'"
-            class="nav-links"
-            @click="handleTabClick('campaigns')"
-          >
-            <CampaignTable
-              :resultQuery="resultQuery"
-              :loading="$fetchState.pending"
-              :id="id"
-              @reload="$fetch"
-              @activateCampaign="activateCampaign"
-            />
-          </b-tab>
+          <FullScreenLoader
+            v-if="$fetchState.pending"
+            :loading="$fetchState.pending"
+          />
 
-          <b-tab
-            title="Item Campaign"
-            :active="section === 'items'"
-            class="nav-links"
-            @click="handleTabClick('items')"
-          >
-            <ItemCampaigns
-              :resultQuery="resultQuery"
-              :loading="$fetchState.pending"
-              :id="id"
-              @reload="$fetch"
-              @activateCampaign="activateCampaign"
-            />
-          </b-tab>
+          <template v-else>
+            <!-- Campaigns tab here -->
+            <b-tab
+              title="Cash Campaigns"
+              :active="section === 'campaigns'"
+              class="nav-links"
+              @click="handleTabClick('campaigns')"
+            >
+              <CampaignTable
+                :resultQuery="resultQuery"
+                :loading="$fetchState.pending"
+                :id="id"
+                @reload="$fetch"
+                @activateCampaign="activateCampaign"
+              />
+            </b-tab>
 
-          <!-- Campaign forms here -->
-          <b-tab
-            title="Campaign forms"
-            :active="section === 'forms'"
-            @click="handleTabClick('forms')"
-          >
-            <CampaignForms
-              :resultQuery="resultQuery"
-              :loading="$fetchState.pending"
-              :id="id"
-              @reload="$fetch"
-            />
-          </b-tab>
+            <b-tab
+              title="Item Campaign"
+              :active="section === 'items'"
+              class="nav-links"
+              @click="handleTabClick('items')"
+            >
+              <ItemCampaigns
+                :resultQuery="resultQuery"
+                :loading="$fetchState.pending"
+                :id="id"
+                @reload="$fetch"
+                @activateCampaign="activateCampaign"
+              />
+            </b-tab>
+
+            <!-- Campaign forms here -->
+            <b-tab
+              title="Campaign forms"
+              :active="section === 'forms'"
+              @click="handleTabClick('forms')"
+            >
+              <CampaignForms
+                :resultQuery="resultQuery"
+                :loading="$fetchState.pending"
+                :id="id"
+                @reload="$fetch"
+              />
+            </b-tab>
+          </template>
         </b-tabs>
       </section>
     </div>
@@ -121,11 +128,11 @@
 
 <script>
 import { mapGetters } from "vuex";
-import SelectCampaignTypeVue from "~/components/forms/campaigns/SelectCampaignType.vue";
-import CampaignTable from "~/components/tables/campaigns/AllCampaigns.vue";
-import CampaignForms from "~/components/tables/campaigns/CampaignForms.vue";
-import ItemCampaigns from "~/components/tables/campaigns/ItemCampaigns.vue";
-import NewCampaignVue from "~/components/forms/new-campaign.vue";
+import SelectCampaignTypeVue from "~/components/forms/campaigns/SelectCampaignType";
+import CampaignTable from "~/components/tables/campaigns/AllCampaigns";
+import CampaignForms from "~/components/tables/campaigns/CampaignForms";
+import ItemCampaigns from "~/components/tables/campaigns/ItemCampaigns";
+import NewCampaignVue from "~/components/forms/new-campaign";
 
 let screenLoading;
 
@@ -170,56 +177,44 @@ export default {
 
   async fetch() {
     this.id = this.user?.AssociatedOrganisations[0]?.OrganisationId;
-    const responseOne = await this.$axios.get(
+    const campaignForms = await this.$axios.get(
       `organisations/${this.id}/campaign_form`
     );
 
-    if (responseOne.status === "success") {
-      this.forms = responseOne.data;
-    }
-
-    const responseTwo = await this.$axios.get(
+    const campaigns = await this.$axios.get(
       `/organisations/${this.id}/campaigns/all?type=campaign`
     );
 
-    if (responseTwo.status === "success") {
-      this.campaigns = responseTwo.data;
-    }
-
     // fetch item campaign's response
-    const responseThree = await this.$axios.get(
+    const itemCampaigns = await this.$axios.get(
       `/organisations/${this.id}/campaigns/all?type=item`
     );
 
-    if (responseThree.status === "success") {
-      this.items = responseThree.data;
-    }
+    this.forms = campaignForms.data;
+    this.campaigns = campaigns.data;
+    this.items = itemCampaigns.data;
   },
 
   methods: {
     selectCampaignType(campaign_type) {
-      console.log(campaign_type);
       this.selectedCampaign = campaign_type;
       this.$bvModal.hide("select-campaign-type");
       this.$bvModal.show("new-campaign-form");
     },
+
     async activateCampaign(campaign) {
       try {
         this.openScreen();
 
         const response = await this.$axios.put(
           `organisations/${this.id}/campaigns/${campaign.id}`,
-          {
-            status: "active",
-          }
+          { status: "active" }
         );
 
         if (response.status == "success") {
           this.$toast.success(response.message);
           this.$fetch();
         }
-
-        console.log("ACTIVATED", response);
       } catch (err) {
         console.log(err);
       } finally {

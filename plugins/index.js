@@ -3,11 +3,11 @@ import Vuelidate from "vuelidate";
 import JsonCSV from "vue-json-csv";
 import VueTelInput from "vue-tel-input";
 import "vue-tel-input/dist/vue-tel-input.css";
-import VueCryptojs from "vue-cryptojs";
 import countries from "./countries";
+// import VueCryptojs from "vue-cryptojs";
 
-Vue.use(VueCryptojs);
-
+/* This is r=to encrypt Data as referenced in Axios file */
+// Vue.use(VueCryptojs);
 Vue.component("downloadCsv", JsonCSV);
 Vue.use(Vuelidate);
 Vue.use(VueTelInput, {

@@ -28,7 +28,7 @@
         </div>
       </div>
 
-      <div class=" ml-auto d-flex mx-3">
+      <div class="ml-auto d-flex mx-3">
         <csv
           :has-border="true"
           :data="computedData"
@@ -55,9 +55,7 @@
         <div class="ml-auto"></div>
       </div>
 
-      <div v-if="$fetchState.pending" class="loader text-center"></div>
-
-      <table class="table table-borderless" v-else-if="resultQuery.length">
+      <table class="table table-borderless" v-if="resultQuery.length">
         <thead>
           <tr>
             <th scope="col">Reference ID</th>
@@ -90,12 +88,13 @@
                   : "-"
               }}
             </td>
-            <td>{{ transction.createdAt | shortDate }}</td>
+            <td>{{ transaction.createdAt | shortDate }}</td>
           </tr>
         </tbody>
       </table>
 
       <h3 v-else class="text-center no-record">NO RECORD FOUND</h3>
+      <FullScreenLoader :loading="$fetchState.pending" />
     </div>
   </div>
 </template>
@@ -106,14 +105,15 @@ import addVendor from "~/components/forms/add-vendor.vue";
 import { mapGetters } from "vuex";
 
 export default {
+  name: "VendorTransaction",
   components: {
-    addVendor
+    addVendor,
   },
 
   data: () => ({
     searchQuery: "",
     loading: false,
-    transactions: []
+    transactions: [],
   }),
 
   async fetch() {
@@ -129,11 +129,11 @@ export default {
     ...mapGetters("authentication", ["user"]),
     resultQuery() {
       if (this.searchQuery) {
-        return this.transactions.filter(transaction => {
+        return this.transactions.filter((transaction) => {
           return this.searchQuery
             .toLowerCase()
             .split(" ")
-            .every(v => transaction.reference.toLowerCase().includes(v));
+            .every((v) => transaction.reference.toLowerCase().includes(v));
         });
       } else {
         return this.transactions;
@@ -141,7 +141,7 @@ export default {
     },
     computedData() {
       const data = this.transactions || [];
-      return data.map(transaction => {
+      return data.map((transaction) => {
         return {
           Reference: transaction.reference,
           Amount: transaction.amount,
@@ -155,12 +155,12 @@ export default {
             transaction?.Beneficiary?.last_name,
 
           Type: transaction.transaction_type,
-          Created: moment(transaction.createdAt).format("dddd, MMMM DD, YYYY")
+          Created: moment(transaction.createdAt).format("dddd, MMMM DD, YYYY"),
         };
       });
-    }
+    },
   },
 
-  methods: {}
+  methods: {},
 };
 </script>

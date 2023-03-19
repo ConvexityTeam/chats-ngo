@@ -40,7 +40,7 @@
           <div class="ml-3">
             <p class="text">Amount Recieved</p>
             <h4 class="funds">
-              {{ $currency }}{{ loading ? 0 : stats.income | formatCurrency }}
+              {{ $currency }}{{ amountReceived || 0 | formatCurrency }}
             </h4>
           </div>
         </div>
@@ -55,7 +55,8 @@
           <div class="ml-3">
             <p class="text">Amount Disbursed</p>
             <h4 class="funds">
-              {{ $currency }}{{ loading ? 0 : stats.expense | formatCurrency }}
+              {{ $currency
+              }}{{ campaignDetails.amount_disbursed || 0 | formatCurrency }}
             </h4>
           </div>
         </div>
@@ -70,10 +71,7 @@
           <div class="ml-3">
             <p class="text">Total Balance</p>
             <h4 class="funds">
-              {{ $currency
-              }}{{
-                loading ? 0 : (stats.income - stats.expense) | formatCurrency
-              }}
+              {{ $currency }}{{ campaignDetails.balance || 0 | formatCurrency }}
             </h4>
           </div>
         </div>
@@ -134,7 +132,7 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from "vuex";
+import { mapGetters } from "vuex";
 import beneficiaryAge from "~/components/charts/beneficiary-age";
 import beneficiaryBalances from "~/components/charts/beneficiary-balances";
 import beneficiaryGender from "~/components/charts/beneficiary-gender";
@@ -142,11 +140,8 @@ import beneficiaryLocation from "~/components/charts/beneficiary-location";
 import beneficiaryMarital from "~/components/charts/beneficiary-marital";
 import beneficiaryPerVendor from "~/components/charts/beneficiary-per-vendor";
 import disbursed from "~/components/icons/disbursed.vue";
-import dot from "~/components/icons/dot";
-import leftArrow from "~/components/icons/left-arrow";
-import rightArrow from "~/components/icons/right-arrow";
-import totalBalance from "~/components/icons/total-balance.vue";
 import beneficiaryTransaction from "~/components/tables/beneficiary-transaction";
+import totalBalance from "~/components/icons/total-balance.vue";
 
 export default {
   layout: "dashboard",
@@ -154,9 +149,10 @@ export default {
     return {
       loading: false,
       id: "",
-      stats: {},
+      campaignDetails: {},
     };
   },
+
   components: {
     beneficiaryAge,
     beneficiaryGender,
@@ -164,57 +160,31 @@ export default {
     beneficiaryBalances,
     beneficiaryLocation,
     beneficiaryMarital,
-    dot,
-    rightArrow,
-    leftArrow,
     beneficiaryTransaction,
     disbursed,
     totalBalance,
   },
 
+  async fetch() {
+    const campaignDetails = await this.$axios.get(
+      `/organisations/campaigns/transaction`
+    );
+
+    this.campaignDetails = campaignDetails?.data;
+  },
+
   mounted() {
     this.id = this.user.AssociatedOrganisations[0].OrganisationId;
-    this.getallBeneficiaries(this.id);
-    this.getStats();
-    console.log("STATS:::", this.stats);
-    this.getChartData();
+    this.$store.dispatch("beneficiaries/getallBeneficiaries", this.id);
   },
 
   computed: {
     ...mapGetters("authentication", ["user"]),
     ...mapGetters("beneficiaries", ["beneficiaries"]),
-  },
 
-  methods: {
-    ...mapActions("beneficiaries", ["getallBeneficiaries"]),
-
-    async getStats() {
-      try {
-        this.loading = true;
-        const response = await this.$axios.get("/users/info/statistics");
-        if (response.status == "success") {
-          this.stats = response.data[0];
-          this.loading = false;
-        }
-        console.log("statsresponse:::", response);
-      } catch (err) {
-        this.loading = false;
-        console.log("statserr:::", err);
-      }
-    },
-    async getChartData() {
-      try {
-        this.loading = true;
-        const response = await this.$axios.get("/users/info/chart");
-        if (response.stats === "success") {
-          // this.stats = response.data.data[0];
-          this.loading = false;
-        }
-        console.log("chatresponse:::", response);
-      } catch (err) {
-        this.loading = false;
-        console.log("chsrtserr:::", err);
-      }
+    amountReceived() {
+      const { amount_disbursed, balance } = this.campaignDetails;
+      return amount_disbursed + balance;
     },
   },
 };

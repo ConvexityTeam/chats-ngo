@@ -249,8 +249,6 @@ import beneficiaryGender from "~/components/charts/beneficiary-gender";
 import beneficiaryLocation from "~/components/charts/beneficiary-location";
 import beneficiaryVendor from "~/components/charts/beneficiary-vendor";
 import disbursed from "~/components/icons/disbursed.vue";
-import leftArrow from "~/components/icons/left-arrow";
-import rightArrow from "~/components/icons/right-arrow";
 import totalBalance from "~/components/icons/total-balance.vue";
 import walletBalance from "~/components/icons/wallet-balance.vue";
 
@@ -263,8 +261,6 @@ export default {
     beneficiaryVendor,
     beneficiaryBalances,
     beneficiaryLocation,
-    rightArrow,
-    leftArrow,
     walletBalance,
     totalBalance,
     disbursed,
@@ -296,10 +292,10 @@ export default {
 
   async fetch() {
     const id = parseInt(this.user?.AssociatedOrganisations[0]?.OrganisationId);
+
     const beneficiaries = await this.$axios.get(
       `/organisation/${id}/beneficiaries`
     );
-
     const vendors = await this.$axios.get(`/organisations/${id}/vendors`);
     const wallet = await this.$axios.get(`/organisations/${id}/wallets`);
     const campaignDetails = await this.$axios.get(
@@ -307,17 +303,11 @@ export default {
     );
     const metricsData = await this.$axios.get(`/organisations/matrics`);
 
-    this.beneficiaries = beneficiaries.data ?? [];
-    this.vendors = vendors?.data ?? [];
-    this.wallet = wallet?.data?.MainWallet ?? {};
-    this.campaignDetails = campaignDetails?.data ?? {};
-    this.metricsData = metricsData?.data ?? {};
-
-    console.log("walletData", wallet);
-    console.log("vendors:::", vendors);
-    console.log("beneficiaries:::", beneficiaries);
-    console.log("campaignDetails:::", campaignDetails);
-    console.log("metricsData:::", metricsData);
+    this.beneficiaries = beneficiaries.data;
+    this.vendors = vendors?.data;
+    this.wallet = wallet?.data?.MainWallet;
+    this.campaignDetails = campaignDetails?.data;
+    this.metricsData = metricsData?.data;
   },
 };
 </script>

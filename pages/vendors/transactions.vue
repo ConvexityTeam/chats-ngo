@@ -3,20 +3,20 @@
     <div class="pt-4 mt-2">
       <back text="Go Back" @click="$router.push('/vendors')" />
     </div>
-
-    <vendor-transaction />
+    <VendorTransaction />
   </div>
 </template>
 
 <script>
-import vendorTransaction from "~/components/tables/vendors/vendor-transaction.vue";
+import VendorTransaction from "~/components/tables/vendors/vendor-transaction";
 
 export default {
   layout: "dashboard",
+  name: "VendorTransactionIndex",
 
   components: {
-    vendorTransaction
-  }
+    VendorTransaction,
+  },
 };
 </script>
 

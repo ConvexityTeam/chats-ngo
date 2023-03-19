@@ -10,8 +10,6 @@
     "test": "jest"
   },
   "dependencies": {
-    "@8bu/vue-otp-input": "^1.2.2",
-    "@bachdgvn/vue-otp-input": "^1.0.8",
     "@nuxtjs/axios": "^5.12.2",
     "@nuxtjs/dotenv": "^1.4.1",
     "@nuxtjs/i18n": "^7.3.0",
@@ -30,7 +28,6 @@
     "qrcode.vue": "^1.7.0",
     "vue-chartjs": "^3.5.1",
     "vue-cropperjs": "^4.2.0",
-    "vue-cryptojs": "^2.1.5",
     "vue-html2pdf": "^1.8.0",
     "vue-input-tag": "^2.0.7",
     "vue-json-csv": "^1.2.12",

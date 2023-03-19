@@ -163,11 +163,11 @@ export default {
 
         await this.$recaptcha.reset();
       } catch (err) {
+        this.loading = false;
         console.log("ERRR::::", { err });
         this.$toast.error(err?.response?.data?.message);
       } finally {
         this.loading = false;
-
         localStorage.removeItem("protectedLastRoute");
       }
     },

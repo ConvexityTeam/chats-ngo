@@ -52,7 +52,7 @@
       <div class="col-lg-3">
         <div class="card__holder d-flex p-3">
           <div>
-            <total-balance />
+            <TotalBalance />
           </div>
           <div class="ml-3">
             <p class="text">Transaction value</p>
@@ -80,13 +80,8 @@
       </div>
     </div>
 
-    <!-- Vendor Transactions Table here -->
-    <div>
-      <!-- <vendor-transaction :transactions="transactions" /> -->
-    </div>
-
     <div class="mt-2">
-      <all-vendors
+      <AllVendors
         :allVendors="allVendors"
         @handleReload="getallVendors(orgId)"
       />
@@ -95,20 +90,17 @@
 </template>
 
 <script>
-import vendorTransaction from "~/components/tables/vendors/vendor-transaction";
-import allVendors from "~/components/tables/vendors/all-vendors";
-import totalBalance from "~/components/icons/total-balance.vue";
+import AllVendors from "~/components/tables/vendors/all-vendors";
+import TotalBalance from "~/components/icons/total-balance.vue";
 import { mapGetters, mapActions } from "vuex";
-import AllVendors from "./all-vendors.vue";
 let screenLoading;
 
 export default {
   layout: "dashboard",
+  name: "Vendors",
 
   components: {
-    vendorTransaction,
-    totalBalance,
-    allVendors,
+    TotalBalance,
     AllVendors,
   },
 
