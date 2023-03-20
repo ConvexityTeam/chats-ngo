@@ -52,21 +52,22 @@
       <Modal id="import-beneficiaries" title="Import Beneficiaries">
         <ImportBeneficiaries :orgId="orgId" @imported="updateList" />
       </Modal>
+
+      <!-- Drawer Here -->
+      <drawer @close="closeDrawer" :visibleSync="drawer">
+        <!-- cash based campaign -->
+        <AddCashBasedProduct
+          @close="closeDrawer"
+          v-if="details?.type == 'campaign'"
+        />
+        <!-- item based campaign -->
+        <AddItemBasedProduct @close="closeDrawer" v-else />
+      </drawer>
     </section>
 
     <div v-if="loading"></div>
 
     <div class="main container transparent pt-4 mt-2 pb-5" v-else>
-      <!-- Drawer Here -->
-      <el-drawer
-        :visible.sync="drawer"
-        size="75%"
-        :with-header="false"
-        :direction="direction"
-      >
-        <add-product @close="closeDrawer" />
-      </el-drawer>
-
       <!-- Back Button -->
       <back text="Go Back" @click="$router.go(-1)" />
 
@@ -110,16 +111,19 @@
           </div>
 
           <div class="mr-4">
-            <Button
-              v-if="details.status === 'pending' || !details.is_funded"
-              :text="details.type == 'item' ? 'Create Items' : 'Fund Campaign'"
-              :has-icon="false"
-              custom-styles="height:50px"
-              @click="$bvModal.show('funding-prompt')"
-              :disabled="
-                details.status === 'pending' || !details.beneficiaries_count
-              "
-            />
+            <!-- display button if campaign is cash based -->
+            <div v-if="details.status === 'pending' || !details.is_funded">
+              <Button
+                v-if="details.type === 'campaign'"
+                text="Fund Campaign"
+                :has-icon="false"
+                custom-styles="height:50px"
+                @click="$bvModal.show('funding-prompt')"
+                :disabled="
+                  details.status === 'pending' || !details.beneficiaries_count
+                "
+              />
+            </div>
 
             <Button
               v-else
@@ -138,9 +142,10 @@
             />
           </div>
 
-          <div v-if="details.type !== 'item'">
+          <!-- add products or items btn -->
+          <div>
             <Button
-              text="Add Products"
+              :text="details.type == 'item' ? 'Add items' : 'Add Products'"
               custom-styles="height:50px; border: 1px solid #17ce89 !important; font-weight: 600!important;"
               :has-border="true"
               :is-green="true"
@@ -494,7 +499,8 @@ import beneficiaryComplaints from "~/components/tables/campaigns/beneficiary-com
 import campaignDetails from "~/components/tables/campaigns/campaign-details";
 import banner from "~/components/generic/banner";
 import funding from "~/components/forms/funding";
-import addProduct from "~/components/forms/add-product";
+import AddCashBasedProduct from "~/components/forms/AddCashBasedProduct";
+import AddItemBasedProduct from "~/components/forms/AddItemBasedProduct";
 import campaignVendors from "~/components/tables/campaigns/campaign-vendors";
 import campaignProducts from "~/components/tables/campaigns/campaign-products";
 import FundingPrompt from "./funding-prompt";
@@ -532,7 +538,6 @@ export default {
     title: "",
     drawer: false,
     remount: false,
-    direction: "rtl",
     statuses: ["pending", "completed", "ongoing"],
     currentPageNum: 1,
     numOfItemsPerPage: 5,
@@ -544,7 +549,6 @@ export default {
     campaignDetails,
     banner,
     funding,
-    addProduct,
     campaignVendors,
     campaignProducts,
     FundingPrompt,
@@ -556,6 +560,8 @@ export default {
     BenefactorQAndAVue,
     PauseCampaign,
     ProcessingFunding,
+    AddCashBasedProduct,
+    AddItemBasedProduct,
   },
 
   computed: {

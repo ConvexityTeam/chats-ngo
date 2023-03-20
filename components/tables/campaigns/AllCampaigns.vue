@@ -31,7 +31,7 @@
           <tr
             v-for="(campaign, i) in resultQuery"
             :key="i"
-            style="cursor: pointer"
+            style="cursor: pointer;"
             :class="{ selected: i % 2 == 0 }"
           >
             <td class="campaign-title">{{ campaign.title }}</td>
