@@ -323,7 +323,6 @@ export default {
     },
 
     getActive(name) {
-      console.log("NAE::", name, "PATH:::", this.$route.path);
       return this.$route.path.includes(name);
     },
   },
