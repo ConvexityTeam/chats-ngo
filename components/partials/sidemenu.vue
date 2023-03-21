@@ -333,6 +333,9 @@ export default {
 /* ---------------------------------------------------
     SIDEBAR STYLE
 ----------------------------------------------------- */
+aside {
+  width: 255px;
+}
 .link {
   display: flex;
   align-items: center;

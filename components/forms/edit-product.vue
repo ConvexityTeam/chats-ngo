@@ -6,7 +6,7 @@
     <div v-else-if="Object.keys(payload).length">
       <form class="mt-5 px-3">
         <!-- product/service here -->
-        <div class="mb-3">
+        <div class="mb-3" v-if="!isItem">
           <label for="product">Product / Service</label>
           <div id="product" class="w-100">
             <el-select
@@ -42,7 +42,7 @@
         </div>
 
         <!-- Cost here -->
-        <div class="mb-3">
+        <div class="mb-3" v-if="!isItem">
           <label for="cost">Cost</label>
           <div class="w-100">
             <input
@@ -110,6 +110,10 @@ export default {
 
   computed: {
     ...mapGetters("authentication", ["user"]),
+
+    isItem() {
+      return this.product?.type === "item";
+    },
   },
 
   data: () => ({

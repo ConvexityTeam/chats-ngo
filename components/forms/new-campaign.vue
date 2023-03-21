@@ -497,7 +497,7 @@ export default {
     },
 
     closeModal() {
-      this.$bvModal.hide("new-campaign");
+      this.$bvModal.hide("new-campaign-form");
     },
 
     checkValue(value) {

@@ -143,7 +143,7 @@
           </div>
 
           <!-- add products or items btn -->
-          <div>
+          <div v-if="details.status != 'ended'">
             <Button
               :text="details.type == 'item' ? 'Add items' : 'Add Products'"
               custom-styles="height:50px; border: 1px solid #17ce89 !important; font-weight: 600!important;"
@@ -386,11 +386,7 @@
                                 <el-dropdown-menu slot="dropdown">
                                   <el-dropdown-item>
                                     <div
-                                      style="
-                                        color: #17ce89 !important;
-                                        font-weight: 500 !important;
-                                      "
-                                      class="text-primary"
+                                      class="text-primary action"
                                       @click="
                                         handleSingleBenefactorModal(
                                           'approve',
@@ -404,10 +400,7 @@
 
                                   <el-dropdown-item>
                                     <div
-                                      style="
-                                        color: #e42c66 !important;
-                                        font-weight: 500 !important;
-                                      "
+                                      class="action"
                                       @click="
                                         handleSingleBenefactorModal(
                                           'reject',
@@ -895,5 +888,10 @@ tr.table-row:nth-child(odd) {
 
 .hidden {
   display: none;
+}
+
+.action {
+  color: #17ce89 !important;
+  font-weight: 500 !important;
 }
 </style>
