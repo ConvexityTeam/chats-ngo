@@ -464,7 +464,7 @@
         <div class="col-lg-4">
           <campaign-details
             :details="details"
-            :count="details.beneficiaries_count"
+            :count="approvedBeneficiaries.length"
             :location="location"
             :user="user"
             @reload="getDetails"
