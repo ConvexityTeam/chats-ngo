@@ -114,7 +114,6 @@
             <!-- display button if campaign is cash based -->
             <div v-if="details.status === 'pending' || !details.is_funded">
               <Button
-                v-if="details.type === 'campaign'"
                 text="Fund Campaign"
                 :has-icon="false"
                 custom-styles="height:50px"
@@ -793,6 +792,7 @@ export default {
           this.getCampaignBeneficiaries();
           this.$toast.success(response.message);
           this.resetView();
+          this.getDetails();
         }
       } catch (err) {
       } finally {
