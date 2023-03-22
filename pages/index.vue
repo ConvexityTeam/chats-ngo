@@ -102,6 +102,7 @@ import eyeClosed from "~/components/icons/eye-closed.vue";
 import eyeOpen from "~/components/icons/eye-open.vue";
 
 export default {
+  name: "Login",
   layout: "default",
   middleware: ["loginguard"],
   components: { emailIcon, lockIcon, eyeClosed, eyeOpen },

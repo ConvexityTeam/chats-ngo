@@ -67,7 +67,7 @@
               {{ campaign.title }}
             </td>
 
-            <td>$ {{ campaign.budget | formatCurrency }}</td>
+            <td>{{ $currency }}{{ campaign.budget | formatCurrency }}</td>
 
             <td>
               {{ campaign.createdAt | formatDateOnly }}

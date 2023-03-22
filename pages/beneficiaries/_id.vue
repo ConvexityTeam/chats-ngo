@@ -84,10 +84,10 @@
 
 <script>
 import { mapGetters } from "vuex";
-import totalBalance from "~/components/icons/total-balance.vue";
-import disbursed from "~/components/icons/disbursed.vue";
-import beneficiaryDetails from "~/components/tables/beneficiaries/beneficiary-details.vue";
-import beneficiaryCampaign from "~/components/tables/beneficiaries/beneficiary-campaign.vue";
+import totalBalance from "~/components/icons/total-balance";
+import disbursed from "~/components/icons/disbursed";
+import beneficiaryDetails from "~/components/tables/beneficiaries/beneficiary-details";
+import beneficiaryCampaign from "~/components/tables/beneficiaries/beneficiary-campaign";
 let screenLoading;
 
 export default {
@@ -97,13 +97,13 @@ export default {
     disbursed,
     totalBalance,
     beneficiaryDetails,
-    beneficiaryCampaign
+    beneficiaryCampaign,
   },
 
   data: () => ({
     id: "",
     loading: false,
-    userDetails: {}
+    userDetails: {},
   }),
 
   mounted() {
@@ -112,7 +112,7 @@ export default {
   },
 
   computed: {
-    ...mapGetters("authentication", ["user"])
+    ...mapGetters("authentication", ["user"]),
   },
 
   methods: {
@@ -142,10 +142,10 @@ export default {
       screenLoading = this.$loading({
         lock: true,
         spinner: "el-icon-loading",
-        background: "#0000009b"
+        background: "#0000009b",
       });
-    }
-  }
+    },
+  },
 };
 </script>
 

@@ -31,7 +31,7 @@
             <span class="header"> TOTAL BENEFICIARIES </span>
 
             <h6 class="primary-blue font-medium pt-1">
-              {{ campaign.beneficiaries_count || 0 }}
+              {{ approvedBeneficiaries || 0 }}
             </h6>
           </div>
 
@@ -122,21 +122,35 @@ export default {
     },
   },
 
+  async fetch() {
+    this.beneficiaries = await this.$axios.$get(
+      `organisation/${this.orgId}/beneficiaries`
+    );
+  },
+
   data: () => ({
     loading: false,
     statuses: ["pending", "completed", "ongoing"],
+    beneficiaries: [],
   }),
 
   computed: {
+    approvedBeneficiaries() {
+      const beneficiaries =
+        this.beneficiaries.filter((benefactor) => benefactor.approved) || [];
+
+      return beneficiaries.length;
+    },
+
     share() {
-      const result =
-        this.campaign?.budget / this.campaign?.beneficiaries_count || 0;
+      const result = this.campaign?.budget / this.approvedBeneficiaries || 0;
 
       if (result == Infinity) {
         return 0;
       }
       return result;
     },
+
     buttonText() {
       let text = "";
 
@@ -149,9 +163,10 @@ export default {
       }
       return text;
     },
+
     disabled() {
       return (
-        (!!this.campaign && this.campaign?.beneficiaries_count == 0) ||
+        (!!this.campaign && !this.approvedBeneficiaries) ||
         this.statuses.includes(this.campaign?.status)
       );
     },

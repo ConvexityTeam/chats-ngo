@@ -59,7 +59,7 @@
             <CurrencyInput
               id="value"
               :customStyles="customStyles"
-              placeholder="$0.00"
+              :placeholder="`${$currency}0.00`"
               v-model="question.value"
             />
           </div>
@@ -130,7 +130,7 @@
                     <CurrencyInput
                       id="value"
                       :customStyles="rewardStyles"
-                      placeholder="$0.00"
+                      :placeholder="`${$currency}0.00`"
                       v-model="option.reward"
                       :disabled="!question.question.options[index].option"
                     />

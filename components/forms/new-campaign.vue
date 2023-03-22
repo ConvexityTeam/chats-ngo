@@ -66,7 +66,7 @@
         <template v-if="activeCampaignForm === 'cash'">
           <CurrencyInput
             :id="computedId"
-            placeholder="0.00"
+            :placeholder="`${$currency}0.00`"
             :customStyles="`height: 41px; border: 1px solid #7c8db5; background: white; padding: 0.75rem`"
             :error="$v.payload.budget.$error"
             v-model="payload.budget"

@@ -41,7 +41,7 @@
                       />
                     </svg>
                   </span>
-                  <span class="mx-4 pt-1">Dashboard</span>
+                  <span class="ml-3 pt-1">Dashboard</span>
                 </div>
               </nuxt-link>
             </li>
@@ -69,7 +69,7 @@
                       />
                     </svg>
                   </span>
-                  <span class="mx-4 pt-1">Campaigns</span>
+                  <span class="ml-3 pt-1">Campaigns</span>
                 </div>
               </nuxt-link>
             </li>
@@ -97,7 +97,7 @@
                       />
                     </svg>
                   </span>
-                  <span class="mx-4 pt-1">Beneficiaries</span>
+                  <span class="ml-3 pt-1">Beneficiaries</span>
                 </div>
               </nuxt-link>
             </li>
@@ -125,7 +125,7 @@
                       />
                     </svg>
                   </span>
-                  <span class="mx-4 pt-1">Vendors</span>
+                  <span class="ml-3 pt-1">Vendors</span>
                 </div>
               </nuxt-link>
             </li>
@@ -159,7 +159,7 @@
                       />
                     </svg>
                   </span>
-                  <span class="mx-4 pt-1">Account</span>
+                  <span class="ml-3 pt-1">Account</span>
                 </div>
               </nuxt-link>
             </li>
@@ -191,7 +191,7 @@
                       />
                     </svg>
                   </span>
-                  <span class="mx-4 pt-1">Market</span>
+                  <span class="ml-3 pt-1">Market</span>
                 </div>
               </nuxt-link>
             </li>
@@ -219,7 +219,7 @@
                       />
                     </svg>
                   </span>
-                  <span class="mx-4 pt-1">Cash For Work</span>
+                  <span class="ml-3 pt-1">Cash For Work</span>
                 </div>
               </nuxt-link>
             </li>
@@ -247,7 +247,7 @@
                       />
                     </svg>
                   </span>
-                  <span class="mx-4 pt-1">Settings</span>
+                  <span class="ml-3 pt-1">Settings</span>
                 </div>
               </nuxt-link>
             </li>
@@ -275,7 +275,7 @@
                       />
                     </svg>
                   </span>
-                  <span class="mx-4 pt-1">Support</span>
+                  <span class="ml-3 pt-1">Support</span>
                 </div>
               </nuxt-link>
             </li>
@@ -300,7 +300,7 @@
                     />
                   </svg>
                 </span>
-                <span class="mx-4 pt-1" style="color: #e42c66">Logout</span>
+                <span class="ml-3 pt-1" style="color: #e42c66">Logout</span>
               </a>
             </li>
           </ul>
@@ -334,7 +334,8 @@ export default {
     SIDEBAR STYLE
 ----------------------------------------------------- */
 aside {
-  width: 255px;
+  min-width: 230px;
+  width: auto;
 }
 .link {
   display: flex;
@@ -344,7 +345,7 @@ aside {
   color: #25396f;
   font-size: 1.125rem;
   letter-spacing: 0.15px;
-  margin-right: 20px;
+  /* margin-right: 20px; */
   margin-bottom: 5px;
   font-weight: 500;
 }
