@@ -123,8 +123,10 @@ export default {
   },
 
   async fetch() {
+    const { id } = this.$route.params;
+    console.log("fetching", this.$route.params);
     this.beneficiaries = await this.$axios.$get(
-      `organisation/${this.orgId}/beneficiaries`
+      `organisation/${this.orgId}/campaigns/${id}/beneficiaries`
     );
   },
 
