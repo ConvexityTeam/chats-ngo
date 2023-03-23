@@ -63,7 +63,15 @@
                 <div class="mb-2">
                   <p class="text-xs primary-gray">AMOUNT</p>
                   <p class="primary-blue text-sm font-medium">
-                    {{ $currency }}{{ token.amount | formatCurrency }}
+                    <span
+                      v-if="token.Campaign && token.Campaign.type == 'item'"
+                    >
+                      {{ token.amount | formatNumber }}
+                    </span>
+
+                    <span v-else>
+                      {{ $currency }}{{ token.amount | formatCurrency }}
+                    </span>
                   </p>
                 </div>
               </div>
