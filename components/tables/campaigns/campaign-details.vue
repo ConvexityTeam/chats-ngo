@@ -80,8 +80,7 @@
 
           <div class="ml-auto">
             <p class="campaign-answers">
-              {{ $currency }}
-              {{ details.budget | formatCurrency }}
+              {{ $currency }}{{ details.budget | formatCurrency }}
             </p>
           </div>
         </div>
@@ -142,11 +141,11 @@
 
           <div class="ml-auto">
             <p class="campaign-answers" v-if="details.type == 'item'">
-              {{ details.amount_disbursed }}
+              {{ getShare(details.minting_limit) | formatNumber }}
             </p>
 
             <p class="campaign-answers" v-else>
-              {{ $currency }}{{ share | formatCurrency }}
+              {{ $currency }}{{ getShare(details.budget) | formatCurrency }}
             </p>
           </div>
         </div>
@@ -189,6 +188,7 @@ import campaignPrompt from "~/components/forms/campaign-prompts.vue";
 let screenLoading;
 
 export default {
+  components: { campaignPrompt },
   props: {
     details: {
       type: Object,
@@ -222,6 +222,7 @@ export default {
     orgId: 0,
     statuses: ["paused", "active"],
     max: 100,
+    beneficiaries: [],
   }),
 
   watch: {
@@ -232,17 +233,19 @@ export default {
     },
   },
 
-  components: { campaignPrompt },
+  async fetch() {
+    const { id } = this.$route.params;
+    this.beneficiaries = await this.$axios.$get(
+      `organisation/${this.orgId}/campaigns/${id}/beneficiaries`
+    );
+  },
 
   computed: {
-    share() {
-      const result =
-        this.details?.budget / this.details?.beneficiaries_count || 0;
+    approvedBeneficiaries() {
+      const beneficiaries =
+        this.beneficiaries.filter((benefactor) => benefactor.approved) || [];
 
-      if (result == Infinity) {
-        return 0;
-      }
-      return result;
+      return beneficiaries.length;
     },
   },
 
@@ -251,6 +254,15 @@ export default {
   },
 
   methods: {
+    getShare(value) {
+      const result = value / this.approvedBeneficiaries;
+
+      if (result == Infinity) {
+        return 0;
+      }
+      return result || 0;
+    },
+
     handleModal(value) {
       const stats = ["Pause", "Delete"];
       if (stats.includes(value)) {
@@ -260,6 +272,7 @@ export default {
       }
       return this.handleCampaign("active");
     },
+
     toggleModal(value) {
       if (value) {
         return this.$bvModal.show("campaign-prompt");

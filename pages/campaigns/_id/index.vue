@@ -142,13 +142,14 @@
           </div>
 
           <!-- add products or items btn -->
-          <div v-if="details.status != 'ended'">
+          <div>
             <Button
               :text="details.type == 'item' ? 'Add items' : 'Add Products'"
               custom-styles="height:50px; border: 1px solid #17ce89 !important; font-weight: 600!important;"
               :has-border="true"
               :is-green="true"
               @click="drawer = true"
+              :disabled="details.is_funded || details.status == 'ended'"
             />
           </div>
 
@@ -173,9 +174,9 @@
           />
         </banner>
 
-        <!-- <banner v-if="details.is_processing">
+        <banner v-if="details.is_processing">
           <ProcessingFunding @reload="getDetails" />
-        </banner> -->
+        </banner>
       </section>
 
       <!-- Campaign-Privacy Here -->

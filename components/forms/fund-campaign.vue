@@ -17,10 +17,17 @@
 
           <!-- campaign Budget -->
           <div class="col-6">
-            <span class="header"> BUDGET </span>
+            <span class="header">
+              {{ campaign.type == "item" ? "NUMBER OF PRODUCTS" : "BUDGET" }}
+            </span>
 
             <h6 class="primary-blue font-medium pt-1">
-              {{ $currency }}{{ campaign.budget || 0 | formatCurrency }}
+              <span v-if="campaign.type == 'item'">
+                {{ campaign.minting_limit || 0 | formatNumber }}
+              </span>
+              <span v-else>
+                {{ $currency }}{{ campaign.budget || 0 | formatCurrency }}
+              </span>
             </h6>
           </div>
         </div>
@@ -40,7 +47,13 @@
             <span class="header"> BENEFICIARY SHARE </span>
 
             <h6 class="primary-blue font-medium pt-1">
-              {{ $currency }}{{ share | formatCurrency }}
+              <span v-if="campaign.type == 'item'">
+                {{ getShare(campaign.minting_limit) | formatNumber }}
+              </span>
+
+              <span v-else>
+                {{ $currency }}{{ getShare(campaign.budget) | formatCurrency }}
+              </span>
             </h6>
           </div>
         </div>
@@ -144,15 +157,6 @@ export default {
       return beneficiaries.length;
     },
 
-    share() {
-      const result = this.campaign?.budget / this.approvedBeneficiaries || 0;
-
-      if (result == Infinity) {
-        return 0;
-      }
-      return result;
-    },
-
     buttonText() {
       let text = "";
 
@@ -187,9 +191,19 @@ export default {
   },
 
   methods: {
+    getShare(value) {
+      const result = value / this.approvedBeneficiaries;
+
+      if (result == Infinity) {
+        return 0;
+      }
+      return result || 0;
+    },
+
     closeModal() {
       this.$bvModal.hide("fund-campaign");
     },
+
     async fundCampaign() {
       try {
         this.loading = true;
