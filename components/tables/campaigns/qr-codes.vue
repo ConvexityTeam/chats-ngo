@@ -61,7 +61,13 @@
 
                 <!-- AMOUNT -->
                 <div class="mb-2">
-                  <p class="text-xs primary-gray">AMOUNT</p>
+                  <p class="text-xs primary-gray">
+                    {{
+                      token.Campaign && token.Campaign.type == "item"
+                        ? "QUANTIY"
+                        : "AMOUNT"
+                    }}
+                  </p>
                   <p class="primary-blue text-sm font-medium">
                     <span
                       v-if="token.Campaign && token.Campaign.type == 'item'"
