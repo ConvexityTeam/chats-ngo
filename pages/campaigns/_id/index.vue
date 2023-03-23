@@ -701,6 +701,7 @@ export default {
         if (response.status == "success") {
           this.$toast.success(response.message);
           this.$bvModal.hide("funding-prompt");
+          await this.getDetails();
           window.location.reload();
         }
       } catch (err) {
