@@ -119,7 +119,9 @@
                 custom-styles="height:50px"
                 @click="$bvModal.show('funding-prompt')"
                 :disabled="
-                  details.status === 'pending' || !approvedBeneficiaries.length
+                  details.status === 'pending' ||
+                  !approvedBeneficiaries.length ||
+                  details.is_processing
                 "
               />
             </div>
