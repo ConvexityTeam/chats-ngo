@@ -219,7 +219,7 @@ export default {
   data: () => ({
     campaignStatus: "",
     status: "",
-    orgId: 0,
+    orgId: "",
     statuses: ["paused", "active"],
     max: 100,
     beneficiaries: [],
@@ -235,6 +235,7 @@ export default {
 
   async fetch() {
     const { id } = this.$route.params;
+    this.orgId = this.user?.AssociatedOrganisations[0]?.OrganisationId;
     this.beneficiaries = await this.$axios.$get(
       `organisation/${this.orgId}/campaigns/${id}/beneficiaries`
     );
@@ -247,10 +248,6 @@ export default {
 
       return beneficiaries.length;
     },
-  },
-
-  mounted() {
-    this.orgId = this.user?.AssociatedOrganisations[0]?.OrganisationId;
   },
 
   methods: {
