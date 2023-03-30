@@ -47,6 +47,7 @@ export default {
     "~/plugins/global.js",
     "~/plugins/index.js",
     "~/plugins/axios.js",
+    "~/plugins/injections.js",
     "~/plugins/element-ui",
     // "~/plugins/freshdesk.js",
     { src: "~/plugins/vuex-persist", ssr: false },

@@ -1,8 +1,6 @@
 <template>
   <div>
-    <div v-if="loading"></div>
-
-    <div class="main container transparent pb-5" v-else>
+    <div class="main container transparent pb-5">
       <div class="pt-4 mt-2">
         <back text="Go Back" @click="$router.go(-1)" />
       </div>
@@ -19,9 +17,8 @@
                 </div>
                 <div class="ml-3">
                   <p class="text">Total Recieved</p>
-                  <h4 class="funds">
-                    {{ $currency
-                    }}{{ vendor.total_received || 0 | formatCurrency }}
+                  <h4 class="funds" :title="totalReceived">
+                    {{ $truncate(totalReceived) }}
                   </h4>
                 </div>
               </div>
@@ -35,9 +32,8 @@
                 </div>
                 <div class="ml-3">
                   <p class="text">Total Spent</p>
-                  <h4 class="funds">
-                    {{ $currency
-                    }}{{ vendor.total_spent || 0 | formatCurrency }}
+                  <h4 class="funds" :title="totalSpent">
+                    {{ $truncate(totalSpent) }}
                   </h4>
                 </div>
               </div>
@@ -51,12 +47,8 @@
                 </div>
                 <div class="ml-3">
                   <p class="text">Total Remaining</p>
-                  <h4 class="funds">
-                    {{ $currency
-                    }}{{
-                      vendor.total_received - vendor.total_spent ||
-                      0 | formatCurrency
-                    }}
+                  <h4 class="funds" :title="totalRemaining">
+                    {{ $truncate(totalRemaining) }}
                   </h4>
                 </div>
               </div>
@@ -65,9 +57,9 @@
 
           <!-- Campaigns here -->
           <div class="mt-3">
-            <Vendor-Products
+            <VendorProducts
               :products="products"
-              :name="vendor.first_name + ' ' + vendor.last_name"
+              :name="`${vendor.first_name} ${vendor.last_name}`"
             />
           </div>
         </div>
@@ -83,26 +75,26 @@
 
 <script>
 import { mapGetters } from "vuex";
-import totalBalance from "~/components/icons/total-balance.vue";
-import disbursed from "~/components/icons/disbursed.vue";
-import VendorDetails from "~/components/tables/vendors/vendor-details";
-import VendorProducts from "~/components/tables/vendors/vendor-products";
+import TotalBalance from "~/components/icons/total-balance";
+import Disbursed from "~/components/icons/disbursed";
+import VendorDetails from "~/components/tables/vendors/VendorDetails";
+import VendorProducts from "~/components/tables/vendors/VendorProducts";
 
 let screenLoading;
 
 export default {
+  name: "VendorInfo",
   layout: "dashboard",
 
   components: {
-    disbursed,
-    totalBalance,
+    Disbursed,
+    TotalBalance,
     VendorDetails,
     VendorProducts,
   },
 
   data: () => ({
     id: "",
-    loading: false,
     vendor: {},
     products: [],
   }),
@@ -110,36 +102,49 @@ export default {
   mounted() {
     this.id = this.user?.AssociatedOrganisations[0]?.OrganisationId;
     this.getDetails();
-    console.log("USER:", this.user);
   },
 
   computed: {
     ...mapGetters("authentication", ["user"]),
+
+    totalReceived() {
+      return `${this.$currency}${this.$root.$options.filters.formatCurrency(
+        this.vendor.total_received
+      )}`;
+    },
+
+    totalSpent() {
+      return `${this.$currency}${this.$root.$options.filters.formatCurrency(
+        this.vendor.total_spent
+      )}`;
+    },
+
+    totalRemaining() {
+      const balance = this.vendor.total_received - this.vendor.total_spent;
+
+      return `${this.$currency}${this.$root.$options.filters.formatCurrency(
+        balance
+      )}`;
+    },
   },
 
   methods: {
     async getDetails() {
       try {
         this.openScreen();
-        this.loading = true;
-
         const response = await this.$axios.get(
           `organisations/${this.id}/vendors/${this.$route.params.id}`
         );
 
         console.log("VENDOR DETAIl::", response);
 
-        this.loading = false;
         if (response.status == "success") {
-          screenLoading.close();
-          this.loading = false;
           this.vendor = response.data;
           this.products = response.data.Store?.Products.reverse();
         }
       } catch (err) {
+      } finally {
         screenLoading.close();
-        this.loading = false;
-        console.log(err);
       }
     },
 
@@ -172,9 +177,13 @@ export default {
   font-weight: 500;
 }
 
+.ml-3 {
+  margin-left: 0.75rem !important;
+}
+
 .funds {
   color: var(--primary-blue);
-  font-size: 1.5rem;
+  font-size: 1.125rem;
   font-weight: 500;
   line-height: 0.563rem;
 }

@@ -22,7 +22,7 @@
         </div>
       </div>
 
-      <div class=" ml-auto mx-3">
+      <div class="ml-auto mx-3">
         <csv :data="computedData" :name="`${name} products`" />
       </div>
     </div>
@@ -49,17 +49,18 @@
             <td class="campaign-title">{{ product.tag }}</td>
             <td>
               <div
-                class="status w-75"
+                class="status w-50"
                 :class="{
+                  progress: product.type === 'item',
                   pending: product.type === 'service',
-                  completed: product.type === 'product'
+                  completed: product.type === 'product',
                 }"
               >
                 {{ product.type | capitalize }}
               </div>
             </td>
 
-            <td>$ {{ product.cost | formatCurrency }}</td>
+            <td>{{ $currency }}{{ product.cost | formatCurrency }}</td>
             <td>{{ product.createdAt | formatDate }}</td>
           </tr>
         </tbody>
@@ -77,43 +78,47 @@ export default {
   props: {
     products: {
       type: Array,
-      default: () => []
+      default: () => [],
     },
     name: {
       type: String,
-      default: ""
-    }
+      default: "",
+    },
   },
 
   data: () => ({
-    searchQuery: ""
+    searchQuery: "",
   }),
+
+  mounted() {
+    console.log("products", this.products);
+  },
 
   computed: {
     resultQuery() {
       if (this.searchQuery) {
         const data = this.products ? this.products : [];
-        return data.filter(product => {
+        return data.filter((product) => {
           return this.searchQuery
             .toLowerCase()
             .split(" ")
-            .every(v => product.tag.toLowerCase().includes(v));
+            .every((v) => product.tag.toLowerCase().includes(v));
         });
       } else {
         return this.products;
       }
     },
     computedData() {
-      return this.products.map(product => {
+      return this.products.map((product) => {
         return {
           Tag: product.tag,
           Type: product.type,
           Cost: product.cost,
-          Created: moment(product.createdAt).format(" MMMM DD, YYYY")
+          Created: moment(product.createdAt).format(" MMMM DD, YYYY"),
         };
       });
-    }
-  }
+    },
+  },
 };
 </script>
 

@@ -12,7 +12,7 @@
               <div class="ml-3">
                 <p class="text">Total Deposit</p>
                 <h4 class="funds" :title="totalDeposit">
-                  {{ totalDeposit }}
+                  {{ $truncate(totalDeposit) }}
                 </h4>
               </div>
             </div>
@@ -26,7 +26,7 @@
               <div class="ml-3">
                 <p class="text">Expenses</p>
                 <h4 class="funds" :title="expenses">
-                  {{ expenses }}
+                  {{ $truncate(expenses) }}
                 </h4>
               </div>
             </div>
@@ -40,7 +40,7 @@
               <div class="ml-3">
                 <p class="text">Cash Balance</p>
                 <p class="funds" :title="cashBalace">
-                  {{ cashBalace }}
+                  {{ $truncate(cashBalace) }}
                 </p>
               </div>
             </div>
