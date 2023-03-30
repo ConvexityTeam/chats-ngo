@@ -39,8 +39,8 @@
           </div>
           <div class="ml-3">
             <p class="text">Amount Recieved</p>
-            <h4 class="funds">
-              {{ $currency }}{{ amountReceived || 0 | formatCurrency }}
+            <h4 class="funds" :title="amountReceived">
+              {{ $truncate(amountReceived) }}
             </h4>
           </div>
         </div>
@@ -50,13 +50,12 @@
       <div class="col-lg-3">
         <div class="card__holder d-flex p-3">
           <div>
-            <disbursed />
+            <Disbursed />
           </div>
           <div class="ml-3">
             <p class="text">Amount Disbursed</p>
-            <h4 class="funds">
-              {{ $currency
-              }}{{ campaignDetails.amount_disbursed || 0 | formatCurrency }}
+            <h4 class="funds" :title="amountDisbursed">
+              {{ $truncate(amountDisbursed) }}
             </h4>
           </div>
         </div>
@@ -66,12 +65,12 @@
       <div class="col-lg-3">
         <div class="card__holder d-flex p-3">
           <div>
-            <total-balance />
+            <TotalBalance />
           </div>
           <div class="ml-3">
             <p class="text">Total Balance</p>
-            <h4 class="funds">
-              {{ $currency }}{{ campaignDetails.balance || 0 | formatCurrency }}
+            <h4 class="funds" :title="totalBalance">
+              {{ $truncate(totalBalance) }}
             </h4>
           </div>
         </div>
@@ -83,21 +82,21 @@
       <!-- Beneficiary By Gender  Cards here -->
       <div class="col-lg-4 pb-3">
         <div class="cards__holder px-3 pt-3">
-          <beneficiary-gender />
+          <BeneficiaryGender />
         </div>
       </div>
 
       <!-- Beneficiary Age group  Cards here -->
       <div class="col-lg-4 pb-3">
         <div class="cards__holder px-3 pt-3">
-          <beneficiaryAge />
+          <BeneficiaryAge />
         </div>
       </div>
 
       <!-- Vendor Transaction By Beneficiary  Cards here -->
       <div class="col-lg-4 pb-3">
         <div class="cards__holder px-3 pt-3">
-          <beneficiaryPerVendor />
+          <BeneficiaryPerVendor />
         </div>
       </div>
     </div>
@@ -107,43 +106,44 @@
       <!-- Beneficiary Marital card here -->
       <div class="col-lg-4 pb-3">
         <div class="cards__holder px-3 pt-3">
-          <beneficiary-marital />
+          <BeneficiaryMarital />
         </div>
       </div>
 
       <!-- Beneficiary By Location card here -->
       <div class="col-lg-4 pb-3">
         <div class="cards__holder px-3 pt-3">
-          <beneficiaryLocation />
+          <BeneficiaryLocation />
         </div>
       </div>
 
       <!-- Beneficiary Balances card here -->
       <div class="col-lg-4 pb-3">
         <div class="cards__holder px-3 pt-3">
-          <beneficiaryBalances />
+          <BeneficiaryBalances />
         </div>
       </div>
     </div>
 
     <!-- Beneficiary transaction here -->
-    <beneficiary-transaction />
+    <BeneficiaryTransaction />
   </div>
 </template>
 
 <script>
 import { mapGetters } from "vuex";
-import beneficiaryAge from "~/components/charts/beneficiary-age";
-import beneficiaryBalances from "~/components/charts/beneficiary-balances";
-import beneficiaryGender from "~/components/charts/beneficiary-gender";
-import beneficiaryLocation from "~/components/charts/beneficiary-location";
-import beneficiaryMarital from "~/components/charts/beneficiary-marital";
-import beneficiaryPerVendor from "~/components/charts/beneficiary-per-vendor";
-import disbursed from "~/components/icons/disbursed.vue";
-import beneficiaryTransaction from "~/components/tables/beneficiary-transaction";
-import totalBalance from "~/components/icons/total-balance.vue";
+import BeneficiaryAge from "~/components/charts/beneficiary-age";
+import BeneficiaryBalances from "~/components/charts/beneficiary-balances";
+import BeneficiaryGender from "~/components/charts/beneficiary-gender";
+import BeneficiaryLocation from "~/components/charts/beneficiary-location";
+import BeneficiaryMarital from "~/components/charts/beneficiary-marital";
+import BeneficiaryPerVendor from "~/components/charts/beneficiary-per-vendor";
+import Disbursed from "~/components/icons/disbursed.vue";
+import BeneficiaryTransaction from "~/components/tables/beneficiary-transaction";
+import TotalBalance from "~/components/icons/total-balance";
 
 export default {
+  name: "Beneficiaries",
   layout: "dashboard",
   data() {
     return {
@@ -154,15 +154,15 @@ export default {
   },
 
   components: {
-    beneficiaryAge,
-    beneficiaryGender,
-    beneficiaryPerVendor,
-    beneficiaryBalances,
-    beneficiaryLocation,
-    beneficiaryMarital,
-    beneficiaryTransaction,
-    disbursed,
-    totalBalance,
+    BeneficiaryAge,
+    BeneficiaryGender,
+    BeneficiaryPerVendor,
+    BeneficiaryBalances,
+    BeneficiaryLocation,
+    BeneficiaryMarital,
+    BeneficiaryTransaction,
+    Disbursed,
+    TotalBalance,
   },
 
   async fetch() {
@@ -184,7 +184,23 @@ export default {
 
     amountReceived() {
       const { amount_disbursed, balance } = this.campaignDetails;
-      return amount_disbursed + balance;
+      const amountReceived = amount_disbursed + balance;
+
+      return `${this.$currency}${this.$root.$options.filters.formatCurrency(
+        amountReceived
+      )}`;
+    },
+
+    amountDisbursed() {
+      return `${this.$currency}${this.$root.$options.filters.formatCurrency(
+        this.campaignDetails.amount_disbursed
+      )}`;
+    },
+
+    totalBalance() {
+      return `${this.$currency}${this.$root.$options.filters.formatCurrency(
+        this.campaignDetails.balance
+      )}`;
     },
   },
 };

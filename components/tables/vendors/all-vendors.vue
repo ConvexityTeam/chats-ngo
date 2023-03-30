@@ -111,6 +111,7 @@ import addVendor from "~/components/forms/add-vendor.vue";
 import moment from "moment";
 
 export default {
+  name: "AllVendors",
   layout: "dashboard",
   components: {
     addVendor,

@@ -5,7 +5,8 @@
       <!-- Wallet balance here -->
       <div class="col-lg-3">
         <div class="card__holder d-flex p-3">
-          <wallet-balance />
+          <WalletBalance />
+
           <div class="ml-3">
             <p class="text">Wallet Balance</p>
 
@@ -24,9 +25,8 @@
           </div>
           <div class="ml-3">
             <p class="text">Campaign Budget</p>
-            <h4 class="funds">
-              {{ $currency
-              }}{{ campaignDetails.campaign_budget || 0 | formatCurrency }}
+            <h4 class="funds" :title="campaignBudget">
+              {{ $truncate(campaignBudget) }}
             </h4>
           </div>
         </div>
@@ -35,14 +35,12 @@
       <!--  Amount Disbursed here -->
       <div class="col-lg-3">
         <div class="card__holder d-flex p-3">
-          <div>
-            <disbursed />
-          </div>
+          <Disbursed />
+
           <div class="ml-3">
             <p class="text">Amount Disbursed</p>
-            <h4 class="funds">
-              {{ $currency
-              }}{{ campaignDetails.amount_disbursed || 0 | formatCurrency }}
+            <h4 class="funds" :title="amountDisbursed">
+              {{ $truncate(amountDisbursed) }}
             </h4>
           </div>
         </div>
@@ -51,13 +49,12 @@
       <!-- Total Balance -->
       <div class="col-lg-3">
         <div class="card__holder d-flex p-3">
-          <div>
-            <total-balance />
-          </div>
+          <TotalBalance />
+
           <div class="ml-3">
             <p class="text">Campaign Balance</p>
-            <h4 class="funds">
-              {{ $currency }}{{ campaignDetails.balance || 0 | formatCurrency }}
+            <h4 class="funds" :title="campaignBalance">
+              {{ $truncate(campaignBalance) }}
             </h4>
           </div>
         </div>
@@ -107,14 +104,14 @@
       <!-- Beneficiary Age group  Cards here -->
       <div class="col-lg-4 pb-3">
         <div class="cards__holder px-3 pt-3">
-          <beneficiaryAge />
+          <BeneficiaryAge />
         </div>
       </div>
 
       <!-- Beneficiary By Gender  Cards here -->
       <div class="col-lg-4 pb-3">
         <div class="cards__holder px-3 pt-3">
-          <beneficiaryGender />
+          <BeneficiaryGender />
         </div>
       </div>
     </div>
@@ -124,21 +121,21 @@
       <!-- Beneficiary By Location card here -->
       <div class="col-lg-4 pb-3">
         <div class="cards__holder px-3 pt-3">
-          <beneficiary-location />
+          <BeneficiaryLocation />
         </div>
       </div>
 
       <!-- Vendor Transaction By Beneficiary  Cards here -->
       <div class="col-lg-4 pb-3">
         <div class="cards__holder px-3 pt-3">
-          <beneficiaryVendor />
+          <BeneficiaryVendor />
         </div>
       </div>
 
       <!-- Beneficiary Balances card here -->
       <div class="col-lg-4 pb-3">
         <div class="cards__holder px-3 pt-3">
-          <beneficiaryBalances />
+          <BeneficiaryBalances />
         </div>
       </div>
     </div>
@@ -209,7 +206,7 @@
               >
                 <div>
                   <span class="vendor-name">
-                    {{ vendor.first_name + " " + vendor.last_name }}
+                    {{ `${vendor.first_name} ${vendor.last_name}` }}
                   </span>
                 </div>
               </div>
@@ -243,27 +240,28 @@
 
 <script>
 import { mapGetters } from "vuex";
-import beneficiaryAge from "~/components/charts/beneficiary-age";
-import beneficiaryBalances from "~/components/charts/beneficiary-balances";
-import beneficiaryGender from "~/components/charts/beneficiary-gender";
-import beneficiaryLocation from "~/components/charts/beneficiary-location";
-import beneficiaryVendor from "~/components/charts/beneficiary-vendor";
-import disbursed from "~/components/icons/disbursed.vue";
-import totalBalance from "~/components/icons/total-balance.vue";
-import walletBalance from "~/components/icons/wallet-balance.vue";
+import BeneficiaryAge from "~/components/charts/beneficiary-age";
+import BeneficiaryBalances from "~/components/charts/beneficiary-balances";
+import BeneficiaryGender from "~/components/charts/beneficiary-gender";
+import BeneficiaryLocation from "~/components/charts/beneficiary-location";
+import BeneficiaryVendor from "~/components/charts/beneficiary-vendor";
+import Disbursed from "~/components/icons/disbursed.vue";
+import TotalBalance from "~/components/icons/total-balance.vue";
+import WalletBalance from "~/components/icons/wallet-balance.vue";
 
 export default {
+  name: "Dashboard",
   layout: "dashboard",
 
   components: {
-    beneficiaryAge,
-    beneficiaryGender,
-    beneficiaryVendor,
-    beneficiaryBalances,
-    beneficiaryLocation,
-    walletBalance,
-    totalBalance,
-    disbursed,
+    BeneficiaryAge,
+    BeneficiaryGender,
+    BeneficiaryVendor,
+    BeneficiaryBalances,
+    BeneficiaryLocation,
+    WalletBalance,
+    TotalBalance,
+    Disbursed,
   },
 
   data() {
@@ -282,6 +280,24 @@ export default {
 
     displayedVendors() {
       return this.vendors.slice(0, 5);
+    },
+
+    campaignBudget() {
+      return `${this.$currency}${this.$root.$options.filters.formatCurrency(
+        this.campaignDetails.campaign_budget
+      )}`;
+    },
+
+    amountDisbursed() {
+      return `${this.$currency}${this.$root.$options.filters.formatCurrency(
+        this.campaignDetails.amount_disbursed
+      )}`;
+    },
+
+    campaignBalance() {
+      return `${this.$currency}${this.$root.$options.filters.formatCurrency(
+        this.campaignDetails.balance
+      )}`;
     },
 
     isMetricData() {

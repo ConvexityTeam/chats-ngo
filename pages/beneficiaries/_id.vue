@@ -19,11 +19,8 @@
                 </div>
                 <div class="ml-3">
                   <p class="text">Total Recieved</p>
-                  <h4 class="funds">
-                    {{ $currency
-                    }}{{
-                      userDetails.total_wallet_received || 0 | formatCurrency
-                    }}
+                  <h4 class="funds" :title="totalReceived">
+                    {{ $truncate(totalReceived) }}
                   </h4>
                 </div>
               </div>
@@ -37,9 +34,8 @@
                 </div>
                 <div class="ml-3">
                   <p class="text">Total Spent</p>
-                  <h4 class="funds">
-                    {{ $currency
-                    }}{{ userDetails.total_wallet_spent || 0 | formatCurrency }}
+                  <h4 class="funds" :title="totalSpent">
+                    {{ $truncate(totalSpent) }}
                   </h4>
                 </div>
               </div>
@@ -53,11 +49,8 @@
                 </div>
                 <div class="ml-3">
                   <p class="text">Total Remaining</p>
-                  <h4 class="funds">
-                    {{ $currency
-                    }}{{
-                      userDetails.total_wallet_balance || 0 | formatCurrency
-                    }}
+                  <h4 class="funds" :title="totalRemaining">
+                    {{ $truncate(totalRemaining) }}
                   </h4>
                 </div>
               </div>
@@ -66,16 +59,16 @@
 
           <!-- Campaigns here -->
           <div class="mt-3">
-            <beneficiary-campaign
+            <BeneficiaryCampaign
               :campaigns="userDetails.Campaigns"
-              :name="userDetails.first_name + ' ' + userDetails.last_name"
+              :name="`${userDetails.first_name} ${userDetails.last_name}`"
             />
           </div>
         </div>
 
         <!-- Personal details here -->
         <div class="col-lg-4">
-          <beneficiary-details :user="userDetails" />
+          <BeneficiaryDetails :user="userDetails" />
         </div>
       </div>
     </div>
@@ -84,20 +77,20 @@
 
 <script>
 import { mapGetters } from "vuex";
-import totalBalance from "~/components/icons/total-balance";
-import disbursed from "~/components/icons/disbursed";
-import beneficiaryDetails from "~/components/tables/beneficiaries/beneficiary-details";
-import beneficiaryCampaign from "~/components/tables/beneficiaries/beneficiary-campaign";
+import TotalBalance from "~/components/icons/total-balance";
+import Disbursed from "~/components/icons/disbursed";
+import BeneficiaryDetails from "~/components/tables/beneficiaries/beneficiary-details";
+import BeneficiaryCampaign from "~/components/tables/beneficiaries/beneficiary-campaign";
 let screenLoading;
 
 export default {
+  name: "BeneficiaryInfo",
   layout: "dashboard",
-
   components: {
-    disbursed,
-    totalBalance,
-    beneficiaryDetails,
-    beneficiaryCampaign,
+    Disbursed,
+    TotalBalance,
+    BeneficiaryDetails,
+    BeneficiaryCampaign,
   },
 
   data: () => ({
@@ -113,6 +106,24 @@ export default {
 
   computed: {
     ...mapGetters("authentication", ["user"]),
+
+    totalReceived() {
+      return `${this.$currency}${this.$root.$options.filters.formatCurrency(
+        this.userDetails.total_wallet_received
+      )}`;
+    },
+
+    totalSpent() {
+      return `${this.$currency}${this.$root.$options.filters.formatCurrency(
+        this.userDetails.total_wallet_spent
+      )}`;
+    },
+
+    totalRemaining() {
+      return `${this.$currency}${this.$root.$options.filters.formatCurrency(
+        this.userDetails.total_wallet_balance
+      )}`;
+    },
   },
 
   methods: {

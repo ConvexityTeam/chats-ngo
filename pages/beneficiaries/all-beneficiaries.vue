@@ -25,7 +25,7 @@
         </div>
       </div>
 
-      <div class=" ml-auto mx-3">
+      <div class="ml-auto mx-3">
         <csv :data="computedData" name="beneficiaries" />
       </div>
     </div>
@@ -108,13 +108,14 @@ import { mapGetters, mapActions } from "vuex";
 let screenLoading;
 
 export default {
+  name: "AllBeneficiaries",
   layout: "dashboard",
+
   data() {
     return {
-      img: require("~/assets/img/user.png"),
       id: "",
-
-      searchQuery: ""
+      img: require("~/assets/img/user.png"),
+      searchQuery: "",
     };
   },
 
@@ -123,11 +124,11 @@ export default {
     ...mapGetters("beneficiaries", ["beneficiaries"]),
     resultQuery() {
       if (this.searchQuery) {
-        return this.beneficiaries.filter(benefactor => {
+        return this.beneficiaries.filter((benefactor) => {
           return this.searchQuery
             .toLowerCase()
             .split(" ")
-            .every(v => benefactor?.first_name.toLowerCase().includes(v));
+            .every((v) => benefactor?.first_name.toLowerCase().includes(v));
         });
       } else {
         return this.beneficiaries;
@@ -135,7 +136,7 @@ export default {
     },
     computedData() {
       const data = this.beneficiaries || [];
-      return data.map(benefactor => {
+      return data.map((benefactor) => {
         return {
           Name: benefactor.first_name + " " + benefactor.last_name,
           Phone_Number: benefactor.phone,
@@ -143,16 +144,15 @@ export default {
           location: benefactor.location,
           Gender: benefactor.gender,
           Marital_Status: benefactor.marital_status,
-          Created: moment(benefactor.createdAt).format("dddd, MMMM DD, YYYY")
+          Created: moment(benefactor.createdAt).format("dddd, MMMM DD, YYYY"),
         };
       });
-    }
+    },
   },
 
   mounted() {
     this.id = this.user?.AssociatedOrganisations[0]?.OrganisationId;
     this.getallBeneficiaries(this.id);
-    console.log("HEREs", this.allBeneficiaries);
   },
 
   methods: {
@@ -166,10 +166,10 @@ export default {
       screenLoading = this.$loading({
         lock: true,
         spinner: "el-icon-loading",
-        background: "#0000009b"
+        background: "#0000009b",
       });
-    }
-  }
+    },
+  },
 };
 </script>
 
