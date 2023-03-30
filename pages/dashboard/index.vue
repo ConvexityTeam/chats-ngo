@@ -313,6 +313,9 @@ export default {
 </script>
 
 <style scoped>
+.ml-3 {
+  margin-left: 0.75rem !important;
+}
 .main {
   height: calc(100vh - 72px);
   overflow-y: scroll;
