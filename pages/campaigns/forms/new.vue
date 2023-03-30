@@ -14,7 +14,14 @@
 
       <!-- Modal Here -->
 
-      <Modal id="campaign-form" title="" buttonModified>
+      <Modal
+        id="campaign-form"
+        title=""
+        buttonModified
+        @closeModal="
+          $router.push({ path: '/campaigns', query: { section: 'forms' } })
+        "
+      >
         <CampaignFormSuccess :formName="title" />
       </Modal>
     </section>
@@ -30,6 +37,7 @@ import CampaignFormSuccess from "@/components/forms/CampaignFormSuccess";
 let screenLoading;
 
 export default {
+  name: "NewForm",
   layout: "dashboard",
   components: { FormBuilder, PreviewForm, CampaignFormSuccess },
 
@@ -59,16 +67,10 @@ export default {
       }
     },
     async createForm(payload) {
+      console.log("GOTE HERE", payload);
       try {
         const id = this.user?.AssociatedOrganisations[0]?.OrganisationId;
         this.openScreen();
-
-        //  Format  the value field and remove symbol
-        payload.questions.forEach((question) => {
-          if (question.value) {
-            question.value = question.value.replace(/[^0-9.]/g, "");
-          }
-        });
 
         const response = await this.$axios.post(
           `organisations/${id}/campaign_form`,

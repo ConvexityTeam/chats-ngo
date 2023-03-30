@@ -200,7 +200,7 @@
 import { required, minLength } from "vuelidate/lib/validators";
 
 export default {
-  name: "CampaignFormBuilder",
+  name: "FormBuilder",
   layout: "dashboard",
 
   props: {
@@ -416,15 +416,15 @@ export default {
 
       // Set the reward to type number
       this.payload.questions.forEach((question) => {
-        if (question.type == "multiple" || question.type == "optional") {
+        if (question.type === "multiple" || question.type === "optional") {
           question.question.options.forEach((option) => {
-            if (option.reward)
+            if (option.reward && option.reward.length)
               option.reward = +option.reward.replace(/[^0-9]/g, "");
           });
         }
 
-        if (question.type == "short") {
-          if (question.value)
+        if (question.type === "short") {
+          if (question.value && question.value.length)
             question.value = +question.value.replace(/[^0-9]/g, "");
         }
       });

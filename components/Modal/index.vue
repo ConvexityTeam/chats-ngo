@@ -25,6 +25,7 @@
 <script>
 import close from "~/components/icons/close";
 export default {
+  name: "Modal",
   props: {
     id: {
       type: String,
