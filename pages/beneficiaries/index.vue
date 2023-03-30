@@ -248,6 +248,10 @@ export default {
   font-weight: 500;
 }
 
+.ml-3 {
+  margin-left: 0.75rem !important;
+}
+
 .funds {
   color: var(--primary-blue);
   font-size: 1.125rem;
