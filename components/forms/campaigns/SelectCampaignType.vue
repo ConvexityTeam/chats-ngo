@@ -2,21 +2,28 @@
   <div class="mt-4 mb-12 p-4">
     <div
       class="d-flex justify-content-center align-items-center"
-      style="gap: 1rem"
+      style="gap: 1rem;"
     >
       <div
         v-for="campaignType in campaignTypes"
         :key="campaignType.id"
         class="d-flex flex-column justify-content-center align-items-center card text-center p-3 type-holder"
-        :style="
-          activeCampaignId == campaignType.id
-            ? ` border: 2px solid #17CE89;`
-            : ``
-        "
+        :class="activeType == campaignType.id ? `card-box` : ``"
         @click="selectCampaignType(campaignType.id)"
+        @mouseover="activeType = campaignType.id"
+        @mouseleave="activeType = ''"
       >
         <span class="d-block mb-4 avatar">
-          <img :src="campaignType.avatar" :alt="campaignType.title" />
+          <span v-if="campaignType.id == 'cash'">
+            <MoneyBagVue
+              :state="activeType == campaignType.id ? 'active' : 'inactive'"
+            />
+          </span>
+          <span v-if="campaignType.id == 'items'">
+            <CubesVue
+              :state="activeType == campaignType.id ? 'active' : 'inactive'"
+            />
+          </span>
         </span>
 
         <h4 class="pb-1 mt-1 title">
@@ -32,34 +39,37 @@
 </template>
 
 <script>
-import cubes from "~/assets/img/svg/campaigns/cubes.svg";
-import moneyBag from "~/assets/img/svg/campaigns/money-bag.svg";
+import MoneyBagVue from "~/components/icons/campaigns/MoneyBag.vue";
+import CubesVue from "~/components/icons/campaigns/Cubes.vue";
 
 export default {
   name: "SelectCampaignType",
+  components: { MoneyBagVue, CubesVue },
   data() {
     return {
       activeCampaignId: "",
       campaignTypes: [
         {
-          avatar: cubes,
           title: "Cash campaign",
           description: "Create a campaign for monetary item, e.g Cash",
           id: "cash",
         },
         {
-          avatar: moneyBag,
           title: "Items campaign",
           description: "Create a campaign for non-monetary item, e.g Vaccine",
           id: "items",
         },
       ],
+      activeType: "",
     };
   },
   methods: {
     selectCampaignType(campaign_type) {
       this.activeCampaignId = campaign_type;
       this.$emit("selectCampaignType", campaign_type);
+    },
+    updateActive(id) {
+      console.log(98);
     },
   },
 };
@@ -88,5 +98,8 @@ export default {
   color: #7c8db5;
   font-weight: 500;
   width: 80%;
+}
+.card-box {
+  border: 1px solid #17ce89;
 }
 </style>

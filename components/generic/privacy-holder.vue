@@ -77,7 +77,7 @@ export default {
       required: true,
     },
     is_public: {
-      type: Boolean  ,
+      type: Boolean,
       default: false,
     },
     campaignStatus: {
