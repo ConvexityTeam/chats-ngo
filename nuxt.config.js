@@ -76,7 +76,7 @@ export default {
   axios: {
     baseURL: BASE_URL,
     https: true,
-    progress: true,
+    progress: false,
     retry: { retries: 2 },
   },
 

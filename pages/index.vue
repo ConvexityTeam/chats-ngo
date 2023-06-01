@@ -151,12 +151,17 @@ export default {
         if (response.status === "success") {
           let protectedLastRoute = localStorage.getItem("protectedLastRoute");
           const invalidRoutes = ["/", "undefined"];
+          const { nu } = this.$route.query;
 
           this.commitToken(response.data.token);
           this.commitUser(response.data.user);
 
           if (invalidRoutes.includes(protectedLastRoute)) {
             protectedLastRoute = "/dashboard";
+          }
+
+          if (nu) {
+            protectedLastRoute = "/settings";
           }
 
           await this.$router.push(protectedLastRoute || "/dashboard");

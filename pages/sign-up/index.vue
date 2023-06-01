@@ -5,11 +5,15 @@
       <div class="logo-div pt-5">
         <img src="~/assets/img/logo.svg" class="img-fluid" alt="Chats" />
       </div>
-      <h3 class="text-white welcome pt-4">Welcome To CHATS</h3>
+      <h3 class="text-white welcome pt-4">
+        <span v-if="!isEmailSent"> Welcome To CHATS</span>
+        <span v-else>Verify your email</span>
+      </h3>
     </div>
 
     <div class="d-flex justify-content-center align-items-center pt-4">
-      <div class="card__holder">
+      <!-- Registration Card Here -->
+      <div class="card__holder" v-if="!isEmailSent">
         <form @submit.prevent="registerUser">
           <!-- Organisation name here -->
           <div class="form-group">
@@ -136,6 +140,38 @@
           </p>
         </div>
       </div>
+
+      <div class="card__holder" v-else>
+        <section class="d-flex justify-content-center">
+          <img src="~/assets/img/svg/verify-email.svg" alt="verify-email" />
+        </section>
+
+        <!-- Text here -->
+        <section class="mt-4 pt-1">
+          <p class="primary-black font-medium sans text-center">
+            You’ll need to verify your email to complete sign up
+          </p>
+          <p class="text-center text-sm input-text poppins">
+            An email has been sent to
+            <span class="font-medium">{{ payload.email }}</span> with a link to
+            verify your account. If you don’t receive it within a few minutes,
+            please check your spam folder.
+          </p>
+        </section>
+
+        <!-- footer region Here -->
+        <section
+          class="text-center poppins primary-black font-medium pt-3 pb-4"
+        >
+          Didn’t get the mail?
+          <span
+            class="primary pointer"
+            :class="{ isDisabled: loading }"
+            @click="resendEmail"
+            >Resend</span
+          >
+        </section>
+      </div>
     </div>
   </div>
 </template>
@@ -150,6 +186,7 @@ import lockIcon from "~/components/icons/lock-icon.vue";
 import eyeClosed from "~/components/icons/eye-closed.vue";
 import eyeOpen from "~/components/icons/eye-open.vue";
 import PasswordValidation from "~/components/forms/password-validation";
+import appConfig from "~/appConfig";
 
 export default {
   layout: "default",
@@ -172,6 +209,7 @@ export default {
       webActive: false,
       passActive: false,
       showpassword: false,
+      isEmailSent: false,
       payload: {
         organisation_name: "",
         email: "",
@@ -198,6 +236,11 @@ export default {
     },
   },
 
+  mounted() {
+    const { isEmailSent } = this.$route.query;
+    this.isEmailSent = isEmailSent;
+  },
+
   methods: {
     ...mapActions("authentication", ["commitToken", "commitUser"]),
 
@@ -207,28 +250,23 @@ export default {
         this.$v.payload.$touch();
 
         if (this.$v.payload.$error === true) {
-          this.loading = false;
-          return;
+          return (this.loading = false);
         }
 
-        const response = await this.$axios.post(
-          "/auth/ngo-register",
-          this.payload
-        );
+        const response = await this.$axios.post("/auth/ngo-register", {
+          ...this.payload,
+          host_url: appConfig.HOST_URL,
+        });
 
         console.log("Register response", response);
 
         if (response.status == "success") {
-          this.$toast.success(response.message);
-          this.loginUser();
+          this.updateRoute();
         }
       } catch (err) {
-        this.$toast.error(err?.response?.data?.message);
-
-        if (
-          err?.response?.data?.message ==
-          "Email Already Exists, Recover Your Account"
-        ) {
+        const { message } = err?.response?.data;
+        this.$toast.error(message);
+        if (message == "Email Already Exists, Recover Your Account") {
           this.$router.push("/");
         }
       } finally {
@@ -236,27 +274,32 @@ export default {
       }
     },
 
-    async loginUser() {
+    async resendEmail() {
       try {
-        const token = await this.$recaptcha.getResponse();
-        const data = {
-          email: this.payload.email,
-          password: this.payload.password,
-          token,
-        };
-
-        const response = await this.$axios.post("/auth/login", data);
+        if (this.loading) return;
+        this.loading = true;
+        const response = await this.$axios.post(
+          "auth/resend-email-confirmation",
+          {
+            email: this.payload.email,
+            host_url: appConfig.HOST_URL,
+          }
+        );
 
         if (response.status == "success") {
-          this.commitToken(response.data.token);
-          this.commitUser(response.data.user);
-          this.$router.push("/settings");
+          this.$toast.success("Email sent successfully");
+          this.updateRoute();
         }
       } catch (err) {
         this.$toast.error(err.response?.data?.message);
       } finally {
-        await this.$recaptcha.reset();
+        this.loading = false;
       }
+    },
+
+    updateRoute() {
+      this.isEmailSent = true;
+      this.$router.push({ path: "/sign-up", query: { isEmailSent: true } });
     },
   },
 };
@@ -316,6 +359,11 @@ label > span > a {
   font-size: 0.75rem;
   color: #9da8b6;
   font-weight: 500;
+}
+
+.isDisabled {
+  cursor: not-allowed !important;
+  opacity: 0.6;
 }
 
 @media (max-width: 575.98px) {
