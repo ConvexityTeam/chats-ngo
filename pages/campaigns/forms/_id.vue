@@ -1,6 +1,6 @@
 <template>
   <div class="container main transparent mt-2 pt-4 pb-5">
-    <back text="Go Back" @click="handleRoute" />
+    <back text="Go Back" @click="$router.go(-1)" />
 
     <FormBuilder @submit="updateForm" />
 
@@ -108,10 +108,13 @@ export default {
         background: "#0000009b",
       });
     },
-
-    handleRoute() {
-      this.$router.go(-1);
-    },
   },
 };
 </script>
+
+<style scoped>
+.main {
+  height: calc(100vh - 72px);
+  overflow-y: scroll;
+}
+</style>

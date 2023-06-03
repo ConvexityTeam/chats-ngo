@@ -246,3 +246,10 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.main {
+  height: calc(100vh - 72px);
+  overflow-y: scroll;
+}
+</style>

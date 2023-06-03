@@ -31,10 +31,10 @@
             <div id="campaign-form" class="w-100">
               <el-select v-model="question.type" placeholder="Select">
                 <el-option
-                  v-for="type in types"
-                  :key="type"
-                  :label="handleLabel(type)"
-                  :value="type"
+                  v-for="kind in types"
+                  :key="kind"
+                  :label="handleLabel(kind)"
+                  :value="kind"
                 >
                 </el-option>
               </el-select>
@@ -263,7 +263,7 @@ export default {
           required: false,
           question: {
             title: "",
-            options: ["", ""],
+            options: [],
           },
         },
       ],

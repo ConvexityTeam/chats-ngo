@@ -30,8 +30,8 @@
 
 <script>
 import { mapGetters } from "vuex";
-import FormBuilder from "@/components/forms/FormBuilder.vue";
-import PreviewForm from "@/components/forms/PreviewForm.vue";
+import FormBuilder from "@/components/forms/FormBuilder";
+import PreviewForm from "@/components/forms/PreviewForm";
 import CampaignFormSuccess from "@/components/forms/CampaignFormSuccess";
 
 let screenLoading;
