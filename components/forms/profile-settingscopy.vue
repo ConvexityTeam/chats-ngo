@@ -680,36 +680,35 @@ export default {
   mounted() {
     this.loadData();
     console.log("USER::", this.user);
-    // this.fetchOrganisationProfile()
+    this.fetchOrganisationProfile();
   },
 
   methods: {
     ...mapActions("authentication", ["commitUserUpdate"]),
-    // async fetchOrganisationProfile() {
-    //       try {
-    //         this.loading = true;
-    //         const response = await this.$axios.get(
-    //           `/organisations/${this.organisation_id}/profile`,
-    //           this.payload.organisation_profile
-    //         );
+    async fetchOrganisationProfile() {
+      try {
+        this.loading = true;
+        const response = await this.$axios.get(
+          `/organisations/${this.organisation_id}/profile`,
+          this.payload.organisation_profile
+        );
 
-    //         const organisationDetails = response.data?.Organisations[0]
-    //  this.payload.organisation_profile = organisationDetails
-    //  console.log(organisationDetails)
+        const organisationDetails = response.data?.Organisations[0];
+        this.payload.organisation_profile = organisationDetails;
+        console.log(organisationDetails);
 
-    //         // if (response.status == "success") {
-    //           this.loading = false;
-    //         //   this.$toast.success(response.message);
-    //         //   this.commitUserUpdate(response.data);
-    //         // }
-    //       } catch (err) {
-    //         // this.$toast.error(err?.response?.data?.message);
-    //         this.loading = false;
-    //       } finally {
-    //         this.loading = false;
-
-    //       }
-    // },
+        // if (response.status == "success") {
+        this.loading = false;
+        //   this.$toast.success(response.message);
+        //   this.commitUserUpdate(response.data);
+        // }
+      } catch (err) {
+        // this.$toast.error(err?.response?.data?.message);
+        this.loading = false;
+      } finally {
+        this.loading = false;
+      }
+    },
     async updateOrganisationProfile() {
       try {
         this.loading = true;
@@ -722,8 +721,6 @@ export default {
           }
           return (this.loading = false);
         }
-
-        console.log(this.payload.organisation_profile);
 
         const response = await this.$axios.put(
           `/organisations/${this.organisation_id}/profile`,
@@ -741,7 +738,6 @@ export default {
         this.loading = false;
       }
     },
-
     async updateUserProfile() {
       try {
         this.loading = true;
@@ -771,7 +767,6 @@ export default {
         this.loading = false;
       }
     },
-
     async verifyIdentity() {
       try {
         this.$v.payload.user_profile.nin.$touch();
@@ -821,7 +816,6 @@ export default {
       this.objectAliaser(this.payload.organisation_profile, organisation);
       this.objectAliaser(this.payload.user_profile, this.user);
     },
-
     objectAliaser(oldObj, newObj) {
       return Object.keys(oldObj).forEach((item) => {
         oldObj[item] = newObj?.[item];
@@ -837,7 +831,6 @@ export default {
       this.payload.logo = image;
       this.updatephoto();
     },
-
     async updatephoto() {
       try {
         this.loading = true;

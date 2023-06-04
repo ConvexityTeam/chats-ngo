@@ -126,7 +126,7 @@
   </div>
 </template>
 
-<script>
+<script  >
 import { mapGetters } from "vuex";
 import SelectCampaignTypeVue from "~/components/forms/campaigns/SelectCampaignType";
 import CampaignTable from "~/components/tables/campaigns/AllCampaigns";
