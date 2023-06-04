@@ -1,6 +1,8 @@
 <template>
   <div>
-    <div v-if="loading"></div>
+    <div v-if="loading">
+      <FullScreenLoader :loading="loading" />
+    </div>
 
     <div class="main container transparent pb-5" v-else>
       <div class="pt-4 mt-2">
@@ -94,13 +96,11 @@ export default {
   },
 
   data: () => ({
-    id: "",
     loading: false,
     userDetails: {},
   }),
 
   mounted() {
-    this.id = this.user.AssociatedOrganisations[0].OrganisationId;
     this.getDetails();
   },
 
@@ -129,32 +129,22 @@ export default {
   methods: {
     async getDetails() {
       try {
-        this.openScreen();
         this.loading = true;
+        const { OrganisationId } = this.user?.AssociatedOrganisations[0];
 
         const response = await this.$axios.get(
-          `/organisation/${this.id}/beneficiaries/${this.$route.params.id}`
+          `/organisation/${OrganisationId}/beneficiaries/${this.$route.params.id}`
         );
         console.log(" BEN DETAILS::", response);
 
         if (response.status == "success") {
-          screenLoading.close();
-          this.loading = false;
           this.userDetails = response.data;
         }
       } catch (err) {
-        screenLoading.close();
-        this.loading = false;
         console.log(err);
+      } finally {
+        this.loading = false;
       }
-    },
-
-    openScreen() {
-      screenLoading = this.$loading({
-        lock: true,
-        spinner: "el-icon-loading",
-        background: "#0000009b",
-      });
     },
   },
 };

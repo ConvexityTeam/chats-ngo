@@ -171,6 +171,13 @@ button:disabled {
   font-weight: 500;
 }
 
+/* Timeline style here*/
+.el-timeline-item__tail {
+  border-left: 1px solid #e1e7ec !important;
+  height: 90% !important;
+  top: 18px;
+}
+
 /* Input type number scrollbar hidden */
 
 input::-webkit-outer-spin-button,

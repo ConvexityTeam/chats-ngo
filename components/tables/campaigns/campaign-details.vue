@@ -1,5 +1,6 @@
 <template>
   <div class="campaign-details-holder p-4">
+    <!-- Modals here -->
     <Modal id="campaign-prompt" :title="status + ' ' + 'campaign'">
       <campaign-prompt
         @handleCampaign="handleCampaign"
@@ -8,152 +9,195 @@
       />
     </Modal>
 
+    <Modal id="extend-campaign" title="Extend campaign">
+      <ExtendCampaign :campaignDetails="details" @reload="$fetch" />
+    </Modal>
+
     <h4 class="campaign-details-header poppins pt-2">Campaign Summary</h4>
 
     <!-- details region here -->
-    <div class="campaign-details-inner mt-4 p-4">
-      <h4 class="campaign-details-header pt-2">{{ details.title }}</h4>
+    <div>
+      <div class="campaign-details-inner mt-4 p-4">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <h4 class="campaign-details-header pt-2">
+            {{ details.title }}
+          </h4>
 
-      <div class="d-flex mt-3">
-        <svg
-          class="mt-1"
-          width="26"
-          height="16"
-          viewBox="0 0 26 16"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M25.2308 10.6C25.2308 11.2 24 11.6 22.5641 11.8C21.641 10.1 19.7949 8.8 17.641 7.9C17.8462 7.6 18.0513 7.4 18.2564 7.1H19.0769C22.2564 7 25.2308 8.9 25.2308 10.6ZM7.58975 7H6.76923C3.58975 7 0.615387 8.9 0.615387 10.6C0.615387 11.2 1.84616 11.6 3.28205 11.8C4.20513 10.1 6.05128 8.8 8.20513 7.9L7.58975 7ZM12.9231 8C15.1795 8 17.0256 6.2 17.0256 4C17.0256 1.8 15.1795 0 12.9231 0C10.6667 0 8.82052 1.8 8.82052 4C8.82052 6.2 10.6667 8 12.9231 8ZM12.9231 9C8.71795 9 4.71795 11.6 4.71795 14C4.71795 16 12.9231 16 12.9231 16C12.9231 16 21.1282 16 21.1282 14C21.1282 11.6 17.1282 9 12.9231 9ZM18.7692 6H19.0769C20.8205 6 22.1539 4.7 22.1539 3C22.1539 1.3 20.8205 0 19.0769 0C18.5641 0 18.1539 0.1 17.7436 0.3C18.5641 1.3 19.0769 2.6 19.0769 4C19.0769 4.7 18.9744 5.4 18.7692 6ZM6.76923 6H7.07693C6.8718 5.4 6.76923 4.7 6.76923 4C6.76923 2.6 7.28205 1.3 8.10257 0.3C7.69231 0.1 7.28205 0 6.76923 0C5.02564 0 3.69231 1.3 3.69231 3C3.69231 4.7 5.02564 6 6.76923 6Z"
-            fill="#7C8DB5"
-          />
-        </svg>
+          <el-dropdown
+            trigger="click"
+            placement="bottom-end"
+            class="el-dropdown"
+          >
+            <span class="el-dropdown-link"> <ellipsis /> </span>
 
-        <div class="ml-2">
-          <p class="campaign-beneficiary-count">
-            {{ count }}
-            {{ count === 1 ? "Beneficiary" : "Beneficiaries" }}
-          </p>
+            <el-dropdown-menu slot="dropdown" class="el-dropdown-menu">
+              <el-dropdown-item class="el-dropdown-item">
+                <span @click="openModal('extend-campaign')">
+                  Extend campaign
+                </span>
+              </el-dropdown-item>
+
+              <el-dropdown-item
+                class="el-dropdown-item"
+                v-if="
+                  statuses.includes(details.status) && !details.is_processing
+                "
+              >
+                <span
+                  @click="
+                    handleModal(details.status == 'paused' ? 'resume' : 'Pause')
+                  "
+                >
+                  {{
+                    details.status == "paused"
+                      ? "Resume campaign"
+                      : "Pause campaign"
+                  }}
+                </span>
+              </el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
         </div>
-      </div>
 
-      <!-- Task Region -->
-      <div v-if="details.type == 'cash-for-work'">
-        <!-- Progress bar here -->
-        <b-progress
-          :value="(details.completed_task / details.task_count) * 100"
-          :max="max"
-          variant="success"
-          class="mb-3 mt-1"
-        ></b-progress>
+        <div class="d-flex mt-3">
+          <BeneficiaryIcon />
 
-        <!-- Task count here -->
-        <div class="d-flex">
-          <div>
-            <p class="tasks">
-              <span>{{ details.completed_task }}</span>
-              / {{ details.task_count }}
-              {{ details.task_count === 1 ? "Task" : "Tasks" }}
+          <div class="ml-2">
+            <p class="campaign-beneficiary-count">
+              {{ count }}
+              {{ count === 1 ? "Beneficiary" : "Beneficiaries" }}
             </p>
           </div>
+        </div>
 
-          <!-- Progress here -->
-          <div class="ml-auto">
-            <div class="task-badge d-flex align-items-center px-3">
-              {{
-                Number(
-                  (details.completed_task / details.task_count) * 100
-                ).toFixed(0) || 0
-              }}%
+        <!-- Task Region -->
+        <div v-if="details.type == 'cash-for-work'">
+          <!-- Progress bar here -->
+          <b-progress
+            :value="(details.completed_task / details.task_count) * 100"
+            :max="max"
+            variant="success"
+            class="mb-3 mt-1"
+          ></b-progress>
+
+          <!-- Task count here -->
+          <div class="d-flex">
+            <div>
+              <p class="tasks">
+                <span> {{ details.completed_task }} </span>
+                / {{ details.task_count }}
+                {{ details.task_count === 1 ? "Task" : "Tasks" }}
+              </p>
+            </div>
+
+            <!-- Progress here -->
+            <div class="ml-auto">
+              <div class="task-badge d-flex align-items-center px-3">
+                {{
+                  Number(
+                    (details.completed_task / details.task_count) * 100
+                  ).toFixed(0) || 0
+                }}%
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Details -->
+        <div class="mt-4">
+          <div
+            class="d-flex campaign-divider mb-3"
+            v-if="details.type !== 'item'"
+          >
+            <p class="campaign-captions">Budget:</p>
+
+            <div class="ml-auto">
+              <p class="campaign-answers">
+                {{ $currency }}{{ details.budget | formatCurrency }}
+              </p>
+            </div>
+          </div>
+
+          <div class="d-flex campaign-divider mb-3">
+            <p class="campaign-captions">Description:</p>
+
+            <div class="ml-auto">
+              <p class="campaign-answers">
+                {{ details.description }}
+              </p>
+            </div>
+          </div>
+
+          <div class="d-flex campaign-divider mb-3">
+            <p class="campaign-captions">Start date:</p>
+
+            <div class="ml-auto">
+              <p class="campaign-answers">
+                {{ details.start_date | shortDate }}
+              </p>
+            </div>
+          </div>
+
+          <div class="d-flex campaign-divider mb-3">
+            <p class="campaign-captions">End date:</p>
+
+            <div class="ml-auto">
+              <p class="campaign-answers">
+                {{ details.end_date | shortDate }}
+              </p>
+            </div>
+          </div>
+
+          <div v-if="location" class="d-flex campaign-divider mb-3">
+            <p class="campaign-captions">Location:</p>
+
+            <!-- Might have to geocode to get location -->
+            <div class="ml-auto">
+              <p class="campaign-answers">
+                {{ location }}
+              </p>
+            </div>
+          </div>
+
+          <div class="d-flex campaign-divider mb-3">
+            <p class="campaign-captions">Created:</p>
+
+            <div class="ml-auto">
+              <p class="campaign-answers">
+                {{ details.createdAt | shortDate }}
+              </p>
+            </div>
+          </div>
+
+          <div class="d-flex campaign-divider mb-3">
+            <p class="campaign-captions">Beneficiary Share:</p>
+
+            <div class="ml-auto">
+              <p class="campaign-answers" v-if="details.type == 'item'">
+                {{ getShare(details.minting_limit) | formatNumber }}
+              </p>
+
+              <p class="campaign-answers" v-else>
+                {{ $currency }} {{ getShare(details.budget) | formatCurrency }}
+              </p>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- Details -->
-      <div class="mt-4">
-        <div
-          class="d-flex campaign-divider mb-3"
-          v-if="details.type !== 'item'"
-        >
-          <p class="campaign-captions">Budget:</p>
+      <!-- campaign version history -->
+      <span
+        class="campaign-version-history"
+        @click="$router.push(`/campaigns/${campaignId}/version-history`)"
+      >
+        <span class="mr-2 p-1"> Campaign version history </span>
 
-          <div class="ml-auto">
-            <p class="campaign-answers">
-              {{ $currency }}{{ details.budget | formatCurrency }}
-            </p>
-          </div>
-        </div>
-
-        <div class="d-flex campaign-divider mb-3">
-          <p class="campaign-captions">Description:</p>
-
-          <div class="ml-auto">
-            <p class="campaign-answers">
-              {{ details.description }}
-            </p>
-          </div>
-        </div>
-
-        <div class="d-flex campaign-divider mb-3">
-          <p class="campaign-captions">Start date:</p>
-
-          <div class="ml-auto">
-            <p class="campaign-answers">
-              {{ details.start_date | shortDate }}
-            </p>
-          </div>
-        </div>
-
-        <div class="d-flex campaign-divider mb-3">
-          <p class="campaign-captions">End date:</p>
-
-          <div class="ml-auto">
-            <p class="campaign-answers">
-              {{ details.end_date | shortDate }}
-            </p>
-          </div>
-        </div>
-
-        <div v-if="location" class="d-flex campaign-divider mb-3">
-          <p class="campaign-captions">Location:</p>
-
-          <!-- Might have to geocode to get location -->
-          <div class="ml-auto">
-            <p class="campaign-answers">
-              {{ location }}
-            </p>
-          </div>
-        </div>
-
-        <div class="d-flex campaign-divider mb-3">
-          <p class="campaign-captions">Created:</p>
-
-          <div class="ml-auto">
-            <p class="campaign-answers">
-              {{ details.createdAt | shortDate }}
-            </p>
-          </div>
-        </div>
-
-        <div class="d-flex campaign-divider mb-3">
-          <p class="campaign-captions">Beneficiary Share:</p>
-
-          <div class="ml-auto">
-            <p class="campaign-answers" v-if="details.type == 'item'">
-              {{ getShare(details.minting_limit) | formatNumber }}
-            </p>
-
-            <p class="campaign-answers" v-else>
-              {{ $currency }}{{ getShare(details.budget) | formatCurrency }}
-            </p>
-          </div>
-        </div>
-      </div>
+        <Arrow title="right" />
+      </span>
     </div>
 
     <!-- button region here -->
-    <div
+    <!-- <div
       v-if="statuses.includes(details.status) && !details.is_processing"
       class="mt-3"
     >
@@ -168,7 +212,7 @@
           @click="handleModal(details.status == 'paused' ? 'resume' : 'Pause')"
         />
 
-        <!-- <div class="ml-3">
+        <div class="ml-3">
           <Button
             text="Delete campaign"
             :has-icon="false"
@@ -176,19 +220,29 @@
             custom-styles=" height: 41px !important; border: 1px solid #E42C66 !important; color: #E42C66 !important; border-radius: 5px !important; font-size: 0.875rem !important; padding: 0px 8px !important; font-weight: 600 !important"
             @click="handleModal('Delete')"
           />
-        </div> -->
+        </div>
       </div>
-    </div>
+    </div> -->
   </div>
 </template>
 
 <script>
-import campaignPrompt from "~/components/forms/campaign-prompts.vue";
-
+import campaignPrompt from "~/components/forms/campaign-prompts";
+import ellipsis from "~/components/icons/ellipsis";
+import Arrow from "~/components/icons/arrow";
+import ExtendCampaign from "~/components/forms/ExtendCampaign";
+import BeneficiaryIcon from "~/components/icons/BeneficiaryIcon";
 let screenLoading;
 
 export default {
-  components: { campaignPrompt },
+  components: {
+    campaignPrompt,
+    ellipsis,
+    ExtendCampaign,
+    Arrow,
+    BeneficiaryIcon,
+  },
+
   props: {
     details: {
       type: Object,
@@ -223,6 +277,7 @@ export default {
     statuses: ["paused", "active"],
     max: 100,
     beneficiaries: [],
+    campaignId: "",
   }),
 
   watch: {
@@ -234,10 +289,10 @@ export default {
   },
 
   async fetch() {
-    const { id } = this.$route.params;
+    this.campaignId = this.$route.params.id;
     this.orgId = this.user?.AssociatedOrganisations[0]?.OrganisationId;
     this.beneficiaries = await this.$axios.$get(
-      `organisation/${this.orgId}/campaigns/${id}/beneficiaries`
+      `organisation/${this.orgId}/campaigns/${this.campaignId}/beneficiaries`
     );
   },
 
@@ -264,17 +319,18 @@ export default {
       const stats = ["Pause", "Delete"];
       if (stats.includes(value)) {
         this.status = value;
-        this.toggleModal(true);
-        return;
+        return this.toggleModal(true);
       }
       return this.handleCampaign("active");
     },
 
     toggleModal(value) {
-      if (value) {
-        return this.$bvModal.show("campaign-prompt");
-      }
+      if (value) return this.$bvModal.show("campaign-prompt");
       return this.$bvModal.hide("campaign-prompt");
+    },
+
+    openModal(modalId) {
+      this.$bvModal.show(modalId);
     },
 
     async handleCampaign(status) {
@@ -339,6 +395,7 @@ export default {
 .campaign-details-inner {
   border: 1px solid #17ce89;
   border-radius: 10px;
+  position: relative;
 }
 
 .campaign-captions {
@@ -356,5 +413,33 @@ export default {
 
 .campaign-divider {
   border-bottom: 1px solid #f5f6f8;
+}
+.el-dropdown-menu {
+  padding: 1rem 0rem;
+  border-radius: 0.5rem;
+  width: 18rem;
+}
+.el-dropdown-menu > .el-dropdown-item > span {
+  font-family: "DM Sans";
+  width: 100%;
+  display: block;
+  font-size: 1rem;
+  padding: 0.2rem;
+  border-bottom: 0.2px solid #f5f6f8;
+  color: #25396f;
+  text-align: left;
+  cursor: pointer;
+}
+.campaign-version-history {
+  display: flex;
+  align-items: center;
+  margin-top: 2rem;
+  font-weight: 700;
+  font-size: 0.875rem;
+  cursor: pointer;
+}
+
+.campaign-version-history > * {
+  color: #17ce89 !important;
 }
 </style>
