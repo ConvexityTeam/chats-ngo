@@ -125,7 +125,8 @@ export default {
 
     async sendInvite(payload) {
       this.loading = true;
-      const link = `${process.env.DONOR_APP_URL}/verify-user`;
+      // const link = `${process.env.DONOR_APP_URL}/verify-user`;
+      const link = "https://staging-donor.chats.cash/verify-user";
 
       try {
         const response = await this.$axios.post(
