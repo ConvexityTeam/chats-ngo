@@ -52,6 +52,11 @@
                 variant="light"
               ></b-avatar>
             </div>
+
+            <!-- Language Switch -->
+            <div class="ml-3">
+              <GoogleTranslate />
+            </div>
           </div>
         </span>
       </div>
@@ -61,23 +66,21 @@
 
 <script>
 import { mapGetters } from "vuex";
+import GoogleTranslate from "../GoogleTranslate.vue";
 export default {
   data: () => ({
     title: "",
     isNotification: false,
     drawer: false,
   }),
-
   computed: {
     ...mapGetters("authentication", ["user"]),
-
     logo() {
       return (
         this.user?.AssociatedOrganisations[0]?.Organisation?.logo_link ?? ""
       );
     },
   },
-
   watch: {
     $route() {
       if (this.$router.history.current.name.includes("vendors")) {
@@ -126,6 +129,7 @@ export default {
       this.user.AssociatedOrganisations[0].Organisation.logo_link
     );
   },
+  components: { GoogleTranslate },
 };
 </script>
 

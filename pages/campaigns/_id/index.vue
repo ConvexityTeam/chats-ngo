@@ -503,8 +503,8 @@ import ImportBeneficiaries from "./import-beneficiaries";
 import PrivacyHolder from "~/components/generic/privacy-holder";
 import ApproveBenefactorsVue from "~/components/forms/approve-benefactors";
 import RejectBenefactorsVue from "~/components/forms/reject-benefactors";
-import BenefactorDetailsVue from "~/components/forms/campaign/benefactor-details";
-import BenefactorQAndAVue from "~/components/forms/campaign/benefactor-q-and-a";
+import BenefactorDetailsVue from "~/components/forms/campaigns/benefactor-details";
+import BenefactorQAndAVue from "~/components/forms/campaigns/benefactor-q-and-a";
 import PauseCampaign from "~/components/generic/PauseCampaign";
 import ProcessingFunding from "~/components/generic/ProcessingFunding";
 
