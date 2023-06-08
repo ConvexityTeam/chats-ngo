@@ -175,6 +175,33 @@ button:disabled {
   font-weight: 500;
 }
 
+/* GOOGLE TRANSLATE STYLES */
+
+.VIpgJd-ZVi9od-aZ2wEe-wOHMyf-ti6hGc {
+  display: none !important;
+}
+
+.eo__dropdown__menu {
+  right: 0;
+  left: unset !important;
+  border: none !important;
+  padding: 14px 0 !important;
+}
+
+.eo__dropdown__menu li {
+  margin-bottom: 1rem !important;
+}
+
+.eo__languages .language {
+  font-size: 0.875rem;
+  color: #25396f !important;
+  font-family: "Gilroy" !important;
+}
+
+.eo__languages .language .flag {
+  margin-right: 10px !important;
+}
+
 /* Timeline style here*/
 .el-timeline-item__tail {
   border-left: 1px solid #e1e7ec !important;
