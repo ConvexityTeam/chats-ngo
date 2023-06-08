@@ -62,7 +62,7 @@
 
 <script>
 import { mapGetters } from "vuex";
-import Transactions from "~/components/tables/Transactions";
+import Transactions from "~/components/tables/transactions";
 import Wallet from "~/components/tables/wallet";
 import Disbursed from "~/components/icons/disbursed";
 import TotalBalance from "~/components/icons/total-balance";
