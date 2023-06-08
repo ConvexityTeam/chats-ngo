@@ -29,11 +29,12 @@
                 </button>
               </div>
 
-              <div class="mgt-btn-container">
+              <div title="Not available" class="mgt-btn-container">
                 <button
                   @click="step = 2"
                   type="button"
                   class="mgt-btn two"
+                  disabled
                   :class="{ active: step == 2 }"
                 >
                   2-Factor Authentication

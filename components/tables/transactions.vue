@@ -19,18 +19,6 @@
               />
             </div>
           </div>
-
-          <!-- <div class=" position-relative">
-            <span class="filter position-absolute">
-              <img src="~/assets/img/vectors/filter.svg" alt="filter" />
-            </span>
-            <b-form-select
-              v-model="selected"
-              :options="options"
-              class="filter"
-              plain
-            ></b-form-select>
-          </div> -->
         </div>
       </div>
 
@@ -60,11 +48,18 @@
             <th scope="col">Status</th>
           </tr>
         </thead>
-        <tbody>
+
+        <tbody
+          v-for="(transaction, i) in resultQuery"
+          :key="i"
+          :class="{ selected: i % 2 == 0 }"
+        >
           <tr
-            v-for="(transaction, i) in resultQuery"
-            :key="i"
-            :class="{ selected: i % 2 == 0 }"
+            @click="toggleTransactionDetails(transaction)"
+            style="cursor: pointer"
+            :class="
+              activeReferenceId == transaction.reference && 'border-bottom'
+            "
           >
             <td>{{ transaction.reference }}</td>
             <td>{{ $currency }}{{ transaction.amount | formatCurrency }}</td>
@@ -84,48 +79,118 @@
                 class="status p-2"
                 :class="{
                   completed: transaction.status == 'success',
-                  'pending-2': transaction.status !== 'success'
+                  'pending-2': transaction.status !== 'success',
                 }"
               >
                 {{ transaction.status == "success" ? "Completed" : "Pending" }}
               </span>
             </td>
           </tr>
+
+          <!-- dropdown transaction details -->
+          <tr
+            class="selected p-3"
+            v-if="activeReferenceId == transaction.reference"
+            :class="
+              activeReferenceId == transaction.reference && 'border-bottom'
+            "
+          >
+            <td colspan="5" :class="{ selected: i % 2 != 0 }">
+              <div v-if="activeReferenceId">
+                <div class="row align-items-center mb-2">
+                  <span class="col-3 h6"> Transaction Hash: </span>
+                  <div
+                    v-if="transaction?.transaction_hash"
+                    class="col-9 mt-n2"
+                    style="color: #17ce89"
+                  >
+                    <span class="mr-2 text-truncate underline">
+                      {{
+                        transaction?.transaction_hash &&
+                        transaction?.transaction_hash.length > 35
+                          ? `${transaction?.transaction_hash.substring(
+                              1,
+                              45
+                            )}...`
+                          : transaction?.transaction_hash
+                      }}
+                    </span>
+
+                    <span
+                      @click="$copy(transaction?.transaction_hash)"
+                      class="pointer"
+                    >
+                      <copy type="line" />
+                    </span>
+                  </div>
+
+                  <span v-else class="col-9 mt-n2">-</span>
+                </div>
+
+                <!-- Confirmation -->
+                <div class="row align-items-center mb-2">
+                  <span class="col-3 h6">Confirmation:</span>
+                  <span class="col-9 mt-n2">
+                    {{ transactionDetails?.confirmations || "-" }}
+                  </span>
+                </div>
+
+                <!-- Block Number  -->
+                <div class="row align-items-center mb-2">
+                  <span class="col-3 h6">Block ID:</span>
+                  <span class="col-9 mt-n2" style="color: #17ce89">
+                    {{ transactionDetails?.blockNumber || "-" | formatNumber }}
+                  </span>
+                </div>
+
+                <!-- Time -->
+                <div class="row align-items-center mb-2">
+                  <span class="col-3 h6">Time:</span>
+                  <span class="col-9 mt-n2">
+                    {{ transaction.createdAt | formatDateTime }}
+                  </span>
+                </div>
+
+                <!-- Status -->
+                <div class="row align-items-center mb-2">
+                  <span class="col-3 h6">Status:</span>
+                  <span class="col-9 mt-n2">
+                    {{
+                      transaction.status == "success" ? "Completed" : "Pending"
+                    }}
+                  </span>
+                </div>
+              </div>
+
+              <!-- if transaction hash is null -->
+              <div v-else class="py-3 text-center">NO RECORD FOUND</div>
+            </td>
+          </tr>
         </tbody>
       </table>
+
       <div v-else-if="loading" class="text-center"></div>
       <h3 v-else class="text-center no-record">NO RECORD FOUND</h3>
     </div>
   </div>
 </template>
 
-<script>
+<script lang="js">
 import dot from "~/components/icons/dot";
+import copy from "~/components/icons/copy";
 import { mapGetters } from "vuex";
 import moment from "moment";
 let screenLoading;
 
 export default {
-  components: {
-    dot
-  },
-
+  components: { dot , copy},
   data: () => ({
     loading: false,
     organisationId: "",
     searchQuery: "",
-    options: [
-      {
-        value: "Option1",
-        label: "Option1"
-      },
-      {
-        value: "Option2",
-        label: "Option2"
-      }
-    ],
-
-    transactions: []
+    activeReferenceId: '',
+    transactions: [],
+    transactionDetails: {}
   }),
 
   computed: {
@@ -143,11 +208,6 @@ export default {
         return this.transactions;
       }
     },
-
-    computedData() {
-      return [];
-    },
-
     computedData() {
       const data = this.transactions || [];
       return data.map(transaction => {
@@ -169,6 +229,16 @@ export default {
   },
 
   methods: {
+    async toggleTransactionDetails (transaction) {
+      const {reference, transaction_hash } = transaction
+
+        if (this.activeReferenceId == reference) {
+          return this.activeReferenceId = ""
+        } else {
+          await this.getTransactionDetails(transaction_hash)
+          return this.activeReferenceId = reference
+        }
+    },
     async getTransactions() {
       try {
         this.openScreen();
@@ -183,11 +253,27 @@ export default {
           this.loading = false;
           screenLoading.close();
         }
-
         console.log("TRANSACTIONS:::", response);
       } catch (err) {
         this.loading = false;
         screenLoading.close();
+        console.log(err);
+      }
+    },
+
+    async getTransactionDetails(transaction_hash) {
+      if (!transaction_hash)  return
+      try {
+        const response = await this.$axios.get(
+          `/transactions/block-details/${transaction_hash}`
+        );
+
+        if (response.status == "success") {
+          this.transactionDetails = response.data;
+        }
+
+        console.log("TRANSACTIONS DETAILS:::", response);
+      } catch (err) {
         console.log(err);
       }
     },

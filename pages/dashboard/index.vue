@@ -5,13 +5,13 @@
       <!-- Wallet balance here -->
       <div class="col-lg-3">
         <div class="card__holder d-flex p-3">
-          <WalletBalance />
+          <ItemDistributed />
 
           <div class="ml-3">
-            <p class="text">Wallet Balance</p>
+            <p class="text">Items Distributed</p>
 
             <h4 class="funds">
-              {{ $currency }}{{ wallet.balance || 0 | formatCurrency }}
+              {{ wallet.total_items_distributed || 0 | formatNumber }}
             </h4>
           </div>
         </div>
@@ -245,9 +245,9 @@ import BeneficiaryBalances from "~/components/charts/beneficiary-balances";
 import BeneficiaryGender from "~/components/charts/beneficiary-gender";
 import BeneficiaryLocation from "~/components/charts/beneficiary-location";
 import BeneficiaryVendor from "~/components/charts/beneficiary-vendor";
-import Disbursed from "~/components/icons/disbursed.vue";
-import TotalBalance from "~/components/icons/total-balance.vue";
-import WalletBalance from "~/components/icons/wallet-balance.vue";
+import Disbursed from "~/components/icons/disbursed";
+import TotalBalance from "~/components/icons/total-balance";
+import ItemDistributed from "~/components/icons/item-distributed";
 
 export default {
   name: "Dashboard",
@@ -259,7 +259,7 @@ export default {
     BeneficiaryVendor,
     BeneficiaryBalances,
     BeneficiaryLocation,
-    WalletBalance,
+    ItemDistributed,
     TotalBalance,
     Disbursed,
   },

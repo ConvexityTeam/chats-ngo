@@ -50,6 +50,11 @@ const formatCount = (value) => {
   return 0;
 };
 
+function formatDateTime(value) {
+  if (value) return moment(value).format("DD MMM, YYYY HH:mm:ss");
+  return "";
+}
+
 Vue.filter("capitalize", capitalize);
 Vue.filter("formatDateOnly", formatDateOnly);
 Vue.filter("formatDate", formatDate);
@@ -58,3 +63,4 @@ Vue.filter("formatCurrency", formatCurrency);
 Vue.filter("formatCount", formatCount);
 Vue.filter("formatDateText", formatDateText);
 Vue.filter("shortDate", shortDate);
+Vue.filter("formatDateTime", formatDateTime);

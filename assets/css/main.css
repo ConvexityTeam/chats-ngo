@@ -142,6 +142,10 @@ html {
   width: 100px;
 }
 
+.underline {
+  text-decoration: underline;
+}
+
 button:focus {
   outline: none;
 }
