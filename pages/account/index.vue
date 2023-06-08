@@ -62,10 +62,10 @@
 
 <script>
 import { mapGetters } from "vuex";
-import Transactions from "~/components/tables/transactions";
+import Transactions from "~/components/tables/Transactions";
 import Wallet from "~/components/tables/wallet";
-import Disbursed from "~/components/icons/disbursed.vue";
-import TotalBalance from "~/components/icons/total-balance.vue";
+import Disbursed from "~/components/icons/disbursed";
+import TotalBalance from "~/components/icons/total-balance";
 let screenLoading;
 
 export default {
@@ -128,7 +128,6 @@ export default {
         screenLoading.close();
       }
     },
-
     reloadData() {
       setTimeout(() => {
         window.location.reload();
