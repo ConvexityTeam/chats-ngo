@@ -53,9 +53,9 @@ export default {
     async handleVerification(confirmationCode) {
       try {
         this.loading = true;
-        const response = await this.$axios.$post(
-          `/auth/verify-email/?confirmationCode=${confirmationCode}`
-        );
+        const response = await this.$axios.$post(`/auth/verify-email/`, {
+          confirmationCode,
+        });
 
         if (response.status == "success") {
           this.isVerified = true;
