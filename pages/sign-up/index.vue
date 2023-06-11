@@ -190,6 +190,7 @@ import appConfig from "~/appConfig";
 
 export default {
   layout: "default",
+  name: "Signup",
 
   components: {
     organisationIcon,

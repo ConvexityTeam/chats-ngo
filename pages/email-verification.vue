@@ -53,18 +53,13 @@ export default {
     async handleVerification(confirmationCode) {
       try {
         this.loading = true;
-        const response = await this.$axios.$post(
-          `/auth/verify-email/${confirmationCode}`
-        );
+        await this.$axios.$post(`/auth/verify-email/${confirmationCode}`);
 
-        if (response.status == "success") {
-          this.isVerified = true;
-
-          setTimeout(() => {
-            // nu ==> new user
-            this.$router.push({ path: "/", query: { nu: true } });
-          }, 2000);
-        }
+        this.isVerified = true;
+        setTimeout(() => {
+          // nu ==> new user
+          this.$router.push({ path: "/", query: { nu: true } });
+        }, 2000);
       } catch (err) {
         this.$toast.error(err.response?.data?.message);
       } finally {
