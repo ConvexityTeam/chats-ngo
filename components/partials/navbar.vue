@@ -47,7 +47,7 @@
             <div class="d-flex image-holder justify-content-center mx-auto">
               <b-avatar
                 :src="logo"
-                size="50px"
+                size="35px"
                 class="img-fluid p-1"
                 variant="light"
               ></b-avatar>
@@ -148,8 +148,8 @@ export default {
 
 .image-holder {
   border-radius: 50%;
-  width: 50px;
-  height: 50px;
+  width: 35px;
+  height: 35px;
   background: #e7e7e7;
   border: none;
 }

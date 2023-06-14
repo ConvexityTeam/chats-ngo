@@ -8,6 +8,10 @@
         :title="details.title"
       />
     </Modal>
+    <!-- Withdraw Success -->
+    <Modal id="withdraw-funds-success" :buttonModified="true" title=" ">
+      <WithdrawFundsSuccess @close="$fetch" />
+    </Modal>
 
     <Modal id="extend-campaign" title="Extend campaign">
       <ExtendCampaign :campaignDetails="details" @reload="$fetch" />
@@ -174,14 +178,36 @@
 
             <div class="ml-auto">
               <p class="campaign-answers" v-if="details.type == 'item'">
-                {{ getShare(details.minting_limit) | formatNumber }}
+                {{ details.minting_limit | formatNumber }}
               </p>
 
               <p class="campaign-answers" v-else>
-                {{ $currency }} {{ getShare(details.budget) | formatCurrency }}
+                {{ $currency }}{{ details.budget | formatCurrency }}
               </p>
             </div>
           </div>
+        </div>
+      </div>
+
+      <div class="campaign-details-inner mt-4 p-4">
+        <div class="d-flex mb-2">
+          <p class="campaign-captions">Amount Unspent:</p>
+
+          <p class="campaign-answers ml-auto">
+            {{ $currency }}{{ details.balance | formatCurrency }}
+          </p>
+        </div>
+
+        <div>
+          <Button
+            text="Withdraw Funds"
+            custom-styles="height:41px; width: 100%; border-radius: 5px !important;"
+            :has-border="true"
+            :is-green="true"
+            :hasIcon="false"
+            @click="withdrawFunds"
+            :disabled="details.status !== 'ended' || !details?.is_funded"
+          />
         </div>
       </div>
 
@@ -211,27 +237,19 @@
           custom-styles=" height: 41px !important; border: 1px solid #17CE89 !important; border-radius: 5px !important; font-size: 0.875rem !important; padding: 0px 8px !important; font-weight: 600 !important"
           @click="handleModal(details.status == 'paused' ? 'resume' : 'Pause')"
         />
-
-        <div class="ml-3">
-          <Button
-            text="Delete campaign"
-            :has-icon="false"
-            :has-border="true"
-            custom-styles=" height: 41px !important; border: 1px solid #E42C66 !important; color: #E42C66 !important; border-radius: 5px !important; font-size: 0.875rem !important; padding: 0px 8px !important; font-weight: 600 !important"
-            @click="handleModal('Delete')"
-          />
-        </div>
       </div>
     </div> -->
   </div>
 </template>
 
 <script>
-import campaignPrompt from "~/components/forms/campaign-prompts";
+import campaignPrompt from "~/components/forms/campaign-prompts.vue";
+import WithdrawFundsSuccess from "~/components/forms/WithdrawFundsSuccess";
 import ellipsis from "~/components/icons/ellipsis";
 import Arrow from "~/components/icons/arrow";
 import ExtendCampaign from "~/components/forms/ExtendCampaign";
 import BeneficiaryIcon from "~/components/icons/BeneficiaryIcon";
+
 let screenLoading;
 
 export default {
@@ -241,6 +259,7 @@ export default {
     ExtendCampaign,
     Arrow,
     BeneficiaryIcon,
+    WithdrawFundsSuccess,
   },
 
   props: {
@@ -296,23 +315,22 @@ export default {
     );
   },
 
-  computed: {
-    approvedBeneficiaries() {
-      const beneficiaries =
-        this.beneficiaries.filter((benefactor) => benefactor.approved) || [];
-
-      return beneficiaries.length;
-    },
-  },
-
   methods: {
-    getShare(value) {
-      const result = value / this.approvedBeneficiaries;
+    async withdrawFunds() {
+      try {
+        this.openScreen();
+        const response = await this.$axios.post(
+          `organisations/${this.orgId}/campaign-funds-withdrawal/${this.$route.params?.id}`
+        );
 
-      if (result == Infinity) {
-        return 0;
+        if (response.status == "success") {
+          this.$bvModal.show("withdraw-funds-success");
+        }
+      } catch (err) {
+        this.$toast.error(err?.response?.data?.message);
+      } finally {
+        screenLoading.close();
       }
-      return result || 0;
     },
 
     handleModal(value) {
