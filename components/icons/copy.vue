@@ -35,14 +35,13 @@
   </span>
 </template>
 
-
-<script lang="js">
+<script>
 export default {
-	props: {
-		type: {
-			type: String, default: "solid"
-		}
-	}
-}
+  props: {
+    type: {
+      type: String,
+      default: "solid",
+    },
+  },
+};
 </script>
-

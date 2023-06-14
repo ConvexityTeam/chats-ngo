@@ -16,22 +16,21 @@
   </span>
 </template>
 
-
-<script lang="js" > 
+<script>
 export default {
   props: {
     title: {
       type: String,
-      required: true
-    }, 
+      required: true,
+    },
     width: {
       type: Number,
-      default: 16
-    }, 
+      default: 16,
+    },
     height: {
       type: Number,
-      default: 16
-    },   
-  }
-  }
+      default: 16,
+    },
+  },
+};
 </script>

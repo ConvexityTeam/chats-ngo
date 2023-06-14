@@ -723,8 +723,6 @@ export default {
           return (this.loading = false);
         }
 
-        console.log(this.payload.organisation_profile);
-
         const response = await this.$axios.put(
           `/organisations/${this.organisation_id}/profile`,
           this.payload.organisation_profile

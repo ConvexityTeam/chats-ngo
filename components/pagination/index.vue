@@ -121,7 +121,7 @@ export default {
 };
 </script>
 
-<style lang="css" scoped>
+<style scoped>
 .text {
   font-weight: 500;
   padding: 1px;
