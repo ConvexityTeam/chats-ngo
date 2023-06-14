@@ -59,7 +59,7 @@ export default {
         setTimeout(() => {
           // nu ==> new user
           this.$router.push({ path: "/", query: { nu: true } });
-        }, 2000);
+        }, 3000);
       } catch (err) {
         this.$toast.error(err.response?.data?.message);
       } finally {

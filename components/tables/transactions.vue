@@ -104,7 +104,10 @@
                     class="col-9 mt-n2"
                     style="color: #17ce89"
                   >
-                    <span class="mr-2 text-truncate underline">
+                    <span
+                      class="mr-2 text-truncate underline pointer"
+                      @click="handleHashRoute(transaction.transaction_hash)"
+                    >
                       {{
                         transaction?.transaction_hash &&
                         transaction?.transaction_hash.length > 35
@@ -175,22 +178,23 @@
   </div>
 </template>
 
-<script lang="js">
+<script>
 import dot from "~/components/icons/dot";
 import copy from "~/components/icons/copy";
 import { mapGetters } from "vuex";
+import appConfig from "~/appConfig";
 import moment from "moment";
 let screenLoading;
 
 export default {
-  components: { dot , copy},
+  components: { dot, copy },
   data: () => ({
     loading: false,
     organisationId: "",
     searchQuery: "",
-    activeReferenceId: '',
+    activeReferenceId: "",
     transactions: [],
-    transactionDetails: {}
+    transactionDetails: {},
   }),
 
   computed: {
@@ -198,11 +202,11 @@ export default {
 
     resultQuery() {
       if (this.searchQuery) {
-        return this.transactions.filter(transaction => {
+        return this.transactions.filter((transaction) => {
           return this.searchQuery
             .toLowerCase()
             .split(" ")
-            .every(v => transaction.reference.toLowerCase().includes(v));
+            .every((v) => transaction.reference.toLowerCase().includes(v));
         });
       } else {
         return this.transactions;
@@ -210,34 +214,35 @@ export default {
     },
     computedData() {
       const data = this.transactions || [];
-      return data.map(transaction => {
+      return data.map((transaction) => {
         return {
           Reference: transaction.reference,
           Amount: "$" + transaction.amount || "-",
           Transaction_Type: transaction.transaction_type || "-",
           Date: moment(transaction.createdAt).format("DD MMMM, YYYY"),
-          Status: transaction.status || "-"
+          Status: transaction.status || "-",
         };
       });
-    }
+    },
   },
 
   mounted() {
-    this.organisationId = this.user?.AssociatedOrganisations[0]?.Organisation?.id;
+    this.organisationId =
+      this.user?.AssociatedOrganisations[0]?.Organisation?.id;
 
     this.getTransactions();
   },
 
   methods: {
-    async toggleTransactionDetails (transaction) {
-      const {reference, transaction_hash } = transaction
+    async toggleTransactionDetails(transaction) {
+      const { reference, transaction_hash } = transaction;
 
-        if (this.activeReferenceId == reference) {
-          return this.activeReferenceId = ""
-        } else {
-          await this.getTransactionDetails(transaction_hash)
-          return this.activeReferenceId = reference
-        }
+      if (this.activeReferenceId == reference) {
+        return (this.activeReferenceId = "");
+      } else {
+        await this.getTransactionDetails(transaction_hash);
+        return (this.activeReferenceId = reference);
+      }
     },
     async getTransactions() {
       try {
@@ -262,7 +267,7 @@ export default {
     },
 
     async getTransactionDetails(transaction_hash) {
-      if (!transaction_hash)  return
+      if (!transaction_hash) return;
       try {
         const response = await this.$axios.get(
           `/transactions/block-details/${transaction_hash}`
@@ -278,14 +283,24 @@ export default {
       }
     },
 
+    handleHashRoute(hash) {
+      const { APP_ENVIRONMENT } = appConfig;
+
+      if (APP_ENVIRONMENT == "production") {
+        window.open(`https://mumbai.polygonscan.com/tx/${hash}`, "_blank");
+      } else {
+        window.open(`https://polygonscan.com/tx/${hash}`, "_blank");
+      }
+    },
+
     openScreen() {
       screenLoading = this.$loading({
         lock: true,
         spinner: "el-icon-loading",
-        background: "#0000009b"
+        background: "#0000009b",
       });
-    }
-  }
+    },
+  },
 };
 </script>
 
