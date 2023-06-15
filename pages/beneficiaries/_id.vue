@@ -59,13 +59,71 @@
             </div>
           </div>
 
-          <!-- Campaigns here -->
-          <div class="mt-3">
-            <BeneficiaryCampaign
-              :campaigns="userDetails.Campaigns"
-              :name="`${userDetails.first_name} ${userDetails.last_name}`"
-            />
-          </div>
+          <!-- Campaigns - Group Members here -->
+
+          <section>
+            <div class="row mt-5">
+              <div class="col-lg-8">
+                <!-- Search Box here -->
+                <div class="position-relative w-75">
+                  <input
+                    type="text"
+                    class="form-controls search"
+                    :placeholder="`Search ${section}...`"
+                    v-model="searchQuery"
+                  />
+                  <img
+                    src="~/assets/img/vectors/search.svg"
+                    class="search-icon position-absolute"
+                    alt="search"
+                  />
+                </div>
+              </div>
+
+              <div class="ml-auto mx-3">
+                <csv :data="computedData" :name="`${name}`" />
+              </div>
+            </div>
+
+            <!-- Tabs Here -->
+            <div class="mt-4" v-if="members.length">
+              <b-tabs
+                content-class="mt-1"
+                id="profile-tab"
+                nav-class
+                nav-wrapper-class
+              >
+                <b-tab
+                  title="Campaigns"
+                  :active="section === 'campaigns'"
+                  class="nav-links"
+                  @click="section = 'campaigns'"
+                >
+                  <div class="mt-4">
+                    <BeneficiaryCampaign :campaigns="campaignsQuery" />
+                  </div>
+                </b-tab>
+
+                <b-tab
+                  title="Beneficiaries"
+                  :active="section === 'beneficiaries'"
+                  class="nav-links"
+                  @click="section = 'beneficiaries'"
+                >
+                  <div class="mt-4">
+                    <BeneficiaryMembers
+                      :beneficiaries="beneficiariesQuery"
+                      :phone="userDetails.phone"
+                    />
+                  </div>
+                </b-tab>
+              </b-tabs>
+            </div>
+
+            <div v-else>
+              <BeneficiaryCampaign :campaigns="campaignsQuery" />
+            </div>
+          </section>
         </div>
 
         <!-- Personal details here -->
@@ -79,11 +137,12 @@
 
 <script>
 import { mapGetters } from "vuex";
+import moment from "moment";
 import TotalBalance from "~/components/icons/total-balance";
 import Disbursed from "~/components/icons/disbursed";
 import BeneficiaryDetails from "~/components/tables/beneficiaries/beneficiary-details";
 import BeneficiaryCampaign from "~/components/tables/beneficiaries/beneficiary-campaign";
-let screenLoading;
+import BeneficiaryMembers from "~/components/tables/beneficiaries/BeneficiaryMembers";
 
 export default {
   name: "BeneficiaryInfo",
@@ -93,11 +152,14 @@ export default {
     TotalBalance,
     BeneficiaryDetails,
     BeneficiaryCampaign,
+    BeneficiaryMembers,
   },
 
   data: () => ({
     loading: false,
     userDetails: {},
+    section: "campaigns",
+    searchQuery: "",
   }),
 
   mounted() {
@@ -107,22 +169,80 @@ export default {
   computed: {
     ...mapGetters("authentication", ["user"]),
 
+    name() {
+      return `${this.userDetails?.first_name}-${this.userDetails?.last_name}_${this.section}`;
+    },
+
     totalReceived() {
       return `${this.$currency}${this.$root.$options.filters.formatCurrency(
-        this.userDetails.total_wallet_received
+        this.userDetails?.total_wallet_received
       )}`;
     },
 
     totalSpent() {
       return `${this.$currency}${this.$root.$options.filters.formatCurrency(
-        this.userDetails.total_wallet_spent
+        this.userDetails?.total_wallet_spent
       )}`;
     },
 
     totalRemaining() {
       return `${this.$currency}${this.$root.$options.filters.formatCurrency(
-        this.userDetails.total_wallet_balance
+        this.userDetails?.total_wallet_balance
       )}`;
+    },
+
+    members() {
+      return this.userDetails?.members?.group_members || [];
+    },
+
+    campaignsQuery() {
+      const { Campaigns } = this.userDetails;
+
+      if (this.searchQuery) {
+        return Campaigns.filter((campaign) =>
+          campaign.title.toLowerCase().includes(this.searchQuery.toLowerCase())
+        );
+      }
+      return Campaigns;
+    },
+
+    computedData() {
+      if (this.section === "campaigns") {
+        return this.computedCampaigns;
+      }
+      return this.computedBeneficiaries;
+    },
+
+    beneficiariesQuery() {
+      if (this.searchQuery) {
+        return this.members.filter((gm) =>
+          gm.full_name.toLowerCase().includes(this.searchQuery.toLowerCase())
+        );
+      }
+      return this.members;
+    },
+
+    computedCampaigns() {
+      const campaigns = this.userDetails?.Campaigns || [];
+      return campaigns.map((campaign) => {
+        return {
+          Name: campaign.title,
+          Budget: campaign.budget,
+          "Start Date": moment(campaign.start_date).format(" MMMM DD, YYYY"),
+          "End Date": moment(campaign.end_date).format(" MMMM DD, YYYY"),
+          Status: campaign.status,
+        };
+      });
+    },
+
+    computedBeneficiaries() {
+      return this.members.map((member) => {
+        return {
+          Beneficiaries: member.full_name,
+          "Phone number": member.phone,
+          "Date of Birth": moment(member.dob).format(" MMMM DD, YYYY"),
+        };
+      });
     },
   },
 

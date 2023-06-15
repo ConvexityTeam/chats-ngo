@@ -35,30 +35,19 @@
             <th scope="col">Product Name</th>
             <th scope="col">Vendor</th>
             <th scope="col">Sales Volume</th>
-            <th scope="col">Total Revenue</th>
-            <!-- <th scope="col">Actions</th> -->
+            <th scope="col">Total Value</th>
           </tr>
         </thead>
         <tbody>
           <tr
             v-for="(product, i) in resultQuery"
-            :key="product.i"
+            :key="product.id"
             :class="{ selected: i % 2 == 0 }"
           >
             <td>{{ product.product_name }}</td>
-            <td>
-              {{ product.vendor_name }}
-            </td>
+            <td>{{ product.vendor_name }}</td>
             <td>{{ product.sales_volume | formatCount }}</td>
-            <td>
-              {{ $currency }}
-              {{ product.total_revenue | formatCurrency }}
-            </td>
-            <!-- <td>
-              <button type="button" class="more-btn">
-                <dot />
-              </button>
-            </td> -->
+            <td>{{ $currency }}{{ product.total_revenue | formatCurrency }}</td>
           </tr>
         </tbody>
       </table>

@@ -14,6 +14,7 @@
             :loading="loading"
           />
         </Modal>
+
         <div class="form-holder p-4">
           <div>
             <!-- Button togglers here -->
@@ -34,7 +35,6 @@
                   @click="step = 2"
                   type="button"
                   class="mgt-btn two"
-                  disabled
                   :class="{ active: step == 2 }"
                 >
                   2-Factor Authentication
@@ -160,7 +160,7 @@
 
             <!-- "2 Factor Authentication"  -->
             <div v-if="step == 2" class="step2">
-              <div class="row pl-3 pr-3 pt-4">
+              <div class="row px-3 pt-4">
                 <div class="col-lg mb-3 google-auth-container">
                   <div class="google-auth-text">
                     <p class="step-2-heading primary-blue">
@@ -232,14 +232,14 @@
 </template>
 
 <script>
+import { mapActions } from "vuex";
 import { required, sameAs, minLength } from "vuelidate/lib/validators";
-import lockIcon from "~/components/icons/lock-icon.vue";
-import eyeClosed from "~/components/icons/eye-closed.vue";
-import eyeOpen from "~/components/icons/eye-open.vue";
+import lockIcon from "~/components/icons/lock-icon";
+import eyeClosed from "~/components/icons/eye-closed";
+import eyeOpen from "~/components/icons/eye-open";
 import toggleOff from "~/components/icons/toggle-off";
 import toggleOn from "~/components/icons/toggle-on";
-import addGoogleTwoFa from "~/components/forms/add-twofa-email.vue";
-import { mapGetters, mapActions } from "vuex";
+import addGoogleTwoFa from "~/components/forms/add-twofa-email";
 
 export default {
   name: "SecuritySettings",

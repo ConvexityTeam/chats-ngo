@@ -28,7 +28,7 @@
       </Modal>
 
       <!-- Benefactor Details -->
-      <Modal id="benefactor-details" title="Benefactor Details">
+      <Modal id="benefactor-details" title="Beneficiary Preview">
         <BenefactorDetailsVue :benefactor="selectedBenefactor" />
       </Modal>
 
@@ -295,7 +295,7 @@
                       <tr
                         v-for="(benefactor, i) in query"
                         :key="i"
-                        class="table-row"
+                        class="table-row pointer"
                       >
                         <td v-if="tabIndex === 1">
                           <checkbox

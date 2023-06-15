@@ -1,29 +1,24 @@
 <template>
   <div class="campaign-details-holder p-4">
-    <h4 class="campaign-details-header  poppins pt-2">Personal Details</h4>
+    <h4 class="campaign-details-header poppins pt-2">Personal Details</h4>
 
     <!-- details region here -->
-    <div class="campaign-details-inner  mt-4 p-4">
+    <div class="campaign-details-inner mt-4 p-4">
       <div
-        class=" d-flex justify-content-center mx-auto align-items-center logo-holder "
+        class="d-flex justify-content-center mx-auto align-items-center logo-holder"
       >
         <img
-          :src="
-            user.profile_pic == null || !user.profile_pic
-              ? img
-              : user.profile_pic
-          "
+          :src="user.profile_pic || defaultImg"
           width="100"
           height="100"
-          alt=""
-          class="rounded-circle "
+          :alt="name"
+          class="rounded-circle"
+          :class="{ 'p-3': !user.profile_pic }"
         />
       </div>
 
       <div class="text-center my-4">
-        <h4 class="name">
-          {{ user.first_name ? user.first_name + " " + user.last_name : "" }}
-        </h4>
+        <h4 class="name">{{ name }}</h4>
         <h4 class="id p">ID: {{ user.id }}</h4>
       </div>
 
@@ -49,15 +44,15 @@
           </div>
         </div>
 
-        <!-- <div class="d-flex campaign-divider mb-3">
-          <p class="campaign-captions">Created:</p>
+        <div class="d-flex campaign-divider mb-3">
+          <p class="campaign-captions">Date of Birth:</p>
 
           <div class="ml-auto">
             <p class="campaign-answers">
-              {{ user.createdAt | formatDateOnly }}
+              {{ user.dob | formatDate }}
             </p>
           </div>
-        </div> -->
+        </div>
       </div>
     </div>
   </div>
@@ -68,13 +63,19 @@ export default {
   props: {
     user: {
       type: Object,
-      default: () => {}
-    }
+      default: () => {},
+    },
+  },
+
+  computed: {
+    name() {
+      return `${this.user.first_name} ${this.user.last_name}`;
+    },
   },
 
   data: () => ({
-    img: require("~/assets/img/lady.svg")
-  })
+    defaultImg: require("~/assets/img/svg/default-user.svg"),
+  }),
 };
 </script>
 

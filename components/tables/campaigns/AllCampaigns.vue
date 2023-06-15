@@ -29,7 +29,7 @@
             <tr
               v-for="(campaign, i) in resultQuery"
               :key="i"
-              style="cursor: pointer"
+              class="pointer"
               :class="{ selected: i % 2 == 0 }"
             >
               <td class="campaign-title">{{ campaign.title }}</td>
@@ -41,15 +41,7 @@
               <td>
                 <div
                   class="status px-1"
-                  :class="{
-                    pending:
-                      campaign.status == 'pending' ||
-                      campaign.status == 'paused',
-                    progress: campaign.status == 'active',
-                    ongoing: campaign.status == 'ongoing',
-                    done: campaign.status == 'completed',
-                    ended: campaign.status == 'ended',
-                  }"
+                  :class="campaignStatus(campaign.status)"
                 >
                   {{ campaign.status | capitalize }}
                 </div>
@@ -93,7 +85,7 @@
 
 <script>
 import newCampaign from "~/components/forms/new-campaign";
-import { statuses } from "@/utils/constants";
+import { statuses, campaignStatus } from "@/utils/helpers";
 
 export default {
   components: {
@@ -119,7 +111,8 @@ export default {
 
   data() {
     return {
-      statuses: statuses,
+      statuses,
+      campaignStatus,
       amount: 0,
       SelectedCampaign: {},
       selected: null,

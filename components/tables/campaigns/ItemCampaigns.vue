@@ -35,17 +35,7 @@
             <td>{{ campaign.createdAt | shortDate }}</td>
 
             <td>
-              <div
-                class="status px-2"
-                :class="{
-                  pending:
-                    campaign.status == 'pending' || campaign.status == 'paused',
-                  progress: campaign.status == 'active',
-                  ongoing: campaign.status == 'ongoing',
-                  done: campaign.status == 'completed',
-                  ended: campaign.status == 'ended',
-                }"
-              >
+              <div class="status px-2" :class="campaignStatus(campaign.status)">
                 {{ campaign.status | capitalize }}
               </div>
             </td>
@@ -86,7 +76,7 @@
 </template>
 
 <script>
-import { statuses } from "@/utils/constants";
+import { statuses, campaignStatus } from "@/utils/helpers";
 export default {
   props: {
     resultQuery: {
@@ -106,7 +96,8 @@ export default {
   },
 
   data: () => ({
-    statuses: statuses,
+    statuses,
+    campaignStatus,
   }),
 };
 </script>

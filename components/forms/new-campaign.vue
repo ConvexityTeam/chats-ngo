@@ -278,9 +278,7 @@ export default {
     ...mapGetters("authentication", ["user"]),
 
     campaignLabel() {
-      return this.activeCampaignForm === "items"
-        ? "Number of products"
-        : "Budget";
+      return this.activeCampaignForm === "items" ? "Number of items" : "Budget";
     },
 
     computedId() {
@@ -582,6 +580,7 @@ input[type="number"] {
 }
 
 .mgt-btn.active {
+  font-style: italic;
   color: #fff;
   font-weight: bold;
   background: #9dadca;
