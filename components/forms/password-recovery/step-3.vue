@@ -13,16 +13,16 @@
         @focus="passwordActive = true"
         @blur="$v.payload.password.$touch()"
       />
-      <div class="position-absolute icon-left ">
-        <lock-icon :active="passwordActive" />
+      <div class="position-absolute icon-left">
+        <IconsLockIcon :active="passwordActive" />
       </div>
 
       <div
         class="position-absolute icon-right"
         @click="showpassword = !showpassword"
       >
-        <eye-open v-if="showpassword" />
-        <eye-closed v-else />
+        <IconsEyeOpen v-if="showpassword" />
+        <IconsEyeClosed v-else />
       </div>
     </div>
 
@@ -39,16 +39,16 @@
         @focus="confirmActive = true"
         @input="$v.payload.confirm_password.$touch()"
       />
-      <div class="position-absolute icon-left ">
-        <lock-icon :active="confirmActive" />
+      <div class="position-absolute icon-left">
+        <IconsLockIcon :active="confirmActive" />
       </div>
 
       <div
         class="position-absolute icon-right"
         @click="showConfirm = !showConfirm"
       >
-        <eye-open v-if="showConfirm" />
-        <eye-closed v-else />
+        <IconsEyeOpen v-if="showConfirm" />
+        <IconsEyeClosed v-else />
       </div>
     </div>
 
@@ -65,16 +65,13 @@
 
 <script>
 import { required, sameAs } from "vuelidate/lib/validators";
-import lockIcon from "~/components/icons/lock-icon.vue";
-import eyeClosed from "~/components/icons/eye-closed.vue";
-import eyeOpen from "~/components/icons/eye-open.vue";
 
 export default {
   props: {
     loading: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
 
   data: () => ({
@@ -82,34 +79,27 @@ export default {
     showConfirm: false,
     passwordActive: false,
     confirmActive: false,
+    email: "",
 
     payload: {
       password: "",
-      confirm_password: ""
+      confirm_password: "",
     },
-
-    email: ""
   }),
 
   validations: {
     payload: {
       password: {
-        required
+        required,
       },
 
       confirm_password: {
         required,
-        sameAs: sameAs(vm => {
+        sameAs: sameAs((vm) => {
           return vm.password;
-        })
-      }
-    }
-  },
-
-  components: {
-    lockIcon,
-    eyeClosed,
-    eyeOpen
+        }),
+      },
+    },
   },
 
   methods: {
@@ -122,7 +112,7 @@ export default {
       }
 
       this.$emit("resetPassword", this.payload);
-    }
-  }
+    },
+  },
 };
 </script>

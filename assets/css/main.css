@@ -27,6 +27,11 @@ html {
   scroll-behavior: smooth;
 }
 
+.g-recaptcha {
+  padding-bottom: 2rem !important;
+  color: #e42c66 !important;
+}
+
 .grecaptcha-badge {
   /* visibility: hidden; */
 }
@@ -494,6 +499,10 @@ p.form-input__error span {
   border-radius: 5px;
   transition: all 0.3s ease;
   outline: none;
+}
+
+.form-controls.less-padded {
+  padding: 0rem 1rem;
 }
 
 textarea.form-controls {

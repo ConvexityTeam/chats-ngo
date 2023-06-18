@@ -14,7 +14,7 @@
         @blur="$v.email.$touch()"
       />
       <div class="position-absolute icon-left">
-        <email-icon :active="emailActive" />
+        <IconsEmailIcon :active="emailActive" />
       </div>
     </div>
 
@@ -31,29 +31,25 @@
 
 <script>
 import { required, email } from "vuelidate/lib/validators";
-import emailIcon from "~/components/icons/email-icon.vue";
+
 export default {
   props: {
     loading: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
 
   data: () => ({
     emailActive: false,
-    email: ""
+    email: "",
   }),
 
   validations: {
     email: {
       email,
-      required
-    }
-  },
-
-  components: {
-    emailIcon
+      required,
+    },
   },
 
   methods: {
@@ -66,7 +62,7 @@ export default {
       }
 
       this.$emit("recoverPassword", this.email);
-    }
-  }
+    },
+  },
 };
 </script>

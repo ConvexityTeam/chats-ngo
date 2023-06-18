@@ -69,15 +69,15 @@
                     @blur="$v.payload.old_password.$touch()"
                   />
                   <div class="position-absolute icon-left pl-4">
-                    <lock-icon :active="passActive" />
+                    <IconsLockIcon :active="passActive" />
                   </div>
 
                   <div
                     class="position-absolute icon-right pr-4"
                     @click="showpassword = !showpassword"
                   >
-                    <eye-open v-if="showpassword" />
-                    <eye-closed v-else />
+                    <IconsEyeOpen v-if="showpassword" />
+                    <IconsEyeClosed v-else />
                   </div>
                 </div>
               </div>
@@ -100,15 +100,15 @@
                     @blur="$v.payload.new_password.$touch()"
                   />
                   <div class="position-absolute icon-left pl-4">
-                    <lock-icon :active="passActive2" />
+                    <IconsLockIcon :active="passActive2" />
                   </div>
 
                   <div
                     class="position-absolute icon-right pr-4"
                     @click="showpassword2 = !showpassword2"
                   >
-                    <eye-open v-if="showpassword2" />
-                    <eye-closed v-else />
+                    <IconsEyeOpen v-if="showpassword2" />
+                    <IconsEyeClosed v-else />
                   </div>
                 </div>
               </div>
@@ -131,15 +131,15 @@
                     @blur="$v.payload.confirm_newpassword.$touch()"
                   />
                   <div class="position-absolute icon-left pl-4">
-                    <lock-icon :active="passActive3" />
+                    <IconsLockIcon :active="passActive3" />
                   </div>
 
                   <div
                     class="position-absolute icon-right pr-4"
                     @click="showpassword3 = !showpassword3"
                   >
-                    <eye-open v-if="showpassword3" />
-                    <eye-closed v-else />
+                    <IconsEyeOpen v-if="showpassword3" />
+                    <IconsEyeClosed v-else />
                   </div>
                 </div>
               </div>
@@ -234,9 +234,6 @@
 <script>
 import { mapActions } from "vuex";
 import { required, sameAs, minLength } from "vuelidate/lib/validators";
-import lockIcon from "~/components/icons/lock-icon";
-import eyeClosed from "~/components/icons/eye-closed";
-import eyeOpen from "~/components/icons/eye-open";
 import toggleOff from "~/components/icons/toggle-off";
 import toggleOn from "~/components/icons/toggle-on";
 import addGoogleTwoFa from "~/components/forms/add-twofa-email";
@@ -244,9 +241,6 @@ import addGoogleTwoFa from "~/components/forms/add-twofa-email";
 export default {
   name: "SecuritySettings",
   components: {
-    lockIcon,
-    eyeClosed,
-    eyeOpen,
     toggleOff,
     toggleOn,
     addGoogleTwoFa,

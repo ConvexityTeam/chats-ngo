@@ -25,7 +25,7 @@
         type="button"
         class="resend-btn"
         :class="{
-          resending: isResending
+          resending: isResending,
         }"
         @click="handleResend"
       >
@@ -39,23 +39,20 @@
 import PincodeInput from "vue-pincode-input";
 const time = 30;
 export default {
+  components: { PincodeInput },
+
   props: {
     loading: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
 
   data: () => ({
     isResending: false,
-
     code: "",
-    timeout: time
+    timeout: time,
   }),
-
-  components: {
-    PincodeInput
-  },
 
   methods: {
     sendCode() {
@@ -79,8 +76,8 @@ export default {
 
       this.isResending = false;
       this.timeout = time;
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -106,7 +103,7 @@ input.vue-pincode-input {
   height: 52px;
   max-width: inherit;
   padding: 0;
-  margin: 0px 20px 0px 0px;
+  margin: 0px 16px 0px 0px;
   color: #25396f;
   opacity: 0.7;
   font-weight: bold;

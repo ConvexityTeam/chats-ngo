@@ -1,14 +1,12 @@
 <template>
   <div class="main pb-5">
-    <div class="text-center ">
+    <div class="text-center">
       <!-- Logo here -->
       <div class="logo-div">
         <img src="~/assets/img/logo.svg" class="img-fluid" alt="Chats" />
       </div>
 
-      <h3 class="text-white welcome py-4">
-        Password Recovery
-      </h3>
+      <h3 class="text-white welcome py-4">Password Recovery</h3>
 
       <!-- banner here -->
       <!-- <div class=" position-relative banner mx-auto" v-if="isSuccess">
@@ -32,9 +30,7 @@
 
         <!-- Message for step 2 here -->
         <div v-if="isSuccess && step === 2">
-          <p class="font-bold primary-black">
-            Confirm verification code
-          </p>
+          <p class="font-bold primary-black">Confirm verification code</p>
 
           <p class="forgot">
             Kindly enter the verification code sent to <br />
@@ -44,9 +40,7 @@
 
         <!-- Message for step 3 here -->
         <div v-if="isSuccess && step === 3">
-          <p class="font-bold primary-black">
-            Set a new password
-          </p>
+          <p class="font-bold primary-black">Set a new password</p>
 
           <p class="forgot">
             Choose a new password, something easy to remember.
@@ -88,21 +82,15 @@
 </template>
 
 <script>
-import step1 from "~/components/forms/password-recovery/step-1.vue";
-import step2 from "~/components/forms/password-recovery/step-2.vue";
-import step3 from "~/components/forms/password-recovery/step-3.vue";
+import step1 from "~/components/forms/password-recovery/step-1";
+import step2 from "~/components/forms/password-recovery/step-2";
+import step3 from "~/components/forms/password-recovery/step-3";
 
 import { mapActions } from "vuex";
-import email from "vuelidate/lib/validators/email";
 
 export default {
   layout: "default",
-
-  components: {
-    step1,
-    step2,
-    step3
-  },
+  components: { step1, step2, step3 },
 
   data: () => ({
     loading: false,
@@ -110,24 +98,24 @@ export default {
     step: 1,
     email: "",
     payload: {
-      email: ""
+      email: "",
       // ref: "",
       // otp: "",
       // password: "",
       // confirm_password: ""
-    }
+    },
   }),
 
   methods: {
     ...mapActions("authentication", ["commitToken", "commitUser"]),
-    async recoverPassword(value) {
+    async recoverPassword(email) {
       try {
-        this.payload.email = value;
+        this.payload.email = email;
         this.loading = true;
         this.isSuccess = false;
 
         const response = await this.$axios.post("/auth/password/reset", {
-          email: value
+          email,
         });
 
         console.log("recover response", response);
@@ -150,9 +138,10 @@ export default {
     },
 
     handleCode(value) {
-      this.payload.otp = value; 
+      this.payload.otp = value;
       this.step = 3;
     },
+
     async resetPassword(payload) {
       try {
         this.loading = true;
@@ -176,8 +165,8 @@ export default {
         console.log("RESET PASSWORD::", err);
         this.$toast.error(err.response?.data?.message);
       }
-    }
-  }
+    },
+  },
 };
 </script>
 

@@ -9,6 +9,21 @@
           <sideMenu />
         </div>
         <div style="flex-grow: 1">
+          <div class="container">
+            <GenericBanner isKyc>
+              <div class="d-flex holder">
+                <span class="primary-blue font-medium">
+                  To access all Chats service, please complete your KYC
+                  verification process
+                </span>
+
+                <span class="route" @click="$router.push('/settings')"
+                  >Update Profile</span
+                >
+              </div>
+            </GenericBanner>
+          </div>
+
           <nuxt />
         </div>
       </div>
@@ -67,3 +82,18 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.route {
+  color: #f2994a;
+  font-weight: 700;
+  text-decoration: underline;
+  font-size: 0.875rem;
+  padding-top: 4px;
+  cursor: pointer;
+}
+
+.holder {
+  flex-direction: column;
+}
+</style>

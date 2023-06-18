@@ -5,89 +5,98 @@
       <div class="logo-div">
         <img src="~/assets/img/logo.svg" class="img-fluid" alt="Chats" />
       </div>
-      <h3 class="text-white welcome py-4">Hi, welcome back</h3>
+      <h3 class="text-white welcome py-4">
+        {{ is2fa ? "Two-factor authentication " : "Hi, welcome back" }}
+      </h3>
     </div>
 
     <div class="d-flex justify-content-center align-items-center">
       <div class="card__holder">
-        <form @submit.prevent="loginUser">
-          <!-- Organisation email here -->
-          <div class="form-group">
-            <label for="email">Email</label>
-            <input
-              type="email"
-              class="form-controls"
-              placeholder="example@gmail.com"
-              @focus="emailActive = true"
-              id="email"
-              :class="{ form__input__error: $v.payload.email.$error }"
-              v-model="payload.email"
-              @blur="$v.payload.email.$touch()"
-            />
-            <div class="position-absolute icon-left">
-              <email-icon :active="emailActive" />
-            </div>
-          </div>
-
-          <!-- Password here -->
-          <div class="form-group">
-            <label for="password">Password</label>
-            <input
-              :type="showpassword ? 'text' : 'password'"
-              class="form-controls"
-              placeholder="Enter password"
-              :class="{ form__input__error: $v.payload.password.$error }"
-              id="password"
-              v-model="payload.password"
-              @focus="passActive = true"
-              @blur="$v.payload.password.$touch()"
-            />
-            <div class="position-absolute icon-left">
-              <lock-icon :active="passActive" />
-            </div>
-
-            <div
-              class="position-absolute icon-right"
-              @click="showpassword = !showpassword"
-            >
-              <eye-open v-if="showpassword" />
-              <eye-closed v-else />
-            </div>
-          </div>
-
-          <div class="mt-4 pt-2 text-center">
-            <recaptcha />
-            <button :disabled="loading" class="onboarding-btn">
-              <span v-if="loading">
-                <img
-                  src="~/assets/img/vectors/spinner.svg"
-                  class="btn-spinner"
-                />
-              </span>
-              <span v-else>Log in</span>
-            </button>
-          </div>
-        </form>
-
-        <div class="mt-4 ot-2 text-center">
-          <p class="account">
-            Don’t have an account?
-
-            <span
-              class="font-bold primary login pointer"
-              @click="$router.push('/sign-up')"
-            >
-              Create one
-            </span>
-          </p>
-          <p>
-            <span
-              class="forgot pointer"
-              @click="$router.push('/forgot-password')"
-              >Forgot password?</span
-            >
-          </p>
+        <!-- 2fa Here -->
+        <div v-if="is2fa">
+          <FormsLoginTwofa />
         </div>
+
+        <template v-else>
+          <form @submit.prevent="loginUser">
+            <!-- Organisation email here -->
+            <div class="form-group">
+              <label for="email">Email</label>
+              <input
+                type="email"
+                class="form-controls"
+                placeholder="example@gmail.com"
+                @focus="emailActive = true"
+                id="email"
+                :class="{ form__input__error: $v.payload.email.$error }"
+                v-model="payload.email"
+                @blur="$v.payload.email.$touch()"
+              />
+              <div class="position-absolute icon-left">
+                <IconsEmailIcon :active="emailActive" />
+              </div>
+            </div>
+
+            <!-- Password here -->
+            <div class="form-group">
+              <label for="password">Password</label>
+              <input
+                :type="showpassword ? 'text' : 'password'"
+                class="form-controls"
+                placeholder="Enter password"
+                :class="{ form__input__error: $v.payload.password.$error }"
+                id="password"
+                v-model="payload.password"
+                @focus="passActive = true"
+                @blur="$v.payload.password.$touch()"
+              />
+              <div class="position-absolute icon-left">
+                <IconsLockIcon :active="passActive" />
+              </div>
+
+              <div
+                class="position-absolute icon-right"
+                @click="showpassword = !showpassword"
+              >
+                <IconsEyeOpen v-if="showpassword" />
+                <IconsEyeClosed v-else />
+              </div>
+            </div>
+
+            <div class="mt-4 pt-2 text-center">
+              <recaptcha />
+              <button :disabled="loading" class="onboarding-btn">
+                <span v-if="loading">
+                  <img
+                    src="~/assets/img/vectors/spinner.svg"
+                    class="btn-spinner"
+                  />
+                </span>
+                <span v-else>Log in</span>
+              </button>
+            </div>
+          </form>
+
+          <div class="mt-4 ot-2 text-center">
+            <p class="account">
+              Don’t have an account?
+
+              <span
+                class="font-bold primary login pointer"
+                @click="$router.push('/sign-up')"
+              >
+                Create one
+              </span>
+            </p>
+            <p>
+              <span
+                class="forgot pointer"
+                @click="$router.push('/forgot-password')"
+                >Forgot password?</span
+              >
+            </p>
+          </div>
+        </template>
       </div>
     </div>
   </div>
@@ -96,35 +105,34 @@
 <script>
 import { required, email } from "vuelidate/lib/validators";
 import { mapActions } from "vuex";
-import emailIcon from "~/components/icons/email-icon.vue";
-import lockIcon from "~/components/icons/lock-icon.vue";
-import eyeClosed from "~/components/icons/eye-closed.vue";
-import eyeOpen from "~/components/icons/eye-open.vue";
 
 export default {
   name: "Login",
   layout: "default",
   middleware: ["loginguard"],
-  components: { emailIcon, lockIcon, eyeClosed, eyeOpen },
 
-  data() {
-    return {
-      loading: false,
-      emailActive: false,
-      passActive: false,
-      showpassword: false,
-      payload: {
-        email: "",
-        password: "",
-        token: "",
-      },
-    };
-  },
+  data: () => ({
+    loading: false,
+    emailActive: false,
+    passActive: false,
+    showpassword: false,
+    payload: {
+      email: "",
+      password: "",
+      token: "",
+    },
+  }),
 
   validations: {
     payload: {
       email: { required, email },
       password: { required },
+    },
+  },
+
+  computed: {
+    is2fa() {
+      return this.$route.query.is2fa;
     },
   },
 
@@ -136,46 +144,57 @@ export default {
         this.loading = true;
         this.$v.payload.$touch();
 
-        if (!!this.$v.payload.$error) {
+        if (this.$v.payload.$error) {
           return (this.loading = false);
         }
 
-        const token = await this.$recaptcha.getResponse();
+        const recaptchaToken = await this.$recaptcha.getResponse();
         const response = await this.$axios.post("/auth/ngo-login", {
           ...this.payload,
-          token,
+          token: recaptchaToken,
         });
 
         console.log("login response", response);
 
         if (response.status === "success") {
-          let protectedLastRoute = localStorage.getItem("protectedLastRoute");
-          const invalidRoutes = ["/", "undefined"];
-          const { nu } = this.$route.query;
+          const { user, token } = response.data;
 
-          this.commitToken(response.data.token);
-          this.commitUser(response.data.user);
+          // check for 2fa here
+          // if (user.is_tfa_enabled) {
+          //   this.$router.push({ path: "/", query: { is2fa: true } });
+          //   return;
+          // }
 
-          if (invalidRoutes.includes(protectedLastRoute)) {
-            protectedLastRoute = "/dashboard";
-          }
-
-          if (nu) {
-            protectedLastRoute = "/settings";
-          }
-
-          await this.$router.push(protectedLastRoute || "/dashboard");
+          this.grantUserAccess({ user, token });
         }
 
         await this.$recaptcha.reset();
       } catch (err) {
-        this.loading = false;
         console.log("ERRR::::", { err });
         this.$toast.error(err?.response?.data?.message);
       } finally {
         this.loading = false;
         localStorage.removeItem("protectedLastRoute");
       }
+    },
+
+    async grantUserAccess({ user, token }) {
+      let protectedLastRoute = localStorage.getItem("protectedLastRoute");
+      const invalidRoutes = ["/", "undefined"];
+      const { nu } = this.$route.query;
+
+      this.commitToken(token);
+      this.commitUser(user);
+
+      if (invalidRoutes.includes(protectedLastRoute)) {
+        protectedLastRoute = "/dashboard";
+      }
+
+      if (nu) {
+        protectedLastRoute = "/settings";
+      }
+
+      await this.$router.push(protectedLastRoute || "/dashboard");
     },
   },
 };

@@ -16,7 +16,7 @@
       <!-- Payment options here -->
       <div class="mt-4">
         <!-- Pay with Paystack here -->
-        <div class="option-holder py-4 px-3 mb-3">
+        <div class="option-holder py-4 px-3">
           <div>
             <h5 class="option-header">Fund Through Paystack</h5>
             <p class="description">
