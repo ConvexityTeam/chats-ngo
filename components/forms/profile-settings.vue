@@ -588,6 +588,7 @@ export default {
     isIdentityVerified: false,
     step: 1,
     file: "",
+    // ninValidationRule: null,
     payload: {
       organisation_profile: {
         country: "",
@@ -628,7 +629,10 @@ export default {
       user_profile: {
         first_name: { required },
         last_name: { required },
-        nin: { maxLength: maxLength(11), numeric, required },
+        // nin: { maxLength: maxLength(11), numeric, required },
+        nin: function () {
+          return this.ninValidationRule; // Use ninValidationRule in the validation rule
+        },
       },
     },
   },
@@ -641,6 +645,17 @@ export default {
 
   computed: {
     ...mapGetters("authentication", ["user"]),
+
+    ninValidationRule() {
+      const country = this.payload.user_profile.country;
+      return country === "NG"
+        ? {
+            required,
+            maxLength: maxLength(11),
+            numeric,
+          }
+        : {};
+    },
 
     states() {
       const setCountry = this.payload?.organisation_profile?.country;
@@ -685,6 +700,7 @@ export default {
 
   methods: {
     ...mapActions("authentication", ["commitUserUpdate"]),
+
     // async fetchOrganisationProfile() {
     //       try {
     //         this.loading = true;
@@ -743,7 +759,15 @@ export default {
     async updateUserProfile() {
       try {
         this.loading = true;
+
+        const { country } = this.payload.user_profile;
+        if (country != "NG") {
+          delete this.payload.user_profile.nin;
+        }
+
         this.$v.payload.user_profile.$touch();
+
+        console.log("CALLED::", this.payload.user_profile);
 
         if (this.$v.payload.user_profile.$error === true) {
           return (this.loading = false);
