@@ -588,7 +588,6 @@ export default {
     isIdentityVerified: false,
     step: 1,
     file: "",
-    // ninValidationRule: null,
     payload: {
       organisation_profile: {
         country: "",
@@ -700,7 +699,6 @@ export default {
 
   methods: {
     ...mapActions("authentication", ["commitUserUpdate"]),
-
     // async fetchOrganisationProfile() {
     //       try {
     //         this.loading = true;
