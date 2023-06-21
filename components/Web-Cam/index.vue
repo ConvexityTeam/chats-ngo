@@ -2,7 +2,7 @@
   <div>
     <!-- Error Display -->
     <div v-if="cameraError">
-      <div class="col-12 mt-4 p-2 text-sm  alert-danger d-none">
+      <div class="col-12 mt-4 p-2 text-sm alert-danger d-none">
         Failed to start camera, please allow permision to access camera. <br />
         If you are browsing through social media built in browsers, you would
         need to open the page in Sarafi (iPhone)/ Chrome (Android)
@@ -102,7 +102,7 @@
           </div>
 
           <!-- Save -->
-          <div class="ml-4 ">
+          <div class="ml-4">
             <Button
               :has-icon="false"
               text="Save and continue"
@@ -131,7 +131,7 @@ export default {
     isLoading: false,
     cameraError: false,
     image: null,
-    streamList: []
+    streamList: [],
   }),
 
   mounted() {
@@ -144,17 +144,17 @@ export default {
 
       const constraints = (window.constraints = {
         audio: false,
-        video: true
+        video: true,
       });
 
       navigator.mediaDevices
         .getUserMedia(constraints)
-        .then(stream => {
+        .then((stream) => {
           this.isLoading = false;
           this.$refs.camera.srcObject = stream;
           this.streamList.push(stream);
         })
-        .catch(error => {
+        .catch((error) => {
           this.isLoading = false;
           this.cameraError = true;
           this.$toast.error(
@@ -164,8 +164,8 @@ export default {
     },
 
     stopCameraStream() {
-      this.streamList.forEach(stream => {
-        stream.getTracks().forEach(track => {
+      this.streamList.forEach((stream) => {
+        stream.getTracks().forEach((track) => {
           track.stop();
         });
       });
@@ -216,8 +216,9 @@ export default {
     savePhoto() {
       console.log("got here");
       this.stopCameraStream();
-    }
-  }
+      this.$emit("photo-taken", this.image);
+    },
+  },
 };
 </script>
 

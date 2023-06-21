@@ -686,6 +686,23 @@ input.vue-pincode-input:focus {
   box-shadow: none;
 }
 
+/* NIN DROPDOWN HERE */
+
+.nin-dropdown {
+  background-color: #f7f2c9 !important;
+  border-left: 2px solid #f2994a !important;
+  border-radius: 4px !important;
+  border-right: none !important;
+  padding: 0 !important;
+
+  .popper__arrow {
+    &::after {
+      border-bottom-color: #f7f2c9 !important;
+      border-top-color: #f7f2c9 !important;
+    }
+  }
+}
+
 /* ELEMEBT SELECT HERE */
 
 #balance > .el-select > .el-input > .el-input__inner {

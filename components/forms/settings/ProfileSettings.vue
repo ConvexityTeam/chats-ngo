@@ -380,26 +380,33 @@
 
           <section v-if="payload.user_profile.country == 'NG'">
             <!-- NIN Here -->
-            <div class="row">
+            <div class="row position-relative">
               <div class="col-lg-6 mb-4">
-                <label for="state">National Identity Number</label>
+                <div class="d-flex">
+                  <label for="state">National Identity Number</label>
+                  <!-- Drodown -->
+                  <div class="ml-2">
+                    <el-dropdown>
+                      <div>
+                        <IconsNinInfo />
+                      </div>
+
+                      <el-dropdown-menu slot="dropdown" class="nin-dropdown">
+                        <template>
+                          <GenericNinDisplay />
+                        </template>
+                      </el-dropdown-menu>
+                    </el-dropdown>
+                  </div>
+                </div>
+
                 <input
                   type="text"
                   class="form-controls px-3"
                   id="address"
-                  placeholder="Enter NIN"
+                  placeholder="Enter Virtual NIN"
                   v-model="payload.user_profile.nin"
                 />
-
-                <!-- VNIN guide -->
-                <!-- <div>
-                  <span> Two ways to generate your Virtual NIN for KYC</span>
-                  <ul>
-                    <li></li>
-                  </ul>
-
-                  USSD *346*3*customer NIN*898739# NIMC Official mobile app
-                </div> -->
               </div>
 
               <div class="col-lg-6 align-self-center">
@@ -410,11 +417,6 @@
                 >
                   Verify NIN
                 </button>
-                <!--
-                     :disabled="
-                      !payload.user_profile.nin ||
-                        payload.user_profile.nin.length < 11
-                    " -->
               </div>
             </div>
 

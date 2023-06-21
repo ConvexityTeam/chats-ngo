@@ -160,7 +160,7 @@
           </section>
 
           <!-- SMS 2FA -->
-          <section class="row px-3 pt-1">
+          <section class="row px-3 pt-1 d-none">
             <div class="p-4 mb-4 google-auth-container">
               <section class="d-flex align-items-center">
                 <div>
