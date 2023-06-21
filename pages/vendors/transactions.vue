@@ -3,20 +3,14 @@
     <div class="pt-4 mt-2">
       <back text="Go Back" @click="$router.push('/vendors')" />
     </div>
-    <VendorTransaction />
+    <TablesVendorsVendorTransaction />
   </div>
 </template>
 
 <script>
-import VendorTransaction from "~/components/tables/vendors/vendor-transaction";
-
 export default {
   layout: "dashboard",
-  name: "VendorTransactionIndex",
-
-  components: {
-    VendorTransaction,
-  },
+  name: "VendorTransaction",
 };
 </script>
 

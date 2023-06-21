@@ -31,7 +31,7 @@
           <div class="ml-3">
             <p class="text">Transactions</p>
             <h4 class="funds">
-              {{ summary.transactions_count || 0 }}
+              {{ transactions_count || 0 }}
             </h4>
           </div>
 
@@ -42,7 +42,7 @@
               class="d-flex viewall align-items-center"
             >
               <img src="~/assets/img/vectors/eye.svg" alt="see" />
-              <span class="ml-2 pt-1">View </span>
+              <span class="ml-2">View </span>
             </button>
           </div>
         </div>
@@ -108,6 +108,7 @@ export default {
     orgId: "",
     count: "",
     summary: {},
+    transactions_count: "",
     vendors: [],
   }),
 
@@ -120,6 +121,7 @@ export default {
     this.orgId = this.user?.AssociatedOrganisations[0]?.OrganisationId;
     this.getallVendors(this.user?.AssociatedOrganisations[0]?.OrganisationId);
     this.getSummary();
+    this.getTotalProductSoldAndValue();
   },
 
   methods: {
@@ -135,12 +137,33 @@ export default {
         console.log("Vendor Summary", response);
 
         if (response.status == "success") {
-          screenLoading.close();
-          this.summary = response.data?.today_stat;
-          this.count = response.data?.vendors_count;
+          const { data } = response;
+
+          this.summary = data?.today_stat;
+          this.count = data?.vendors_count;
+          this.transactions_count = data?.Transactions.length;
         }
       } catch (err) {
+      } finally {
         screenLoading.close();
+      }
+    },
+
+    async getTotalProductSoldAndValue() {
+      try {
+        this.loading = true;
+        const response = await this.$axios.get(
+          `orders/total-sold-value/${this.orgId}`
+        );
+        if (response.status == "success") {
+          this.loading = false;
+          this.totalProductsSold = response.data?.total_product_sold;
+          this.totalProductValue = response.data?.total_product_value;
+        }
+        console.log("TOTAL PRODUCTS SOLD AND VALUE::", response);
+      } catch (err) {
+        this.loading = false;
+        console.log(err);
       }
     },
 

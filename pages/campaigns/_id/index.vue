@@ -460,6 +460,15 @@
               :campaignName="details.title"
             />
           </div>
+
+          <!-- Campaign Transactions Here -->
+          <div class="mt-4 pt-2">
+            <TablesCampaignsCampaignTransactions
+              :campaignId="$route.params.id"
+              :campaignName="details.title"
+              :orgId="orgId"
+            />
+          </div>
         </div>
 
         <!-- Campaign details here -->

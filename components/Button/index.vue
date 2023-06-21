@@ -9,8 +9,18 @@
   >
     <i v-if="hasIcon && !loading">
       <img v-if="hasEye" src="~/assets/img/vectors/eye.svg" alt="eye" />
-      <img v-else-if="csv" src="~/assets/img/vectors/csv.svg" alt="csv" />
-      <img v-else-if="greenCsv" src="~/assets/img/vectors/csv2.svg" alt="csv" />
+      <img
+        v-else-if="csv"
+        src="~/assets/img/vectors/csv.svg"
+        alt="csv"
+        :style="{ height: csvIconHeight }"
+      />
+      <img
+        v-else-if="greenCsv"
+        src="~/assets/img/vectors/csv2.svg"
+        alt="csv"
+        :style="{ height: csvIconHeight }"
+      />
       <img v-else-if="isGreen" src="~/assets/img/vectors/add2.svg" alt="add" />
       <img
         v-else-if="isImport"
@@ -94,6 +104,10 @@ export default {
     fontSize: {
       type: String,
       default: "0.875rem",
+    },
+    csvIconHeight: {
+      type: String,
+      default: "",
     },
   },
 };

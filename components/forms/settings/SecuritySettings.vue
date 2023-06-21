@@ -1,6 +1,6 @@
 <template>
   <div class="row">
-    <div class="col-lg-7">
+    <div class="col-lg-8">
       <!-- Modals Here -->
       <template>
         <!-- Google TwoFa -->

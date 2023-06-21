@@ -130,7 +130,7 @@ export default {
         this.payload = payload;
 
         const response = await this.$axios.post("/auth/ngo-register", {
-          payload,
+          ...payload,
           host_url: appConfig.HOST_URL,
         });
 

@@ -8,6 +8,7 @@
         :green-csv="greenCsv"
         :custom-styles="customStyles"
         :fontSize="fontSize"
+        :csvIconHeight="csvIconHeight"
       >
       </Button>
     </download-csv>
@@ -20,32 +21,36 @@ export default {
     data: {
       type: Array,
       default: () => [],
-      required: true
+      required: true,
     },
 
     name: {
       type: String,
       default: "",
-      required: true
+      required: true,
     },
 
     hasBorder: {
       type: Boolean,
-      default: false
+      default: false,
     },
 
     greenCsv: {
       type: Boolean,
-      default: false
+      default: false,
     },
     customStyles: {
       type: String,
-      default: "height: 3.125rem"
+      default: "height: 3.125rem",
     },
     fontSize: {
       type: String,
-      default: "0.875rem"
-    }
-  }
+      default: "0.875rem",
+    },
+    csvIconHeight: {
+      type: String,
+      default: "",
+    },
+  },
 };
 </script>

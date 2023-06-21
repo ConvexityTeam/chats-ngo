@@ -33,7 +33,7 @@
           :has-border="true"
           :data="computedData"
           :green-csv="true"
-          name="beneficiaries"
+          name="Vendor Transactions"
         />
 
         <div class="ml-3">
@@ -71,22 +71,10 @@
             <td>{{ transaction.reference }}</td>
             <td>{{ $currency }}{{ transaction.amount | formatCurrency }}</td>
             <td>
-              {{
-                transaction.Vendor
-                  ? transaction.Vendor.first_name +
-                    " " +
-                    transaction.Vendor.last_name
-                  : "-"
-              }}
+              {{ getVendorName(transaction.Venfor) }}
             </td>
             <td>
-              {{
-                transaction.Beneficiary
-                  ? transaction.Beneficiary.first_name +
-                    " " +
-                    transaction.Beneficiary.last_name
-                  : "-"
-              }}
+              {{ getBeneficiaryName(transaction.Beneficiary) }}
             </td>
             <td>{{ transaction.createdAt | shortDate }}</td>
           </tr>
@@ -127,6 +115,7 @@ export default {
 
   computed: {
     ...mapGetters("authentication", ["user"]),
+
     resultQuery() {
       if (this.searchQuery) {
         return this.transactions.filter((transaction) => {
@@ -145,15 +134,8 @@ export default {
         return {
           Reference: transaction.reference,
           Amount: transaction.amount,
-          Vendor:
-            transaction?.Vendor?.first_name +
-            " " +
-            transaction?.Vendor?.last_name,
-          Beneficiary:
-            transaction?.Beneficiary?.first_name +
-            " " +
-            transaction?.Beneficiary?.last_name,
-
+          Vendor: this.getVendorName(transaction?.Vendor),
+          Beneficiary: this.getBeneficiaryName(transaction?.Beneficiary),
           Type: transaction.transaction_type,
           Created: moment(transaction.createdAt).format("dddd, MMMM DD, YYYY"),
         };
@@ -161,6 +143,16 @@ export default {
     },
   },
 
-  methods: {},
+  methods: {
+    getVendorName(Vendor) {
+      return Vendor ? `${Vendor.first_name} ${Vendor.last_name}` : "-";
+    },
+
+    getBeneficiaryName(Beneficiary) {
+      return Beneficiary
+        ? `${Beneficiary.first_name} ${Beneficiary.last_name}`
+        : "-";
+    },
+  },
 };
 </script>
