@@ -163,41 +163,7 @@ export default {
 };
 </script>
 
-<style>
-.resend-btn {
-  color: #17ce89;
-  font-weight: 500;
-  font-size: 0.875rem;
-  border: none;
-  background: inherit;
-}
-
-.resend-btn.resending {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-input.vue-pincode-input {
-  box-shadow: none;
-  background: #f5f6f8;
-  border-radius: 5px;
-  width: 52px;
-  height: 52px;
-  max-width: inherit;
-  padding: 0;
-  margin: 0px 16px 0px 0px;
-  color: #25396f;
-  opacity: 0.7;
-  font-weight: bold;
-  font-size: 1.125rem;
-}
-
-input.vue-pincode-input:focus {
-  border: 1px solid #17ce89;
-  outline: none;
-  box-shadow: none;
-}
-
+<style scoped>
 .inactive {
   background: #bdc6da;
   box-shadow: 0px 2px 4px rgba(23, 206, 137, 0.07);
