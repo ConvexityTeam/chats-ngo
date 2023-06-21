@@ -27,6 +27,7 @@
                 <FormsSignupIndividual
                   v-if="type == 'individual'"
                   @registerUser="registerUser"
+                  :loading="loading"
                 />
               </el-tab-pane>
 
@@ -34,6 +35,7 @@
                 <FormsSignupNgo
                   v-if="type == 'ngo'"
                   @registerUser="registerUser"
+                  :loading="loading"
                 />
               </el-tab-pane>
             </el-tabs>
