@@ -106,7 +106,6 @@ export default {
         (this.totalNumOfItems - this.remainder) / this.numOfItemsPerPage
       );
 
-      //
       if (this.remainder < 1) return numOfPages;
       if (this.remainder >= 1) return numOfPages + 1;
     },
