@@ -40,8 +40,8 @@
           <span class="d-flex align-items-center h-100">
             <toggle
               class="mb-n1"
-              :value="isCampaignPublic"
-              @toggle="toggle"
+              v-model="isCampaignPublic"
+              @input="toggle"
               :disabled="campaignStatus == 'completed'"
               :title="campaignStatus == 'completed' && 'Campaign completed'"
             />

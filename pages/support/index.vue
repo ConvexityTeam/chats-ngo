@@ -7,11 +7,10 @@
           <input
             type="text"
             class="form-controls"
-            :class="{}"
             name="name"
             id="name"
             placeholder="First Name"
-            v-model="payload.contact.first_name"
+            :value="user.first_name"
             disabled
           />
         </div>
@@ -19,11 +18,10 @@
           <input
             type="text"
             class="form-controls"
-            :class="{}"
             name="name"
             id="name"
             placeholder="Last Name"
-            v-model="payload.contact.last_name"
+            :value="user.last_name"
             disabled
           />
         </div>
@@ -38,14 +36,11 @@
             name="email"
             id="email"
             placeholder="Email Address"
-            :class="{
-              error: $v.payload.email.$error,
-            }"
-            v-model="payload.email"
-            @blur="$v.payload.email.$touch()"
+            :value="user.email"
             disabled
           />
         </div>
+
         <div class="form-group col">
           <vue-tel-input
             id="phone"
@@ -53,11 +48,12 @@
             placeholder="Phone"
             mode="international"
             class="form-controls phone_disabled phone"
-            v-model="payload.contact.phone"
+            :value="user.phone"
             disabled
           ></vue-tel-input>
         </div>
       </div>
+
       <!-- Subject -->
       <div class="form-group">
         <input
@@ -73,19 +69,20 @@
           @blur="$v.payload.subject.$touch()"
         />
       </div>
+
       <!-- description -->
       <div class="form-group">
         <textarea
           :class="{
-            error: $v.payload.description.$error,
+            form__input__error: $v.payload.description.$error,
           }"
           v-model="payload.description"
           @blur="$v.payload.description.$touch()"
           rows="30"
           placeholder="Enter something..."
-          class="txt-area"
         ></textarea>
       </div>
+
       <div class="d-flex justify-content-end w-100">
         <Button
           type="submit"
@@ -101,90 +98,60 @@
 </template>
 
 <script>
-import { email, required } from "vuelidate/lib/validators";
+import { required } from "vuelidate/lib/validators";
 import { mapGetters } from "vuex";
 
 export default {
   name: "Support",
   layout: "dashboard",
-  data() {
-    return {
-      loading: false,
-      payload: {
-        email: "",
-        subject: "",
-        departmentId: "661286000000006907",
-        phone: this.phone,
-        contact: {
-          email: this.email,
-          first_name: this.firstName,
-          last_name: this.lastName,
-        },
-        description: "",
-      },
-      userData: "",
-    };
-  },
+
+  data: () => ({
+    loading: false,
+    payload: {
+      description: "",
+      subject: "",
+    },
+  }),
 
   validations: {
     payload: {
-      email: {
-        required,
-        email,
-      },
-      subject: {
-        required,
-      },
-      description: {
-        required,
-      },
+      subject: { required },
+      description: { required },
     },
   },
 
   computed: {
     ...mapGetters("authentication", ["user"]),
-
-    firstName() {
-      return this.user?.first_name ?? "";
-    },
-    lastName() {
-      return this.user?.last_name ?? "";
-    },
-    email() {
-      return this.user?.email ?? "";
-    },
-    phone() {
-      return this.user?.last_name ?? "";
-    },
-  },
-
-  mounted() {
-    console.log("USER::", this.user);
   },
 
   methods: {
     async submitForm() {
       try {
         this.loading = true;
-        this.payload.contact.email = this.payload.email;
-
         this.$v.payload.$touch();
 
-        if (
-          this.$v.payload.email.$error === true ||
-          this.$v.payload.subject.$error === true ||
-          this.$v.payload.description.$error === true
-        ) {
+        if (this.$v.payload.$error) {
           return (this.loading = false);
         }
 
+        const data = {
+          email: this.user.email,
+          ...this.payload,
+          contact: {
+            email: this.user.email,
+            firstName: this.user.first_name,
+            lastName: this.user.last_name,
+          },
+        };
+
         const response = await this.$axios.post(
           "organisation/zoho-cretate-ticket",
-          this.payload
+          data
         );
 
         if (response.status == "success") {
           this.$toast.success(response.message);
+          this.resetPayload();
         }
       } catch (error) {
         console.log(error);
@@ -193,11 +160,20 @@ export default {
         this.loading = false;
       }
     },
+
+    resetPayload() {
+      this.payload = {
+        description: "",
+        subject: "",
+      };
+
+      this.$v.$reset();
+    },
   },
 };
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .main {
   height: calc(100vh - 72px);
   overflow-y: scroll;
@@ -214,14 +190,19 @@ export default {
 
 .form-controls {
   padding: 0 0.75rem;
+
+  &::placeholder {
+    color: #7c8db5;
+    font-size: 1rem;
+  }
+
+  &:disabled {
+    background: #ccced1;
+    color: #646a86;
+  }
 }
 
-.form-controls::placeholder {
-  color: #7c8db5;
-  font-size: 1rem;
-}
-
-.txt-area {
+textarea {
   width: 100%;
   height: 10rem;
   padding: 1rem 0.75rem;
@@ -233,27 +214,25 @@ export default {
   border: none;
   border-radius: 5px;
   transition: all 0.3s ease;
+  resize: none;
   outline: none;
-}
 
-.txt-area::placeholder {
-  color: #7c8db5;
-  font-size: 1rem;
-}
+  &::placeholder {
+    color: #7c8db5;
+    font-size: 1rem;
+  }
 
-.txt-area:focus {
-  border: 1px solid var(--primary-color) !important;
-}
+  &:focus {
+    border: 1px solid var(--primary-color) !important;
+  }
 
-.form-controls:disabled {
-  background: #ccced1;
-  /* opacity: 0.35; */
-  color: #646a86;
+  &.form__input__error {
+    border: 1px solid #ff0000 !important;
+  }
 }
 
 .phone_disabled {
   background: #ccced1;
-  /* opacity: 0.35; */
   color: #646a86;
 }
 </style>

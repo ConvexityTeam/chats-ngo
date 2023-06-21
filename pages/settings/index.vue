@@ -3,46 +3,39 @@
     <b-tabs content-class="mt-1" id="profile-tab" nav-class nav-wrapper-class>
       <!-- Profile tab here -->
       <b-tab title="Profile" active class="nav-links">
-        <profileSettings />
+        <FormsSettingsProfileSettings class="mt-3 mb-5" />
       </b-tab>
+
       <!-- security tab here -->
       <b-tab title="Security">
-        <securitySettings />
+        <FormsSettingsSecuritySettings class="mt-3 mb-5" />
       </b-tab>
+
       <!-- Manager Account here -->
       <b-tab title="Manage Account">
-        <manageAccount />
+        <FormsSettingsManageAccount class="mt-3 mb-5" />
       </b-tab>
     </b-tabs>
   </div>
 </template>
 
 <script>
-import profileSettings from "~/components/forms/profile-settings";
-import securitySettings from "~/components/forms/security-settings";
-import manageAccount from "~/components/forms/manage-account";
 export default {
+  name: "Settings",
   layout: "dashboard",
-
-  components: {
-    profileSettings,
-    securitySettings,
-    manageAccount
-  }
 };
 </script>
 
 <style>
 #profile-tab__BV_tab_controls_ > .nav-item > .nav-link {
-  font-family: "Poppins", sans-serif;
   font-size: 1.125rem;
   font-weight: 500;
   color: #7c8db5;
-  padding: 1rem 1.75rem;
+  padding: 0.5rem 1.75rem;
 }
 
 #profile-tab__BV_tab_controls_ > .nav-item > .active {
-  font-weight: 600;
+  font-weight: 700;
   color: #17ce89;
 }
 

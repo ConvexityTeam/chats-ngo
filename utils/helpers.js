@@ -22,3 +22,14 @@ export const campaignStatus = (status) => {
       return "pending";
   }
 };
+
+export const categories = [
+  "Clothing",
+  "Medicine",
+  "Cash",
+  "Hygiene items",
+  "Fresh food items",
+  "Processed food",
+  "Education",
+  "Humanitarian overhead",
+];

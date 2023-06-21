@@ -1,5 +1,5 @@
 <template>
-  <form @submit.prevent="registerUser">
+  <form @submit.prevent="registerUser" class="mt-3">
     <!-- First Name name here -->
     <div class="form-group">
       <label for="first_name">First name</label>
@@ -86,7 +86,7 @@
       </template>
 
       <template v-else>
-        <FormsPasswordValidation :validations="$v.payload.password" />
+        <PasswordValidation :validations="$v.payload.password" />
       </template>
     </div>
 
@@ -126,6 +126,7 @@ export default {
       last_name: "",
       email: "",
       password: "",
+      registration_type: "individual",
     },
   }),
 
@@ -163,11 +164,5 @@ label {
   font-size: 0.875rem;
   font-weight: 400;
   font-family: "Poppins", sans-serif;
-}
-
-.password-validity {
-  font-size: 0.75rem;
-  color: #9da8b6;
-  font-weight: 500;
 }
 </style>

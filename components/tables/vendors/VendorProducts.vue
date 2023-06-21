@@ -47,7 +47,7 @@
         <tbody>
           <tr v-for="product in resultQuery" :key="product.id">
             <td class="campaign-title">{{ product.tag }}</td>
-            <td>
+            <td class="px-2">
               <div
                 class="status w-50"
                 :class="{
@@ -56,7 +56,7 @@
                   completed: product.type === 'product',
                 }"
               >
-                {{ product.type | capitalize }}
+                <span class="px-3"> {{ product.type | capitalize }}</span>
               </div>
             </td>
 

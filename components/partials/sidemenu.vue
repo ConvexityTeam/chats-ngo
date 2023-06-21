@@ -313,6 +313,7 @@
 <script>
 import { mapActions } from "vuex";
 export default {
+  name: "SideMenu",
   methods: {
     ...mapActions("authentication", ["logout"]),
 
@@ -358,7 +359,7 @@ aside {
   top: 0;
   border-radius: 0.625rem;
   content: "";
-  width: 100%;
+  width: 95%;
   transform: translateX(-100%);
   transition-duration: 300ms;
 }

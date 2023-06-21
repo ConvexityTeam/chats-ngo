@@ -15,7 +15,6 @@
   /* text-colour */
   --primary-text-color: #25396f;
   --input-text-color: #646a86;
-  --secondary-text-color: #7c8db5;
 }
 
 /* GENERAL STYLES */
@@ -28,7 +27,6 @@ html {
 }
 
 .g-recaptcha {
-  padding-bottom: 2rem !important;
   color: #e42c66 !important;
 }
 
@@ -50,21 +48,6 @@ html {
 
 .inconsolata {
   font-family: "Inconsolata", monospace;
-}
-
-.inconsolata-medium {
-  font-family: "Inconsolata", monospace !important;
-  font-weight: 500 !important;
-}
-
-.inconsolata-semibold {
-  font-family: "Inconsolata", monospace !important;
-  font-weight: 600 !important;
-}
-
-.inconsolata-bold {
-  font-family: "Inconsolata", monospace;
-  font-weight: 700;
 }
 
 .primary {
@@ -109,6 +92,10 @@ html {
 
 .font-medium {
   font-weight: 500 !important;
+}
+
+.font-semibold {
+  font-weight: 600 !important;
 }
 
 .font-bold {
@@ -165,6 +152,12 @@ button:disabled {
   box-shadow: none;
 }
 
+.password-validity {
+  font-size: 0.75rem;
+  color: #9da8b6;
+  font-weight: 500;
+}
+
 .viewall {
   color: var(--primary-color);
   font-size: 0.875rem;
@@ -207,11 +200,41 @@ button:disabled {
   margin-right: 10px !important;
 }
 
-/* Timeline style here*/
+/* Timeline style here */
 .el-timeline-item__tail {
   border-left: 1px solid #e1e7ec !important;
   height: 90% !important;
   top: 18px;
+}
+
+#sms-pincode {
+  width: 100% !important;
+}
+
+/* Element UI tab style here */
+
+#registration {
+  .el-tabs__nav-wrap::after {
+    background-color: unset !important;
+  }
+
+  .el-tabs__item {
+    color: var(--primary-gray) !important;
+    font-weight: 500 !important;
+    font-size: 1.125rem !important;
+    height: auto !important;
+    padding: 5px 20px !important;
+  }
+
+  .el-tabs__item.is-active {
+    color: var(--primary-color) !important;
+    font-weight: 700 !important;
+  }
+
+  .el-tabs__active-bar {
+    height: 4px !important;
+    background-color: var(--primary-color) !important;
+  }
 }
 
 /* Input type number scrollbar hidden */
@@ -463,6 +486,10 @@ p.form-input__error span {
 .form-group {
   margin-bottom: 0.8rem !important;
   position: relative;
+
+  &.less-padded {
+    margin-bottom: 0.1rem !important;
+  }
 }
 
 .form-group.last {

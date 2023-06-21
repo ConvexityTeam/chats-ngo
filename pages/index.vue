@@ -14,7 +14,7 @@
       <div class="card__holder">
         <!-- 2fa Here -->
         <div v-if="is2fa">
-          <FormsLoginTwofa />
+          <FormsLoginTwofa :loading="loading" @verifyToken="verifyToken" />
         </div>
 
         <template v-else>
@@ -132,7 +132,7 @@ export default {
 
   computed: {
     is2fa() {
-      return this.$route.query.is2fa;
+      return !!this.$route.query.is2fa;
     },
   },
 
@@ -158,14 +158,15 @@ export default {
 
         if (response.status === "success") {
           const { user, token } = response.data;
+          localStorage.setItem("userToken", token);
 
           // check for 2fa here
-          // if (user.is_tfa_enabled) {
-          //   this.$router.push({ path: "/", query: { is2fa: true } });
-          //   return;
-          // }
+          if (user.is_tfa_enabled) {
+            this.$router.push({ path: "/", query: { is2fa: user.tfa_method } });
+            return;
+          }
 
-          this.grantUserAccess({ user, token });
+          this.grantUserAccess(response.data);
         }
 
         await this.$recaptcha.reset();
@@ -195,6 +196,26 @@ export default {
       }
 
       await this.$router.push(protectedLastRoute || "/dashboard");
+    },
+
+    async verifyToken(otp) {
+      try {
+        this.loading = true;
+        const tfa_method = this.$route.query.is2fa;
+
+        const response = await this.$axios.post("auth/2fa/enable", {
+          otp,
+          tfa_method,
+        });
+
+        if (response.status == "success") {
+          this.grantUserAccess(response.data);
+        }
+      } catch (err) {
+        this.$toast.error(err.response.data.message);
+      } finally {
+        this.loading = false;
+      }
     },
   },
 };

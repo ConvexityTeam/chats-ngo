@@ -8,7 +8,7 @@
       </p>
 
       <div class="mt-4 pt-2">
-        <PincodeInput v-model="code" :length="6" placeholder="-" />
+        <PincodeInput v-model="otp" :length="6" placeholder="-" />
       </div>
     </section>
 
@@ -16,7 +16,7 @@
       <button
         :disabled="loading"
         class="onboarding-btn"
-        :class="{ inactive: code.length < 6 }"
+        :class="{ inactive: otp.length < 6 }"
         @click="verifyToken"
       >
         <span v-if="loading">
@@ -34,20 +34,19 @@ export default {
   name: "Twofa",
   components: { PincodeInput },
 
+  props: {
+    loading: Boolean,
+    default: false,
+  },
+
   data: () => ({
-    loading: false,
-    code: "",
+    otp: "",
   }),
 
   methods: {
-    async verifyToken() {
-      try {
-        const response = await $axios.post();
-      } catch (err) {
-        this.$toast.error(err?.response?.data?.message);
-      } finally {
-        this.loading = false;
-      }
+    verifyToken() {
+      if (this.otp.length < 6) return;
+      this.$emit("verifyToken", this.otp);
     },
   },
 };

@@ -58,7 +58,19 @@
                   <div class="row">
                     <!-- Product tag here -->
                     <div class="col-lg-4">
-                      <div class="mb-3">
+                      <div class="mb-2">
+                        <span
+                          class="primary-gray text-xs"
+                          style="text-transform: uppercase"
+                        >
+                          category</span
+                        >
+                        <h6 class="word-content primary-blue font-medium pt-1">
+                          {{ product.product_category | capitalize }}
+                        </h6>
+                      </div>
+
+                      <div class="mb-2">
                         <span
                           class="primary-gray text-xs"
                           style="text-transform: uppercase"
@@ -85,7 +97,7 @@
 
                     <!-- Vendors here -->
                     <div class="col-lg-5">
-                      <div class="mb-3">
+                      <div class="mb-2">
                         <span class="primary-gray text-xs">
                           {{
                             product.ProductVendors.length == 1
@@ -110,7 +122,7 @@
 
                     <!-- Delete actions here -->
                     <div class="col-lg-3" style="align-self: center">
-                      <div class="mb-3 d-flex">
+                      <div class="mb-2 d-flex">
                         <!-- Edit button here -->
                         <div>
                           <button
@@ -224,7 +236,7 @@ export default {
   background: #ffffff;
   border: 1px solid #e1e7ec;
   border-radius: 10px;
-  height: 146px;
+  height: 190px;
 }
 
 button.actions {

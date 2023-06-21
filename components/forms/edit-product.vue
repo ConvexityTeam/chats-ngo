@@ -25,6 +25,26 @@
           </div>
         </div>
 
+        <!-- Category here -->
+        <div class="mb-3" v-if="!isItem">
+          <label for="product">Category</label>
+          <div id="product" class="w-100">
+            <el-select
+              v-model="payload.product_category"
+              id="product"
+              placeholder="—Select — "
+            >
+              <el-option
+                v-for="item in categories"
+                :key="item"
+                :label="item"
+                :value="item"
+              >
+              </el-option>
+            </el-select>
+          </div>
+        </div>
+
         <!-- Tag here -->
         <div class="mb-3">
           <label for="tag">Tag</label>
@@ -99,6 +119,7 @@
 
 <script>
 import { mapGetters } from "vuex";
+import { categories } from "~/utils/helpers";
 
 export default {
   props: {
@@ -117,6 +138,7 @@ export default {
   },
 
   data: () => ({
+    categories,
     loading: false,
     options: ["product", "service"],
     orgId: "",
@@ -151,6 +173,7 @@ export default {
             tag: this.payload?.tag,
             cost: this.payload?.cost,
             type: this.payload?.type,
+            product_category: this.payload?.product_category,
           }
         );
 
