@@ -83,14 +83,16 @@ export default {
   props: {
     numOfItemsPerPage: {
       type: Number,
-      required: true,
+      default: 10,
     },
     currentPageNum: {
       type: Number,
+      default: 1,
       required: true,
     },
     totalNumOfItems: {
       type: Number,
+      default: 0,
       required: true,
     },
   },

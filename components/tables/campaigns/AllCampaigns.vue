@@ -76,6 +76,14 @@
             </tr>
           </tbody>
         </table>
+
+        <div>
+          <pagination
+            :currentPageNum="campaignPageNum"
+            :totalNumOfItems="campaignTotalItems"
+            @updatePage="(event) => $emit('updatePage', event)"
+          />
+        </div>
       </template>
 
       <h3 v-else class="text-center no-record">NO RECORD FOUND</h3>
@@ -106,6 +114,16 @@ export default {
     id: {
       type: [String, Number],
       default: "",
+    },
+
+    campaignPageNum: {
+      type: Number,
+      default: 1,
+    },
+
+    campaignTotalItems: {
+      type: Number,
+      default: 0,
     },
   },
 

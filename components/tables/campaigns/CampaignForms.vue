@@ -1,59 +1,69 @@
 <template>
   <section class="table-holder mt-5">
-    <div class="flex align-items-center table-title" v-if="resultQuery.length">
-      <h4>Forms</h4>
-      <div class="ml-auto"></div>
-    </div>
+    <template v-if="resultQuery.length">
+      <div class="flex align-items-center table-title">
+        <h4>Forms</h4>
+        <div class="ml-auto"></div>
+      </div>
 
-    <table class="table table-borderless" v-if="resultQuery.length">
-      <thead>
-        <tr>
-          <th scope="col">Form Name</th>
-          <th scope="col">Date created</th>
-          <th scope="col">Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr
-          v-for="(form, i) in resultQuery"
-          :key="form.id"
-          style="cursor: pointer"
-          :class="{ selected: i % 2 == 0 }"
-        >
-          <td class="form-title">{{ form.title }}</td>
+      <table class="table table-borderless" v-if="resultQuery.length">
+        <thead>
+          <tr>
+            <th scope="col">Form Name</th>
+            <th scope="col">Date created</th>
+            <th scope="col">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr
+            v-for="(form, i) in resultQuery"
+            :key="form.id"
+            style="cursor: pointer"
+            :class="{ selected: i % 2 == 0 }"
+          >
+            <td class="form-title">{{ form.title }}</td>
 
-          <td>
-            {{ form.createdAt | shortDate }}
-          </td>
+            <td>
+              {{ form.createdAt | shortDate }}
+            </td>
 
-          <td>
-            <div class="d-flex align-items-center">
-              <Button
-                :hasBorder="true"
-                :hasIcon="false"
-                text="Edit form"
-                custom-styles=" border-radius: 5px !important;
-                  height:33px; border: 1px solid #17ce89 !important; font-size:
-                  0.875rem !important; padding:0px 12px !important"
-                @click="handleEdit(form)"
-              />
-
-              <div class="ml-3">
+            <td>
+              <div class="d-flex align-items-center">
                 <Button
                   :hasBorder="true"
                   :hasIcon="false"
-                  text="Delete form"
-                  custom-styles=" border-radius: 5px !important; color: #E42C66;
+                  text="Edit form"
+                  custom-styles=" border-radius: 5px !important;
+                  height:33px; border: 1px solid #17ce89 !important; font-size:
+                  0.875rem !important; padding:0px 12px !important"
+                  @click="handleEdit(form)"
+                />
+
+                <div class="ml-3">
+                  <Button
+                    :hasBorder="true"
+                    :hasIcon="false"
+                    text="Delete form"
+                    custom-styles=" border-radius: 5px !important; color: #E42C66;
                   height:33px; border: 1px solid #E42C66 !important; font-size:
                   0.875rem !important; padding:0px 12px !important"
-                  @click="handleDelete(form)"
-                />
+                    @click="handleDelete(form)"
+                  />
+                </div>
               </div>
-            </div>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div>
+        <pagination
+          :currentPageNum="formPageNum"
+          :totalNumOfItems="formTotalItems"
+          @updatePage="(event) => $emit('updatePage', event)"
+        />
+      </div>
+    </template>
 
     <h3 v-else class="text-center no-record">NO RECORD FOUND</h3>
 
@@ -90,6 +100,16 @@ export default {
     id: {
       type: [String, Number],
       default: "",
+    },
+
+    formPageNum: {
+      type: Number,
+      default: 1,
+    },
+
+    formTotalItems: {
+      type: Number,
+      default: 0,
     },
   },
 

@@ -83,11 +83,14 @@
               @click="handleTabClick('campaigns')"
             >
               <CampaignTable
+                :id="id"
                 :resultQuery="resultQuery"
                 :loading="$fetchState.pending"
-                :id="id"
+                :campaignPageNum="campaignPageNum"
+                :campaignTotalItems="campaignTotalItems"
                 @reload="$fetch"
                 @activateCampaign="activateCampaign"
+                @updatePage="updateCampaignPage"
               />
             </b-tab>
 
@@ -98,11 +101,14 @@
               @click="handleTabClick('items')"
             >
               <ItemCampaigns
+                :id="id"
                 :resultQuery="resultQuery"
                 :loading="$fetchState.pending"
-                :id="id"
+                :itemCampaignPageNum="itemCampaignPageNum"
+                :itemCampaignTotalItems="itemCampaignTotalItems"
                 @reload="$fetch"
                 @activateCampaign="activateCampaign"
+                @updatePage="updateItemCampaignPage"
               />
             </b-tab>
 
@@ -113,10 +119,11 @@
               @click="handleTabClick('forms')"
             >
               <CampaignForms
+                :id="id"
                 :resultQuery="resultQuery"
                 :loading="$fetchState.pending"
-                :id="id"
                 @reload="$fetch"
+                @updatePage="updateCampaignFormPage"
               />
             </b-tab>
           </template>
@@ -154,6 +161,15 @@ export default {
     campaigns: [],
     forms: [],
     items: [],
+
+    campaignPageNum: 1,
+    campaignTotalItems: 0,
+
+    itemCampaignPageNum: 1,
+    itemCampaignTotalItems: 0,
+
+    formPageNum: 1,
+    formTotalItems: 0,
   }),
 
   computed: {
@@ -178,21 +194,34 @@ export default {
   async fetch() {
     this.id = this.user?.AssociatedOrganisations[0]?.OrganisationId;
     const campaignForms = await this.$axios.get(
-      `organisations/${this.id}/campaign_form`
+      `organisations/${this.id}/campaign_form?page=${this.formPageNum}&size=10`
     );
 
     const campaigns = await this.$axios.get(
-      `/organisations/${this.id}/campaigns/all?type=campaign`
+      `/organisations/${this.id}/campaigns/all?type=campaign&page=${this.campaignPageNum}&size=10`
     );
+
+    console.log("CAMPAIGNS:::", campaigns);
 
     // fetch item campaign's response
     const itemCampaigns = await this.$axios.get(
-      `/organisations/${this.id}/campaigns/all?type=item`
+      `/organisations/${this.id}/campaigns/all?type=item&page=${this.itemCampaignPageNum}&size=10`
     );
 
     this.forms = campaignForms.data;
     this.campaigns = campaigns.data;
     this.items = itemCampaigns.data;
+
+    // Pagination data here
+
+    this.campaignPageNum = campaigns?.currentPage;
+    this.campaignTotalItems = campaigns?.totalItems;
+
+    this.itemCampaignPageNum = itemCampaigns?.currentPage;
+    this.itemCampaignTotalItems = itemCampaigns?.totalItems;
+
+    this.formPageNum = campaignForms?.currentPage;
+    this.formTotalItems = campaignForms?.totalItems;
   },
 
   methods: {
@@ -200,6 +229,29 @@ export default {
       this.selectedCampaign = campaign_type;
       this.$bvModal.hide("select-campaign-type");
       this.$bvModal.show("new-campaign-form");
+    },
+
+    updateCampaignPage(action) {
+      this.campaignPageNum =
+        action === "prev" ? this.campaignPageNum - 1 : this.campaignPageNum + 1;
+
+      this.$fetch();
+    },
+
+    updateItemCampaignPage(action) {
+      this.itemCampaignPageNum =
+        action === "prev"
+          ? this.itemCampaignPageNum - 1
+          : this.itemCampaignPageNum + 1;
+
+      this.$fetch();
+    },
+
+    updateCampaignFormPage(action) {
+      this.formPageNum =
+        action === "prev" ? this.formPageNum - 1 : this.formPageNum + 1;
+
+      this.$fetch();
     },
 
     async activateCampaign(campaign) {
