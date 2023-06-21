@@ -16,6 +16,15 @@ export default async function ({ $axios, app }) {
   });
 
   $axios.onResponse((response) => {
+    // specifically for NIN
+
+    const identityUrl =
+      "https://api.myidentitypay.com/api/v1/biometrics/merchant/data/verification/nin_wo_face";
+
+    if (response.config.url == identityUrl) {
+      return response.data;
+    }
+
     // Extra check for pagination
     const { data } = response;
     const { totalPages, totalItems, currentPage } = data?.data;

@@ -784,7 +784,9 @@ export default {
           }
         );
 
-        if (response.status && response.nin_data) {
+        console.log("VERIFY IDENTITY RESPONSE::", response);
+
+        if (response.status) {
           this.isIdentityVerified = true;
           const data = response?.nin_data;
 
@@ -796,8 +798,6 @@ export default {
         }
 
         screenLoading.close();
-
-        console.log("VERIFY IDENTITY RESPONSE::", response);
       } catch (err) {
         screenLoading.close();
         console.log("VERIFYIDENTITYERR::", { err });
