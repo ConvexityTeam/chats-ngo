@@ -46,21 +46,13 @@ export default {
   }),
 
   validations: {
-    email: {
-      email,
-      required,
-    },
+    email: { email, required },
   },
 
   methods: {
     recoverPassword() {
       this.$v.$touch();
-
-      if (this.$v.$error === true) {
-        this.$toast.error("Please fill in appropriately");
-        return;
-      }
-
+      if (this.$v.$error) return;
       this.$emit("recoverPassword", this.email);
     },
   },

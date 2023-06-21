@@ -5,14 +5,14 @@
     </el-drawer>
 
     <nav class="navbar">
-      <div class="col-lg-2 col-sm-4 mx-1">
+      <div class="mx-1 logo-holder">
         <span class="navbar-brand" href="">
           <img src="~/assets/img/logo-2.svg" alt="Chats" />
         </span>
       </div>
 
       <!-- Route location here -->
-      <div class="col-lg-4 ml-5">
+      <div class="d-flex w-25 ml-2">
         <h5 class="title">{{ title | capitalize }}</h5>
       </div>
 
@@ -22,7 +22,7 @@
         <!-- Notification -->
         <span>
           <div class="d-flex align-items-center px-2">
-            <el-badge
+            <!-- <el-badge
               :is-dot="isNotification"
               class="item mx-3"
               style="cursor: pointer"
@@ -41,7 +41,7 @@
                   stroke-width="1.3"
                 />
               </svg>
-            </el-badge>
+            </el-badge> -->
 
             <!-- profile picture -->
             <div class="d-flex image-holder justify-content-center mx-auto">
@@ -136,6 +136,10 @@ export default {
 <style scoped>
 .logo {
   height: 30px;
+}
+
+.logo-holder {
+  width: 20%;
 }
 .navbar {
   padding: 1rem;

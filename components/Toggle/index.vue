@@ -2,9 +2,9 @@
   <div>
     <span
       class="toggle-wrapper"
-      :class="disabled && 'disabled'"
+      :class="{ disabled: disabled, 'is-large': isLarge }"
       role="checkbox"
-      :aria-checked="value.toString()"
+      :aria-checked="modelValue.toString()"
       tabindex="0"
       @click="toggle"
       @keydown.space.prevent="toggle"
@@ -17,38 +17,55 @@
 
 <script>
 export default {
+  model: {
+    prop: "modelValue",
+    event: "input",
+  },
+
   props: {
-    value: {
+    modelValue: {
       type: Boolean,
       required: true,
     },
     disabled: {
       type: Boolean,
+      default: false,
+    },
+    isLarge: {
+      type: Boolean,
+      default: false,
     },
   },
+
   computed: {
     backgroundStyles() {
       return {
-        "gold-mid": this.value,
-        "gray-lighter": !this.value,
+        "gold-mid": this.modelValue,
+        "gray-lighter": !this.modelValue,
       };
     },
     indicatorStyles() {
+      if (this.isLarge) {
+        return {
+          transform: this.modelValue ? "translateX(33px)" : "translateX(1px)",
+        };
+      }
+
       return {
-        transform: this.value ? "translateX(14px)" : "translateX(-2px)",
+        transform: this.modelValue ? "translateX(14px)" : "translateX(-2px)",
       };
     },
   },
   methods: {
     toggle() {
       if (this.disabled) return;
-      this.$emit("toggle", !this.value);
+      this.$emit("input", !this.modelValue);
     },
   },
 };
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .gold-mid {
   background-color: #17ce89;
 }
@@ -64,15 +81,29 @@ export default {
   width: 34px;
   height: 18px;
   border-radius: 9999px;
-}
-.toggle-wrapper:focus {
-  outline: 0;
-}
-.toggle-wrapper.disabled {
-  cursor: not-allowed;
-}
-.toggle-wrapper.disabled:focus {
-  cursor: not-allowed;
+
+  &:focus {
+    outline: 0;
+  }
+
+  &.disabled {
+    cursor: not-allowed;
+
+    &:focus {
+      cursor: not-allowed;
+    }
+  }
+
+  &.is-large {
+    height: 38px;
+    width: 72px;
+
+    .toggle-indicator {
+      height: 29px;
+      width: 29px;
+      bottom: 4px;
+    }
+  }
 }
 
 .toggle-background {

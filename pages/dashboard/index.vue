@@ -11,7 +11,7 @@
             <p class="text">Items Distributed</p>
 
             <h4 class="funds">
-              {{ wallet.total_items_distributed || 0 | formatNumber }}
+              {{ campaignDetails.total_items_distributed || 0 | formatNumber }}
             </h4>
           </div>
         </div>
@@ -220,13 +220,17 @@
               class="d-flex h-100 align-items-end"
               v-if="displayedVendors.length"
             >
-              <div class="">
+              <div>
                 <button
                   type="button"
                   @click="$router.push('/vendors')"
                   class="d-flex viewall align-items-center"
                 >
-                  <img src="~/assets/img/vectors/eye.svg" alt="see" />
+                  <img
+                    src="~/assets/img/vectors/eye.svg"
+                    style="padding-top: 3px"
+                    alt="see"
+                  />
                   <span class="ml-2 pt-1">View All</span>
                 </button>
               </div>
@@ -269,7 +273,7 @@ export default {
       loading: false,
       beneficiaries: [],
       vendors: [],
-      wallet: {},
+      // wallet: {},
       campaignDetails: {},
       metricsData: {},
     };
@@ -313,7 +317,6 @@ export default {
       `/organisation/${id}/beneficiaries`
     );
     const vendors = await this.$axios.get(`/organisations/${id}/vendors`);
-    const wallet = await this.$axios.get(`/organisations/${id}/wallets`);
     const campaignDetails = await this.$axios.get(
       `/organisations/campaigns/transaction`
     );
@@ -321,7 +324,6 @@ export default {
 
     this.beneficiaries = beneficiaries.data;
     this.vendors = vendors?.data;
-    this.wallet = wallet?.data?.MainWallet;
     this.campaignDetails = campaignDetails?.data;
     this.metricsData = metricsData?.data;
   },

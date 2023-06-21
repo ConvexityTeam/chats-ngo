@@ -29,6 +29,26 @@
         </div>
       </div>
 
+      <!-- Category type here -->
+      <div class="mb-3">
+        <label for="product">Category type</label>
+        <div id="product" class="w-100">
+          <el-select
+            v-model="payload.product_category"
+            id="product"
+            placeholder="—Select — "
+          >
+            <el-option
+              v-for="item in categories"
+              :key="item"
+              :label="item"
+              :value="item"
+            >
+            </el-option>
+          </el-select>
+        </div>
+      </div>
+
       <!-- Tag here -->
       <div class="mb-3">
         <label for="tag">Tag</label>
@@ -90,7 +110,7 @@
           :text="` ${isEdit ? 'Update' : 'Create'}  ${
             !payload.type ? 'Product' : payload.type
           }`"
-          custom-styles="height:41px; border-radius: 5px; padding: 0px 20px !important"
+          custom-styles="height:52px; border-radius: 4px; padding: 0px 20px !important"
           :has-border="false"
           :has-icon="false"
           :disabled="!isComplete"
@@ -109,7 +129,6 @@
 
       <div class="main transparent" v-if="products.length">
         <!--Save button here -->
-
         <div class="my-4">
           <Button
             :text="`Save ${products.length == 1 ? 'Tag' : 'Tags'}`"
@@ -130,10 +149,22 @@
           <div class="row">
             <!-- Product tag here -->
             <div class="col-lg-4">
-              <div class="mb-3">
+              <div class="mb-2">
                 <span
                   class="primary-gray text-xs"
-                  style="text-transform: uppercase;"
+                  style="text-transform: uppercase"
+                >
+                  category
+                </span>
+                <h6 class="word-content primary-blue font-medium">
+                  {{ product.product_category | capitalize }}
+                </h6>
+              </div>
+
+              <div class="mb-2">
+                <span
+                  class="primary-gray text-xs"
+                  style="text-transform: uppercase"
                 >
                   {{ product.type }} TAG</span
                 >
@@ -141,11 +172,12 @@
                   {{ product.tag | capitalize }}
                 </h6>
               </div>
+
               <!-- product cost here -->
               <div>
                 <span
                   class="primary-gray text-xs"
-                  style="text-transform: uppercase;"
+                  style="text-transform: uppercase"
                 >
                   {{ product.product }} COST</span
                 >
@@ -170,7 +202,7 @@
             </div>
 
             <!-- Delete actions here -->
-            <div class="col-lg-3" style="align-self: center;">
+            <div class="col-lg-3" style="align-self: center">
               <div class="mb-3 d-flex">
                 <!-- Edit button here -->
                 <div>
@@ -206,7 +238,7 @@
         </div>
 
         <div class="text-center mt-4 w-75 mx-auto">
-          <h5 class="font-bold primary-blue" style="font-size: 1.125rem;">
+          <h5 class="font-bold primary-blue" style="font-size: 1.125rem">
             Nothing in here yet.
           </h5>
 
@@ -221,9 +253,10 @@
 </template>
 
 <script>
-import { required } from "vuelidate/lib/validators";
-import noProducts from "~/components/icons/no-products.vue";
 import { mapActions, mapGetters } from "vuex";
+import { required } from "vuelidate/lib/validators";
+import { categories } from "~/utils/helpers";
+
 let screenLoading;
 
 const greaterThanZero = (value) => value >= 0;
@@ -231,6 +264,7 @@ const greaterThanZero = (value) => value >= 0;
 export default {
   data: () => ({
     options: ["product", "service"],
+    categories,
     isEdit: false,
     isSuccessful: false,
     products: [],
@@ -240,32 +274,20 @@ export default {
       type: "",
       tag: "",
       cost: "",
+      product_category: "",
       vendors: [],
     },
   }),
 
   validations: {
     payload: {
-      type: {
-        required,
-      },
-
-      tag: {
-        required,
-      },
-
-      cost: {
-        required,
-        greaterThanZero,
-      },
-
-      vendors: {
-        required,
-      },
+      type: { required },
+      tag: { required },
+      cost: { required, greaterThanZero },
+      product_category: { required },
+      vendors: { required },
     },
   },
-
-  components: { noProducts },
 
   mounted() {
     (this.orgId = this.user.AssociatedOrganisations[0].OrganisationId),
@@ -286,6 +308,7 @@ export default {
         this.payload.type &&
         this.payload.tag &&
         this.payload.cost &&
+        this.payload.product_category &&
         this.payload.vendors.length
       );
     },
@@ -311,6 +334,7 @@ export default {
           type: "",
           tag: "",
           cost: "",
+          product_category: "",
           vendors: [],
         };
         return (this.isEdit = false);
@@ -321,6 +345,7 @@ export default {
         type: "",
         tag: "",
         cost: "",
+        product_category: "",
         vendors: [],
       };
       this.isEdit = false;
@@ -364,6 +389,7 @@ export default {
             type: "",
             tag: "",
             cost: "",
+            product_category: "",
             vendors: [],
           };
         }

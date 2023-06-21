@@ -7,11 +7,6 @@
       </div>
 
       <h3 class="text-white welcome py-4">Password Recovery</h3>
-
-      <!-- banner here -->
-      <!-- <div class=" position-relative banner mx-auto" v-if="isSuccess">
-        An email with verification code has been sent to {{ payload.email }}
-      </div> -->
     </div>
 
     <div class="d-flex justify-content-center align-items-center">
@@ -30,26 +25,18 @@
 
         <!-- Message for step 2 here -->
         <div v-if="isSuccess && step === 2">
-          <p class="font-bold primary-black">Confirm verification code</p>
-
-          <p class="forgot">
-            Kindly enter the verification code sent to <br />
-            {{ payload.email }}
-          </p>
-        </div>
-
-        <!-- Message for step 3 here -->
-        <div v-if="isSuccess && step === 3">
           <p class="font-bold primary-black">Set a new password</p>
 
           <p class="forgot">
-            Choose a new password, something easy to remember.
+            Kindly enter the verification code sent to
+            <strong> {{ email }}</strong> and choose a new password, something
+            easy to remember.
           </p>
         </div>
 
         <!-- Step 1 form here -->
         <div v-if="!isSuccess">
-          <step-1
+          <FormsPasswordRecoveryStep1
             v-if="step === 1"
             @recoverPassword="recoverPassword"
             :loading="loading"
@@ -57,16 +44,12 @@
         </div>
 
         <div v-if="isSuccess">
-          <step-2
+          <FormsPasswordRecoveryStep2
             v-if="step === 2"
-            @handleCode="handleCode"
+            :data="{ email, ref }"
             :loading="loading"
-          />
-
-          <step-3
-            v-if="step === 3"
+            @resendCode="recoverPassword"
             @resetPassword="resetPassword"
-            :loading="loading"
           />
         </div>
 
@@ -82,35 +65,21 @@
 </template>
 
 <script>
-import step1 from "~/components/forms/password-recovery/step-1";
-import step2 from "~/components/forms/password-recovery/step-2";
-import step3 from "~/components/forms/password-recovery/step-3";
-
-import { mapActions } from "vuex";
-
 export default {
   layout: "default",
-  components: { step1, step2, step3 },
 
   data: () => ({
     loading: false,
     isSuccess: false,
     step: 1,
     email: "",
-    payload: {
-      email: "",
-      // ref: "",
-      // otp: "",
-      // password: "",
-      // confirm_password: ""
-    },
+    ref: "",
   }),
 
   methods: {
-    ...mapActions("authentication", ["commitToken", "commitUser"]),
     async recoverPassword(email) {
       try {
-        this.payload.email = email;
+        this.email = email;
         this.loading = true;
         this.isSuccess = false;
 
@@ -121,37 +90,22 @@ export default {
         console.log("recover response", response);
 
         if (response.status == "success") {
-          this.$toast.success(
-            `An email with verification code has been sent to ${this.payload.email}`
-          );
-          this.payload.ref = response.data.ref;
+          this.ref = response?.data?.ref;
           this.isSuccess = true;
           this.step = 2;
         }
-
-        this.loading = false;
       } catch (err) {
-        this.loading = false;
         console.log(err);
         this.$toast.error(err.response?.data?.message);
+      } finally {
+        this.loading = false;
       }
-    },
-
-    handleCode(value) {
-      this.payload.otp = value;
-      this.step = 3;
     },
 
     async resetPassword(payload) {
       try {
         this.loading = true;
-        this.payload.password = payload.password;
-        this.payload.confirm_password = payload.confirm_password;
-
-        const response = await this.$axios.put(
-          "/auth/password/reset",
-          this.payload
-        );
+        const response = await this.$axios.put("/auth/password/reset", payload);
 
         if (response.status == "success") {
           this.$toast.success(response.message);
@@ -159,11 +113,11 @@ export default {
         }
 
         console.log("Reset response", response);
-        this.loading = false;
       } catch (err) {
-        this.loading = false;
         console.log("RESET PASSWORD::", err);
         this.$toast.error(err.response?.data?.message);
+      } finally {
+        this.loading = false;
       }
     },
   },
@@ -171,19 +125,6 @@ export default {
 </script>
 
 <style scoped>
-.banner {
-  background: #019f24;
-  opacity: 0.95;
-  color: white;
-  height: 72px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 450px;
-  border-radius: 5px;
-  bottom: 80px;
-}
-
 .account {
   color: #0b0b0b;
   font-size: 0.875rem;

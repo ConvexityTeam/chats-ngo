@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <div class="d-flex col-lg-12 w-full h-5">
-      <newSubadmin @reload="getMembers" />
+      <FormsSettingsNewSubadmin @reload="getMembers" />
       <!-- Transactions Table here -->
       <div class="holder">
         <div class="child-holder">
@@ -20,6 +20,7 @@
                 </th>
               </tr>
             </thead>
+
             <tbody class="text-left primary-blue">
               <tr class="d-flex sub-heading font-medium pr-3">
                 <td class="col-2">First Name</td>
@@ -27,11 +28,11 @@
                 <td class="col-3">Email</td>
                 <td class="col-2">Role</td>
                 <td class="col-2">Phone</td>
-                <td class="col-1 action">Action</td>
+                <!-- <td class="col-1 action">Action</td> -->
               </tr>
               <tr
                 class="d-flex table-body pr-2"
-                v-for="(member, i) in payload.members"
+                v-for="(member, i) in members"
                 :key="i"
               >
                 <td class="col-2">
@@ -63,64 +64,36 @@
   </div>
 </template>
 <script>
-import dot from "~/components/icons/dot";
-import rightArrow from "~/components/icons/right-arrow";
-import leftArrow from "~/components/icons/left-arrow";
-import newSubadmin from "~/components/modals/new-subadmin";
 import { mapGetters } from "vuex";
 
 export default {
-  components: {
-    dot,
-    rightArrow,
-    leftArrow,
-    newSubadmin,
-  },
-  data() {
-    return {
-      orgId: "",
-      payload: {
-        members: [],
-      },
-    };
-  },
+  data: () => ({
+    members: [],
+  }),
 
   computed: {
     ...mapGetters("authentication", ["user"]),
   },
 
   mounted() {
-    this.orgId = this.user?.AssociatedOrganisations[0]?.OrganisationId;
     this.getMembers();
   },
 
   methods: {
     async getMembers() {
       try {
-        const response = await this.$axios.get(`ngos/${this.orgId}/members`);
-
-        console.log("Members:::", response);
+        const { OrganisationId } = this.user?.AssociatedOrganisations[0];
+        const response = await this.$axios.get(
+          `ngos/${OrganisationId}/members`
+        );
 
         if (response.status == "success") {
-          this.payload.members = response.data.reverse();
+          this.members = response.data.reverse();
         }
-        console.log("MOUNTED MEMBERS", this.payload.members);
-
-        console.log("Get Members:::", response);
-        this.loading = false;
+        console.log("MOUNTED MEMBERS", this.members);
       } catch (err) {
-        this.loading = false;
-        console.log("GET MEMBERS::", err);
         this.$toast.error(err.response?.data?.message);
       }
-    },
-
-    openScreen() {
-      screenLoading = this.$loading({
-        lock: true,
-        spinner: "el-icon-loading",
-        background: "#0000009b",
-      });
     },
   },
 };
@@ -176,9 +149,5 @@ export default {
   border-radius: 50px;
   padding: 0.313rem 0.5rem;
   color: #7a809b;
-}
-
-.table-body > .col-2 {
-  /* text-align: left; */
 }
 </style>

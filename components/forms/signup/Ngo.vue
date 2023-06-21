@@ -1,5 +1,5 @@
 <template>
-  <form @submit.prevent="registerUser">
+  <form @submit.prevent="registerUser" class="mt-3">
     <!-- Organisation name here -->
     <div class="form-group">
       <label for="name">Name of organization</label>
@@ -19,6 +19,25 @@
       <div class="position-absolute icon-left">
         <IconsOrganisationIcon :active="orgActive" />
       </div>
+    </div>
+
+    <!-- Organisation id here -->
+    <div class="form-group">
+      <label for="registration_id">Registration ID</label>
+      <input
+        type="text"
+        class="form-controls less-padded"
+        placeholder="Enter Registration ID"
+        :class="{
+          form__input__error: $v.payload.registration_id.$error,
+        }"
+        id="registration_id"
+        v-model="payload.registration_id"
+        @blur="$v.payload.registration_id.$touch()"
+      />
+      <span class="primary-gray text-sm"
+        >This should be your CaC Id or other verified registration ID</span
+      >
     </div>
 
     <!-- Organisation email here -->
@@ -45,9 +64,10 @@
       <input
         type="url"
         class="form-controls"
-        placeholder="http://www.example.com"
+        placeholder="https://www.example.com"
         id="website"
         v-model="payload.website_url"
+        @focus="webActive = true"
       />
       <div class="position-absolute icon-left">
         <IconsGlobeIcon :active="webActive" />
@@ -90,7 +110,7 @@
       </template>
 
       <template v-else>
-        <FormsPasswordValidation :validations="$v.payload.password" />
+        <PasswordValidation :validations="$v.payload.password" />
       </template>
     </div>
 
@@ -129,15 +149,18 @@ export default {
     showpassword: false,
     payload: {
       organisation_name: "",
+      registration_id: "",
       email: "",
       website_url: "",
       password: "",
+      registration_type: "organisation",
     },
   }),
 
   validations: {
     payload: {
       organisation_name: { required },
+      registration_id: { required },
       email: { required, email },
       password: {
         required,
@@ -168,11 +191,5 @@ label {
   font-size: 0.875rem;
   font-weight: 400;
   font-family: "Poppins", sans-serif;
-}
-
-.password-validity {
-  font-size: 0.75rem;
-  color: #9da8b6;
-  font-weight: 500;
 }
 </style>

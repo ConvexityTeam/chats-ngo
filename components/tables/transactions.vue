@@ -255,14 +255,15 @@ export default {
 
         if (response.status == "success") {
           this.transactions = response.data;
-          this.loading = false;
+
           screenLoading.close();
         }
         console.log("TRANSACTIONS:::", response);
       } catch (err) {
-        this.loading = false;
         screenLoading.close();
         console.log(err);
+      } finally {
+        this.loading = false;
       }
     },
 
@@ -286,7 +287,7 @@ export default {
     handleHashRoute(hash) {
       const { APP_ENVIRONMENT } = appConfig;
 
-      if (APP_ENVIRONMENT == "production") {
+      if (APP_ENVIRONMENT == "staging") {
         window.open(`https://mumbai.polygonscan.com/tx/${hash}`, "_blank");
       } else {
         window.open(`https://polygonscan.com/tx/${hash}`, "_blank");

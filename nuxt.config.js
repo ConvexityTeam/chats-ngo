@@ -41,7 +41,7 @@ export default {
     ],
   },
 
-  css: ["~/assets/css/main.css", "~/assets/css/fonts.css"],
+  css: ["~/assets/css/main", "~/assets/css/fonts.css"],
 
   plugins: [
     "~/plugins/global.js",

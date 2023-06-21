@@ -7,7 +7,7 @@
     <div v-else-if="requiredData">
       <span class="primary-blue" style="font-weight: 500"> Female</span>
       <doughnut-chart
-        :data="doughnutChartData"
+        :data="femaleDoughnutChartData"
         :options="doughnutChartOptions"
         :height="120"
         :width="250"

@@ -12,66 +12,79 @@
     </div>
 
     <div class="d-flex justify-content-center align-items-center pt-4">
-      <!-- Registration Card Here -->
-      <div class="card__holder" v-if="!isEmailSent">
-        <template v-if="registrationType == 'ngo'">
-          <FormsSignupOrganisation
-            :loading="loading"
-            @registerUser="registerUser"
-          />
-        </template>
+      <div class="card__holder">
+        <!-- Registrotion Forms -->
+        <div v-if="!isEmailSent">
+          <!-- Tabs Here -->
+          <section v-if="type">
+            <el-tabs
+              v-model="type"
+              stretch
+              id="registration"
+              @tab-click="handleClick"
+            >
+              <el-tab-pane label="Individual" name="individual">
+                <FormsSignupIndividual
+                  v-if="type == 'individual'"
+                  @registerUser="registerUser"
+                />
+              </el-tab-pane>
 
-        <template v-else-if="registrationType == 'individual'">
-          <FormsSignupIndividual
-            :loading="loading"
-            @registerUser="registerUser"
-          />
-        </template>
+              <el-tab-pane label="NGOs" name="ngo">
+                <FormsSignupNgo
+                  v-if="type == 'ngo'"
+                  @registerUser="registerUser"
+                />
+              </el-tab-pane>
+            </el-tabs>
+          </section>
 
-        <template v-else>
-          <FormsSignupUserType />
-        </template>
+          <section v-else>
+            <FormsSignupUserType />
+          </section>
 
-        <div class="mt-4 text-center">
-          <p class="account">
-            Already have an account?
-            <span class="login primary pointer" @click="$router.push('/')">
-              Login
-            </span>
-          </p>
+          <div class="mt-4 text-center">
+            <p class="account">
+              Already have an account?
+              <span class="login primary pointer" @click="$router.push('/')">
+                Login
+              </span>
+            </p>
+          </div>
         </div>
-      </div>
 
-      <div class="card__holder" v-else>
-        <section class="d-flex justify-content-center">
-          <img src="~/assets/img/svg/verify-email.svg" alt="verify-email" />
-        </section>
+        <!-- Email Sent region -->
+        <div v-else>
+          <section class="d-flex justify-content-center">
+            <img src="~/assets/img/svg/verify-email.svg" alt="verify-email" />
+          </section>
 
-        <!-- Text here -->
-        <section class="mt-4 pt-1">
-          <p class="primary-black font-medium sans text-center">
-            You’ll need to verify your email to complete sign up
-          </p>
-          <p class="text-center text-sm input-text poppins">
-            An email has been sent to
-            <span class="font-medium">{{ payload.email }}</span> with a link to
-            verify your account. If you don’t receive it within a few minutes,
-            please check your spam folder.
-          </p>
-        </section>
+          <!-- Text here -->
+          <section class="mt-4 pt-1">
+            <p class="primary-black font-medium sans text-center">
+              You’ll need to verify your email to complete sign up
+            </p>
+            <p class="text-center text-sm input-text poppins">
+              An email has been sent to
+              <span class="font-medium">{{ payload.email }}</span> with a link
+              to verify your account. If you don’t receive it within a few
+              minutes, please check your spam folder.
+            </p>
+          </section>
 
-        <!-- footer region Here -->
-        <section
-          class="text-center poppins primary-black font-medium pt-3 pb-4"
-        >
-          Didn’t get the mail?
-          <span
-            class="primary pointer"
-            :class="{ isDisabled: loading }"
-            @click="resendEmail"
-            >Resend</span
+          <!-- footer region Here -->
+          <section
+            class="text-center poppins primary-black font-medium pt-3 pb-4"
           >
-        </section>
+            Didn’t get the mail?
+            <span
+              class="primary pointer"
+              :class="{ isDisabled: loading }"
+              @click="resendEmail"
+              >Resend</span
+            >
+          </section>
+        </div>
       </div>
     </div>
   </div>
@@ -89,11 +102,17 @@ export default {
     loading: false,
     isEmailSent: false,
     payload: {},
+    // activeName: "first",
   }),
 
   computed: {
-    registrationType() {
-      return this.$route.query.type;
+    type: {
+      get() {
+        return this.$route.query.type;
+      },
+      set(value) {
+        this.$router.push({ query: { type: value } });
+      },
     },
   },
 
@@ -106,7 +125,6 @@ export default {
     ...mapActions("authentication", ["commitToken", "commitUser"]),
 
     async registerUser(payload) {
-      console.log("I was called");
       try {
         this.loading = true;
         this.payload = payload;
@@ -158,6 +176,16 @@ export default {
     updateRoute() {
       this.isEmailSent = true;
       this.$router.push({ path: "/sign-up", query: { isEmailSent: true } });
+    },
+
+    handleClick(tab) {
+      const { index } = tab;
+
+      if (index == 0) {
+        this.type = "individual";
+      } else {
+        this.type = "ngo";
+      }
     },
   },
 };

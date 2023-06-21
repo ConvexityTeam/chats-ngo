@@ -89,6 +89,18 @@
         </template>
       </div>
 
+      <!--Unit Cost of Item  here -->
+      <div class="form-group" v-if="activeCampaignForm === 'items'">
+        <label for="unit_cost">Unit cost of Item</label>
+
+        <CurrencyInput
+          id="unit_cost"
+          :placeholder="`${$currency}0.00`"
+          :customStyles="`height: 41px; border: 1px solid #7c8db5; background: white; padding: 0.75rem`"
+          v-model="payload.unit_cost"
+        />
+      </div>
+
       <!-- Date fields here -->
       <div class="row">
         <div class="col-lg-6">
@@ -235,6 +247,7 @@ export default {
         start_date: "",
         end_date: "",
         formId: "",
+        unit_cost: "",
       },
 
       location: {

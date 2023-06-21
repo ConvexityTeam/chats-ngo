@@ -6,13 +6,11 @@
         <div class="card__holder h-260 p-4">
           <div class="d-flex">
             <div>
-              <h4 class="welcome-header">
-                Welcome To The Market Dashboard!
-              </h4>
+              <h4 class="welcome-header">Welcome To The Market Dashboard!</h4>
 
               <p class="description">
-                Here you can view the top products, product
-                popularity by location, gender, and age group.
+                Here you can view the top products, product popularity by
+                location, gender, and age group.
               </p>
 
               <p class="description">Need a detailed report?</p>
@@ -39,13 +37,10 @@
             </div>
 
             <div class="ml-4">
-              <p class="total">Total Products Sold</p>
+              <p class="total">Total Cash Disbursed</p>
               <h4 class="amount">
-                {{
-                    totalProductsSold == null
-                      ? 0
-                      : totalProductsSold | formatNumber
-                }}
+                {{ $currency
+                }}{{ campaignDetails.campaign_budget || 0 | formatCurrency }}
               </h4>
             </div>
           </div>
@@ -57,14 +52,11 @@
             </div>
 
             <div class="ml-4">
-              <p class="total">Total Products Value</p>
+              <p class="total">Total Item Distributed</p>
               <h4 class="amount">
-                {{ $currency
-                }}{{
-    totalProductValue == null
-      ? "0"
-      : totalProductValue | formatCurrency
-}}
+                {{
+                  campaignDetails.total_items_distributed || 0 | formatNumber
+                }}
               </h4>
             </div>
           </div>
@@ -117,16 +109,14 @@ export default {
     allProducts,
   },
   data: () => ({
-    loading: false,
-    data: {},
-    id: null,
-    totalProductsSold: null,
-    totalProductValue: null,
+    campaignDetails: {},
   }),
 
-  mounted() {
-    this.id = this.user?.AssociatedOrganisations[0]?.OrganisationId;
-    this.getTotalProductSoldAndValue();
+  async fetch() {
+    const campaignDetails = await this.$axios.get(
+      `/organisations/campaigns/transaction`
+    );
+    this.campaignDetails = campaignDetails?.data;
   },
 
   computed: {
@@ -136,36 +126,10 @@ export default {
       return [];
     },
   },
-
-  methods: {
-    async getTotalProductSoldAndValue() {
-      try {
-        this.loading = true;
-        const response = await this.$axios.get(
-          `orders/total-sold-value/${this.id}`
-        );
-        if (response.status == "success") {
-          this.loading = false;
-          this.totalProductsSold = response.data?.total_product_sold;
-          this.totalProductValue = response.data?.total_product_value;
-        }
-        console.log("TOTAL PRODUCTS SOLD AND VALUE::", response);
-      } catch (err) {
-        this.loading = false;
-        console.log(err);
-      }
-    },
-  },
 };
 </script>
 
 <style scoped>
-.chart-title {
-  color: var(--secondary-black);
-  font-size: 1rem;
-  font-weight: 500;
-}
-
 .gender-header {
   color: var(--primary-blue);
   font-size: 1.125rem;

@@ -1,7 +1,7 @@
 <template>
   <el-drawer
     :visible.sync="isOpen"
-    size="75%"
+    size="70%"
     :with-header="withHeader"
     :direction="direction"
   >
