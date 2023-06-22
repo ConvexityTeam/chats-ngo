@@ -168,14 +168,13 @@ export default {
 
           this.grantUserAccess(response.data);
         }
-
-        await this.$recaptcha.reset();
       } catch (err) {
         console.log("ERRR::::", { err });
         this.$toast.error(err?.response?.data?.message);
       } finally {
         this.loading = false;
         localStorage.removeItem("protectedLastRoute");
+        this.$recaptcha.reset();
       }
     },
 

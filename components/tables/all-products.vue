@@ -32,8 +32,8 @@
       <table class="table table-borderless" v-if="resultQuery.length">
         <thead>
           <tr>
-            <th scope="col">Product Name</th>
-            <th scope="col">Vendor</th>
+            <th scope="col">Category List</th>
+            <th scope="col">Category Type</th>
             <th scope="col">Sales Volume</th>
             <th scope="col">Total Value</th>
           </tr>
@@ -44,8 +44,8 @@
             :key="product.id"
             :class="{ selected: i % 2 == 0 }"
           >
-            <td>{{ product.product_name }}</td>
-            <td>{{ product.vendor_name }}</td>
+            <td>{{ product.product_category || "-" }}</td>
+            <td>{{ product.type || "-" }}</td>
             <td>{{ product.sales_volume | formatCount }}</td>
             <td>{{ $currency }}{{ product.total_revenue | formatCurrency }}</td>
           </tr>
@@ -58,14 +58,9 @@
 </template>
 
 <script>
-import dot from "~/components/icons/dot";
 import { mapGetters } from "vuex";
 
 export default {
-  components: {
-    dot,
-  },
-
   data: () => ({
     loading: false,
     searchQuery: "",

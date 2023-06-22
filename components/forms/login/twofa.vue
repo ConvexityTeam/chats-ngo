@@ -1,5 +1,5 @@
 <template>
-  <div class="">
+  <form @submit.prevent="verifyToken">
     <!-- Pin Region -->
     <section>
       <span class="primary-black font-bold">Two-factor authentication </span>
@@ -14,10 +14,10 @@
 
     <div class="mt-4 pt-2 pb-4 text-center">
       <button
+        type="submit"
         :disabled="loading"
         class="onboarding-btn"
         :class="{ inactive: otp.length < 6 }"
-        @click="verifyToken"
       >
         <span v-if="loading">
           <img src="~/assets/img/vectors/spinner.svg" class="btn-spinner" />
@@ -25,7 +25,7 @@
         <span v-else>Continue</span>
       </button>
     </div>
-  </div>
+  </form>
 </template>
 
 <script>

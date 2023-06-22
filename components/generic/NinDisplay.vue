@@ -42,7 +42,7 @@
       </h6>
 
       <div class="mt-3">
-        <a class="more" href="https://nimc.gov.ng/faqs/" target="_blank"
+        <a class="more" href="https://chats.cash/about" target="_blank"
           >Learn more</a
         >
       </div>
