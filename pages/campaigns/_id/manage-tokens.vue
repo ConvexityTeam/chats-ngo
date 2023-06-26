@@ -194,10 +194,10 @@ export default {
         this.loading = true;
         const [smsTokens, qrCodes] = await Promise.all([
           this.$axios.get(
-            `/organisations/${orgId}/${campaignId}/smstoken/tokens/1`
+            `/organisations/${orgId}/${campaignId}/smstoken/tokens`
           ),
           this.$axios.get(
-            `/organisations/${orgId}/${campaignId}/papertoken/tokens/1`
+            `/organisations/${orgId}/${campaignId}/papertoken/tokens`
           ),
         ]);
 

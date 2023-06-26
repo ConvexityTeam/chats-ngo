@@ -9,7 +9,9 @@ const stagingEnv = {
   PAYSTACK_KEY: "pk_test_8ca0b7e72a203c05be761cdf339747f8fcfbeaa7",
   NIN_KEY: "F4Unc5MZ.e7BjG09xd9YJXMnvuXmayuICfMVNW6OE",
   GOOGLE_API: "AIzaSyApnZ4U1qeeHgHZuckDndNVVMIJAo-b5Vo",
-  DONOR_APP_URL: localhost ? host : "https://staging-donor.chats.cash",
+  DONOR_APP_URL: localhost
+    ? "http://localhost:4000"
+    : "https://staging-donor.chats.cash",
   RECAPTCHA_SITE_KEY: "",
 };
 

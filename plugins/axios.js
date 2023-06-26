@@ -23,18 +23,23 @@ export default async function ({ $axios, app }) {
       return response.data;
     }
 
-    // Extra check for pagination
-    const { totalPages, totalItems, currentPage } = data?.data;
+    console.log("response:::", response), console.log("data:::", data);
 
-    if (totalItems || totalPages) {
-      return {
-        data: data?.data?.data || [],
-        totalPages,
-        totalItems,
-        currentPage,
-        status: data.status,
-        code: data.code,
-      };
+    // Extra check for pagination
+
+    if (data) {
+      const { totalPages, totalItems, currentPage } = data?.data || {};
+
+      if (totalItems || totalPages) {
+        return {
+          data: data?.data?.data || [],
+          totalPages,
+          totalItems,
+          currentPage,
+          status: data.status,
+          code: data.code,
+        };
+      }
     }
 
     return response.data;

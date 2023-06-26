@@ -161,7 +161,7 @@
         </div>
       </div>
 
-      <div class="row form-group pt-3 px-3">
+      <div class="row form-group pt-3 px-3 d-none">
         <!--Allow geofence   here -->
         <div class="">
           <checkbox

@@ -1,10 +1,5 @@
 <template>
   <div>
-    <!-- Modals here -->
-    <Modal id="new-campaign" title="new campaign">
-      <new-campaign @reload="$emit('reload')" />
-    </Modal>
-
     <!-- Table here -->
     <section class="table-holder mt-5">
       <template v-if="resultQuery.length">
@@ -53,7 +48,7 @@
                     :hasBorder="true"
                     :hasIcon="false"
                     text="Activate"
-                    custom-styles=" border-radius: 5px !important;
+                    custom-styles="border-radius: 5px !important;
                   height:33px; border: 1px solid #17ce89 !important; font-size:
                   0.875rem !important; padding:0px 15px !important"
                     @click="$emit('activateCampaign', campaign)"
@@ -92,14 +87,9 @@
 </template>
 
 <script>
-import newCampaign from "~/components/forms/new-campaign";
 import { statuses, campaignStatus } from "@/utils/helpers";
 
 export default {
-  components: {
-    newCampaign,
-  },
-
   props: {
     resultQuery: {
       type: Array,

@@ -6,7 +6,7 @@
     </Modal>
     <!--  -->
     <Modal id="new-campaign-form" title="New Campaign">
-      <NewCampaignVue :selectedCampaign="selectedCampaign" @reload="$fetch" />
+      <NewCampaignVue :selectedCampaign="selectedCampaign" @reload="$fetch()" />
     </Modal>
 
     <div class="main container transparent pb-5">

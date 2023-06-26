@@ -182,7 +182,7 @@
               </p>
 
               <p class="campaign-answers" v-else>
-                {{ $currency }}{{ details.budget | formatCurrency }}
+                {{ $currency }}{{ details.beneficiary_share | formatCurrency }}
               </p>
             </div>
           </div>
