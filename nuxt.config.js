@@ -1,5 +1,3 @@
-const BASE_URL = process.env.BASE_URL;
-
 export default {
   // Disable server-side rendering (https://go.nuxtjs.dev/ssr-mode)
   ssr: false,
@@ -34,11 +32,12 @@ export default {
       },
     ],
 
-    script: [
-      {
-        src: `https://maps.googleapis.com/maps/api/js?key=${process.env.GOOGLE_API}&libraries=geometry,drawing&v=weekly`,
-      },
-    ],
+    // TODO:// Move this to the component
+    // script: [
+    //   {
+    //     src: `https://maps.googleapis.com/maps/api/js?key=${process.env.GOOGLE_API}&libraries=geometry,drawing&v=weekly`,
+    //   },
+    // ],
   },
 
   css: ["~/assets/css/main", "~/assets/css/fonts.css"],
@@ -67,14 +66,13 @@ export default {
 
   recaptcha: {
     hideBadge: true,
-    siteKey: process.env.RECAPTCHA_SITE_KEY,
+    siteKey: "6LfTztoiAAAAAOZkIuu4K0ACK8B6p9DrEJzeuPmd",
     version: 2,
     size: "invisible",
   },
 
   // Axios module configuration (https://go.nuxtjs.dev/config-axios)
   axios: {
-    baseURL: BASE_URL,
     https: true,
     progress: false,
     retry: { retries: 2 },
@@ -85,11 +83,9 @@ export default {
     duration: 3500,
   },
 
-  // Build Configuration (https://go.nuxtjs.dev/config-build)
   build: {
     transpile: [/^element-ui/],
     terser: {
-      // https://github.com/terser/terser#compress-options
       terserOptions: {
         compress: {
           drop_console: true,

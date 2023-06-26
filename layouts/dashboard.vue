@@ -42,6 +42,7 @@
 </template>
 
 <script>
+import appConfig from "~/appConfig";
 import IdleJs from "idle-js";
 import { mapGetters } from "vuex";
 let protectedLastRoute;
@@ -60,21 +61,8 @@ export default {
   },
 
   mounted() {
-    const timeout = {
-      dev: 600000, // 10 minutes
-      // dev: 10000, // 30 seconds
-      staging: 300000, // 5 minutes
-      prd: 180000, // 3 minutes
-    };
-    const host = window.location.host;
-
     let idle = new IdleJs({
-      idle:
-        process.env.NODE_ENV === "development"
-          ? timeout.dev
-          : host.includes("https://staging.chats.cash/")
-          ? timeout.staging
-          : timeout.prd, // idle time in ms
+      idle: appConfig.env === "staging" ? 600000 : 180000, // idle time in ms,
       events: ["mousemove", "keydown", "mousedown", "touchstart"], // events that will trigger the idle resetter
 
       onIdle: () => {
