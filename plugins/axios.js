@@ -1,6 +1,7 @@
 // var CryptoJS = require("crypto-js");
-
+import appConfig from "~/appConfig";
 export default async function ({ $axios, app }) {
+  $axios.defaults.baseURL = appConfig.BASE_URL;
   $axios.onRequest((config) => {
     const token = localStorage.getItem("userToken");
     const identityPay = config.url.includes("myidentitypay");
@@ -11,7 +12,7 @@ export default async function ({ $axios, app }) {
 
     if (identityPay) {
       delete config.headers["Authorization"];
-      config.headers["x-api-key"] = process.env.NIN_KEY;
+      config.headers["x-api-key"] = appConfig.NIN_KEY;
     }
   });
 
@@ -41,15 +42,12 @@ export default async function ({ $axios, app }) {
 
   $axios.onError((err) => {
     console.log("error:::", err);
-    const paths = ["/"];
-
-    // !app.router.history.current.path == "/"
 
     if (err.response?.status == 401) {
       console.log("FAILED", { err });
-      // app.$toast.error(err.response?.data?.message);
       return app.router.push("/");
     }
+    // TODO: add errror hanler here
     return;
   });
 }

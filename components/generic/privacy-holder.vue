@@ -63,6 +63,7 @@
 
 <script>
 import InviteDonorVue from "../forms/campaigns/invite-donor.vue";
+import appConfig from "~/appConfig";
 
 let screenLoading;
 export default {
@@ -94,8 +95,8 @@ export default {
   computed: {
     campaignLink() {
       return this.isCampaignPublic
-        ? "https://chats.cash/organisation/public"
-        : "https://chats.cash/organisation/private";
+        ? `${appConfig.DONOR_APP_URL}/campaigns/public`
+        : `${appConfig.DONOR_APP_URL}/campaigns`;
     },
     copiableLink() {
       return `${this.campaignLink}/${this.campaignId}`;
@@ -125,8 +126,7 @@ export default {
 
     async sendInvite(payload) {
       this.loading = true;
-      // const link = `${process.env.DONOR_APP_URL}/verify-user`;
-      const link = "https://staging-donor.chats.cash/verify-user";
+      const link = `${appConfig.DONOR_APP_URL}/verify-user`;
 
       try {
         const response = await this.$axios.post(
