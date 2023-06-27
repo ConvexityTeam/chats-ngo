@@ -101,6 +101,7 @@ export default {
         const response = await this.$axios.get(
           `/vendors/products/all/${this.id}`
         );
+
         if (response.status == "success") {
           this.loading = false;
           this.products = response.data;
