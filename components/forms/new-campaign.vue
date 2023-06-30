@@ -38,7 +38,6 @@
           }"
           placeholder="Enter name of campaign"
           v-model="payload.title"
-          @mouseenter.once="runMap"
           @blur="$v.payload.title.$touch()"
         />
       </div>
