@@ -194,11 +194,11 @@ export default {
         }
 
         console.log("Reset response", response);
-        this.loading = false;
       } catch (err) {
-        this.loading = false;
         console.log("RESET PASSWORD::", err);
         this.$toast.error(err.response?.data?.message);
+      } finally {
+        this.loading = false;
       }
     },
   },
