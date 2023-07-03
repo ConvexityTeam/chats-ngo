@@ -211,7 +211,7 @@ export default {
           this.grantUserAccess(response.data);
         }
       } catch (err) {
-        this.$toast.error(err.response.data.message);
+        this.$toast.error(err?.response?.data?.message);
       } finally {
         this.loading = false;
       }

@@ -213,14 +213,13 @@ export default {
     this.items = itemCampaigns.data;
 
     // Pagination data here
-
-    this.campaignPageNum = campaigns?.currentPage;
+    this.campaignPageNum = campaigns?.currentPage || this.formPageNum;
     this.campaignTotalItems = campaigns?.totalItems;
 
-    this.itemCampaignPageNum = itemCampaigns?.currentPage;
+    this.itemCampaignPageNum = itemCampaigns?.currentPage || this.formPageNum;
     this.itemCampaignTotalItems = itemCampaigns?.totalItems;
 
-    this.formPageNum = campaignForms?.currentPage;
+    this.formPageNum = campaignForms?.currentPage || this.formPageNum;
     this.formTotalItems = campaignForms?.totalItems;
   },
 

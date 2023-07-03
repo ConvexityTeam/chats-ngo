@@ -3,7 +3,7 @@
     <!-- Modal here -->
     <div>
       <Modal id="camera-modal" title="Take a selfie ">
-        <WebCam />
+        <WebCam @hanldeNinData="hanldeNinData" />
       </Modal>
     </div>
 
@@ -328,10 +328,10 @@
                     class=""
                   >
                     <el-option
-                      v-for="(status, i) in gender"
-                      :key="i"
-                      :label="status.name | capitalize"
-                      :value="status.name"
+                      v-for="value in gender"
+                      :key="value"
+                      :label="value | capitalize"
+                      :value="value"
                     >
                     </el-option>
                   </el-select>
@@ -413,7 +413,7 @@
                 <button
                   class="pointer verify-btn poppins"
                   @click="verifyIdentity"
-                  :disabled="!payload.user_profile.nin"
+                  :disabled="!payload.user_profile.nin || isIdentityVerified"
                 >
                   Verify NIN
                 </button>
@@ -460,7 +460,9 @@
 
           <!-- Save Button -->
           <div class="col-lg-12 row mb-2 mt-2">
-            <div v-if="payload.user_profile.country == 'NG'">
+            <div
+              v-if="payload.user_profile.country == 'NG' && isIdentityVerified"
+            >
               <Button
                 :has-icon="false"
                 fontSize="1rem"
@@ -482,8 +484,6 @@
                 @click="updateUserProfile"
               />
             </div>
-
-            <!--  -->
           </div>
         </section>
       </div>
@@ -560,6 +560,7 @@
 <script>
 import { mapGetters, mapActions } from "vuex";
 import { required, maxLength, numeric } from "vuelidate/lib/validators";
+import { dataUrlToFile } from "~/utils/helpers";
 import DatePicker from "vue2-datepicker";
 import countriesRegions from "~/plugins/countries-regions";
 import moment from "moment";
@@ -574,6 +575,7 @@ export default {
 
   data() {
     return {
+      ninData: {},
       options: { placeholder: "Phone number" },
       marital_status: [
         { name: "single" },
@@ -581,7 +583,7 @@ export default {
         { name: "divorced" },
       ],
 
-      gender: [{ name: "male" }, { name: "female" }],
+      gender: ["male", "female"],
       present: new Date(),
       organisation_id: 0,
       loading: false,
@@ -762,6 +764,7 @@ export default {
           };
 
           this.commitUser(data);
+          this.isIdentityVerified = false;
         }
 
         console.log("UPDATE PROFILE RESPONSE", response);
@@ -791,10 +794,15 @@ export default {
         if (response.status) {
           this.isIdentityVerified = true;
           const data = response?.nin_data;
+          this.ninData = data;
+          const genderMapping = {
+            M: "male",
+            F: "Female",
+          };
 
           this.payload.user_profile.first_name = data.firstname;
           this.payload.user_profile.last_name = data.surname;
-          this.payload.user_profile.gender = data.gender;
+          this.payload.user_profile.gender = genderMapping[data.gender];
         } else {
           this.$toast.error(response?.message);
         }
@@ -804,6 +812,68 @@ export default {
         screenLoading.close();
         console.log("VERIFYIDENTITYERR::", { err });
         this.$toast.error(err?.response?.data?.message);
+      }
+    },
+
+    async hanldeNinData(image) {
+      try {
+        this.openScreen();
+
+        const formData = new FormData();
+        const { firstname, surname, email, photo, telephoneno, birthdate } =
+          this.ninData;
+        const data = {
+          surname,
+          email,
+          dob: birthdate,
+          first_name: firstname,
+          phone: telephoneno,
+          nin_photo_url: photo,
+          liveness_capture: dataUrlToFile(
+            image,
+            `${firstname}_${surname}_${this.organisationName}_liveness`
+          ),
+        };
+
+        Object.entries(data).forEach(([key, value]) => {
+          formData.append(key, value);
+        });
+
+        const response = await this.$axios.post("users/liveness", formData);
+
+        console.log("LIVENESS RESPONSE::", response);
+
+        if (response.status == "success") {
+          this.$bvModal.hide("camera-modal");
+          await this.updateUserProfile();
+        }
+      } catch (err) {
+      } finally {
+        screenLoading.close();
+      }
+    },
+
+    async updatephoto() {
+      try {
+        this.loading = true;
+        const formData = new FormData();
+
+        formData.append("logo", this.payload.logo);
+
+        const response = await this.$axios.post(
+          `organisations/${this.organisation_id}/logo`,
+          formData
+        );
+
+        if (response.status == "success") {
+          this.$toast.success(response.message);
+          this.commitUserUpdate(response.data);
+        }
+      } catch (err) {
+        console.log("UPDATEPROFILEERR::", { err });
+        this.$toast.error(err?.response?.data?.message);
+      } finally {
+        this.loading = false;
       }
     },
 
@@ -832,30 +902,6 @@ export default {
       this.file = URL.createObjectURL(image);
       this.payload.logo = image;
       this.updatephoto();
-    },
-
-    async updatephoto() {
-      try {
-        this.loading = true;
-        const formData = new FormData();
-
-        formData.append("logo", this.payload.logo);
-
-        const response = await this.$axios.post(
-          `organisations/${this.organisation_id}/logo`,
-          formData
-        );
-
-        if (response.status == "success") {
-          this.$toast.success(response.message);
-          this.commitUserUpdate(response.data);
-        }
-      } catch (err) {
-        console.log("UPDATEPROFILEERR::", { err });
-        this.$toast.error(err?.response?.data?.message);
-      } finally {
-        this.loading = false;
-      }
     },
 
     openScreen() {

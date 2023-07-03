@@ -66,8 +66,6 @@
           <!-- Image -->
           <div class="image-border" v-if="isPhotoTaken">
             <img :src="image" alt="Image" />
-            <!-- <vue-cropper ref="cropper" :src="image" alt="Source Image">
-          </vue-cropper> -->
           </div>
         </div>
       </div>
@@ -149,11 +147,13 @@ export default {
 
       navigator.mediaDevices
         .getUserMedia(constraints)
+
         .then((stream) => {
           this.isLoading = false;
           this.$refs.camera.srcObject = stream;
           this.streamList.push(stream);
         })
+
         .catch((error) => {
           this.isLoading = false;
           this.cameraError = true;
@@ -175,11 +175,9 @@ export default {
       if (!this.isPhotoTaken) {
         this.isShotPhoto = true;
 
-        const FLASH_TIMEOUT = 50;
-
         setTimeout(() => {
           this.isShotPhoto = false;
-        }, FLASH_TIMEOUT);
+        }, 50);
       }
 
       this.isPhotoTaken = !this.isPhotoTaken;
@@ -197,15 +195,6 @@ export default {
       console.log("isPhotoTaken:::", this.isPhotoTaken);
     },
 
-    downloadImage() {
-      const download = document.getElementById("downloadPhoto");
-      const canvas = document
-        .getElementById("photoTaken")
-        .toDataURL("image/jpeg")
-        .replace("image/jpeg", "image/octet-stream");
-      download.setAttribute("href", canvas);
-    },
-
     recapture() {
       this.isPhotoTaken = false;
       this.isShotPhoto = false;
@@ -214,9 +203,8 @@ export default {
     },
 
     savePhoto() {
-      console.log("got here");
       this.stopCameraStream();
-      this.$emit("photo-taken", this.image);
+      this.$emit("hanldeNinData", this.image);
     },
   },
 };

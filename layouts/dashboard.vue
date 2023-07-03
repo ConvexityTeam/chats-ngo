@@ -8,6 +8,7 @@
         <div class="ml-4">
           <PartialsSidemenu />
         </div>
+
         <div style="flex-grow: 1">
           <div class="container py-4">
             <GenericBanner isKyc v-if="!user.is_verified_all">
@@ -42,9 +43,9 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
 import appConfig from "~/appConfig";
 import IdleJs from "idle-js";
-import { mapGetters } from "vuex";
 let protectedLastRoute;
 
 export default {
@@ -62,7 +63,7 @@ export default {
 
   mounted() {
     let idle = new IdleJs({
-      idle: appConfig.env === "staging" ? 600000 : 180000, // idle time in ms,
+      idle: appConfig.env === "staging" ? 900000 : 180000, // idle time in ms,
       events: ["mousemove", "keydown", "mousedown", "touchstart"], // events that will trigger the idle resetter
 
       onIdle: () => {

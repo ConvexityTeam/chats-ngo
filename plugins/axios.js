@@ -23,7 +23,7 @@ export default async function ({ $axios, app }) {
       return response.data;
     }
 
-    console.log("response:::", response), console.log("data:::", data);
+    console.log("responseCHECK:::", response), console.log("data:::", data);
 
     // Extra check for pagination
 

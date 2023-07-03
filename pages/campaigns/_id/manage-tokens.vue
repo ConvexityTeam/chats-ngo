@@ -202,14 +202,14 @@ export default {
         ]);
 
         console.log("smsTokens:::", smsTokens);
+        console.log("qrCodes:::", qrCodes);
 
         if (smsTokens.status == "success") {
-          this.smsTokens = smsTokens.data?.tokens;
+          this.smsTokens = smsTokens?.data;
         }
 
         if (qrCodes.status == "success") {
-          console.log("qrCodes", qrCodes.data.tokens);
-          this.qrCodes = qrCodes.data?.tokens;
+          this.qrCodes = qrCodes?.data;
         }
       } catch (err) {
         console.log(err);
