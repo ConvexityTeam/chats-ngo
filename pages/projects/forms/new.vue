@@ -19,7 +19,7 @@
         title=""
         buttonModified
         @closeModal="
-          $router.push({ path: '/campaigns', query: { section: 'forms' } })
+          $router.push({ path: '/projects', query: { section: 'forms' } })
         "
       >
         <CampaignFormSuccess :formName="title" />
@@ -60,7 +60,7 @@ export default {
   methods: {
     handleRoute() {
       if (this.isSuccess) {
-        this.$router.push({ path: "/campaigns", query: { section: "forms" } });
+        this.$router.push({ path: "/projects", query: { section: "forms" } });
         localStorage.removeItem("campaignForm");
       } else {
         this.$router.go(-1);
@@ -83,7 +83,7 @@ export default {
 
           if (this.isPreview) {
             this.$router.push({
-              path: "/campaigns/forms/new",
+              path: "/projects/forms/new",
               query: { success: true },
             });
           }

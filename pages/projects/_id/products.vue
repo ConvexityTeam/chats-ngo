@@ -90,7 +90,7 @@
                           {{ product.type }} COST</span
                         >
                         <h6 class="word-content primary-blue font-medium pt-1">
-                          {{ $currency }}{{ product.cost | formatCurrency }}
+                          {{ product.cost | formatCurrency }}
                         </h6>
                       </div>
                     </div>
@@ -175,7 +175,7 @@ import editProduct from "~/components/forms/edit-product.vue";
 import deleteProduct from "~/components/forms/delete-product.vue";
 
 export default {
-  name: "Campaign Products",
+  name: "CampaignProducts",
   layout: "dashboard",
   components: { editProduct, deleteProduct },
 

@@ -6,7 +6,7 @@
 
     <section v-else-if="history.length">
       <div class="position-relative mt-6 mb-4">
-        <h3 class="header primary-blue">Campaigns - {{ campaign.title }}</h3>
+        <h3 class="header primary-blue">Projects - {{ campaign.title }}</h3>
 
         <button
           type="button"
@@ -59,7 +59,7 @@
                 <div class="mb-4">
                   <p class="mb-2 d-flex align-items-center">
                     <span class="box i1"></span>
-                    <span class="title"> Campaign extended </span>
+                    <span class="title"> Project extended </span>
                   </p>
 
                   <p class="text-muted my-0">
@@ -76,8 +76,7 @@
                   </p>
 
                   <p class="text-muted my-0">
-                    Amount: {{ $currency
-                    }}{{ event.beneficiaries | formatNumber }}
+                    Amount:{{ event.beneficiaries | formatCurrency }}
                   </p>
                 </div>
 
@@ -117,12 +116,12 @@
 
     <section class="empty" v-else>
       <img src="~/assets/img/svg/megaphone.svg" alt="megaphonep" />
-      <p class="pt-4">Oops... No campaign history yet.</p>
+      <p class="pt-4">Oops... No project history yet.</p>
 
       <Button
         class="mt-3"
         :has-icon="false"
-        text="Back to Campaign"
+        text="Back to Project"
         @click="$router.go(-1)"
         custom-styles="height: 42px"
       />

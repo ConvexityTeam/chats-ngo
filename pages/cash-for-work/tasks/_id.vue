@@ -148,10 +148,12 @@ import TaskDetails from "~/components/tables/tasks/task-details";
 import newTask from "~/components/modals/new-task";
 import checkEvidence from "~/components/modals/check-evidence";
 import disburseFunds from "~/components/modals/disburse-funds";
+
 let screenLoading;
 
 export default {
   layout: "dashboard",
+
   components: {
     TaskDetails,
     newTask,

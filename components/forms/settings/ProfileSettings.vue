@@ -792,26 +792,33 @@ export default {
         console.log("VERIFY IDENTITY RESPONSE::", response);
 
         if (response.status) {
-          this.isIdentityVerified = true;
           const data = response?.nin_data;
+          const inputFormat = "DD MMM YYYY";
+          const outputFormat = "DD-MM-YYYY";
+
+          this.isIdentityVerified = true;
           this.ninData = data;
+
+          const { firstname, surname, birthdate, gender } = data;
           const genderMapping = {
             M: "male",
-            F: "Female",
+            F: "female",
           };
 
-          this.payload.user_profile.first_name = data.firstname;
-          this.payload.user_profile.last_name = data.surname;
-          this.payload.user_profile.gender = genderMapping[data.gender];
+          this.payload.user_profile.first_name = firstname;
+          this.payload.user_profile.last_name = surname;
+          this.payload.user_profile.dob = moment(birthdate, inputFormat).format(
+            outputFormat
+          );
+          this.payload.user_profile.gender = genderMapping[gender];
         } else {
           this.$toast.error(response?.message);
         }
-
-        screenLoading.close();
       } catch (err) {
-        screenLoading.close();
         console.log("VERIFYIDENTITYERR::", { err });
         this.$toast.error(err?.response?.data?.message);
+      } finally {
+        screenLoading.close();
       }
     },
 

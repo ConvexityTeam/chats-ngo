@@ -13,7 +13,7 @@
       <div class="d-flex">
         <div>
           <Button
-            :text="`${status} campaign`"
+            :text="`${status} project`"
             type="submit"
             :has-icon="false"
             custom-styles="height: 41px; border-radius:5px !important;  font-size: 14px !important"

@@ -1,8 +1,8 @@
 <template>
   <div class="mt-4 px-3">
-    <p class="text-center px-3 mb-3" style="color: #7c8db5;">
-      Add donor emails you want to invite to this campaign. The campain is set
-      as private, only invited donors will have access.
+    <p class="text-center px-3 mb-3" style="color: #7c8db5">
+      Add donor emails you want to invite to this project. The campain is set as
+      private, only invited donors will have access.
     </p>
 
     <form @submit.prevent="sendInvite">

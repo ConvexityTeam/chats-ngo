@@ -69,7 +69,7 @@
         <tbody>
           <tr v-for="(transaction, index) in resultQuery" :key="index">
             <td>{{ transaction.reference }}</td>
-            <td>{{ $currency }}{{ transaction.amount | formatCurrency }}</td>
+            <td>{{ transaction.amount | formatCurrency }}</td>
             <td>
               {{ getVendorName(transaction.Venfor) }}
             </td>

@@ -106,7 +106,7 @@ export default {
   methods: {
     handlePreview() {
       this.$router.push({
-        path: "/campaigns/forms/new",
+        path: "/projects/forms/new",
         query: { success: true },
       });
 

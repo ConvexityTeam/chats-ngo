@@ -76,7 +76,7 @@ export default {
           .replace(/\D/g, "")
           .replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 
-        this.$emit("input", `${this.$currency}${value}`);
+        this.$emit("input", `${this.$store.$currency}${value}`);
       }
     },
 

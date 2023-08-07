@@ -2,7 +2,7 @@
   <div class="mx-3">
     <section class="mt-3 text-left">
       <p class="primary-gray py-3 font-medium">
-        Select a campaign you would like to import beneficiaries from
+        Select a project you would like to import beneficiaries from
       </p>
     </section>
 
@@ -12,7 +12,7 @@
         <input
           type="text"
           class="form-controls search"
-          placeholder="Search campaigns..."
+          placeholder="Search projects..."
           v-model="searchQuery"
         />
         <img
@@ -119,7 +119,7 @@ export default {
         console.log("Import Response:::", response);
 
         if (response.status == "success") {
-          this.$emit("imported");
+          this.$emit("imported", "existing");
           this.$toast.success(response.message);
         }
       } catch (error) {
@@ -142,10 +142,6 @@ export default {
 </script>
 
 <style scoped>
-.primary-gray {
-  font-size: 0.875rem;
-}
-
 .campaign-holder {
   height: 20rem;
   overflow-y: auto;

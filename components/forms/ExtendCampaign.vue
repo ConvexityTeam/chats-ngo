@@ -4,13 +4,13 @@
     <form @submit.prevent="extendCampaign">
       <!-- Name field  here -->
       <div class="form-group">
-        <label for="name">Campaign name</label>
+        <label for="name">Project name</label>
         <input
           id="name"
           v-model="payload.title"
           type="text"
           class="form-controls"
-          placeholder="Enter name of campaign"
+          placeholder="Enter name of project"
           disabled
         />
       </div>
@@ -87,7 +87,7 @@
       <div class="d-flex pb-2 mt-4">
         <div>
           <Button
-            text="Extend campaign"
+            text="Extend project"
             type="submit"
             :has-icon="false"
             :loading="loading"
@@ -110,57 +110,57 @@
   </div>
 </template>
 
-<script> 
+<script>
 import { required, maxLength } from "vuelidate/lib/validators";
 import { mounted } from "vue";
 import { mapGetters } from "vuex";
 import DatePicker from "vue2-datepicker";
-import "vue2-datepicker/index.css"; 
- 
+import "vue2-datepicker/index.css";
 
 export default {
-  components: { DatePicker   },
+  components: { DatePicker },
 
   props: {
     campaignDetails: {
       type: Object,
-      default: () => {}
+      default: () => {},
     },
   },
 
   data() {
-    return { 
+    return {
       drawer: false,
       present: new Date(),
-      loading: false,  
-      id: 0, 
-      payload: { 
-        end_date: "", 
+      loading: false,
+      id: 0,
+      payload: {
+        end_date: "",
         campaign_id: "",
         additional_budget: 0,
-        description: ""
-      }, 
+        description: "",
+      },
     };
-  }, 
+  },
 
   validations: {
-    payload: { 
+    payload: {
       description: { required, maxLength: maxLength(250) },
       end_date: { required },
     },
   },
-  
+
   computed: {
-    ...mapGetters("authentication", ["user"]), 
+    ...mapGetters("authentication", ["user"]),
   },
 
-  mounted() { 
-    this.payload = this.campaignDetails
-    this.payload.end_date = ""  },
+  mounted() {
+    this.payload = this.campaignDetails;
+    this.payload.end_date = "";
+  },
 
-  methods: {  
+  methods: {
     async extendCampaign() {
-      try { 
+      try {
         this.loading = true;
         this.$v.payload.$touch();
 
@@ -172,11 +172,13 @@ export default {
           additional_budget: this.payload.additional_budget,
           description: this.payload.description,
           campaign_id: this.campaignDetails.id,
-        } 
-  
+        };
+
         const response = await this.$axios.post(
-          `/organisations/extend-campaign/${this.campaignDetails.OrganisationId}`, body);
- 
+          `/organisations/extend-campaign/${this.campaignDetails.OrganisationId}`,
+          body
+        );
+
         if (response.status == "success") {
           this.$emit("reload");
           this.closeModal();
@@ -189,12 +191,10 @@ export default {
         this.loading = false;
       }
     },
- 
 
     closeModal() {
       this.$bvModal.hide("extend-campaign");
     },
- 
   },
 };
 </script>

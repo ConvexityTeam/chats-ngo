@@ -94,7 +94,7 @@
                 nav-wrapper-class
               >
                 <b-tab
-                  title="Campaigns"
+                  title="Projects"
                   :active="section === 'campaigns'"
                   class="nav-links"
                   @click="section = 'campaigns'"
@@ -174,19 +174,19 @@ export default {
     },
 
     totalReceived() {
-      return `${this.$currency}${this.$root.$options.filters.formatCurrency(
+      return `${this.$root.$options.filters.formatCurrency(
         this.userDetails?.total_wallet_received
       )}`;
     },
 
     totalSpent() {
-      return `${this.$currency}${this.$root.$options.filters.formatCurrency(
+      return `${this.$root.$options.filters.formatCurrency(
         this.userDetails?.total_wallet_spent
       )}`;
     },
 
     totalRemaining() {
-      return `${this.$currency}${this.$root.$options.filters.formatCurrency(
+      return `${this.$root.$options.filters.formatCurrency(
         this.userDetails?.total_wallet_balance
       )}`;
     },

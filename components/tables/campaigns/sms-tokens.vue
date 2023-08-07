@@ -16,7 +16,7 @@
           </th>
           <th scope="col">Beneficiary</th>
           <th></th>
-          <th scope="col">Campaign</th>
+          <th scope="col">Project</th>
           <th></th>
           <th scope="col">Amount</th>
           <th></th>
@@ -52,9 +52,11 @@
               </span>
               {{
                 token.Beneficiary
-                  ? `${token.Beneficiary.first_name +
+                  ? `${
+                      token.Beneficiary.first_name +
                       " " +
-                      token.Beneficiary.last_name}`
+                      token.Beneficiary.last_name
+                    }`
                   : ""
               }}
             </div>
@@ -63,7 +65,7 @@
           <td class="wrap">{{ token.Campaign ? token.Campaign.title : "" }}</td>
           <td></td>
           <td class="wrap">
-            {{ $currency }}{{ token.amount | formatCurrency }}
+            {{ token.amount | formatCurrency }}
           </td>
           <td></td>
           <td>{{ token.token }}</td>
@@ -73,7 +75,7 @@
               <Button
                 :hasBorder="true"
                 :hasIcon="false"
-                text="Resend token"
+                text="Resend"
                 custom-styles=" border-radius: 5px !important;
                   height:33px; border: 1px solid #17ce89 !important; font-size:
                   0.875rem !important; padding:0px 15px !important"
@@ -88,7 +90,7 @@
 
     <!-- Loader Here -->
     <div v-else-if="loading" class="py-5">
-      <div class="text-center loader "></div>
+      <div class="text-center loader"></div>
     </div>
 
     <!-- No Data Here -->
@@ -101,22 +103,22 @@ export default {
   props: {
     data: {
       type: Array,
-      default: () => []
+      default: () => [],
     },
 
     loading: {
       type: Boolean,
-      default: false
+      default: false,
     },
 
     isCleared: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
 
   data: () => ({
-    selected: []
+    selected: [],
   }),
 
   watch: {
@@ -124,7 +126,7 @@ export default {
       if (val) {
         this.selected = [];
       }
-    }
+    },
   },
 
   methods: {
@@ -143,12 +145,12 @@ export default {
       if (this.data.length === this.selected.length) {
         this.selected = [];
       } else {
-        this.selected = this.data.map(user => user.beneficiaryId);
+        this.selected = this.data.map((user) => user.beneficiaryId);
       }
 
       this.$emit("handleSelected", this.selected);
-    }
-  }
+    },
+  },
 };
 </script>
 

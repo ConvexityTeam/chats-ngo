@@ -1,9 +1,9 @@
 <template>
   <div class="holder">
     <Back
-      text="Back to campaigns"
+      text="Back to projects"
       customStyles="font-weight: 400!important"
-      @click="$router.push('/campaigns')"
+      @click="$router.push('/projects')"
     />
 
     <!-- Search Region Here -->

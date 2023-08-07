@@ -87,19 +87,19 @@ export default {
     ...mapGetters("authentication", ["user"]),
 
     totalDeposit() {
-      return `${this.$currency}${this.$root.$options.filters.formatCurrency(
+      return `${this.$root.$options.filters.formatCurrency(
         this.wallet.total_deposit
       )}`;
     },
 
     expenses() {
-      return `${this.$currency}${this.$root.$options.filters.formatCurrency(
+      return `${this.$root.$options.filters.formatCurrency(
         this.wallet.spend_for_campaign
       )}`;
     },
 
     cashBalace() {
-      return `${this.$currency}${this.$root.$options.filters.formatCurrency(
+      return `${this.$root.$options.filters.formatCurrency(
         this.wallet && this.wallet.MainWallet && this.wallet.MainWallet.balance
       )}`;
     },

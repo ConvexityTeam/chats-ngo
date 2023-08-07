@@ -23,11 +23,11 @@
             <div class="form-group">
               <label for="email">Email</label>
               <input
+                id="email"
                 type="email"
                 class="form-controls"
                 placeholder="example@gmail.com"
                 @focus="emailActive = true"
-                id="email"
                 :class="{ form__input__error: $v.payload.email.$error }"
                 v-model="payload.email"
                 @blur="$v.payload.email.$touch()"
@@ -41,11 +41,12 @@
             <div class="form-group">
               <label for="password">Password</label>
               <input
+                id="password"
                 :type="showpassword ? 'text' : 'password'"
                 class="form-controls"
-                placeholder="Enter password"
                 :class="{ form__input__error: $v.payload.password.$error }"
-                id="password"
+                autocomplete="current-password"
+                placeholder="Enter password"
                 v-model="payload.password"
                 @focus="passActive = true"
                 @blur="$v.payload.password.$touch()"
@@ -207,6 +208,7 @@ export default {
           tfa_method,
         });
 
+        console.log("OTPRESPONE:::", response);
         if (response.status == "success") {
           this.grantUserAccess(response.data);
         }

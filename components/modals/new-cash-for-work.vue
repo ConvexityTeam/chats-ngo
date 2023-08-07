@@ -2,7 +2,7 @@
   <div>
     <b-modal id="new-cash" hide-header hide-footer>
       <div class="text-center position-relative pt-2">
-        <h3 class="header">New Campaign</h3>
+        <h3 class="header">New Project</h3>
         <!--Close button here -->
         <button
           type="button"
@@ -22,11 +22,11 @@
               type="text"
               class="form-controls"
               :class="{
-                error: $v.payload.title.$error
+                error: $v.payload.title.$error,
               }"
               name="name"
               id="name"
-              placeholder="Name of the campaign"
+              placeholder="Name of the project"
               v-model="payload.title"
               @blur="$v.payload.title.$touch()"
             />
@@ -38,7 +38,7 @@
             <textarea
               class="form-controls"
               :class="{
-                error: $v.payload.description.$error
+                error: $v.payload.description.$error,
               }"
               name="description"
               id="description"
@@ -58,7 +58,7 @@
                   type="number"
                   class="form-controls"
                   :class="{
-                    error: $v.payload.budget.$error
+                    error: $v.payload.budget.$error,
                   }"
                   name="total-amount"
                   id="total-amount"
@@ -110,7 +110,7 @@
                   type="text"
                   class="form-controls"
                   :class="{
-                    error: $v.payload.location.$error
+                    error: $v.payload.location.$error,
                   }"
                   name="location"
                   id="location"
@@ -169,41 +169,42 @@ export default {
         budget: "",
         location: "",
         start_date: "",
-        end_date: ""
-      }
+        end_date: "",
+      },
     };
   },
 
   validations: {
     payload: {
       title: {
-        required
+        required,
       },
       description: {
-        required
+        required,
       },
       budget: {
-        required
+        required,
       },
       location: {
-        required
+        required,
       },
       start_date: {
-        required
+        required,
       },
       end_date: {
-        required
-      }
-    }
+        required,
+      },
+    },
   },
   components: { DatePicker, close },
 
   computed: {
-    ...mapGetters("authentication", ["user"])
+    ...mapGetters("authentication", ["user"]),
   },
 
   mounted() {
-    this.payload.organisation_id = this.user.AssociatedOrganisations[0].OrganisationId;
+    this.payload.organisation_id =
+      this.user.AssociatedOrganisations[0].OrganisationId;
   },
 
   methods: {
@@ -243,8 +244,8 @@ export default {
         this.loading = false;
         this.$toast.error(err.response.data.message);
       }
-    }
-  }
+    },
+  },
 };
 </script>
 

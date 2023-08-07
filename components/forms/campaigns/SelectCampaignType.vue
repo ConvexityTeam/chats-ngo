@@ -2,7 +2,7 @@
   <div class="mt-4 mb-12 p-4">
     <div
       class="d-flex justify-content-center align-items-center"
-      style="gap: 1rem;"
+      style="gap: 1rem"
     >
       <div
         v-for="campaignType in campaignTypes"
@@ -50,13 +50,13 @@ export default {
       activeCampaignId: "",
       campaignTypes: [
         {
-          title: "Cash campaign",
-          description: "Create a campaign for monetary item, e.g Cash",
+          title: "Cash project",
+          description: "Create a project for monetary item, e.g Cash",
           id: "cash",
         },
         {
-          title: "Items campaign",
-          description: "Create a campaign for non-monetary item, e.g Vaccine",
+          title: "Items project",
+          description: "Create a project for non-monetary item, e.g Vaccine",
           id: "items",
         },
       ],
@@ -67,9 +67,6 @@ export default {
     selectCampaignType(campaign_type) {
       this.activeCampaignId = campaign_type;
       this.$emit("selectCampaignType", campaign_type);
-    },
-    updateActive(id) {
-      console.log(98);
     },
   },
 };

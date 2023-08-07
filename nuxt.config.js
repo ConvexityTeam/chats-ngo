@@ -1,6 +1,7 @@
 export default {
   // Disable server-side rendering (https://go.nuxtjs.dev/ssr-mode)
   ssr: false,
+  target: "static",
 
   head: {
     title: "Convexity Humanitarian Aids Transfer Solution - CHATS",
@@ -50,6 +51,7 @@ export default {
     "~/plugins/element-ui",
     // "~/plugins/freshdesk.js",
     { src: "~/plugins/vuex-persist", ssr: false },
+    { src: "~/plugins/directives.js", mode: "client" },
   ],
 
   components: true,

@@ -10,8 +10,8 @@
         </div>
 
         <div style="flex-grow: 1">
-          <div class="container py-4">
-            <GenericBanner isKyc v-if="!user.is_verified_all">
+          <div class="container py-4" v-if="!user.is_verified_all">
+            <GenericBanner isKyc>
               <div class="d-flex holder">
                 <template v-if="!user.is_verified">
                   <span class="primary-blue font-medium">
@@ -49,6 +49,7 @@ import IdleJs from "idle-js";
 let protectedLastRoute;
 
 export default {
+  name: "DashboardLayout",
   middleware: "authenticated",
 
   watch: {

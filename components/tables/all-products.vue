@@ -47,7 +47,7 @@
             <td>{{ product.product_category || "-" }}</td>
             <td>{{ product.type || "-" }}</td>
             <td>{{ product.sales_volume | formatCount }}</td>
-            <td>{{ $currency }}{{ product.total_revenue | formatCurrency }}</td>
+            <td>{{ product.total_revenue | formatCurrency }}</td>
           </tr>
         </tbody>
       </table>

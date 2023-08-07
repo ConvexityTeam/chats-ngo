@@ -38,6 +38,7 @@
         <h4>Transactions</h4>
         <div class="ml-auto"></div>
       </div>
+
       <table class="table table-borderless" v-if="resultQuery.length">
         <thead>
           <tr>
@@ -56,13 +57,13 @@
         >
           <tr
             @click="toggleTransactionDetails(transaction)"
-            style="cursor: pointer"
+            class="pointer"
             :class="
               activeReferenceId == transaction.reference && 'border-bottom'
             "
           >
             <td>{{ transaction.reference }}</td>
-            <td>{{ $currency }}{{ transaction.amount | formatCurrency }}</td>
+            <td>{{ transaction.amount | formatCurrency }}</td>
             <td>
               <span class="badge badge-pill deposited p-2">
                 {{
@@ -90,9 +91,9 @@
           <!-- dropdown transaction details -->
           <tr
             class="selected p-3"
-            v-if="activeReferenceId == transaction.reference"
+            v-if="activeReferenceId == transaction?.reference"
             :class="
-              activeReferenceId == transaction.reference && 'border-bottom'
+              activeReferenceId == transaction?.reference && 'border-bottom'
             "
           >
             <td colspan="5" :class="{ selected: i % 2 != 0 }">
@@ -101,29 +102,34 @@
                   <span class="col-3 h6"> Transaction Hash: </span>
                   <div
                     v-if="transaction?.transaction_hash"
-                    class="col-9 mt-n2"
-                    style="color: #17ce89"
+                    class="col-9 mt-n2 primary"
                   >
                     <span
                       class="mr-2 text-truncate underline pointer"
-                      @click="handleHashRoute(transaction.transaction_hash)"
+                      @click="
+                        handleHashRoute(
+                          transaction.transaction_hash?.transactionHash
+                        )
+                      "
                     >
                       {{
-                        transaction?.transaction_hash &&
-                        transaction?.transaction_hash.length > 35
-                          ? `${transaction?.transaction_hash.substring(
+                        transaction.transaction_hash?.transactionHash.length >
+                        35
+                          ? `${transaction.transaction_hash.transactionHash.substring(
                               1,
                               45
                             )}...`
-                          : transaction?.transaction_hash
+                          : transaction.transaction_hash.transactionHash
                       }}
                     </span>
 
                     <span
-                      @click="$copy(transaction?.transaction_hash)"
+                      @click="
+                        $copy(transaction.transaction_hash.transactionHash)
+                      "
                       class="pointer"
                     >
-                      <copy type="line" />
+                      <IconsCopy type="line" />
                     </span>
                   </div>
 
@@ -134,15 +140,18 @@
                 <div class="row align-items-center mb-2">
                   <span class="col-3 h6">Confirmation:</span>
                   <span class="col-9 mt-n2">
-                    {{ transactionDetails?.confirmations || "-" }}
+                    {{ transaction?.transaction_hash?.confirmations || "-" }}
                   </span>
                 </div>
 
                 <!-- Block Number  -->
                 <div class="row align-items-center mb-2">
                   <span class="col-3 h6">Block ID:</span>
-                  <span class="col-9 mt-n2" style="color: #17ce89">
-                    {{ transactionDetails?.blockNumber || "-" | formatNumber }}
+                  <span class="col-9 mt-n2 primary">
+                    {{
+                      transaction?.transaction_hash?.blockNumber ||
+                      "-" | formatNumber
+                    }}
                   </span>
                 </div>
 
@@ -150,7 +159,7 @@
                 <div class="row align-items-center mb-2">
                   <span class="col-3 h6">Time:</span>
                   <span class="col-9 mt-n2">
-                    {{ transaction.createdAt | formatDateTime }}
+                    {{ transaction?.createdAt | formatDateTime }}
                   </span>
                 </div>
 
@@ -172,22 +181,22 @@
         </tbody>
       </table>
 
-      <div v-else-if="loading" class="text-center"></div>
+      <div v-else-if="loading" class="py-5">
+        <div class="text-center loader pb-5"></div>
+      </div>
+
       <h3 v-else class="text-center no-record">NO RECORD FOUND</h3>
     </div>
   </div>
 </template>
 
 <script>
-import dot from "~/components/icons/dot";
-import copy from "~/components/icons/copy";
 import { mapGetters } from "vuex";
 import appConfig from "~/appConfig";
 import moment from "moment";
 let screenLoading;
 
 export default {
-  components: { dot, copy },
   data: () => ({
     loading: false,
     organisationId: "",
@@ -235,13 +244,12 @@ export default {
 
   methods: {
     async toggleTransactionDetails(transaction) {
-      const { reference, transaction_hash } = transaction;
+      const { reference } = transaction;
 
       if (this.activeReferenceId == reference) {
-        return (this.activeReferenceId = "");
+        this.activeReferenceId = "";
       } else {
-        await this.getTransactionDetails(transaction_hash);
-        return (this.activeReferenceId = reference);
+        this.activeReferenceId = reference;
       }
     },
     async getTransactions() {

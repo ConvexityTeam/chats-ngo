@@ -54,8 +54,16 @@ html {
   color: var(--primary-color);
 }
 
+.primary-blue {
+  color: var(--primary-blue) !important;
+}
+
 .primary-black {
   color: var(--primary-black);
+}
+
+.primary-gray {
+  color: var(--primary-gray);
 }
 
 .secondary-black {
@@ -84,10 +92,6 @@ html {
 
 .w-80 {
   width: 80%;
-}
-
-.primary-blue {
-  color: var(--primary-blue) !important;
 }
 
 .font-medium {
@@ -173,6 +177,74 @@ button:disabled {
   font-weight: 500;
 }
 
+/* Step Style Here */
+.el-step__main {
+  bottom: 64px;
+  position: relative;
+}
+
+.el-step__title {
+  color: var(--primary-blue) !important;
+  font-size: 0.75rem !important;
+}
+
+.el-step__title.is-success {
+  color: var(--primary-blue) !important;
+}
+
+.el-step__title.is-process {
+  font-weight: normal !important;
+  right: 46px;
+  position: relative;
+  bottom: 6px;
+}
+
+.el-step__icon-inner {
+  display: none;
+}
+
+.el-step__icon-inner.is-status {
+  display: block;
+}
+
+.el-step__icon-inner.is-status::before {
+  content: "";
+  display: inline-block;
+  font-size: 20px;
+  width: 13.5px;
+  height: 13.5px;
+  border-radius: 50%;
+  text-align: center;
+  background-color: var(--primary-color);
+}
+
+.el-step__icon {
+  width: 32px !important;
+  height: 32px !important;
+}
+
+.el-step__head.is-success.el-step__icon.is-text {
+  background-color: red !important;
+}
+
+.el-step__line {
+  background-color: var(--primary-color) !important;
+}
+
+.el-step__line-inner {
+  border-color: var(--primary-color) !important;
+}
+
+.el-step__icon.is-text {
+  border-radius: 50%;
+  border: 1px solid !important;
+  border-color: var(--primary-color) !important;
+}
+
+.el-step.is-horizontal .el-step__line {
+  height: 1px !important;
+  top: 16px !important;
+}
 /* GOOGLE TRANSLATE STYLES */
 
 .VIpgJd-ZVi9od-aZ2wEe-wOHMyf-ti6hGc {
@@ -296,6 +368,16 @@ input[type="number"] {
   color: #885304;
 }
 
+.status.accepted {
+  background: #eefcf6;
+  color: #35c78a;
+}
+
+.status.warning {
+  background: #fffded;
+  color: #f2994a;
+}
+
 .status.pending_approval {
   background: #ffeab6;
   color: #704831;
@@ -339,6 +421,11 @@ input[type="number"] {
 .status.rejected {
   background: #ffcdc7;
   color: #e42c66;
+}
+
+.status.rejected-2 {
+  background: #fcefee;
+  color: #f7796e;
 }
 
 .status.disbursed {
@@ -741,8 +828,8 @@ input.vue-pincode-input:focus {
   font-size: 1rem;
 }
 
-#error > .el-select > .el-input > .el-input__inner {
-  border: 1px #ee3934;
+.error > .el-select > .el-input > .el-input__inner {
+  border: 1px solid #ee3934 !important;
 }
 
 #product > .el-select > .el-input > .el-input__inner {
@@ -753,6 +840,11 @@ input.vue-pincode-input:focus {
   color: #222222;
   font-weight: 500;
   font-size: 1rem;
+}
+
+#product > .el-select > .el-select__tags > .el-tag.el-tag--info {
+  height: 26px !important;
+  border-color: unset !important;
 }
 
 #product > .el-select > .el-input > ::placeholder {
@@ -805,6 +897,10 @@ input.vue-pincode-input:focus {
 }
 
 .el-select .el-tag__close.el-icon-close {
+  background: inherit;
+}
+
+.el-select .el-tag__close.el-icon-close:hover {
   background: inherit;
 }
 
@@ -1096,6 +1192,28 @@ input.vue-pincode-input:focus {
   background: inherit;
 }
 
+/* Upload Styles here */
+
+.el-upload {
+  width: 100% !important;
+  height: 10.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  font-family: Gilroy;
+  margin-bottom: 1rem;
+  padding: 2rem 0;
+  border: none;
+  background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' rx='16' ry='16' stroke='%237C8DB5D9' stroke-width='2' stroke-dasharray='10%2c 6' stroke-dashoffset='12' stroke-linecap='square'/%3e%3c/svg%3e");
+  border-radius: 1rem;
+}
+
+.el-upload-dragger {
+  border: none !important;
+  border-radius: unset !important;
+}
+
 /* Input tag Component */
 
 .vue-input-tag-wrapper {
@@ -1137,6 +1255,10 @@ input.vue-pincode-input:focus {
   color: #222222 !important;
   font-size: 0.75rem !important;
   font-family: "Gilroy" !important;
+}
+
+.el-upload-list {
+  display: none !important;
 }
 
 @-webkit-keyframes spin {

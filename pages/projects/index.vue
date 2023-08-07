@@ -1,11 +1,11 @@
 <template>
   <div>
     <!-- modals here -->
-    <Modal size="lg" id="select-campaign-type" title="Select campaign type">
+    <Modal size="lg" id="select-campaign-type" title="Select project type">
       <SelectCampaignTypeVue @selectCampaignType="selectCampaignType" />
     </Modal>
     <!--  -->
-    <Modal id="new-campaign-form" title="New Campaign">
+    <Modal id="new-campaign-form" title="New Project">
       <NewCampaignVue :selectedCampaign="selectedCampaign" @reload="$fetch()" />
     </Modal>
 
@@ -46,8 +46,8 @@
 
         <div class="ml-auto mx-3">
           <Button
-            v-if="section === 'campaigns' || section === 'items'"
-            text="Create campaign"
+            v-if="section === 'projects' || section === 'items'"
+            text="Create project"
             custom-styles="height:50px"
             @click="$bvModal.show('select-campaign-type')"
           />
@@ -77,10 +77,10 @@
           <template v-else>
             <!-- Campaigns tab here -->
             <b-tab
-              title="Cash Campaigns"
-              :active="section === 'campaigns'"
+              title="Cash Projects"
+              :active="section === 'projects'"
               class="nav-links"
-              @click="handleTabClick('campaigns')"
+              @click="handleTabClick('projects')"
             >
               <CampaignTable
                 :id="id"
@@ -95,7 +95,7 @@
             </b-tab>
 
             <b-tab
-              title="Item Campaigns"
+              title="Item Projects"
               :active="section === 'items'"
               class="nav-links"
               @click="handleTabClick('items')"
@@ -114,7 +114,7 @@
 
             <!-- Campaign forms here -->
             <b-tab
-              title="Campaign Forms"
+              title="Project Forms"
               :active="section === 'forms'"
               @click="handleTabClick('forms')"
             >
@@ -158,7 +158,7 @@ export default {
     id: "",
     searchQuery: "",
     selectedCampaign: "",
-    campaigns: [],
+    projects: [],
     forms: [],
     items: [],
 
@@ -176,7 +176,7 @@ export default {
     ...mapGetters("authentication", ["user"]),
 
     section() {
-      return this.$route.query.section || "campaigns";
+      return this.$route.query.section || "projects";
     },
 
     resultQuery() {
@@ -209,7 +209,7 @@ export default {
     );
 
     this.forms = campaignForms.data;
-    this.campaigns = campaigns.data;
+    this.projects = campaigns.data;
     this.items = itemCampaigns.data;
 
     // Pagination data here
@@ -284,7 +284,7 @@ export default {
 
     handleNewForm() {
       localStorage.removeItem("campaignForm");
-      this.$router.push("/campaigns/forms/new");
+      this.$router.push("/projects/forms/new");
     },
 
     openScreen() {

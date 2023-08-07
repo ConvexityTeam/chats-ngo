@@ -1,34 +1,3 @@
-# stages:
-#   - staging
-#   - production
-
-# deploy_staging:
-#   stage: staging
-#   script:
-#     - eval $(ssh-agent -s)
-#     - chmod 600 $STAGING_SSH_PRIVATE_KEY
-#     - ssh-add $STAGING_SSH_PRIVATE_KEY
-#     - ssh $USER@$APP_URL_STAGING -o StrictHostKeyChecking=no ". restart_ssh.sh && ssh-add .ssh/chatsapi && cd frontend && git pull origin develop && docker-compose build dashboard && docker-compose up -d && exit"
-#   only:
-#     - develop
-
-# deploy_production:
-#   stage: production
-#   script:
-#   - eval $(ssh-agent -s)
-#   - chmod 600 $SSH_PRIVATE_KEY
-#   - ssh-add $SSH_PRIVATE_KEY
-#   - ssh $USER@$APP_URL -o StrictHostKeyChecking=no ". ssh-restart.sh && ssh-add .ssh/convexityApps && cd frontend && git pull origin production && docker-compose build dashboard && docker-compose up -d && exit"
-#   only:
-#     - production
-    
-# You can override the included template(s) by including variable overrides
-# SAST customization: https://docs.gitlab.com/ee/user/application_security/sast/#customizing-the-sast-settings
-# Secret Detection customization: https://docs.gitlab.com/ee/user/application_security/secret_detection/#customizing-settings
-# Dependency Scanning customization: https://docs.gitlab.com/ee/user/application_security/dependency_scanning/#customizing-the-dependency-scanning-settings
-# Container Scanning customization: https://docs.gitlab.com/ee/user/application_security/container_scanning/#customizing-the-container-scanning-settings
-# Note that environment variables can be set in several places
-# See https://docs.gitlab.com/ee/ci/variables/#cicd-variable-precedence
 image: node:16
 
 stages:

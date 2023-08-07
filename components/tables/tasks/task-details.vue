@@ -1,6 +1,6 @@
 <template>
   <div class="campaign-details-holder p-4">
-    <Modal id="campaign-prompt" :title="status + ' ' + 'campaign'">
+    <Modal id="campaign-prompt" :title="`${status} project`">
       <campaign-prompt
         @handleCampaign="handleCampaign"
         :status="status"
@@ -77,7 +77,6 @@
 
           <div class="ml-auto">
             <p class="campaign-answers">
-              {{ $currency }}
               {{ details.amount | formatCurrency }}
             </p>
           </div>

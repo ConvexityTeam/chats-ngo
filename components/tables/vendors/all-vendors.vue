@@ -165,9 +165,9 @@ export default {
           Phone_Number: vendor.phone,
           Store: vendor.Store ? vendor.Store.store_name : "",
           Email_Address: vendor.email,
-          location: vendor.Store
-            ? JSON.parse(vendor?.Store?.location).country
-            : "",
+          // location: vendor.Store
+          //   ? JSON.parse(vendor?.Store?.location).country
+          //   : "",
           Address: vendor.Store ? vendor.Store.address : "",
           Created: moment(vendor.createdAt).format("DD MMMM, YYYY"),
         };

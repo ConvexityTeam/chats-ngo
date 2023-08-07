@@ -166,8 +166,8 @@
                   class="primary-gray text-xs"
                   style="text-transform: uppercase"
                 >
-                  {{ product.type }} TAG</span
-                >
+                  {{ product.type }} TAG
+                </span>
                 <h6 class="word-content primary-blue font-medium">
                   {{ product.tag | capitalize }}
                 </h6>
@@ -234,7 +234,7 @@
       <!-- no products here -->
       <div v-else class="no-product">
         <div class="d-flex justify-content-center">
-          <no-products />
+          <IconsNoProduct />
         </div>
 
         <div class="text-center mt-4 w-75 mx-auto">

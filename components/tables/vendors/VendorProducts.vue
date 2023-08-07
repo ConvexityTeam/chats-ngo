@@ -60,7 +60,7 @@
               </div>
             </td>
 
-            <td>{{ $currency }}{{ product.cost | formatCurrency }}</td>
+            <td>{{ product.cost | formatCurrency }}</td>
             <td>{{ product.createdAt | formatDate }}</td>
           </tr>
         </tbody>

@@ -1,7 +1,7 @@
 <template>
   <div class="campaign-details-holder p-4">
     <h4 class="campaign-details-header poppins pt-2">
-      Campaign Vendors ({{ vendors.length || 0 }})
+      Project Vendors ({{ vendors.length || 0 }})
     </h4>
 
     <!-- details region here -->
@@ -26,7 +26,7 @@
         <div>
           <button
             type="button"
-            @click="$router.push(`/campaigns/${$route.params.id}/vendors`)"
+            @click="$router.push(`/projects/${$route.params.id}/vendors`)"
             class="d-flex viewall align-items-center p-0"
           >
             <img src="~/assets/img/vectors/eye.svg" alt="see" />
@@ -47,12 +47,12 @@ export default {
   props: {
     user: {
       type: Object,
-      default: () => {}
+      default: () => {},
     },
     remount: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
 
   watch: {
@@ -60,11 +60,11 @@ export default {
       if (value) {
         this.$fetch();
       }
-    }
+    },
   },
 
   data: () => ({
-    vendors: []
+    vendors: [],
   }),
 
   async fetch() {
@@ -76,7 +76,7 @@ export default {
     console.log("CAMPAIGN VENDORS", response);
 
     this.vendors = response.data;
-  }
+  },
 };
 </script>
 

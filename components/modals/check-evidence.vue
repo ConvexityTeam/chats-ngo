@@ -1,13 +1,20 @@
 <template>
   <div>
-    <DisburseFunds :task="task" :campaignId="campaignId" />
-    <Rejected :task="rejectDetails" />
-    <ViewImage :img="img" />
+    <section>
+      <DisburseFunds :task="task" :campaignId="campaignId" />
+      <Rejected :task="task" />
+      <ViewImage :img="img" />
+    </section>
+
     <b-modal id="check-evidence" hide-header hide-footer>
       <div class="text-center position-relative pt-2">
         <h3 class="header font-bold primary-blue">Task submission</h3>
         <!--Close button here -->
-        <button type="button" class="close-btn position-absolute pb-3" @click="closeModal">
+        <button
+          type="button"
+          class="close-btn position-absolute pb-3"
+          @click="closeModal"
+        >
           <close />
         </button>
       </div>
@@ -19,16 +26,31 @@
           <div class="col-lg-12 mb-1">
             <div class="form-group">
               <label for="name">Task Name</label>
-              <input type="text" class="form-controls" name="taskName" id="task-name" placeholder="Task Name"
-                :value="task.task_name" readonly />
+              <input
+                type="text"
+                class="form-controls"
+                name="taskName"
+                id="task-name"
+                placeholder="Task Name"
+                :value="task.task_name"
+                readonly
+              />
             </div>
           </div>
           <!-- Task Description -->
           <div class="col-lg-12 mb-3">
             <div class="form-group">
               <label for="name">Activity Description</label>
-              <textarea type="text" name="task-description" id="taskDescription" :value="task.comment"
-                placeholder="Task Description" readonly cols="50" rows="5" />
+              <textarea
+                type="text"
+                name="task-description"
+                id="taskDescription"
+                :value="task.comment"
+                placeholder="Task Description"
+                readonly
+                cols="50"
+                rows="5"
+              />
             </div>
           </div>
         </div>
@@ -38,21 +60,44 @@
           <label for="name">Photos</label>
           <div class="d-flex row justify-content-between mx-1">
             <!-- evidence 1 -->
-            <div v-for="(upload, index) in task.uploads" :key="index" class="img-evidence cursor-pointer">
-              <b-img v-if="upload" :src="upload" fluid @click="viewImage(upload)"></b-img>
-              <img v-else src="~/assets/img/vectors/evidence-placeholder.svg" width="80" />
+            <div
+              v-for="(upload, index) in task.uploads"
+              :key="index"
+              class="img-evidence cursor-pointer"
+            >
+              <b-img
+                v-if="upload"
+                :src="upload"
+                fluid
+                @click="viewImage(upload)"
+              ></b-img>
+              <img
+                v-else
+                src="~/assets/img/vectors/evidence-placeholder.svg"
+                width="80"
+              />
             </div>
           </div>
         </div>
 
         <div v-if="btnStatus" class="d-flex buttons">
           <div class="save-btn">
-            <Button type="submit" :has-icon="false" text="Confirm approval" custom-styles="height:50px;  width: 160px"
-              @click="approveTask(task)" />
+            <Button
+              type="submit"
+              :has-icon="false"
+              text="Confirm approval"
+              custom-styles="height:50px;  width: 160px"
+              @click="approveTask"
+            />
           </div>
           <div class="save-btn px-3">
-            <Button :has-icon="false" text="Reject" custom-styles="height:50px;  width: 100%;" class="border"
-              @click="rejectTask" />
+            <Button
+              :has-icon="false"
+              text="Reject"
+              custom-styles="height:50px;  width: 100%; padding: 0 24px !important;"
+              class="border"
+              @click="rejectTask"
+            />
           </div>
         </div>
       </div>
@@ -66,12 +111,14 @@ import Rejected from "~/components/modals/rejected.vue";
 import DisburseFunds from "~/components/modals/rejected.vue";
 import ViewImage from "~/components/modals/view-image.vue";
 
+let screenLoading;
+
 export default {
   components: {
     close,
     Rejected,
     DisburseFunds,
-    ViewImage
+    ViewImage,
   },
 
   props: {
@@ -92,7 +139,7 @@ export default {
     loading: false,
     orgId: "",
     rejectDetails: {},
-    img: '',
+    img: "",
   }),
 
   computed: {
@@ -104,36 +151,25 @@ export default {
   },
 
   methods: {
-    show() {
-      console.log('TASK::', this.task)
-      console.log('BTN::', this.btnStatus)
-    },
-    // Approve Task
-    approveTask(task) {
+    approveTask() {
       this.$bvModal.hide("check-evidence");
       this.$bvModal.show("disburse-funds");
     },
 
-    // Reject Task
     async rejectTask() {
       try {
-        this.loading = true;
+        this.openScreen();
         const response = await this.$axios.post(
           `cash-for-work/task/reject-submission/${this.task.id}`
         );
         if (response.status == "success") {
-          this.rejectDetails = this.task?.SubmittedEvidences[0];
           this.$bvModal.hide("check-evidence");
-          this.loading = false;
           this.$bvModal.show("rejected");
-
-          setTimeout(() => {
-            this.$bvModal.hide("rejected");
-          }, 3000);
         }
       } catch (error) {
         console.log("Reject Submission Error:::", error);
-        this.loading = false;
+      } finally {
+        screenLoading.close();
       }
     },
 
@@ -188,20 +224,21 @@ label {
   margin-bottom: 1.5rem;
 }
 
-.form-group>textarea {
+.form-group > textarea {
   height: 123px;
   width: 432px;
   background: #f5f6f8;
   border-radius: 5px;
   border: var(--primary-gray) solid 1px;
   outline: none;
+  resize: none;
 }
 
-.form-group>textarea:focus {
+.form-group > textarea:focus {
   border: var(--primary-gray) solid 1px !important;
 }
 
-.form-group>textarea::placeholder {
+.form-group > textarea::placeholder {
   color: #646a86;
   font-size: 1rem;
   padding: 1rem 1.25rem;

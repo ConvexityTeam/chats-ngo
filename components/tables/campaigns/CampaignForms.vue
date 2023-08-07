@@ -131,7 +131,7 @@ export default {
         "campaignForm",
         JSON.stringify({ title, questions })
       );
-      this.$router.push(`campaigns/forms/${form.id}`);
+      this.$router.push(`projects/forms/${form.id}`);
     },
 
     async deleteForm() {

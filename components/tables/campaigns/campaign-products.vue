@@ -1,7 +1,7 @@
 <template>
   <div class="campaign-details-holder p-4">
     <h4 class="campaign-details-header poppins pt-2">
-      Campaign products / services ({{ products.length || 0 }})
+      Project products / services ({{ products.length || 0 }})
     </h4>
 
     <!-- details region here -->
@@ -22,7 +22,7 @@
         <div>
           <button
             type="button"
-            @click="$router.push(`/campaigns/${$route.params.id}/products`)"
+            @click="$router.push(`/projects/${$route.params.id}/products`)"
             class="d-flex viewall align-items-center p-0"
           >
             <img src="~/assets/img/vectors/eye.svg" alt="see" />
@@ -43,12 +43,12 @@ export default {
   props: {
     user: {
       type: Object,
-      default: () => {}
+      default: () => {},
     },
     remount: {
       type: Boolean,
-      default: false
-    }
+      default: false,
+    },
   },
 
   watch: {
@@ -56,11 +56,11 @@ export default {
       if (value) {
         this.$fetch();
       }
-    }
+    },
   },
 
   data: () => ({
-    products: []
+    products: [],
   }),
 
   async fetch() {
@@ -72,7 +72,7 @@ export default {
     console.log("CAMPAIGN PRODUCTS", response);
 
     this.products = response.data;
-  }
+  },
 };
 </script>
 

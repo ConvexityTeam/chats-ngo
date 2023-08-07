@@ -108,13 +108,13 @@ export default {
     ...mapGetters("authentication", ["user"]),
 
     totalReceived() {
-      return `${this.$currency}${this.$root.$options.filters.formatCurrency(
+      return `${this.$root.$options.filters.formatCurrency(
         this.vendor.total_received
       )}`;
     },
 
     totalSpent() {
-      return `${this.$currency}${this.$root.$options.filters.formatCurrency(
+      return `${this.$root.$options.filters.formatCurrency(
         this.vendor.total_spent
       )}`;
     },
@@ -122,9 +122,7 @@ export default {
     totalRemaining() {
       const balance = this.vendor.total_received - this.vendor.total_spent;
 
-      return `${this.$currency}${this.$root.$options.filters.formatCurrency(
-        balance
-      )}`;
+      return `${this.$root.$options.filters.formatCurrency(balance)}`;
     },
   },
 

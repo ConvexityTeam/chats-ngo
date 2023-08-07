@@ -140,6 +140,7 @@ export default {
 
         if (response.status == "success") {
           this.updateRoute();
+          localStorage.setItem("userEmail", payload.email);
         }
       } catch (err) {
         const { message } = err?.response?.data;
@@ -156,10 +157,13 @@ export default {
       try {
         if (this.loading) return;
         this.loading = true;
+
+        const email = localStorage.getItem("userEmail");
+
         const response = await this.$axios.post(
           "auth/resend-email-confirmation",
           {
-            email: this.payload.email,
+            email,
             host_url: appConfig.HOST_URL,
           }
         );

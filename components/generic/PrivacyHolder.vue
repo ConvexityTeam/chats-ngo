@@ -2,7 +2,7 @@
   <div class="my-3">
     <!-- Modas Here -->
     <section>
-      <Modal id="invite-donor" title="Invite donor to campaign">
+      <Modal id="invite-donor" title="Invite donor to project">
         <InviteDonorVue @sendInvite="sendInvite" :loading="loading" />
       </Modal>
     </section>
@@ -18,7 +18,7 @@
         />
 
         <span class="primary-blue text-truncate ml-2">
-          Campaign link:
+          Project link:
 
           <span>
             <span @click="$copy(copiableLink)" class="copy-link">
@@ -42,16 +42,16 @@
               class="mb-n1"
               v-model="isCampaignPublic"
               @input="toggle"
-              :disabled="campaignStatus == 'completed'"
-              :title="campaignStatus == 'completed' && 'Campaign completed'"
+              :disabled="details?.status == 'completed'"
+              :title="details?.status == 'completed' && 'Project completed'"
             />
           </span>
         </div>
 
         <span
           class="d-flex align-items-center justify-content-center action_2 flex-fill h-100 px-1"
-          :class="campaignStatus == 'completed' && 'disabled-invite-btn'"
-          :title="campaignStatus == 'completed' && 'Campaign completed'"
+          :class="details?.status == 'completed' && 'disabled-invite-btn'"
+          :title="details?.status == 'completed' && 'Project completed'"
           @click="openModal('invite-donor')"
         >
           Invite Donor
@@ -69,21 +69,9 @@ let screenLoading;
 export default {
   components: { InviteDonorVue },
   props: {
-    organisationId: {
-      type: String | Number,
-      required: true,
-    },
-    campaignId: {
-      type: String | Number,
-      required: true,
-    },
-    is_public: {
-      type: Boolean,
-      default: false,
-    },
-    campaignStatus: {
-      type: String,
-      default: "",
+    details: {
+      type: Object,
+      default: () => {},
     },
   },
 
@@ -95,24 +83,26 @@ export default {
   computed: {
     campaignLink() {
       return this.isCampaignPublic
-        ? `${appConfig.DONOR_APP_URL}/campaigns/public`
-        : `${appConfig.DONOR_APP_URL}/campaigns`;
+        ? `${appConfig.DONOR_APP_URL}/projects/public`
+        : `${appConfig.DONOR_APP_URL}/projects`;
     },
     copiableLink() {
-      return `${this.campaignLink}/${this.campaignId}`;
+      return `${this.campaignLink}/${this.details?.id}`;
     },
   },
 
   mounted() {
-    this.isCampaignPublic = this.is_public;
+    this.isCampaignPublic = this.details?.is_public;
   },
 
   methods: {
     async toggle(value) {
       try {
         this.openScreen();
+        const { OrganisationId, id } = this.details;
+
         const response = await this.$axios.patch(
-          `/organisation/${this.organisationId}/campaigns/${this.campaignId}`
+          `/organisation/${OrganisationId}/campaigns/${id}`
         );
 
         this.$toast.success(response.message);
@@ -125,12 +115,13 @@ export default {
     },
 
     async sendInvite(payload) {
-      this.loading = true;
-      const link = `${appConfig.DONOR_APP_URL}/verify-user`;
-
       try {
+        this.loading = true;
+        const link = `${appConfig.DONOR_APP_URL}/verify-user`;
+        const { OrganisationId, id } = this.details;
+
         const response = await this.$axios.post(
-          `/auth/${this.organisationId}/invite/${this.campaignId}`,
+          `/auth/${OrganisationId}/invite/${id}`,
           { ...payload, link }
         );
 
@@ -143,7 +134,7 @@ export default {
       }
     },
     openModal(modalId) {
-      if (this.campaignStatus == "completed") return;
+      if (this.details?.status == "completed") return;
       this.$bvModal.show(modalId);
     },
     openScreen() {

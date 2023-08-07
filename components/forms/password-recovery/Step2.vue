@@ -4,10 +4,9 @@
 
     <section class="mt-2">
       <div class="form-group">
-        <label for="password"> Enter verification code</label>
-        <div>
-          <PincodeInput v-model="payload.otp" :length="6" placeholder="-" />
-        </div>
+        <label for="code"> Enter verification code</label>
+
+        <PincodeInput v-model="payload.otp" :length="6" placeholder="-" />
       </div>
 
       <div class="d-flex justify-content-center my-4 pt-2">
