@@ -2,7 +2,7 @@
   <div class="mt-4 px-4">
     <!-- campaign details   here -->
     <div class="mt-4">
-      <span class="text-base font-medium primary-blue">Campaign Overview</span>
+      <span class="text-base font-medium primary-blue">Project Overview</span>
 
       <div class="detail-holder mt-2 mb-4 p-3">
         <div class="row mb-2">
@@ -26,7 +26,7 @@
                 {{ campaign.minting_limit || 0 | formatNumber }}
               </span>
               <span v-else>
-                {{ $currency }}{{ campaign.budget || 0 | formatCurrency }}
+                {{ campaign.budget || 0 | formatCurrency }}
               </span>
             </h6>
           </div>
@@ -52,7 +52,7 @@
               </span>
 
               <span v-else>
-                {{ $currency }}{{ getShare(campaign.budget) | formatCurrency }}
+                {{ getShare(campaign.budget) | formatCurrency }}
               </span>
             </h6>
           </div>
@@ -108,8 +108,8 @@
         </div>
 
         <span class="poppins primary-gray disclaimer ml-2 pt-1">
-          Kindly note that once the campaign is funded, beneficiaries
-          automatically get access to funds except campaign is canceled
+          Kindly note that once the project is funded, beneficiaries
+          automatically get access to funds except project is canceled
           immediately.
         </span>
       </div>

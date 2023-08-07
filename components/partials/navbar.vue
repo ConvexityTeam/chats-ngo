@@ -68,6 +68,7 @@
 import { mapGetters } from "vuex";
 import GoogleTranslate from "../GoogleTranslate.vue";
 export default {
+  components: { GoogleTranslate },
   data: () => ({
     title: "",
     isNotification: false,
@@ -87,8 +88,8 @@ export default {
         this.title = "Vendors";
       } else if (this.$router.history.current.name.includes("beneficiaries")) {
         this.title = "Beneficiaries";
-      } else if (this.$router.history.current.name.includes("campaigns")) {
-        this.title = "campaigns";
+      } else if (this.$router.history.current.name.includes("projects")) {
+        this.title = "Projects";
       } else if (
         this.$router.history.current.name.includes("cash") &&
         !this.$router.history.current.params.id
@@ -99,6 +100,8 @@ export default {
         this.$router.history.current.name.includes("cash")
       ) {
         this.title = "Cash for work - Tasks";
+      } else if (this.$router.history.current.name.includes("market")) {
+        this.title = "Marketplace";
       } else {
         this.title = this.$router.history.current.name;
       }
@@ -109,8 +112,8 @@ export default {
       this.title = "Vendors";
     } else if (this.$router.history.current.name.includes("beneficiaries")) {
       this.title = "Beneficiaries";
-    } else if (this.$router.history.current.name.includes("campaigns")) {
-      this.title = "campaigns";
+    } else if (this.$router.history.current.name.includes("projects")) {
+      this.title = "Projects";
     } else if (
       this.$router.history.current.name.includes("cash") &&
       !this.$router.history.current.params.id
@@ -121,13 +124,11 @@ export default {
       this.$router.history.current.name.includes("cash")
     ) {
       this.title = "Cash for work - Tasks";
+    } else if (this.$router.history.current.name.includes("market")) {
+      this.title = "Marketplace";
     } else {
       this.title = this.$router.history.current.name;
     }
-    console.log(
-      "use::",
-      this.user.AssociatedOrganisations[0].Organisation.logo_link
-    );
   },
   components: { GoogleTranslate },
 };

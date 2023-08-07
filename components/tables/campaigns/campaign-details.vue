@@ -1,7 +1,7 @@
 <template>
   <div class="campaign-details-holder p-4">
     <!-- Modals here -->
-    <Modal id="campaign-prompt" :title="status + ' ' + 'campaign'">
+    <Modal id="campaign-prompt" :title="`${status} project`">
       <campaign-prompt
         @handleCampaign="handleCampaign"
         :status="status"
@@ -13,11 +13,11 @@
       <WithdrawFundsSuccess @close="$fetch" />
     </Modal>
 
-    <Modal id="extend-campaign" title="Extend campaign">
+    <Modal id="extend-campaign" title="Extend project">
       <ExtendCampaign :campaignDetails="details" @reload="$fetch" />
     </Modal>
 
-    <h4 class="campaign-details-header poppins pt-2">Campaign Summary</h4>
+    <h4 class="campaign-details-header poppins pt-2">Project Summary</h4>
 
     <!-- details region here -->
     <div>
@@ -37,7 +37,7 @@
             <el-dropdown-menu slot="dropdown" class="el-dropdown-menu">
               <el-dropdown-item class="el-dropdown-item">
                 <span @click="openModal('extend-campaign')">
-                  Extend campaign
+                  Extend project
                 </span>
               </el-dropdown-item>
 
@@ -54,8 +54,8 @@
                 >
                   {{
                     details.status == "paused"
-                      ? "Resume campaign"
-                      : "Pause campaign"
+                      ? "Resume project"
+                      : "Pause project"
                   }}
                 </span>
               </el-dropdown-item>
@@ -78,7 +78,7 @@
         <div v-if="details.type == 'cash-for-work'">
           <!-- Progress bar here -->
           <b-progress
-            :value="(details.completed_task / details.task_count) * 100"
+            :value="getPercentage(details.completed_task, details.task_count)"
             :max="max"
             variant="success"
             class="mb-3 mt-1"
@@ -97,11 +97,7 @@
             <!-- Progress here -->
             <div class="ml-auto">
               <div class="task-badge d-flex align-items-center px-3">
-                {{
-                  Number(
-                    (details.completed_task / details.task_count) * 100
-                  ).toFixed(0) || 0
-                }}%
+                {{ getPercentage(details.completed_task, details.task_count) }}%
               </div>
             </div>
           </div>
@@ -117,7 +113,7 @@
 
             <div class="ml-auto">
               <p class="campaign-answers">
-                {{ $currency }}{{ details.budget | formatCurrency }}
+                {{ details.budget | formatCurrency }}
               </p>
             </div>
           </div>
@@ -182,7 +178,7 @@
               </p>
 
               <p class="campaign-answers" v-else>
-                {{ $currency }}{{ details.beneficiary_share | formatCurrency }}
+                {{ details.beneficiary_share | formatCurrency }}
               </p>
             </div>
           </div>
@@ -194,7 +190,7 @@
           <p class="campaign-captions">Amount Unspent:</p>
 
           <p class="campaign-answers ml-auto">
-            {{ $currency }}{{ details.balance | formatCurrency }}
+            {{ details.balance | formatCurrency }}
           </p>
         </div>
 
@@ -214,9 +210,9 @@
       <!-- campaign version history -->
       <span
         class="campaign-version-history"
-        @click="$router.push(`/campaigns/${campaignId}/version-history`)"
+        @click="$router.push(`/projects/${campaignId}/version-history`)"
       >
-        <span class="mr-2 p-1"> Campaign version history </span>
+        <span class="mr-2 p-1"> Project version history </span>
 
         <Arrow title="right" />
       </span>
@@ -249,6 +245,7 @@ import ellipsis from "~/components/icons/ellipsis";
 import Arrow from "~/components/icons/arrow";
 import ExtendCampaign from "~/components/forms/ExtendCampaign";
 import BeneficiaryIcon from "~/components/icons/BeneficiaryIcon";
+import { getPercentage } from "~/utils/helpers";
 
 let screenLoading;
 
@@ -290,6 +287,7 @@ export default {
   },
 
   data: () => ({
+    getPercentage,
     campaignStatus: "",
     status: "",
     orgId: "",

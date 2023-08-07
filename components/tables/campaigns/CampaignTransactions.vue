@@ -3,7 +3,7 @@
     <!-- Table here -->
     <div class="table-holder mt-4">
       <div class="d-flex align-items-center table-title">
-        <h4>Campaign Transactions</h4>
+        <h4>Project Transactions</h4>
 
         <!-- Export here -->
         <div class="ml-auto" v-if="transactions.length">
@@ -21,7 +21,7 @@
       <table class="table table-borderless" v-if="transactions.length">
         <thead>
           <tr>
-            <th scope="col">Reference ID</th>
+            <th scope="col">Reference</th>
             <th scope="col">Amount</th>
             <th scope="col">Vendor</th>
             <th scope="col">Beneficiary</th>
@@ -32,10 +32,10 @@
         <tbody>
           <tr v-for="(transaction, index) in transactions" :key="index">
             <td>{{ transaction.reference }}</td>
-            <td>{{ $currency }}{{ transaction.amount | formatCurrency }}</td>
-            <td>{{ getVendorName(transaction.Venfor) }}</td>
+            <td>{{ transaction.amount | formatCurrency }}</td>
+            <td>{{ getVendorName(transaction.Vendor) }}</td>
             <td>{{ getBeneficiaryName(transaction.Beneficiary) }}</td>
-            <td>{{ transaction.createdAt | shortDate }}</td>
+            <td>{{ transaction.createdAt | formatDateOnly }}</td>
           </tr>
         </tbody>
       </table>
@@ -57,9 +57,9 @@ export default {
       default: "",
     },
 
-    orgId: {
-      type: [String, Number],
-      default: "",
+    user: {
+      type: Object,
+      default: () => {},
     },
 
     campaignName: {
@@ -69,8 +69,9 @@ export default {
   },
 
   async fetch() {
+    const id = this.user?.AssociatedOrganisations[0]?.OrganisationId;
     const response = await this.$axios.get(
-      `organisations/${this.orgId}/vendors/transactions?CampaignId=${this.campaignId}`
+      `organisations/${id}/vendors/transactions?CampaignId=${this.campaignId}`
     );
 
     console.log("Campaign Transactions:::", response);

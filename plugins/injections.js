@@ -1,18 +1,23 @@
-import countries from "./countries";
 export default ({ app, store }, inject) => {
-  // Currency Symbol  Here
-  const user = store.getters["authentication/user"];
-  const currencyCode = user?.currency || "NGN";
+  const onRouteChange = () => {
+    const { user } = store.state?.authentication || {};
+    const { currencySymbol, currencyCode } = user?.currencyData || {};
+    const displaySymbol = currencySymbol || currencyCode || "";
 
-  const country = countries.find(
-    (country) => country?.currencies[0]?.code === currencyCode
-  );
+    inject("currency", displaySymbol);
+  };
 
-  const currencySymbol = country
-    ? country.currencies[0]?.symbol
-    : country.currencies[0]?.code;
+  // Run the plugin on initial load
+  onRouteChange();
 
-  //copy to clipboard
+  // Listen for route changes and run the plugin again
+  // This ensures that the plugin runs after the user object is set in the store
+  app.router.beforeResolve((to, from, next) => {
+    onRouteChange();
+    next();
+  });
+
+  /*copy to clipboard */
   const copy = (value) => {
     if (value.length) {
       navigator.clipboard.writeText(value);
@@ -21,7 +26,7 @@ export default ({ app, store }, inject) => {
     return;
   };
 
-  // Truncate  text  Here
+  /*Truncate  text  Here*/
   const truncate = (value, length = 13) => {
     if (value) {
       if (value.length > length) {
@@ -33,6 +38,5 @@ export default ({ app, store }, inject) => {
   };
 
   inject("copy", copy);
-  inject("currency", currencySymbol);
   inject("truncate", truncate);
 };

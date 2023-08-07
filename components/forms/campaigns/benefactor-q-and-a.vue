@@ -57,7 +57,7 @@ export default {
   data: () => ({
     qsAndAs: [
       {
-        question: "How did you hear about this campaign",
+        question: "How did you hear about this project",
         answer: "Newspaper",
       },
       {

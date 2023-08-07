@@ -43,14 +43,40 @@
       <!-- Funding Prompt  -->
       <Modal
         id="funding-prompt"
-        :title="details.type == 'item' ? 'Create Items' : 'Fund Campaign'"
+        :title="details.type == 'item' ? 'Create Items' : 'Fund Project'"
       >
         <FundingPrompt @handleFunding="fundCampaign" :details="details" />
       </Modal>
 
-      <!-- Import Beneficiaries -->
-      <Modal id="import-beneficiaries" title="Import Beneficiaries">
-        <ImportBeneficiaries :orgId="orgId" @imported="updateList" />
+      <!-- Select Beneficiary import option -->
+      <Modal
+        id="select-import-beneficiaries-destination"
+        title="Select Import Destination"
+      >
+        <SelectBeneficiaryImportDestination
+          @selectImportOption="selectImportOption"
+        />
+      </Modal>
+
+      <!-- Import Existing Beneficiaries -->
+      <Modal id="import-existing-beneficiaries" title="Import Beneficiaries">
+        <FormsBeneficiariesImportsExisting
+          :orgId="orgId"
+          @imported="updateList"
+        />
+      </Modal>
+
+      <!-- Import CSV Beneficiaries -->
+      <Modal id="import-csv-beneficiaries" title="Import Beneficiaries">
+        <FormsBeneficiariesImportsCSV :orgId="orgId" @imported="updateList" />
+      </Modal>
+
+      <!-- Import third party Beneficiaries -->
+      <Modal id="import-third-party-beneficiaries" title="Import Beneficiaries">
+        <FormsBeneficiariesImportsThirdParty
+          :orgId="orgId"
+          @imported="updateList"
+        />
       </Modal>
 
       <!-- Drawer Here -->
@@ -101,7 +127,7 @@
               class="primary poppins text-sm font-medium pointer"
               @click="
                 $router.push({
-                  path: `/campaigns/${$route.params.id}/manage-tokens`,
+                  path: `/projects/${$route.params.id}/manage-tokens`,
                   query: { method: 'sms' },
                 })
               "
@@ -112,14 +138,14 @@
 
           <div class="mr-4">
             <!-- display button if campaign is cash based -->
-            <div v-if="details.status === 'pending' || !details.is_funded">
+            <div v-if="details?.status === 'pending' || !details.is_funded">
               <Button
-                text="Fund Campaign"
+                text="Fund Project"
                 :has-icon="false"
                 custom-styles="height:50px"
                 @click="$bvModal.show('funding-prompt')"
                 :disabled="
-                  details.status === 'pending' ||
+                  details?.status === 'pending' ||
                   !approvedBeneficiaries.length ||
                   details.is_processing
                 "
@@ -134,10 +160,10 @@
               :has-icon="false"
               custom-styles="height:50px"
               @click="
-                $router.push(`/campaigns/${$route.params.id}/disbursement`)
+                $router.push(`/projects/${$route.params.id}/disbursement`)
               "
               :disabled="
-                statuses.includes(details.status) ||
+                statuses.includes(details?.status) ||
                 !approvedBeneficiaries.length
               "
             />
@@ -151,7 +177,7 @@
               :has-border="true"
               :is-green="true"
               @click="drawer = true"
-              :disabled="details.is_funded || details.status == 'ended'"
+              :disabled="details.is_funded || details?.status == 'ended'"
             />
           </div>
 
@@ -169,7 +195,7 @@
 
       <!-- Banner Here -->
       <section>
-        <banner v-if="details.status === 'paused'">
+        <banner v-if="details?.status === 'paused'">
           <PauseCampaign
             @resumeCampaign="resumeCampaign = true"
             :date="details.updatedAt"
@@ -182,13 +208,11 @@
       </section>
 
       <!-- Campaign-Privacy Here -->
-      <div :class="{ hidden: details.status == 'paused' }">
-        <PrivacyHolder
-          :organisationId="orgId"
-          :campaignId="campaignId"
-          :is_public="details?.is_public"
-          :campaignStatus="details?.status"
-        />
+      <div
+        v-if="details?.type == 'campaign'"
+        :class="{ hidden: details?.status == 'paused' }"
+      >
+        <GenericPrivacyHolder :details="details" />
       </div>
 
       <div class="row mt-3">
@@ -197,7 +221,7 @@
           <div>
             <div class="table-holder mt-2">
               <div class="d-flex align-items-center table-title">
-                <h4>Campaign beneficiaries</h4>
+                <h4>Project beneficiaries</h4>
                 <div class="ml-auto"></div>
               </div>
 
@@ -260,7 +284,9 @@
                       :is-import="true"
                       :has-border="true"
                       custom-styles="border: 1px solid #17CE89 !important; border-radius: 5px !important; font-size: 0.875rem !important; height: 33px !important; padding: 0 10px !important"
-                      @click="$bvModal.show('import-beneficiaries')"
+                      @click="
+                        $bvModal.show('select-import-beneficiaries-destination')
+                      "
                     />
                   </div>
                 </div>
@@ -466,7 +492,7 @@
             <TablesCampaignsCampaignTransactions
               :campaignId="$route.params.id"
               :campaignName="details.title"
-              :orgId="orgId"
+              :user="user"
             />
           </div>
         </div>
@@ -499,6 +525,7 @@
 
 <script>
 import { mapGetters } from "vuex";
+import SelectBeneficiaryImportDestination from "~/components/forms/SelectBeneficiaryImportDestination";
 import beneficiaryComplaints from "~/components/tables/campaigns/beneficiary-complaints";
 import campaignDetails from "~/components/tables/campaigns/campaign-details";
 import banner from "~/components/generic/banner";
@@ -508,8 +535,6 @@ import AddItemBasedProduct from "~/components/forms/AddItemBasedProduct";
 import campaignVendors from "~/components/tables/campaigns/campaign-vendors";
 import campaignProducts from "~/components/tables/campaigns/campaign-products";
 import FundingPrompt from "./funding-prompt";
-import ImportBeneficiaries from "./import-beneficiaries";
-import PrivacyHolder from "~/components/generic/privacy-holder";
 import ApproveBenefactorsVue from "~/components/forms/approve-benefactors";
 import RejectBenefactorsVue from "~/components/forms/reject-benefactors";
 import BenefactorDetailsVue from "~/components/forms/campaigns/benefactor-details";
@@ -521,7 +546,7 @@ let screenLoading;
 
 export default {
   layout: "dashboard",
-  name: "CampaignProperties",
+  name: "CampaignDetails",
   data: () => ({
     tabIndex: 1,
     loading: false,
@@ -556,8 +581,6 @@ export default {
     campaignVendors,
     campaignProducts,
     FundingPrompt,
-    ImportBeneficiaries,
-    PrivacyHolder,
     ApproveBenefactorsVue,
     RejectBenefactorsVue,
     BenefactorDetailsVue,
@@ -566,6 +589,7 @@ export default {
     ProcessingFunding,
     AddCashBasedProduct,
     AddItemBasedProduct,
+    SelectBeneficiaryImportDestination,
   },
 
   computed: {
@@ -633,6 +657,13 @@ export default {
   },
 
   methods: {
+    // select beneficiary import destination
+    selectImportOption(importType) {
+      this.$bvModal.hide("select-import-beneficiaries-destination");
+      if (!importType) return;
+      return this.$bvModal.show(`import-${importType}-beneficiaries`);
+    },
+
     // displays benefactors details
     getBenefactorDetails(benefactor) {
       this.selectedBenefactor = benefactor;
@@ -847,8 +878,8 @@ export default {
         action === "prev" ? this.currentPageNum - 1 : this.currentPageNum + 1;
     },
 
-    updateList() {
-      this.$bvModal.hide("import-beneficiaries");
+    updateList(importType) {
+      this.$bvModal.hide(`import-${importType}-beneficiaries`);
       this.tabIndex = 1;
       this.getCampaignBeneficiaries();
     },

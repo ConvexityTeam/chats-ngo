@@ -48,9 +48,9 @@
 
             <li class="mb-1">
               <nuxt-link
-                to="/campaigns"
+                to="/projects"
                 :class="`link position-relative ${
-                  getActive('/campaigns') ? 'active' : ''
+                  getActive('/projects') ? 'active' : ''
                 }`"
               >
                 <div style="z-index: 10">
@@ -69,7 +69,7 @@
                       />
                     </svg>
                   </span>
-                  <span class="ml-3 pt-1">Campaigns</span>
+                  <span class="ml-3 pt-1">Projects</span>
                 </div>
               </nuxt-link>
             </li>
@@ -191,7 +191,7 @@
                       />
                     </svg>
                   </span>
-                  <span class="ml-3 pt-1">Market</span>
+                  <span class="ml-3 pt-1">Marketplace</span>
                 </div>
               </nuxt-link>
             </li>

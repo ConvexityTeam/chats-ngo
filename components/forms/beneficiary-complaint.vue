@@ -2,7 +2,7 @@
   <form @submit.prevent="resolveComplaint" class="mt-4 px-3">
     <!-- Name field  here -->
     <div class="form-group">
-      <label for="campaign-name">Campaign Name</label>
+      <label for="campaign-name">Project Name</label>
       <input
         type="text"
         class="form-controls"
@@ -83,7 +83,7 @@ export default {
       try {
         this.loading = true;
         const response = await this.$axios.patch(
-          `/organisations/${this.orgId}/campaigns/${this.$route.params.id}/complaints/${this.complaint.id}/resolve`
+          `/organisations/${this.orgId}/projects/${this.$route.params.id}/complaints/${this.complaint.id}/resolve`
         );
 
         if (response.status == "success") {

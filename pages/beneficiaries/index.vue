@@ -186,19 +186,17 @@ export default {
       const { amount_disbursed, balance } = this.campaignDetails;
       const amountReceived = amount_disbursed + balance;
 
-      return `${this.$currency}${this.$root.$options.filters.formatCurrency(
-        amountReceived
-      )}`;
+      return `${this.$root.$options.filters.formatCurrency(amountReceived)}`;
     },
 
     amountDisbursed() {
-      return `${this.$currency}${this.$root.$options.filters.formatCurrency(
+      return `${this.$root.$options.filters.formatCurrency(
         this.campaignDetails.amount_disbursed
       )}`;
     },
 
     totalBalance() {
-      return `${this.$currency}${this.$root.$options.filters.formatCurrency(
+      return `${this.$root.$options.filters.formatCurrency(
         this.campaignDetails.balance
       )}`;
     },

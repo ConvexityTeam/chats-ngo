@@ -3,7 +3,7 @@
     <form @submit.prevent="createCampaign">
       <!-- Name field  here -->
       <div class="form-group">
-        <label for="name">Campaign name</label>
+        <label for="name">Project name</label>
         <input
           id="name"
           type="text"
@@ -11,7 +11,7 @@
           :class="{
             error: $v.payload.title.$error,
           }"
-          placeholder="Enter name of campaign"
+          placeholder="Enter name of project"
           v-model="payload.title"
           @blur="$v.payload.title.$touch()"
         />
@@ -92,16 +92,71 @@
         </div>
       </div>
 
+      <!-- Country here -->
+      <div class="form-group">
+        <label for="country">Country</label>
+        <div
+          id="product"
+          class="w-100"
+          :class="{ error: $v.payload.location.country.$error }"
+        >
+          <el-select
+            v-model="payload.location.country"
+            id="country"
+            filterable
+            placeholder="—Select — "
+          >
+            <el-option
+              v-for="(country, i) in countries"
+              :key="i"
+              :label="country.countryName"
+              :value="country.countryName"
+            >
+            </el-option>
+          </el-select>
+        </div>
+      </div>
+
+      <!-- State here -->
+      <div class="form-group">
+        <label for="state">State</label>
+        <div
+          id="product"
+          class="w-100"
+          :class="{ error: $v.payload.location.state.$error }"
+        >
+          <el-select
+            v-model="payload.location.state"
+            id="state"
+            filterable
+            multiple
+            placeholder="—Select — "
+          >
+            <el-option
+              v-for="(state, i) in states"
+              :key="i"
+              :label="state.name"
+              :value="state.name"
+            >
+            </el-option>
+          </el-select>
+        </div>
+
+        <h6 class="primary-gray text-sm pt-1">
+          You can add multiple states/regions
+        </h6>
+      </div>
+
       <!-- button area here -->
       <div class="d-flex my-3">
         <div>
           <Button
-            text="Create campaign"
+            text="Create project"
             type="submit"
             :has-icon="false"
             :loading="loading"
             :disabled="loading"
-            custom-styles="height: 41px; border-radius:5px !important; font-size: 14px !important"
+            custom-styles="height: 45px; border-radius:5px !important; font-size: 14px !important; padding: 0 28px !important"
           />
         </div>
 
@@ -110,7 +165,7 @@
             text="Cancel"
             :has-icon="false"
             :has-border="true"
-            custom-styles="height: 41px; border-radius:5px !important; font-size: 14px !important;  border: 1px solid #17CE89 !important"
+            custom-styles="height: 45px; border-radius:5px !important; font-size: 14px !important;  border: 1px solid #17CE89 !important; padding: 0 28px !important"
             @click="closeModal"
           />
         </div>
@@ -124,19 +179,25 @@ import { required, maxLength } from "vuelidate/lib/validators";
 import { mapGetters } from "vuex";
 import DatePicker from "vue2-datepicker";
 import "vue2-datepicker/index.css";
+import countriesRegions from "~/plugins/countries-regions";
 
 export default {
+  components: { DatePicker },
   data() {
     return {
       present: new Date(),
       loading: false,
       id: 0,
+      countries: [],
       payload: {
         type: "cash-for-work",
         title: "",
         description: "",
         budget: "",
-        location: [],
+        location: {
+          country: "",
+          state: [],
+        },
         start_date: "",
         end_date: "",
       },
@@ -154,13 +215,42 @@ export default {
       budget: { required },
       start_date: { required },
       end_date: { required },
+      location: {
+        country: { required },
+        state: { required },
+      },
     },
   },
 
-  components: { DatePicker },
+  async fetch() {
+    this.id = this.user?.AssociatedOrganisations[0]?.OrganisationId;
+    const response = await this.$axios.get(
+      `organisations/${this.id}/campaign_form`
+    );
+
+    if (response.status === "success") {
+      this.forms = response.data;
+    }
+
+    // Country data here
+    const { data } = await this.$axios.get("/utils/countries");
+    this.countries = data;
+  },
 
   computed: {
     ...mapGetters("authentication", ["user"]),
+
+    states() {
+      const setCountry = this.payload.location.country;
+      console.log("SETCOUNTRY", setCountry);
+      if (setCountry) {
+        return countriesRegions.find(
+          (country) => setCountry === country.countryName
+        )?.regions;
+      }
+
+      return [];
+    },
   },
 
   mounted() {
@@ -182,10 +272,6 @@ export default {
         if (this.$v.payload.$error === true) {
           return (this.loading = false);
         }
-
-        this.payload.location = this.payload.location
-          ? JSON.stringify(this.payload.location)
-          : "";
 
         const response = await this.$axios.post(
           `/organisations/${+this.id}/campaigns`,

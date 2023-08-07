@@ -10,7 +10,7 @@
           class="mgt-btn"
           :class="activeCampaignForm === 'cash' && 'active'"
         >
-          Cash Campaign
+          Cash Project
         </span>
       </div>
 
@@ -19,7 +19,7 @@
           class="mgt-btn"
           :class="activeCampaignForm === 'items' && 'active'"
         >
-          Items Campaign
+          Items Project
         </span>
       </div>
     </div>
@@ -28,7 +28,7 @@
     <form @submit.prevent="createCampaign">
       <!-- Name field  here -->
       <div class="form-group">
-        <label for="name">Campaign name</label>
+        <label for="name">Project name</label>
         <input
           id="name"
           type="text"
@@ -36,7 +36,7 @@
           :class="{
             error: $v.payload.title.$error,
           }"
-          placeholder="Enter name of campaign"
+          placeholder="Enter name of project"
           v-model="payload.title"
           @blur="$v.payload.title.$touch()"
         />
@@ -140,13 +140,68 @@
         </div>
       </div>
 
+      <!-- Country here -->
+      <div class="form-group">
+        <label for="country">Country</label>
+        <div
+          id="product"
+          class="w-100"
+          :class="{ error: $v.payload.location.country.$error }"
+        >
+          <el-select
+            v-model="payload.location.country"
+            id="country"
+            filterable
+            placeholder="—Select — "
+          >
+            <el-option
+              v-for="(country, i) in countries"
+              :key="i"
+              :label="country.countryName"
+              :value="country.countryName"
+            >
+            </el-option>
+          </el-select>
+        </div>
+      </div>
+
+      <!-- State here -->
+      <div class="form-group">
+        <label for="state">State</label>
+        <div
+          id="product"
+          class="w-100"
+          :class="{ error: $v.payload.location.state.$error }"
+        >
+          <el-select
+            v-model="payload.location.state"
+            id="state"
+            filterable
+            multiple
+            placeholder="—Select — "
+          >
+            <el-option
+              v-for="(state, i) in states"
+              :key="i"
+              :label="state.name"
+              :value="state.name"
+            >
+            </el-option>
+          </el-select>
+        </div>
+
+        <h6 class="primary-gray text-sm pt-1">
+          You can add multiple states/regions
+        </h6>
+      </div>
+
       <!-- Campaign Form here -->
       <div class="form-group">
-        <label for="campaign-form">Campaign form</label>
+        <label for="campaign-form">Project form</label>
         <div id="product" class="w-100">
           <el-select
             v-model="payload.formId"
-            id="vendor"
+            id="campaign-form"
             placeholder="—Select — "
           >
             <el-option
@@ -178,15 +233,15 @@
       <div :class="isGeofence ? 'd-block' : 'd-none'" id="map_canvas"></div>
 
       <!-- button area here -->
-      <div class="d-flex pb-2" :class="isGeofence ? 'pt-3' : 'pt-1'">
+      <div class="d-flex pb-2 pt-3">
         <div>
           <Button
-            text="Create campaign"
+            text="Create Project"
             type="submit"
             :has-icon="false"
             :loading="loading"
             :disabled="loading"
-            custom-styles="height: 41px; border-radius:5px !important; font-size: 14px !important"
+            custom-styles="height: 45px; border-radius:5px !important; font-size: 14px !important; padding: 0 28px !important"
           />
         </div>
 
@@ -195,7 +250,7 @@
             text="Cancel"
             :has-icon="false"
             :has-border="true"
-            custom-styles="height: 41px; border-radius:5px !important; font-size: 14px !important;  border: 1px solid #17CE89 !important"
+            custom-styles="height: 45px; border-radius:5px !important; font-size: 14px !important;  border: 1px solid #17CE89 !important; padding: 0 28px !important"
             @click="closeModal"
           />
         </div>
@@ -215,6 +270,7 @@ import { mapGetters } from "vuex";
 import DatePicker from "vue2-datepicker";
 import "vue2-datepicker/index.css";
 import MapSideBar from "./map-sidebar";
+import countriesRegions from "~/plugins/countries-regions";
 
 let geocoder;
 
@@ -236,13 +292,17 @@ export default {
       isGeofence: false,
       id: 0,
       forms: [],
+      countries: [],
       payload: {
         type: "",
         title: "",
         description: "",
         budget: "",
         minting_limit: "",
-        location: [],
+        location: {
+          country: "",
+          state: [],
+        },
         start_date: "",
         end_date: "",
         formId: "",
@@ -272,6 +332,10 @@ export default {
       },
       start_date: { required },
       end_date: { required },
+      location: {
+        country: { required },
+        state: { required },
+      },
     },
   },
 
@@ -284,6 +348,10 @@ export default {
     if (response.status === "success") {
       this.forms = response.data;
     }
+
+    // Country data here
+    const { data } = await this.$axios.get("/utils/countries");
+    this.countries = data;
   },
 
   computed: {
@@ -300,6 +368,18 @@ export default {
     campaignType() {
       return this.activeCampaignForm === "items" ? "item" : "campaign";
     },
+
+    states() {
+      const setCountry = this.payload.location.country;
+      console.log("SETCOUNTRY", setCountry);
+      if (setCountry) {
+        return countriesRegions.find(
+          (country) => setCountry === country.countryName
+        )?.regions;
+      }
+
+      return [];
+    },
   },
 
   mounted() {
@@ -312,7 +392,14 @@ export default {
       this.activeCampaignForm = section;
       this.$v.payload.$reset();
       for (const prop of Object.getOwnPropertyNames(this.payload)) {
-        this.payload[prop] = "";
+        if (prop == "location") {
+          this.payload[prop] = {
+            country: "",
+            state: [],
+          };
+        } else {
+          this.payload[prop] = "";
+        }
       }
     },
 
@@ -324,10 +411,6 @@ export default {
         if (this.$v.payload.$error) {
           return (this.loading = false);
         }
-
-        this.payload.location = this.payload.location
-          ? JSON.stringify(this.payload.location)
-          : "";
 
         const response = await this.$axios.post(
           `/organisations/${+this.id}/campaigns`,

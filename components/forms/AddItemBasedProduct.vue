@@ -95,7 +95,7 @@
               <div class="mb-3">
                 <span
                   class="primary-gray text-xs"
-                  style="text-transform: uppercase;"
+                  style="text-transform: uppercase"
                 >
                   ITEM
                 </span>
@@ -120,7 +120,7 @@
             </div>
 
             <!-- Delete actions here -->
-            <div class="col-lg-3" style="align-self: center;">
+            <div class="col-lg-3" style="align-self: center">
               <div class="mb-3 d-flex">
                 <!-- Edit button here -->
                 <div>
@@ -148,11 +148,11 @@
       <!-- no products here -->
       <div v-else class="no-product">
         <div class="d-flex justify-content-center">
-          <no-products />
+          <IconsNoProduct />
         </div>
 
         <div class="text-center mt-4 w-75 mx-auto">
-          <h5 class="font-bold primary-blue" style="font-size: 1.125rem;">
+          <h5 class="font-bold primary-blue" style="font-size: 1.125rem">
             Nothing in here yet.
           </h5>
 
@@ -168,7 +168,6 @@
 
 <script>
 import { required } from "vuelidate/lib/validators";
-import noProducts from "~/components/icons/no-products.vue";
 import { mapActions, mapGetters } from "vuex";
 let screenLoading;
 
@@ -188,8 +187,6 @@ export default {
       vendors: { required },
     },
   },
-
-  components: { noProducts },
 
   mounted() {
     (this.orgId = this.user.AssociatedOrganisations[0].OrganisationId),

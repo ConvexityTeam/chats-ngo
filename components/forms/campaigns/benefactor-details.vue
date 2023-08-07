@@ -105,7 +105,6 @@ export default {
   color: #7c8db5;
   margin: 0 auto;
 }
-
 .benefactor__detail-body > .text {
   color: #7c8db5;
   margin: 0 auto;

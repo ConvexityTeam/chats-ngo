@@ -1,152 +1,128 @@
 <template>
-  <div class="main pt-4 pb-5 transparent container">
-    <div class="row">
-      <!-- Welcome message here -->
-      <div class="col-lg-8">
-        <div class="card__holder h-260 p-4">
-          <div class="d-flex">
-            <div>
-              <h4 class="welcome-header">Welcome To The Market Dashboard!</h4>
+  <div class="main py-4 transparent container">
+    <div>
+      <!-- Drawer Here -->
+      <drawer @close="closeDrawer" :visibleSync="drawer">
+        <FormsMarketCreateProposal @close="closeDrawer" @modalClosed="$fetch" />
+      </drawer>
+    </div>
 
-              <p class="description">
-                Here you can view the top products, product popularity by
-                location, gender, and age group.
-              </p>
+    <FullScreenLoader
+      v-if="$fetchState.pending"
+      :loading="$fetchState.pending"
+    />
 
-              <p class="description">Need a detailed report?</p>
+    <template v-else-if="proposals.length">
+      <FormsMarketProposals
+        :proposals="resultQuery"
+        @open="drawer = true"
+        @searchInput="(value) => (searchQuery = value)"
+      />
+    </template>
 
-              <div class="mt-4">
-                <csv :data="computedData" name="beneficiaries" />
+    <template v-else>
+      <section class="row">
+        <!-- Welcome message here -->
+        <div class="col-lg-9">
+          <div class="card__holder h-260 p-4">
+            <div class="d-flex">
+              <div>
+                <h4 class="welcome-header">Welcome to the market dashboard!</h4>
+
+                <p class="description">
+                  You can send a proposal request for a project from vendors
+                  here. You can compare their proposals and select the best fit
+                  for your projects.
+                </p>
+
+                <div class="pt-3">
+                  <Button
+                    text="Create New Request"
+                    custom-styles="height:50px; padding: 0 2rem !important;"
+                    fontSize="1rem"
+                    @click="drawer = true"
+                  />
+                </div>
+              </div>
+
+              <!-- image here -->
+              <div class="ml-auto pb-3">
+                <img src="~/assets/img/lady.svg" alt />
               </div>
             </div>
-            <!-- image here -->
-            <div class="ml-auto">
-              <img src="~/assets/img/lady.svg" alt />
-            </div>
           </div>
         </div>
-      </div>
+      </section>
 
-      <!-- Market stats here -->
-      <div class="col-lg-4">
-        <div class="card__holder h-260 p-4">
-          <!-- Total products sold -->
-          <div class="d-flex">
-            <div>
-              <img src="~/assets/img/vectors/pounds.svg" alt="sold" />
-            </div>
+      <section class="pt-5 mt-5 text-center">
+        <IconsNoProduct />
 
-            <div class="ml-4">
-              <p class="total">Total Cash Disbursed</p>
-              <h4 class="amount">
-                {{ $currency
-                }}{{ campaignDetails.campaign_budget || 0 | formatCurrency }}
-              </h4>
-            </div>
-          </div>
-          <hr class="mb-4" />
-          <!-- Total products value -->
-          <div class="mb-4 d-flex">
-            <div>
-              <img src="~/assets/img/vectors/dollar.svg" alt="sold" />
-            </div>
-
-            <div class="ml-4">
-              <p class="total">Total Item Distributed</p>
-              <h4 class="amount">
-                {{
-                  campaignDetails.total_items_distributed || 0 | formatNumber
-                }}
-              </h4>
-            </div>
-          </div>
+        <div>
+          <h5 class="pt-4 primary-blue font-bold text-md">
+            Nothing in here yet.
+          </h5>
+          <p class="primary-gray font-medium proposals">
+            Proposals from Vendors will show up here once they respond to your
+            request.
+          </p>
         </div>
-      </div>
-    </div>
-
-    <!-- Graphs here -->
-    <div class="row mt-4 pt-2">
-      <!-- Products by Gender -->
-      <div class="col-lg-8">
-        <div class="cards__holder p-4">
-          <h4 class="pb-2 gender-header">Products By Gender</h4>
-          <div class="row d-flex justify-content-between h-100">
-            <div class="col-md-12">
-              <products-by-gender />
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Products by Age group -->
-      <div class="col-lg-4">
-        <div class="cards__holder p-4">
-          <h4 class="pb-2 gender-header">Products By Age Group</h4>
-          <products-age-group />
-        </div>
-      </div>
-    </div>
-
-    <!-- All Products table here -->
-    <div>
-      <all-products />
-    </div>
+      </section>
+    </template>
   </div>
 </template>
 
 <script>
-import productsByGender from "~/components/charts/products-by-gender";
-import productsAgeGroup from "~/components/charts/products-age-group";
-import allProducts from "~/components/tables/all-products";
 import { mapGetters } from "vuex";
 
 export default {
   layout: "dashboard",
-  transition: "page",
-  components: {
-    productsByGender,
-    productsAgeGroup,
-    allProducts,
-  },
-  data: () => ({
-    campaignDetails: {},
-  }),
+  name: "MarketPlace",
 
   async fetch() {
-    const campaignDetails = await this.$axios.get(
-      `/organisations/campaigns/transaction`
+    this.id = this.user?.AssociatedOrganisations[0]?.OrganisationId;
+    const { data } = await this.$axios.get(
+      `organisation/${this.id}/proposal-requests`
     );
-    this.campaignDetails = campaignDetails?.data;
+
+    if (data) {
+      this.proposals = data;
+    }
   },
+
+  data: () => ({
+    drawer: false,
+    proposals: [],
+    searchQuery: "",
+  }),
 
   computed: {
     ...mapGetters("authentication", ["user"]),
 
-    computedData() {
-      return [];
+    resultQuery() {
+      if (this.searchQuery) {
+        return this.proposals.filter((data) => {
+          return this.searchQuery
+            .toLowerCase()
+            .split(" ")
+            .every((v) =>
+              data?.campaign_requests?.title?.toLowerCase().includes(v)
+            );
+        });
+      } else {
+        return this.proposals;
+      }
+    },
+  },
+
+  methods: {
+    closeDrawer() {
+      this.drawer = false;
     },
   },
 };
 </script>
 
 <style scoped>
-.gender-header {
-  color: var(--primary-blue);
-  font-size: 1.125rem;
-  font-weight: 700;
-}
-
-.amount {
-  color: var(--primary-blue);
-  font-weight: 500;
-  font-size: 1.75rem;
-}
-
-.total {
-  color: #7c8db5;
-  font-size: 1rem;
-}
-
 .welcome-header {
   color: var(--primary-blue);
   font-weight: 700;
@@ -159,25 +135,19 @@ export default {
   border-radius: 10px;
 }
 
-.cards__holder {
-  background: #ffffff;
-  box-shadow: 0px 4px 25px rgba(174, 174, 192, 0.15);
-  border-radius: 10px;
-  height: 300px;
-}
-
 .description {
   color: var(--primary-blue);
   font-size: 1rem;
 }
 
-.stats-div {
-  width: 30%;
-}
-
 .main {
   height: calc(100vh - 72px);
   overflow-y: scroll;
+}
+
+.proposals {
+  width: 33%;
+  margin: auto;
 }
 
 .h-260 {

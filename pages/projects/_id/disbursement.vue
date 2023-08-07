@@ -3,7 +3,7 @@
     <!-- Modals Here -->
     <div>
       <!-- Fund Campaign modal -->
-      <Modal id="fund-campaign" title="Fund Campaign">
+      <Modal id="fund-campaign" title="Fund Project">
         <FundCampaign
           :campaign="details"
           :tokenType="tokenType"
@@ -29,7 +29,7 @@
           {{ details.type == "item" ? "items" : "funds" }} to beneficiary?
         </h1>
         <p class="text-sm primary-gray">
-          Select a disbursement method that best fits your campaign and
+          Select a disbursement method that best fits your project and
           beneficiaries demography.
         </p>
       </div>
@@ -229,7 +229,7 @@ export default {
 
     handleTokens() {
       this.$router.push({
-        path: `/campaigns/${this.$route.params.id}/manage-tokens`,
+        path: `/projects/${this.$route.params.id}/manage-tokens`,
         query: { method: this.tokenType || "sms" },
         meta: {
           reload: true,

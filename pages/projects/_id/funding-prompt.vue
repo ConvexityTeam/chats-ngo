@@ -3,7 +3,7 @@
     <div class="mt-3 text-center">
       <p class="primary-gray py-3 font-medium">
         You are about to
-        {{ details.type == "item" ? "create items for" : "fund" }} this campaign
+        {{ details.type == "item" ? "create items for" : "fund" }} this project
         confirm to continue, cancel to discard it.
       </p>
     </div>

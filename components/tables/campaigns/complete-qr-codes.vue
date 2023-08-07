@@ -40,7 +40,7 @@
 
               <!-- Campaign -->
               <div class="mb-2 pb-1">
-                <p class="text-xs primary-gray">CAMPAIGN</p>
+                <p class="text-xs primary-gray">PROJECT</p>
                 <p class="primary-blue text-sm font-medium">
                   {{ token.Campaign ? token.Campaign.title : "" }}
                 </p>
@@ -50,7 +50,7 @@
               <div class="mb-2">
                 <p class="text-xs primary-gray">AMOUNT</p>
                 <p class="primary-blue text-sm font-medium">
-                  {{ $currency }}{{ token.amount | formatCurrency }}
+                  {{ token.amount | formatCurrency }}
                 </p>
               </div>
             </div>

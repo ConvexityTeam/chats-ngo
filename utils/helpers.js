@@ -47,3 +47,12 @@ export function dataUrlToFile(dataUrl, filename) {
 
   return new File([u8arr], filename, { type: "image/png" || mime });
 }
+
+export const getPercentage = (valueOne = 0, valueTwo = 0) => {
+  if (valueOne === 0 || valueTwo === 0) return 0;
+
+  const ratio = valueOne / valueTwo;
+  const result = ratio * 100;
+
+  return Math.ceil(result);
+};

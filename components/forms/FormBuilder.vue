@@ -381,7 +381,7 @@ export default {
 
     previewForm() {
       this.$router.push({
-        path: "/campaigns/forms/new",
+        path: "/projects/forms/new",
         query: { preview: true, id: this.isEdit ? this.$route.params.id : "" },
       });
     },

@@ -3,7 +3,7 @@
     <!-- Table here -->
     <div class="table-holder mt-4">
       <div class="flex align-items-center table-title">
-        <h4>Campaigns</h4>
+        <h4>Projects</h4>
       </div>
 
       <table class="table table-borderless" v-if="campaigns.length">
@@ -22,10 +22,10 @@
             :key="i"
             class="pointer"
             :class="{ selected: i % 2 == 0 }"
-            @click="$router.push(`/campaigns/${campaign.id}`)"
+            @click="$router.push(`/projects/${campaign.id}`)"
           >
             <td class="campaign-title">{{ campaign.title }}</td>
-            <td>{{ $currency }}{{ campaign.budget | formatCurrency }}</td>
+            <td>{{ campaign.budget | formatCurrency }}</td>
             <td>{{ campaign.createdAt | shortDate }}</td>
 
             <td class="status-td">

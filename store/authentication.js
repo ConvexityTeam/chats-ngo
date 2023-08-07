@@ -1,14 +1,15 @@
 export default {
+  namespaced: true,
   state: () => ({
     token: "",
     userLocation: {},
-    user: null
+    user: {},
   }),
 
   getters: {
-    token: state => state.token,
-    userLocation: state => state.userLocation,
-    user: state => state.user
+    token: (state) => state.token,
+    userLocation: (state) => state.userLocation,
+    user: (state) => state.user,
   },
 
   mutations: {
@@ -30,8 +31,9 @@ export default {
 
     removeToken(state) {
       window.localStorage.removeItem("userToken");
+      localStorage.getItem("userEmail");
       state.token = "";
-    }
+    },
   },
 
   actions: {
@@ -57,6 +59,6 @@ export default {
     async logout({ commit }) {
       await commit("removeToken");
       return true;
-    }
-  }
+    },
+  },
 };

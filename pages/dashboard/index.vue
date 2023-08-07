@@ -24,7 +24,7 @@
             <img src="~/assets/img/vectors/deposit.svg" alt="deposit" />
           </div>
           <div class="ml-3">
-            <p class="text">Campaign Budget</p>
+            <p class="text">Project Budget</p>
             <h4 class="funds" :title="campaignBudget">
               {{ $truncate(campaignBudget) }}
             </h4>
@@ -52,7 +52,7 @@
           <TotalBalance />
 
           <div class="ml-3">
-            <p class="text">Campaign Balance</p>
+            <p class="text">Project Balance</p>
             <h4 class="funds" :title="campaignBalance">
               {{ $truncate(campaignBalance) }}
             </h4>
@@ -287,19 +287,19 @@ export default {
     },
 
     campaignBudget() {
-      return `${this.$currency}${this.$root.$options.filters.formatCurrency(
+      return `${this.$root.$options.filters.formatCurrency(
         this.campaignDetails.campaign_budget
       )}`;
     },
 
     amountDisbursed() {
-      return `${this.$currency}${this.$root.$options.filters.formatCurrency(
+      return `${this.$root.$options.filters.formatCurrency(
         this.campaignDetails.amount_disbursed
       )}`;
     },
 
     campaignBalance() {
-      return `${this.$currency}${this.$root.$options.filters.formatCurrency(
+      return `${this.$root.$options.filters.formatCurrency(
         this.campaignDetails.balance
       )}`;
     },

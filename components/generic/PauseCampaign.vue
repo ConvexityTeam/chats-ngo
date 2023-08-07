@@ -1,12 +1,12 @@
 <template>
   <div>
     <p class="pt-2">
-      This campaign was paused on {{ date | formatDate }}. You may want to
+      This project was paused on {{ date | formatDate }}. You may want to
       <br />
     </p>
 
     <span class="resume-btn" @click="$emit('resumeCampaign')">
-      Resume Campaign
+      Resume Project
     </span>
   </div>
 </template>

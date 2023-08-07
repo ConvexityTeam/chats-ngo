@@ -4,7 +4,7 @@
     <section class="table-holder mt-5">
       <template v-if="resultQuery.length">
         <div class="flex align-items-center table-title">
-          <h4>Campaigns</h4>
+          <h4>Projects</h4>
           <div class="ml-auto"></div>
         </div>
 
@@ -28,9 +28,9 @@
               :class="{ selected: i % 2 == 0 }"
             >
               <td class="campaign-title">{{ campaign.title }}</td>
-              <td>{{ $currency }}{{ campaign.budget | formatCurrency }}</td>
+              <td>{{ campaign.budget | formatCurrency }}</td>
               <td>
-                {{ $currency }}{{ campaign.amount_disbursed | formatCurrency }}
+                {{ campaign.amount_disbursed | formatCurrency }}
               </td>
               <td>{{ campaign.createdAt | shortDate }}</td>
               <td>
@@ -64,7 +64,7 @@
                     :hasEye="true"
                     text="View"
                     custom-styles=" border: none !important; font-size: 0.875rem !important"
-                    @click="$router.push(`/campaigns/${campaign.id}`)"
+                    @click="$router.push(`/projects/${campaign.id}`)"
                   />
                 </div>
               </td>

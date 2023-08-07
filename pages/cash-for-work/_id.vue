@@ -2,7 +2,7 @@
   <div class="pb-5">
     <!-- create new task modal  -->
     <Modal id="new-task" title="new task">
-      <newTask @reload="$fetchState" />
+      <newTask @reload="$fetch" />
     </Modal>
     <div v-if="loading"></div>
 
@@ -83,7 +83,7 @@
                       {{ task.amount | formatCurrency }}
                     </td>
                     <td class="max-width">
-                      {{ task.createdAt | shortDate }}
+                      {{ task.createdAt | formatDateOnly }}
                     </td>
                     <td>
                       <div>

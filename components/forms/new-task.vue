@@ -184,7 +184,7 @@ export default {
         require_agent_approval: false,
       },
       content:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Gravida aliquet sed.",
+        "Choose if evidence should be approved by the Field Agent assigned by this NGO or the Vendor.",
       location: {
         coordinates: [],
       },
