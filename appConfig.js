@@ -18,7 +18,7 @@ const stagingEnv = {
 const productionEnv = {
   APP_ENVIRONMENT: "production",
   BASE_URL: "https://api.chats.cash/v1/",
-  HOST_URL: "https://chats.cash",
+  HOST_URL: "https://dashboard.chats.cash",
   PAYSTACK_KEY: "pk_live_edacd8ac3c89064aacb7b901b0ebec088dfacf69",
   NIN_KEY: "F4Unc5MZ.e7BjG09xd9YJXMnvuXmayuICfMVNW6OE",
   GOOGLE_API: "AIzaSyAXAK5t4yAGczmh8vpeXevXwCHeOAw4w24",
