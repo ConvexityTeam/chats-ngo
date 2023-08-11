@@ -221,7 +221,7 @@
                     v-for="(country, i) in countries"
                     :key="i"
                     :label="country.countryName"
-                    :value="country.countryCode"
+                    :value="country.countryName"
                   >
                   </el-option>
                 </el-select>
@@ -378,7 +378,7 @@
             </div>
           </section>
 
-          <section v-if="payload.user_profile.country == 'NG'">
+          <section v-if="payload.user_profile.country == 'Nigeria'">
             <!-- NIN Here -->
             <div class="row position-relative">
               <div class="col-lg-6 mb-4">
@@ -461,7 +461,9 @@
           <!-- Save Button -->
           <div class="col-lg-12 row mb-2 mt-2">
             <div
-              v-if="payload.user_profile.country == 'NG' && isIdentityVerified"
+              v-if="
+                payload.user_profile.country == 'Nigeria' && isIdentityVerified
+              "
             >
               <Button
                 :has-icon="false"
@@ -670,7 +672,7 @@ export default {
     displayExtras() {
       return (
         !this.payload.user_profile.country ||
-        this.payload.user_profile.country == "NG"
+        this.payload.user_profile.country == "Nigeria"
       );
     },
 
@@ -734,7 +736,7 @@ export default {
 
         console.log("COUNTRY::", country);
 
-        if (country != "NG") {
+        if (country != "Nigeria") {
           delete this.payload.user_profile.nin;
         }
 
