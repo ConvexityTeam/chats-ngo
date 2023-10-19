@@ -35,10 +35,6 @@ $ npm run generate
 
 <br>
 
-## Description
-
-Convexity Humanitarian Aids Transfer Solution(CHATS) Blockchain ERC20 and ERC721 token for disbursement of fund and items to beneficiaries by Donor or NGO
-
 ## Contribution Guide
 
 **Fork the Repository:** Start by forking our repository on GitHub. This will create a copy of the project under your GitHub account.
