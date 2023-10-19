@@ -4,7 +4,7 @@
     <img width="200" src="./assets/img/logo-2.svg?width=64" alt="CHATS Logo" />
 </a>
 
-# Convexity Humanitarian Aid Transfer Solution (CHATS)
+## Description
 
 CHATS(Convexity Humanitarian Aid Transfer Solution), enables the transparent transfer of cash and voucher assistance to the beneficiaries while leveraging the blockchain technology for livelihood programs and logistics management for aid distribution.
 
@@ -35,46 +35,50 @@ $ npm run generate
 
 <br>
 
-# Convexity Humanitarian Aid Transfer Solution (CHATS) Starting Guide
+## Description
 
-Create a New Branch:
+Convexity Humanitarian Aids Transfer Solution(CHATS) Blockchain ERC20 and ERC721 token for disbursement of fund and items to beneficiaries by Donor or NGO
 
-Create a new branch on your local machine.
+## Contribution Guide
 
-Make Changes:
+**Fork the Repository:** Start by forking our repository on GitHub. This will create a copy of the project under your GitHub account.
 
-Implement your desired changes or additions to the codebase.
-Ensure that your code follows the project's coding conventions and style guidelines.
+**Set Up Your Development Environment:** Clone the forked repository to your local machine using Git. Install any necessary dependencies as specified in the project's documentation.
 
-Test Your Changes:
+**Create a New Branch:** Create a new branch on your local machine.
 
-Before submitting your contribution, make sure to test your changes thoroughly.
+**Make Changes:** Implement your desired changes or additions to the codebase. Ensure that your code follows the project's coding conventions and style guidelines.
 
-Commit and Push:
+**Test Your Changes:** Before submitting your contribution, make sure to test your changes thoroughly. Use test frameworks (Mocha or QUnit) to automate the process. Once you have run the tests, you have to analyse the results. This will help you to identify any bugs or problems. If there are bugs, fix them before proceeding to commit your changes.
 
-Commit your changes with clear and descriptive commit messages.
-Push your commits to the branch you created on your forked repository.
+**Commit and Push:** Commit your changes with clear and descriptive commit messages. Push your commits to the branch you created on your forked repository.
 
-Create a Merge Request (MR):
+**Create a Pull Request (PR):** Go to the original repository on GitHub and locate the "Pull Requests" section. Click on "New pull request" to create a new pull request from your branch to the original repository's main branch. Provide a descriptive title and a detailed description of your changes in the pull request.
 
-Go to the original repository and locate the "Merge Requests" section.
-Click on "New merge request" to create a new merge request from your branch to the original repository's main branch.
-Provide a descriptive title and detailed description of your changes in the merge request.
+**Contribution Approval and Merging:** Once your pull request has been reviewed and approved by the project maintainers, it will be merged into the main branch. Congratulations! Your contribution is now part of the project.
 
-<br>
-<hr>
+Thank you for considering contributing to our open-source project on GitHub. Your contributions play a vital role in making the project successful and benefiting the CHATS community.
 
-**PS: While creating a new branch the following naming convention should be followed:**
+## Code of conduct
+The CHATS team and community are made up of a mixture of professionals from all over the world, working on every product. To that end, we have a few ground rules that we ask people to adhere to. This code applies equally to developers and users.
 
-- For a feature branch: `feature/<branch-name>`
-- For a bugfix branch: `fix/<branch-name>`
-- For a hotfix branch: `hotfix/<branch-name>`
-- For a chore branch: `chore/<branch-name>`
+As contributors and maintainers of CHATS, we are committed to providing a welcoming and inclusive environment for everyone, regardless of background or identity. This code of conduct applies to all spaces managed by the CHATS community. If you believe someone is violating the code of conduct, we ask that you report it by emailing us@chats.cash.
 
-<hr>
-<br>
+**Be respectful:** Treat all participants with respect and kindness, regardless of their personal attributes or opinions. Disagreements and debates should be conducted in a civil manner. Inclusive language: Use inclusive language and avoid any form of discriminatory, offensive, or derogatory remarks or jokes. Be mindful of your words' impact on others.
 
-## LICENSE
+**Open-mindedness:** Embrace diversity and be open to different ideas, perspectives, and experiences. Foster an environment that encourages collaboration, creativity, and learning from one another.
+
+**Be constructive:** Provide constructive feedback and engage in discussions that aim to improve the CHATS. Critique ideas, not individuals, and always assume good intentions from others. Respect privacy and boundaries: Obtain consent before sharing personal information about others. Respect the privacy and boundaries of fellow contributors and users.
+
+**Report and address issues:** If you witness or experience any behavior that violates this code of conduct, promptly report it to the project maintainers. They are committed to maintaining a safe and inclusive community and will take appropriate action to address the issue.
+
+**No harassment or discrimination:** Harassment, discrimination, or any form of unwelcome behavior based on factors such as race, ethnicity, gender, sexual orientation, disability, religion, or any other protected characteristic will not be tolerated.
+
+**Comply with applicable laws:** Ensure that your actions and contributions comply with all applicable laws and regulations.
+
+By participating in the CHATS project, you agree to follow this code of conduct throughout all project activities, both online and offline, and in all interactions related to CHATS.
+
+## License
 
 CHATS `NGO DASHBOARD`
 Copyright (C) 2023 Convexity CVA Inc.
