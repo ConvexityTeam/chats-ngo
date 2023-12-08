@@ -24,11 +24,11 @@
       <label for="password">New Password</label>
       <input
         id="password"
+        v-model="payload.password"
         :type="showpassword ? 'text' : 'password'"
         class="form-controls"
         placeholder="Enter new password"
         :class="{ form__input__error: $v.payload.password.$error }"
-        v-model="payload.password"
         @focus="passwordActive = true"
         @blur="$v.payload.password.$touch()"
       />
@@ -63,11 +63,11 @@
       <label for="confirm_password">Password Confirmation</label>
       <input
         id="confirm_password"
+        v-model="payload.confirm_password"
         :type="showConfirm ? 'text' : 'password'"
         class="form-controls"
         placeholder="Re-enter new password"
         :class="{ form__input__error: $v.payload.confirm_password.$error }"
-        v-model="payload.confirm_password"
         @focus="confirmActive = true"
         @input="$v.payload.confirm_password.$touch()"
       />
@@ -140,6 +140,7 @@ export default {
         containsLowercase: (value) => /[a-z]/.test(value),
         containsNumber: (value) => /[0-9]/.test(value),
         containsSpecial: (value) =>
+          // eslint-disable-next-line no-useless-escape
           /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(value),
       },
       confirm_password: {

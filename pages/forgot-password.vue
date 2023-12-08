@@ -38,8 +38,8 @@
         <div v-if="!isSuccess">
           <FormsPasswordRecoveryStep1
             v-if="step === 1"
-            @recoverPassword="recoverPassword"
             :loading="loading"
+            @recoverPassword="recoverPassword"
           />
         </div>
 
@@ -89,14 +89,12 @@ export default {
 
         console.log("recover response", response);
 
-        if (response.status == "success") {
+        if (response.status === "success") {
           this.ref = response?.data?.ref;
           this.isSuccess = true;
           this.step = 2;
         }
-      } catch (err) {
-        console.log(err);
-        this.$toast.error(err.response?.data?.message);
+      } catch (_err) {
       } finally {
         this.loading = false;
       }
@@ -107,15 +105,13 @@ export default {
         this.loading = true;
         const response = await this.$axios.put("/auth/password/reset", payload);
 
-        if (response.status == "success") {
+        if (response.status === "success") {
           this.$toast.success(response.message);
           this.$router.push("/");
         }
 
         console.log("Reset response", response);
-      } catch (err) {
-        console.log("RESET PASSWORD::", err);
-        this.$toast.error(err.response?.data?.message);
+      } catch (_err) {
       } finally {
         this.loading = false;
       }

@@ -1,9 +1,7 @@
-export default async function (parameters) {
-  const { store, redirect, $toast, from } = parameters;
+export default function (parameters) {
+  const { redirect, $toast, from } = parameters;
 
-  console.log("PARAM", parameters);
-
-  const session = !!store.getters["authentication/token"];
+  const session = !!sessionStorage.getItem("userToken");
 
   if (session) {
     try {
@@ -13,7 +11,7 @@ export default async function (parameters) {
       }
       return redirect(from.fullPath);
     } catch (error) {
-      localStorage.clear();
+      sessionStorage.clear();
     }
   }
 }

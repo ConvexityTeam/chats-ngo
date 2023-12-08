@@ -19,15 +19,15 @@
           <div class="form-group">
             <label for="name">Name</label>
             <input
+              id="name"
+              v-model="payload.name"
               type="text"
               class="form-controls"
               :class="{
                 error: $v.payload.name.$error,
               }"
               name="name"
-              id="name"
               placeholder="Name of the task"
-              v-model="payload.name"
               @blur="$v.payload.name.$touch()"
             />
           </div>
@@ -36,16 +36,16 @@
           <div class="form-group">
             <label for="description">Description</label>
             <textarea
+              id="description"
+              v-model="payload.description"
               class="form-controls"
               :class="{
                 error: $v.payload.description.$error,
               }"
               name="description"
-              id="description"
               cols="30"
               rows="2"
               @blur="$v.payload.description.$touch()"
-              v-model="payload.description"
             ></textarea>
           </div>
 
@@ -55,17 +55,17 @@
               <div class="form-group">
                 <label for="total-amount">Amount</label>
                 <input
+                  id="total-amount"
+                  ref="budget"
+                  v-model="payload.amount"
                   type="number"
                   class="form-controls"
                   :class="{
                     error: $v.payload.amount.$error,
                   }"
                   name="total-amount"
-                  id="total-amount"
                   placeholder="Amount"
-                  v-model="payload.amount"
                   @blur="$v.payload.amount.$touch()"
-                  ref="budget"
                 />
               </div>
             </div>
@@ -104,9 +104,11 @@ import { required } from "vuelidate/lib/validators";
 import close from "~/components/icons/close.vue";
 
 export default {
+  components: { close },
   props: {
     id: {
-      Type: Number,
+      type: [Number, String],
+      default: "",
     },
   },
 
@@ -137,8 +139,6 @@ export default {
     },
   },
 
-  components: { close },
-
   methods: {
     closeModal() {
       this.$bvModal.hide("new-task");
@@ -163,21 +163,16 @@ export default {
           this.payload
         );
 
-        if (response.status == "success") {
+        if (response.status === "success") {
           this.$emit("reload");
           this.closeModal();
           this.$toast.success(response.message);
-        } else {
-          this.$toast.error(response.message);
         }
 
         console.log("campaignResponse:::", response);
-
+      } catch (_err) {
+      } finally {
         this.loading = false;
-      } catch (err) {
-        console.log(err);
-        this.loading = false;
-        this.$toast.error(err.response.data.message);
       }
     },
   },

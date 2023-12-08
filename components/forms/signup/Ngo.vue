@@ -1,17 +1,17 @@
 <template>
-  <form @submit.prevent="registerUser" class="mt-3">
+  <form class="mt-3" @submit.prevent="registerUser">
     <!-- Organisation name here -->
     <div class="form-group">
       <label for="name">Name of organization</label>
       <input
+        id="name"
+        v-model="payload.organisation_name"
         type="text"
         class="form-controls"
         placeholder="Enter organization"
         :class="{
           form__input__error: $v.payload.organisation_name.$error,
         }"
-        id="name"
-        v-model="payload.organisation_name"
         @focus="orgActive = true"
         @blur="$v.payload.organisation_name.$touch()"
       />
@@ -25,14 +25,14 @@
     <div class="form-group">
       <label for="registration_id">Registration ID</label>
       <input
+        id="registration_id"
+        v-model="payload.registration_id"
         type="text"
         class="form-controls less-padded"
         placeholder="Enter Registration ID"
         :class="{
           form__input__error: $v.payload.registration_id.$error,
         }"
-        id="registration_id"
-        v-model="payload.registration_id"
         @blur="$v.payload.registration_id.$touch()"
       />
       <span class="primary-gray text-sm"
@@ -44,12 +44,12 @@
     <div class="form-group">
       <label for="email">Email</label>
       <input
+        id="email"
+        v-model="payload.email"
         type="email"
         class="form-controls"
         placeholder="example@gmail.com"
         :class="{ form__input__error: $v.payload.email.$error }"
-        id="email"
-        v-model="payload.email"
         @focus="emailActive = true"
         @blur="$v.payload.email.$touch()"
       />
@@ -62,11 +62,11 @@
     <div class="form-group">
       <label for="email">Website</label>
       <input
+        id="website"
+        v-model="payload.website_url"
         type="url"
         class="form-controls"
         placeholder="https://www.example.com"
-        id="website"
-        v-model="payload.website_url"
         @focus="webActive = true"
       />
       <div class="position-absolute icon-left">
@@ -78,12 +78,12 @@
     <div class="form-group last">
       <label for="password">Password</label>
       <input
+        id="password"
+        v-model="payload.password"
         :type="showpassword ? 'text' : 'password'"
         class="form-controls"
         placeholder="Enter password"
         :class="{ form__input__error: $v.payload.password.$error }"
-        id="password"
-        v-model="payload.password"
         @focus="passActive = true"
         @blur="$v.payload.password.$touch()"
       />
@@ -169,6 +169,7 @@ export default {
         containsLowercase: (value) => /[a-z]/.test(value),
         containsNumber: (value) => /[0-9]/.test(value),
         containsSpecial: (value) =>
+          // eslint-disable-next-line no-useless-escape
           /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(value),
       },
     },

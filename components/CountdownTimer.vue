@@ -4,7 +4,7 @@
       <span class="primary font-medium">Resend in {{ timeout }}s</span>
     </template>
     <template v-else>
-      <button @click="handleResend" :disabled="loading">
+      <button :disabled="loading" @click="handleResend">
         {{ loading ? "Loading..." : "Resend Code" }}
       </button>
     </template>

@@ -2,11 +2,10 @@
   <div class="pb-5">
     <!-- create new task modal  -->
     <Modal id="new-task" title="new task">
-      <newTask @reload="$fetch" />
+      <newTask @reload="fetchTasks" />
     </Modal>
-    <div v-if="loading"></div>
 
-    <div class="main container transparent pt-4 mt-2 pb-5" v-else>
+    <div class="main container transparent pt-4 mt-2 pb-5">
       <back text="Go Back" @click="$router.go(-1)" />
 
       <!-- search region here -->
@@ -17,10 +16,10 @@
               <!-- Search Box here -->
               <div class="position-relative">
                 <input
+                  v-model="searchQuery"
                   type="text"
                   class="form-controls search"
                   placeholder="Search tasks..."
-                  v-model="searchQuery"
                 />
                 <img
                   src="~/assets/img/vectors/search.svg"
@@ -33,9 +32,9 @@
         </div>
         <div class="ml-auto mx-3">
           <Button
+            v-b-modal.new-task
             text="Create new"
             custom-styles="height:50px"
-            v-b-modal.new-task
           />
         </div>
       </div>
@@ -52,55 +51,71 @@
           <!-- Campaign beneficiaries here -->
           <div>
             <div class="table-holder mt-2">
-              <div v-if="$fetchState.pending" class="text-center"></div>
+              <div class="d-flex align-items-center table-title">
+                <h4>Tasks</h4>
+              </div>
 
-              <table
-                v-else-if="resultQuery.length"
-                class="table table-borderless"
-              >
-                <thead>
-                  <tr>
-                    <th scope="col">Name</th>
-                    <th scope="col">Entries</th>
-                    <th scope="col">Amount</th>
-                    <th scope="col">Created</th>
-                    <th scope="col"></th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr
-                    v-for="(task, i) in resultQuery"
-                    :key="task.id"
-                    :class="{ selected: i % 2 == 0 }"
-                  >
-                    <td>
-                      {{ task.name }}
-                    </td>
-                    <td class="entries">
-                      {{ task.assignment_count }}
-                    </td>
-                    <td>
-                      {{ task.amount | formatCurrency }}
-                    </td>
-                    <td class="max-width">
-                      {{ task.createdAt | formatDateOnly }}
-                    </td>
-                    <td>
-                      <div>
-                        <Button
-                          text=" View"
-                          :has-icon="false"
-                          :has-border="true"
-                          custom-styles="border: 1px solid #17CE89 !important; border-radius: 5px !important; font-size: 0.875rem !important; height: 33px !important;"
-                          @click="
-                            $router.push(`/cash-for-work/tasks/${task.id}`)
-                          "
-                        />
-                      </div>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+              <div v-if="loading" class="px-4">
+                <Skeleton
+                  :count="6"
+                  class="mb-5"
+                  styles="height: 52px; margin-bottom: 10px"
+                />
+              </div>
+
+              <template v-else-if="resultQuery.length">
+                <table class="table table-borderless">
+                  <thead>
+                    <tr>
+                      <th scope="col">Name</th>
+                      <th scope="col">Max Entries</th>
+                      <th scope="col">Amount</th>
+                      <th scope="col">Created</th>
+                      <th scope="col"></th>
+                    </tr>
+                  </thead>
+
+                  <tbody>
+                    <tr
+                      v-for="(task, i) in resultQuery"
+                      :key="task.id"
+                      :class="{ selected: i % 2 == 0 }"
+                    >
+                      <td>
+                        {{ task.name }}
+                      </td>
+                      <td class="entries">
+                        {{ task.assignment_count }}
+                      </td>
+                      <td>
+                        {{ task.amount | formatCurrency }}
+                      </td>
+                      <td class="max-width">
+                        {{ task.createdAt | formatDateOnly }}
+                      </td>
+                      <td>
+                        <div>
+                          <Button
+                            text=" View"
+                            :has-icon="false"
+                            :has-border="true"
+                            custom-styles="border: 1px solid #17CE89 !important; border-radius: 5px !important; font-size: 0.875rem !important; height: 33px !important;"
+                            @click="
+                              $router.push(`/cash-for-work/tasks/${task.id}`)
+                            "
+                          />
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+
+                <pagination
+                  :currentPageNum="tasksPageNum"
+                  :totalNumOfItems="tasksTotalItems"
+                  @updatePage="updateTasksTable"
+                />
+              </template>
 
               <h3 v-else class="text-center no-record">NO RECORD FOUND</h3>
             </div>
@@ -109,12 +124,14 @@
 
         <!-- Campaign details here -->
         <div class="col-lg-4">
-          <campaign-details
+          <SkeletonSingleCard v-if="loading" />
+          <TablesCampaignsDetails
+            v-else
             :details="details"
             :location="location"
             :user="user"
-            @reload="getDetails"
             :resumeCampaign="resumeCampaign"
+            @reload="getDetails"
           />
         </div>
       </div>
@@ -124,55 +141,34 @@
 
 <script>
 import { mapGetters } from "vuex";
-import campaignDetails from "~/components/tables/campaigns/campaign-details";
 import banner from "~/components/generic/banner.vue";
 import newTask from "~/components/forms/new-task";
 
-let screenLoading;
 export default {
-  layout: "dashboard",
   components: {
-    campaignDetails,
     banner,
     newTask,
   },
+  layout: "dashboard",
 
   data: () => ({
     loading: false,
     orgId: "",
     searchQuery: "",
-    task: {},
+    activeTask: {},
     tasks: [],
 
     beneficiaries: [],
     details: {},
     location: "",
     resumeCampaign: false,
+    tasksPageNum: 1,
+    tasksTotalItems: 0,
 
     title: "",
     drawer: false,
     direction: "rtl",
   }),
-
-  async fetch() {
-    try {
-      this.loading = true;
-      this.openScreen();
-
-      const id = this.user?.AssociatedOrganisations[0]?.OrganisationId;
-      const response = await this.$axios.get(
-        `tasks/${id}/${this.$route.params.id}`
-      );
-
-      if (response.status == "success") {
-        screenLoading.close();
-        this.loading = false;
-      }
-      this.tasks = response.data;
-    } catch (error) {
-      console.log("TASKS:::", error);
-    }
-  },
 
   computed: {
     ...mapGetters("authentication", ["user"]),
@@ -192,10 +188,40 @@ export default {
 
   mounted() {
     this.orgId = this.user?.AssociatedOrganisations[0]?.OrganisationId;
+
     this.getDetails();
+    this.fetchTasks();
   },
 
   methods: {
+    updateTasksTable(action) {
+      this.tasksPageNum =
+        action === "prev" ? this.tasksPageNum - 1 : this.tasksPageNum + 1;
+
+      this.fetchTasks();
+    },
+
+    async fetchTasks() {
+      try {
+        this.loading = true;
+
+        const id = this.user?.AssociatedOrganisations[0]?.OrganisationId;
+        const response = await this.$axios.get(
+          `tasks/${id}/${this.$route.params.id}?page=${this.tasksPageNum}&size=10`
+        );
+
+        if (response.status === "success") {
+          this.tasks = response.data;
+
+          this.tasksPageNum = response?.currentPage;
+          this.tasksTotalItems = response?.totalItems;
+        }
+      } catch (error) {
+      } finally {
+        this.loading = false;
+      }
+    },
+
     async getDetails() {
       try {
         this.loading = true;
@@ -204,31 +230,20 @@ export default {
           `/organisations/${this.orgId}/campaigns/${this.$route.params.id}`
         );
 
-        console.log("C4W details:::", response);
-
-        if (response.status == "success") {
+        if (response.status === "success") {
           this.details = response.data;
-          console.log("DETAILS::", this.details);
           this.beneficiaries = response.data.Beneficiaries;
-          this.loading = false;
         }
       } catch (err) {
-        this.loading = false;
         console.log("campaignDeetserr:::", err);
+      } finally {
+        this.loading = false;
       }
     },
 
     handleNewTask(task) {
-      this.task = task;
+      this.activeTask = task;
       this.$bvModal.show("new-task");
-    },
-
-    openScreen() {
-      screenLoading = this.$loading({
-        lock: true,
-        spinner: "el-icon-loading",
-        background: "#0000009b",
-      });
     },
   },
 };

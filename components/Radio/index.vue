@@ -2,16 +2,16 @@
   <div class="d-flex">
     <label :class="{ disabled: disabled, readonly }" :style="labelStyles">
       <input
-        :name="name"
         :id="value"
-        type="radio"
         ref="radio"
+        :name="name"
+        type="radio"
         :value="value"
         :checked="isChecked"
         :readonly="readonly"
-        @change="changed"
         :disabled="disabled"
         v-bind="$attrs"
+        @change="changed"
       />
       <span :class="{ disabled: disabled, readonly }"></span>
     </label>
@@ -26,13 +26,13 @@
         {{ label }}
       </label>
 
-      <p class="extra-text" v-if="extraText">{{ extraText }}</p>
+      <p v-if="extraText" class="extra-text">{{ extraText }}</p>
     </div>
   </div>
 </template>
 <script>
 export default {
-  name: "Gem-radio",
+  name: "GemRadio",
   inheritAttrs: false,
 
   model: {
@@ -47,6 +47,7 @@ export default {
     },
 
     modelValue: {
+      type: [String, Boolean],
       default: "",
     },
 
@@ -89,18 +90,18 @@ export default {
 
   data: () => ({ mounted: false }),
 
-  mounted: function () {
-    this.mounted = true;
-  },
-
   computed: {
     isChecked: function () {
-      if (this.mounted) return this.modelValue == this.$refs.radio.value;
+      if (this.mounted) return this.modelValue === this.$refs.radio.value;
       else return false;
     },
     computedValue: function () {
       return !this.value ? this.label : this.value;
     },
+  },
+
+  mounted: function () {
+    this.mounted = true;
   },
 
   methods: {

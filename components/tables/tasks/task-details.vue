@@ -1,10 +1,10 @@
 <template>
   <div class="campaign-details-holder p-4">
     <Modal id="campaign-prompt" :title="`${status} project`">
-      <campaign-prompt
-        @handleCampaign="handleCampaign"
+      <FormsCampaignPrompt
         :status="status"
         :title="details.title"
+        @handleCampaign="handleCampaign"
       />
     </Modal>
 
@@ -97,7 +97,6 @@
 </template>
 
 <script>
-import campaignPrompt from "~/components/forms/campaign-prompts.vue";
 let screenLoading;
 
 export default {
@@ -143,10 +142,6 @@ export default {
     },
   },
 
-  components: {
-    campaignPrompt,
-  },
-
   mounted() {
     this.orgId = this.user?.AssociatedOrganisations[0]?.OrganisationId;
   },
@@ -173,33 +168,34 @@ export default {
         this.toggleModal(false);
         this.openScreen();
 
-        status == "Pause" || status == "paused"
-          ? (this.campaignStatus = "paused")
-          : status == "Delete"
-          ? (this.campaignStatus = "deleted")
-          : (status = "active" ? (this.campaignStatus = "active") : " ");
+        if (status === "Pause" || status === "paused") {
+          this.campaignStatus = "paused";
+        }
+
+        if (status === "Delete") {
+          this.campaignStatus = "deleted";
+        }
+
+        if (status === "active") {
+          this.campaignStatus = "active";
+        }
 
         console.log("status::", this.campaignStatus);
 
         const response = await this.$axios.put(
           `organisations/${this.orgId}/campaigns/${this.$route.params.id}`,
-          {
-            status: this.campaignStatus,
-          }
+          { status: this.campaignStatus }
         );
 
-        if (response.status == "success") {
-          screenLoading.close();
+        if (response.status === "success") {
           this.$toast.success(response.message);
           this.$emit("reload");
         }
 
         console.log("pauseResponse::", response);
-      } catch (err) {
+      } catch (_err) {
+      } finally {
         screenLoading.close();
-
-        this.$toast.error(err.message);
-        console.log("pauseErr::", { err: err });
       }
     },
 

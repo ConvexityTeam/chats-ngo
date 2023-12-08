@@ -9,7 +9,12 @@
             <div class="card__holder d-flex p-3">
               <img src="~/assets/img/vectors/deposit.svg" alt="deposit" />
 
-              <div class="ml-3">
+              <div v-if="loading" class="ml-3 w-50">
+                <Skeleton class="mb-2" />
+                <Skeleton />
+              </div>
+
+              <div v-else class="ml-3">
                 <p class="text">Total Deposit</p>
                 <h4 class="funds" :title="totalDeposit">
                   {{ $truncate(totalDeposit) }}
@@ -21,9 +26,14 @@
           <!-- Campaign Expenses here -->
           <div class="col-lg-4">
             <div class="card__holder d-flex p-3">
-              <Disbursed />
+              <IconsDisbursed />
 
-              <div class="ml-3">
+              <div v-if="loading" class="ml-3 w-50">
+                <Skeleton class="mb-2" />
+                <Skeleton />
+              </div>
+
+              <div v-else class="ml-3">
                 <p class="text">Expenses</p>
                 <h4 class="funds" :title="expenses">
                   {{ $truncate(expenses) }}
@@ -35,9 +45,14 @@
           <!--  Cash Balance here -->
           <div class="col-lg-4">
             <div class="card__holder d-flex p-3">
-              <TotalBalance />
+              <IconsTotalBalance />
 
-              <div class="ml-3">
+              <div v-if="loading" class="ml-3 w-50">
+                <Skeleton class="mb-2" />
+                <Skeleton />
+              </div>
+
+              <div v-else class="ml-3">
                 <p class="text">Cash Balance</p>
                 <p class="funds" :title="cashBalace">
                   {{ $truncate(cashBalace) }}
@@ -49,12 +64,12 @@
 
         <!-- Transactions table here -->
         <div class="mt-3">
-          <Transactions />
+          <TablesAccountTransactions />
         </div>
       </div>
 
       <div class="col-lg-4">
-        <Wallet @getWallet="reloadData" />
+        <TablesAccountWallet @getWallet="reloadData" />
       </div>
     </div>
   </div>
@@ -62,21 +77,10 @@
 
 <script>
 import { mapGetters } from "vuex";
-import Transactions from "~/components/tables/transactions";
-import Wallet from "~/components/tables/wallet";
-import Disbursed from "~/components/icons/disbursed";
-import TotalBalance from "~/components/icons/total-balance";
-let screenLoading;
 
 export default {
   name: "Account",
   layout: "dashboard",
-  components: {
-    Transactions,
-    Wallet,
-    Disbursed,
-    TotalBalance,
-  },
 
   data: () => ({
     loading: false,
@@ -113,33 +117,27 @@ export default {
   methods: {
     async getWallet() {
       try {
-        this.openScreen();
+        this.loading = true;
+
         const response = await this.$axios.get(
           `/organisations/${+this.orgId}/wallets`
         );
 
-        if (response.status == "success") {
+        if (response.status === "success") {
           console.log("WALLET", response.data);
           this.wallet = response?.data;
         }
       } catch (err) {
         console.log("Walleterr:::", err);
       } finally {
-        screenLoading.close();
+        this.loading = false;
       }
     },
+
     reloadData() {
       setTimeout(() => {
         window.location.reload();
       }, 300);
-    },
-
-    openScreen() {
-      screenLoading = this.$loading({
-        lock: true,
-        spinner: "el-icon-loading",
-        background: "#0000009b",
-      });
     },
   },
 };

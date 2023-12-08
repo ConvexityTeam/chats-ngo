@@ -1,7 +1,7 @@
 <template>
   <div class="mt-4 px-4 py-3">
     <div class="row">
-      <div class="col-lg-4" v-for="(token, i) in data" :key="i">
+      <div v-for="(token, i) in data" :key="i" class="col-lg-4">
         <div
           class="card-holder p-4"
           :class="{ 'html2pdf__page-break': i % 9 === 0 && data.length > 9 }"
@@ -62,11 +62,8 @@
 </template>
 
 <script>
-import QrcodeVue from "qrcode.vue";
-
 export default {
-  name: "Complete-Qr-Codes",
-  components: { QrcodeVue },
+  name: "CompleteQrCodes",
 
   props: {
     data: {
@@ -82,7 +79,7 @@ export default {
   background: #ffffff;
   border: 1px solid #e1e7ec;
   border-radius: 8px;
-  height: 193px;
+  min-height: 193px;
   margin-bottom: 2rem;
 }
 

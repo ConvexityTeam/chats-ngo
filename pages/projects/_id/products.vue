@@ -23,10 +23,10 @@
             <!-- Search Box here -->
             <div class="position-relative">
               <input
+                v-model="searchQuery"
                 type="text"
                 class="form-controls search"
                 placeholder="Search product..."
-                v-model="searchQuery"
               />
               <img
                 src="~/assets/img/vectors/search.svg"
@@ -50,9 +50,9 @@
             <div class="row pt-3">
               <!-- Product list here -->
               <div
-                class="col-lg-6"
                 v-for="(product, i) in resultQuery"
                 :key="i"
+                class="col-lg-6"
               >
                 <div class="product-tag mb-3 px-4 py-3">
                   <div class="row">
@@ -107,13 +107,12 @@
                         </span>
 
                         <h6
+                          v-for="(
+                            vendor, index
+                          ) in product.ProductVendors.slice(0, 3)"
+                          :key="index + 'vendor'"
                           class="word-content primary-blue font-medium"
                           :class="{ 'pt-1': i === 0 }"
-                          v-for="(vendor, i) in product.ProductVendors.slice(
-                            0,
-                            3
-                          )"
-                          :key="i + 'vendor'"
                         >
                           {{ vendor.VendorName }}
                         </h6>
@@ -176,8 +175,8 @@ import deleteProduct from "~/components/forms/delete-product.vue";
 
 export default {
   name: "CampaignProducts",
-  layout: "dashboard",
   components: { editProduct, deleteProduct },
+  layout: "dashboard",
 
   data() {
     return {
@@ -187,6 +186,14 @@ export default {
       activeProduct: {},
       statuses: ["ongoing", "active", "completed"],
     };
+  },
+
+  async fetch() {
+    this.orgId = this.user?.AssociatedOrganisations[0]?.OrganisationId;
+    const response = await this.$axios.get(
+      `organisations/${this.orgId}/campaigns/${this.$route.params.id}/products`
+    );
+    this.products = response.data;
   },
 
   computed: {
@@ -203,14 +210,6 @@ export default {
         return this.products;
       }
     },
-  },
-
-  async fetch() {
-    this.orgId = this.user?.AssociatedOrganisations[0]?.OrganisationId;
-    const response = await this.$axios.get(
-      `organisations/${this.orgId}/campaigns/${this.$route.params.id}/products`
-    );
-    this.products = response.data;
   },
 
   methods: {

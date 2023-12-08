@@ -1,19 +1,26 @@
-image: node:16
+image: node:18
 
 stages:
   - test
   - build
   - deploy
 
+before_script:
+  - if [ "$CI_JOB_STAGE" = "build" ]; then yarn install; fi
+
 sast:
   stage: test
 include:
   - template: Security/SAST.gitlab-ci.yml
 
+lintCheck:
+  stage: build
+  script:
+    - yarn lint
+
 build:
   stage: build
   script:
-    - yarn install
     - yarn generate
   artifacts:
     paths:
@@ -43,5 +50,6 @@ deploy_production:
     - aws s3 sync dist/ s3://$S3_BUCKET --delete --region $AWS_DEFAULT_REGION
   environment:
     name: production
-  only:
-    - production
+  rules:
+    - if: $CI_COMMIT_BRANCH == "production"
+      when: manual

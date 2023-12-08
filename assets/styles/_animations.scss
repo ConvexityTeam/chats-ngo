@@ -1,0 +1,73 @@
+.fade-up-enter-active,
+.fade-up-leave-active {
+  transition: all 500ms;
+}
+
+.fade-up-enter,
+.fade-up-leave-active {
+  transform: translateY(10px);
+  opacity: 0;
+}
+
+.fade-up-leave {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.fade-left-enter-active,
+.fade-left-leave-active {
+  transition: all 500ms;
+}
+
+.fade-left-enter,
+.fade-left-leave-active {
+  transform: translateX(-100%);
+  opacity: 0;
+}
+
+.fade-left-leave {
+  transform: translateX(0);
+  opacity: 1;
+}
+
+.fade-right-enter-active,
+.fade-right-leave-active {
+  transition: all 500ms;
+}
+
+.fade-right-enter,
+.fade-right-leave-active {
+  transform: translateX(100%);
+  opacity: 0;
+}
+
+.fade-right-leave {
+  transform: translateX(0);
+  opacity: 1;
+}
+
+.fade-in-enter-active,
+.fade-in-leave-active {
+  transition: all 500ms;
+}
+
+.fade-in-enter,
+.fade-in-leave-active {
+  opacity: 0;
+}
+
+.fade-in-leave {
+  opacity: 1;
+}
+
+@keyframes pulse-bg {
+  0% {
+    background-color: theme("colors.grey.800");
+  }
+  50% {
+    background-color: theme("colors.grey.700");
+  }
+  100% {
+    background-color: theme("colors.grey.800");
+  }
+}

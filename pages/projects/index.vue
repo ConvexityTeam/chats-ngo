@@ -1,7 +1,7 @@
 <template>
   <div>
     <!-- modals here -->
-    <Modal size="lg" id="select-campaign-type" title="Select project type">
+    <Modal id="select-campaign-type" size="lg" title="Select project type">
       <SelectCampaignTypeVue @selectCampaignType="selectCampaignType" />
     </Modal>
     <!--  -->
@@ -17,10 +17,10 @@
               <!-- Search Box here -->
               <div class="position-relative">
                 <input
+                  v-model="searchQuery"
                   type="text"
                   class="form-controls search"
                   :placeholder="`Search ${section}...`"
-                  v-model="searchQuery"
                 />
                 <img
                   src="~/assets/img/vectors/search.svg"
@@ -64,69 +64,62 @@
       <!-- Tabs Here -->
       <section class="mt-4">
         <b-tabs
-          content-class="mt-1"
           id="profile-tab"
+          content-class="mt-1"
           nav-class
           nav-wrapper-class
         >
-          <FullScreenLoader
-            v-if="$fetchState.pending"
-            :loading="$fetchState.pending"
-          />
+          <!-- Campaigns tab here -->
+          <b-tab
+            title="Cash Projects"
+            :active="section === 'projects'"
+            class="nav-links"
+            @click="handleTabClick('projects')"
+          >
+            <CampaignTable
+              :id="id"
+              :resultQuery="resultQuery"
+              :loading="$fetchState.pending"
+              :campaignPageNum="campaignPageNum"
+              :campaignTotalItems="campaignTotalItems"
+              @reload="$fetch"
+              @activateCampaign="activateCampaign"
+              @updatePage="updateCampaignPage"
+            />
+          </b-tab>
 
-          <template v-else>
-            <!-- Campaigns tab here -->
-            <b-tab
-              title="Cash Projects"
-              :active="section === 'projects'"
-              class="nav-links"
-              @click="handleTabClick('projects')"
-            >
-              <CampaignTable
-                :id="id"
-                :resultQuery="resultQuery"
-                :loading="$fetchState.pending"
-                :campaignPageNum="campaignPageNum"
-                :campaignTotalItems="campaignTotalItems"
-                @reload="$fetch"
-                @activateCampaign="activateCampaign"
-                @updatePage="updateCampaignPage"
-              />
-            </b-tab>
+          <b-tab
+            title="Item Projects"
+            :active="section === 'items'"
+            class="nav-links"
+            @click="handleTabClick('items')"
+          >
+            <ItemCampaigns
+              :id="id"
+              :resultQuery="resultQuery"
+              :loading="$fetchState.pending"
+              :itemCampaignPageNum="itemCampaignPageNum"
+              :itemCampaignTotalItems="itemCampaignTotalItems"
+              @reload="$fetch"
+              @activateCampaign="activateCampaign"
+              @updatePage="updateItemCampaignPage"
+            />
+          </b-tab>
 
-            <b-tab
-              title="Item Projects"
-              :active="section === 'items'"
-              class="nav-links"
-              @click="handleTabClick('items')"
-            >
-              <ItemCampaigns
-                :id="id"
-                :resultQuery="resultQuery"
-                :loading="$fetchState.pending"
-                :itemCampaignPageNum="itemCampaignPageNum"
-                :itemCampaignTotalItems="itemCampaignTotalItems"
-                @reload="$fetch"
-                @activateCampaign="activateCampaign"
-                @updatePage="updateItemCampaignPage"
-              />
-            </b-tab>
-
-            <!-- Campaign forms here -->
-            <b-tab
-              title="Project Forms"
-              :active="section === 'forms'"
-              @click="handleTabClick('forms')"
-            >
-              <CampaignForms
-                :id="id"
-                :resultQuery="resultQuery"
-                :loading="$fetchState.pending"
-                @reload="$fetch"
-                @updatePage="updateCampaignFormPage"
-              />
-            </b-tab>
-          </template>
+          <!-- Campaign forms here -->
+          <b-tab
+            title="Project Forms"
+            :active="section === 'forms'"
+            @click="handleTabClick('forms')"
+          >
+            <CampaignForms
+              :id="id"
+              :resultQuery="resultQuery"
+              :loading="$fetchState.pending"
+              @reload="$fetch"
+              @updatePage="updateCampaignFormPage"
+            />
+          </b-tab>
         </b-tabs>
       </section>
     </div>
@@ -144,7 +137,6 @@ import NewCampaignVue from "~/components/forms/new-campaign";
 let screenLoading;
 
 export default {
-  layout: "dashboard",
   name: "Campaigns",
   components: {
     CampaignTable,
@@ -153,6 +145,8 @@ export default {
     SelectCampaignTypeVue,
     NewCampaignVue,
   },
+  layout: "dashboard",
+  transition: "fade-up",
 
   data: () => ({
     id: "",
@@ -171,25 +165,6 @@ export default {
     formPageNum: 1,
     formTotalItems: 0,
   }),
-
-  computed: {
-    ...mapGetters("authentication", ["user"]),
-
-    section() {
-      return this.$route.query.section || "projects";
-    },
-
-    resultQuery() {
-      const data = this[this.section];
-      if (this.searchQuery) {
-        return data.filter((item) =>
-          item?.title.toLowerCase().includes(this.searchQuery.toLowerCase())
-        );
-      }
-
-      return data;
-    },
-  },
 
   async fetch() {
     this.id = this.user?.AssociatedOrganisations[0]?.OrganisationId;
@@ -221,6 +196,25 @@ export default {
 
     this.formPageNum = campaignForms?.currentPage || this.formPageNum;
     this.formTotalItems = campaignForms?.totalItems;
+  },
+
+  computed: {
+    ...mapGetters("authentication", ["user"]),
+
+    section() {
+      return this.$route.query.section || "projects";
+    },
+
+    resultQuery() {
+      const data = this[this.section];
+      if (this.searchQuery) {
+        return data.filter((item) =>
+          item?.title.toLowerCase().includes(this.searchQuery.toLowerCase())
+        );
+      }
+
+      return data;
+    },
   },
 
   methods: {
@@ -262,7 +256,7 @@ export default {
           { status: "active" }
         );
 
-        if (response.status == "success") {
+        if (response.status === "success") {
           this.$toast.success(response.message);
           this.$fetch();
         }

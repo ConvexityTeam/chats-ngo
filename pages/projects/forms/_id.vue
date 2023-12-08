@@ -18,14 +18,31 @@ import CampaignFormSuccess from "@/components/forms/CampaignFormSuccess";
 let screenLoading;
 
 export default {
-  layout: "dashboard",
   components: { FormBuilder, CampaignFormSuccess },
+  layout: "dashboard",
 
   data: () => ({
     payload: {},
     id: "",
     title: "",
   }),
+
+  async fetch() {
+    this.id = this.user?.AssociatedOrganisations[0]?.OrganisationId;
+    const response = await this.$axios.get(
+      `/organisations/${this.id}/campaign_form/${this.$route.params.id}`
+    );
+
+    if (response.status === "success") {
+      const { title, questions } = response.data;
+
+      this.payload = { title, questions };
+      localStorage.setItem(
+        "campaignForm",
+        JSON.stringify({ title, questions })
+      );
+    }
+  },
 
   computed: {
     ...mapGetters("authentication", ["user"]),
@@ -42,23 +59,6 @@ export default {
   mounted() {
     if (this.isEdit) {
       this.$fetch();
-    }
-  },
-
-  async fetch() {
-    this.id = this.user?.AssociatedOrganisations[0]?.OrganisationId;
-    const response = await this.$axios.get(
-      `/organisations/${this.id}/campaign_form/${this.$route.params.id}`
-    );
-
-    if (response.status === "success") {
-      const { title, questions } = response.data;
-
-      this.payload = { title, questions };
-      localStorage.setItem(
-        "campaignForm",
-        JSON.stringify({ title, questions })
-      );
     }
   },
 
@@ -81,7 +81,7 @@ export default {
 
         console.log("response:::", response);
 
-        if (response.status == "success") {
+        if (response.status === "success") {
           //   this.$toast.success(response.message);
           this.$bvModal.show("campaign-form");
           this.title = response.data?.title;
@@ -94,8 +94,7 @@ export default {
           }
         }
         console.log("response:::", response);
-      } catch (err) {
-        this.$toast.error(err?.response?.data?.message);
+      } catch (_err) {
       } finally {
         screenLoading.close();
       }

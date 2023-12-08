@@ -5,10 +5,10 @@
       <label for="title" class="primary-blue font-medium">Form Title</label>
       <div>
         <input
+          id="title"
           type="text"
           class="form-controls px-3 primary-blue"
           placeholder="Enter form title"
-          id="title"
           :value="payload.title"
           disabled
         />
@@ -18,9 +18,9 @@
     <!-- Form Preview Here -->
     <section class="mt-4">
       <div
-        class="card-holder p-4 mb-1"
         v-for="(question, i) in payload.questions"
         :key="i"
+        class="card-holder p-4 mb-1"
       >
         <label for="question_1" class="primary-blue font-medium"
           >Question {{ i + 1 }}
@@ -39,9 +39,9 @@
               class="mb-4 d-flex"
             >
               <Checkbox
+                v-if="question.question.options[index].option"
                 readonly
                 :value="false"
-                v-if="question.question.options[index].option"
               />
               <span class="primary-blue ml-3">
                 {{ question.question.options[index].option }}
@@ -57,9 +57,9 @@
               class="mb-3 d-flex"
             >
               <Radio
+                v-if="question.question.options[index].option"
                 readonly
                 :value="false"
-                v-if="question.question.options[index].option"
               />
               <span class="primary-blue ml-3">
                 {{ question.question.options[index].option }}
@@ -68,12 +68,12 @@
           </div>
 
           <!-- Text -->
-          <div class="mb-3" v-if="question.type == 'short'">
+          <div v-if="question.type == 'short'" class="mb-3">
             <label class="primary-blue font-medium">Answer </label>
             <input
+              id="question_1"
               type="text"
               class="form-controls px-3"
-              id="question_1"
               disabled
             />
           </div>

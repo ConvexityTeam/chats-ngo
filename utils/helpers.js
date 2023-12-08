@@ -56,3 +56,8 @@ export const getPercentage = (valueOne = 0, valueTwo = 0) => {
 
   return Math.ceil(result);
 };
+
+export const formatStates = (states) => {
+  if (states && states.length)
+    return states.map((item) => item.trim()).join(", ");
+};

@@ -1,26 +1,14 @@
 export default {
   namespaced: true,
   state: () => ({
-    token: "",
-    userLocation: {},
     user: {},
   }),
 
   getters: {
-    token: (state) => state.token,
-    userLocation: (state) => state.userLocation,
     user: (state) => state.user,
   },
 
   mutations: {
-    setUserToken(state, payload) {
-      state.token = payload;
-      localStorage.setItem("userToken", payload);
-    },
-    setUserLocation(state, payload) {
-      state.userLocation = payload;
-    },
-
     setUserObject(state, payload) {
       state.user = payload;
     },
@@ -28,24 +16,11 @@ export default {
     setUserUpdate(state, payload) {
       state.user.AssociatedOrganisations[0].Organisation = payload;
     },
-
-    removeToken(state) {
-      window.localStorage.removeItem("userToken");
-      localStorage.getItem("userEmail");
-      state.token = "";
-    },
   },
 
   actions: {
-    /**
-     * User Authentication Actions
-     */
-    commitToken({ commit }, payload) {
-      commit("setUserToken", payload);
-    },
-
-    locateUser({ commit }, payload) {
-      commit("setUserLocation", payload);
+    commitToken({ _commit }, payload) {
+      sessionStorage.setItem("userToken", payload);
     },
 
     commitUser({ commit }, payload) {
@@ -56,9 +31,9 @@ export default {
       commit("setUserUpdate", payload);
     },
 
-    async logout({ commit }) {
-      await commit("removeToken");
-      return true;
+    logout() {
+      sessionStorage.removeItem("userToken");
+      localStorage.getItem("userEmail");
     },
   },
 };

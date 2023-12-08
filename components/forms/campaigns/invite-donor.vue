@@ -22,11 +22,11 @@
         <label for="message">Message (Optional) </label>
         <textarea
           id="message"
+          v-model="message"
           class="form-controls"
           placeholder="Enter product or service name"
           cols="30"
           rows="3"
-          v-model="message"
         ></textarea>
       </div>
 
@@ -49,32 +49,35 @@
 import InputTag from "vue-input-tag";
 
 export default {
-  emits: ["sendInvite"],
   components: { InputTag },
+
   props: {
     loading: {
+      type: Boolean,
       default: false,
     },
   },
+
   data() {
     return {
       message: "",
       inviteeEmail: [],
     };
   },
+
   methods: {
     validateInput(value) {
+      // eslint-disable-next-line no-useless-escape
       return /[-a-zA-Z0-9@:%.\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%\+.~#?&//=]*)/.test(
         value
       );
     },
-    async sendInvite() {
-      const payload = {
+
+    sendInvite() {
+      this.$emit("sendInvite", {
         inviteeEmail: this.inviteeEmail,
         message: this.message,
-      };
-
-      this.$emit("sendInvite", payload);
+      });
     },
   },
 };

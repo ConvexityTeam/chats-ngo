@@ -1,5 +1,5 @@
 <template>
-  <form @submit.prevent="handleOtp" class="mt-3 px-4">
+  <form class="mt-3 px-4" @submit.prevent="handleOtp">
     <h6 class="text-center primary-gray poppins text-sm header">
       Follow the guide below to set up Google authenticator <br />
       for additional layer of security.

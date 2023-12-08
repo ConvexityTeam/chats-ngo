@@ -2,13 +2,21 @@
   <div>
     <!-- Table here -->
     <section class="table-holder mt-5">
-      <template v-if="resultQuery.length">
-        <div class="flex align-items-center table-title">
-          <h4>Projects</h4>
-          <div class="ml-auto"></div>
-        </div>
+      <div class="flex align-items-center table-title">
+        <h4>Projects</h4>
+        <div class="ml-auto"></div>
+      </div>
 
-        <table class="table table-borderless" v-if="resultQuery.length">
+      <div v-if="loading" class="px-4">
+        <Skeleton
+          :count="6"
+          class="mb-5"
+          styles="height: 52px; margin-bottom: 10px"
+        />
+      </div>
+
+      <template v-else-if="resultQuery.length">
+        <table class="table table-borderless">
           <thead>
             <tr>
               <th scope="col">Name</th>
@@ -27,7 +35,7 @@
               style="cursor: pointer"
               :class="{ selected: i % 2 == 0 }"
             >
-              <td class="campaign-title">{{ campaign.title }}</td>
+              <td class="campaign-title notranslate">{{ campaign.title }}</td>
               <td class="text-right">{{ campaign.minting_limit }}</td>
               <td class="text-right">{{ campaign.amount_disbursed }}</td>
               <td>{{ campaign.createdAt | shortDate }}</td>

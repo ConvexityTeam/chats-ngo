@@ -1,21 +1,21 @@
 <template>
   <div>
     <b-modal id="testmodal" hide-header hide-footer>
-      <form @submit.prevent="addVendor" class="mt-4 px-3">
+      <form class="mt-4 px-3" @submit.prevent="addVendor">
         <!-- Name Section here  here -->
         <div class="row mb-4">
           <!-- First name here -->
           <div class="col-lg-6">
             <label for="first-name"> First Name</label>
             <input
+              id="first-name"
+              v-model="payload.first_name"
               type="text"
               class="form-controls"
               :class="{
                 error: $v.payload.first_name.$error,
               }"
-              id="first-name"
               placeholder="John"
-              v-model="payload.first_name"
               @blur="$v.payload.first_name.$touch()"
             />
           </div>
@@ -24,14 +24,14 @@
           <div class="col-lg-6">
             <label for="last-name">Last Name</label>
             <input
+              id="last-name"
+              v-model="payload.last_name"
               type="text"
               class="form-controls"
               :class="{
                 error: $v.payload.last_name.$error,
               }"
-              id="last-name"
               placeholder="Doe"
-              v-model="payload.last_name"
               @blur="$v.payload.last_name.$touch()"
             />
           </div>
@@ -43,14 +43,14 @@
           <div class="col-lg-6">
             <label for="email"> Email</label>
             <input
+              id="email"
+              v-model="payload.email"
               type="email"
               class="form-controls"
               :class="{
                 error: $v.payload.email.$error,
               }"
-              id="email"
               placeholder="example@gmail.com"
-              v-model="payload.email"
               @blur="$v.payload.email.$touch()"
             />
           </div>
@@ -62,14 +62,14 @@
           <div class="col-lg-6">
             <label for="store-name"> Store Name</label>
             <input
+              id="store-name"
+              v-model="payload.store_name"
               type="text"
               class="form-controls"
               :class="{
                 error: $v.payload.store_name.$error,
               }"
-              id="store-name"
               placeholder=""
-              v-model="payload.store_name"
               @blur="$v.payload.store_name.$touch()"
             />
           </div>
@@ -104,14 +104,14 @@
           <div class="col-lg-6">
             <label for="store-address"> Address</label>
             <input
+              id="store-address"
+              v-model="payload.address"
               type="text"
               class="form-controls"
               :class="{
                 error: $v.payload.address.$error,
               }"
-              id="store-address"
               placeholder=""
-              v-model="payload.address"
               @blur="$v.payload.address.$touch()"
             />
           </div>
@@ -123,13 +123,13 @@
             <div>
               <vue-tel-input
                 id="vendor"
+                v-model="payload.phone"
                 mode="international"
                 class="form-controls"
                 :class="{
                   error: $v.payload.phone.$error,
                 }"
                 :inputOptions="options"
-                v-model="payload.phone"
               ></vue-tel-input>
             </div>
           </div>
@@ -151,11 +151,10 @@
 </template>
 
 <script>
-import appConfig from "~/appConfig";
 import { required, email } from "vuelidate/lib/validators";
-import countries from "~/plugins/all-countries";
 import { mapGetters } from "vuex";
-let screenLoading;
+import appConfig from "~/appConfig";
+import countries from "~/plugins/all-countries";
 
 export default {
   data: () => ({
@@ -230,7 +229,7 @@ export default {
 
         const response = await this.$axios.get(request);
 
-        if (response.status == "OK") {
+        if (response.status === "OK") {
           const coordinates = Object.values(
             response.results[0].geometry.location
           );
@@ -270,27 +269,17 @@ export default {
           this.payload
         );
 
-        if (response.status == "success") {
-          this.loading = false;
+        if (response.status === "success") {
           this.$emit("reload");
           this.closeModal();
           this.$toast.success(response.message);
         }
 
         console.log("ADD VENDOR RESPONSE", response);
-      } catch (err) {
-        console.log("ADDVENDORERR::", { err });
-        this.$toast.error(err.response.data.message);
+      } catch (_err) {
+      } finally {
         this.loading = false;
       }
-    },
-
-    openScreen() {
-      screenLoading = this.$loading({
-        lock: true,
-        spinner: "el-icon-loading",
-        background: "#0000009b",
-      });
     },
 
     closeModal() {

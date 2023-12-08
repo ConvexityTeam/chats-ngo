@@ -11,7 +11,7 @@
 
 <script>
 export default {
-  name: "create-button",
+  name: "CreateButton",
   props: {
     direction: {
       type: String,

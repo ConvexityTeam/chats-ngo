@@ -2,12 +2,12 @@ export default {
   state: () => ({
     tempBenefactor: null,
     tempVendor: null,
-    allBeneficiaries: []
+    allBeneficiaries: [],
   }),
 
   getters: {
-    BENEFACTOR: state => state.tempBenefactor,
-    beneficiaries: state => state.allBeneficiaries
+    BENEFACTOR: (state) => state.tempBenefactor,
+    beneficiaries: (state) => state.allBeneficiaries,
   },
 
   mutations: {
@@ -17,7 +17,7 @@ export default {
 
     SAVE_ALL_BENEFICIARIES(state, payload) {
       state.allBeneficiaries = payload;
-    }
+    },
   },
 
   actions: {
@@ -31,10 +31,10 @@ export default {
         );
         console.log("ALL BENEFICIARIES", response);
 
-        if (response.status == "success") {
+        if (response.status === "success") {
           commit("SAVE_ALL_BENEFICIARIES", response.data);
         }
       } catch (_err) {}
-    }
-  }
+    },
+  },
 };

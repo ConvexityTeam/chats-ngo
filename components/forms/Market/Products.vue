@@ -5,7 +5,7 @@
       <FormsMarketSuccess @modalClosed="$emit('modalClosed')" />
     </Modal>
 
-    <div class="main transparent" v-if="products.length">
+    <div v-if="products.length" class="main transparent">
       <!--Save button here -->
       <div class="my-4">
         <Button
@@ -134,7 +134,7 @@ export default {
     },
 
     campaignId: {
-      type: String | Number,
+      type: [String, Number],
       default: "",
     },
   },
@@ -155,7 +155,7 @@ export default {
           this.products
         );
 
-        if (response.status == "success") {
+        if (response.status === "success") {
           this.$emit("closeDrawer");
           this.$bvModal.show("create-proposal-success");
         }

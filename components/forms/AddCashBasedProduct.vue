@@ -14,8 +14,8 @@
         <label for="product">Product / Service</label>
         <div id="product" class="w-100">
           <el-select
-            v-model="payload.type"
             id="product"
+            v-model="payload.type"
             placeholder="—Select — "
           >
             <el-option
@@ -34,8 +34,8 @@
         <label for="product">Category type</label>
         <div id="product" class="w-100">
           <el-select
-            v-model="payload.product_category"
             id="product"
+            v-model="payload.product_category"
             placeholder="—Select — "
           >
             <el-option
@@ -54,14 +54,14 @@
         <label for="tag">Tag</label>
         <div class="w-100">
           <input
+            id="tag"
+            v-model="payload.tag"
             type="text"
             class="form"
             :class="{ error: $v.payload.tag.$error }"
-            id="tag"
             :placeholder="`Enter ${
               !payload.type ? 'product or service' : payload.type
             }  name`"
-            v-model="payload.tag"
             @blur="$v.payload.tag.$touch()"
           />
         </div>
@@ -72,12 +72,12 @@
         <label for="cost">Cost</label>
         <div class="w-100">
           <input
+            id="cost"
+            v-model="payload.cost"
             type="number"
             class="form"
             :class="{ error: $v.payload.cost.$error }"
-            id="cost"
             placeholder="NGN 0.00"
-            v-model="payload.cost"
             @blur="$v.payload.cost.$touch()"
           />
         </div>
@@ -88,8 +88,8 @@
         <label for="vendor">Vendor</label>
         <div id="product" class="w-100">
           <el-select
-            v-model="payload.vendors"
             id="vendor"
+            v-model="payload.vendors"
             placeholder="—Select — "
             multiple
           >
@@ -127,7 +127,7 @@
         @click="$emit('close')"
       ></i>
 
-      <div class="main transparent" v-if="products.length">
+      <div v-if="products.length" class="main transparent">
         <!--Save button here -->
         <div class="my-4">
           <Button
@@ -192,9 +192,9 @@
               <div class="mb-3">
                 <span class="primary-gray text-xs">VENDOR(s)</span>
                 <h6
+                  v-for="(vendor, index) in product.vendors"
+                  :key="index + 'vendor'"
                   class="word-content primary-blue font-medium"
-                  v-for="(vendor, i) in product.vendors"
-                  :key="i + 'vendor'"
                 >
                   {{ findVendor(vendor) }}
                 </h6>
@@ -289,11 +289,6 @@ export default {
     },
   },
 
-  mounted() {
-    (this.orgId = this.user.AssociatedOrganisations[0].OrganisationId),
-      this.getallVendors(this.orgId);
-  },
-
   computed: {
     ...mapGetters("authentication", ["user"]),
     ...mapGetters("vendors", ["allVendors"]),
@@ -312,6 +307,11 @@ export default {
         this.payload.vendors.length
       );
     },
+  },
+
+  mounted() {
+    this.orgId = this.user.AssociatedOrganisations[0].OrganisationId;
+    this.getallVendors(this.orgId);
   },
 
   methods: {
@@ -363,17 +363,16 @@ export default {
           this.products
         );
 
-        if (response.status == "success") {
+        if (response.status === "success") {
           this.$emit("close");
-          screenLoading.close();
+
           this.$toast.success(response.message);
         }
 
         console.log("SAVE TAG RESPONSE::", response);
-      } catch (err) {
-        console.log("SAVE TAG ERR::", err);
+      } catch (_err) {
+      } finally {
         screenLoading.close();
-        this.$toast.error(err.response.data?.message);
       }
     },
 

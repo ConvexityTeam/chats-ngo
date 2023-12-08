@@ -67,7 +67,7 @@ export default {
           }
         );
 
-        if (response.status == "success") {
+        if (response.status === "success") {
           this.closeModal();
           this.$toast.success(response.message);
           this.$emit("product-deleted");

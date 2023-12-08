@@ -14,12 +14,12 @@
         <label for="tag" class="primary-blue font-medium"> Item</label>
         <div class="w-100">
           <input
+            id="tag"
+            v-model="payload.tag"
             type="text"
             class="form"
             :class="{ error: $v.payload.tag.$error }"
-            id="tag"
             placeholder="Name of item"
-            v-model="payload.tag"
             @blur="$v.payload.tag.$touch()"
           />
         </div>
@@ -30,8 +30,8 @@
         <label for="vendor">Vendor</label>
         <div id="item" class="w-100">
           <el-select
-            v-model="payload.vendors"
             id="vendor"
+            v-model="payload.vendors"
             :placeholder="!allVendors ? 'Add vendor' : 'Add another'"
             multiple
           >
@@ -69,7 +69,7 @@
         @click="$emit('close')"
       ></i>
 
-      <div class="main transparent" v-if="items.length">
+      <div v-if="items.length" class="main transparent">
         <!--Save button here -->
 
         <div class="my-4">
@@ -110,9 +110,9 @@
               <div class="mb-3">
                 <span class="primary-gray text-xs mb-1">VENDOR(s)</span>
                 <span
+                  v-for="(vendor, index) in item.vendors"
+                  :key="index + 'vendor'"
                   class="word-content d-block primary-blue font-medium"
-                  v-for="(vendor, i) in item.vendors"
-                  :key="i + 'vendor'"
                 >
                   {{ findVendor(vendor) }}
                 </span>
@@ -188,11 +188,6 @@ export default {
     },
   },
 
-  mounted() {
-    (this.orgId = this.user.AssociatedOrganisations[0].OrganisationId),
-      this.getallVendors(this.orgId);
-  },
-
   computed: {
     ...mapGetters("authentication", ["user"]),
     ...mapGetters("vendors", ["allVendors"]),
@@ -205,6 +200,11 @@ export default {
     isComplete() {
       return this.payload.tag && this.payload.vendors.length;
     },
+  },
+
+  mounted() {
+    this.orgId = this.user.AssociatedOrganisations[0].OrganisationId;
+    this.getallVendors(this.orgId);
   },
 
   methods: {
@@ -240,17 +240,16 @@ export default {
           this.items
         );
 
-        if (response.status == "success") {
+        if (response.status === "success") {
           this.$emit("close");
-          screenLoading.close();
           this.$toast.success(response.message);
         }
 
         this.items = [];
         this.payload = { type: "item", tag: "", vendors: [] };
-      } catch (err) {
+      } catch (_err) {
+      } finally {
         screenLoading.close();
-        this.$toast.error(err.response.data?.message);
       }
     },
     editItem(item) {

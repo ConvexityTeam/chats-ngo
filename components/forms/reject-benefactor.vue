@@ -35,10 +35,9 @@
 </template>
 
 <script>
-import close from "~/components/icons/close";
-
 export default {
-  name: "campaign-prompts",
+  name: "CampaignPrompts",
+
   props: {
     benefactor: {
       type: Object,
@@ -46,13 +45,9 @@ export default {
     },
   },
 
-  components: { close },
-
   computed: {
     fullName() {
-      return this.benefactor && this.benefactor.User
-        ? this.benefactor.User.first_name + " " + this.benefactor.User.last_name
-        : "";
+      return `${this.benefactor?.User?.first_name} ${this.benefactor?.User?.last_name}`;
     },
   },
 

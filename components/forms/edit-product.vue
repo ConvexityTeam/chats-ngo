@@ -6,12 +6,12 @@
     <div v-else-if="Object.keys(payload).length">
       <form class="mt-5 px-3">
         <!-- product/service here -->
-        <div class="mb-3" v-if="!isItem">
+        <div v-if="!isItem" class="mb-3">
           <label for="product">Product / Service</label>
           <div id="product" class="w-100">
             <el-select
-              v-model="payload.type"
               id="product"
+              v-model="payload.type"
               placeholder="—Select — "
             >
               <el-option
@@ -26,12 +26,12 @@
         </div>
 
         <!-- Category here -->
-        <div class="mb-3" v-if="!isItem">
+        <div v-if="!isItem" class="mb-3">
           <label for="product">Category</label>
           <div id="product" class="w-100">
             <el-select
-              v-model="payload.product_category"
               id="product"
+              v-model="payload.product_category"
               placeholder="—Select — "
             >
               <el-option
@@ -50,27 +50,27 @@
           <label for="tag">Tag</label>
           <div class="w-100">
             <input
+              id="tag"
+              v-model="payload.tag"
               type="text"
               class="form"
-              id="tag"
               :placeholder="`Enter ${
                 !payload.type ? 'product or service' : payload.type
               }  name`"
-              v-model="payload.tag"
             />
           </div>
         </div>
 
         <!-- Cost here -->
-        <div class="mb-3" v-if="!isItem">
+        <div v-if="!isItem" class="mb-3">
           <label for="cost">Cost</label>
           <div class="w-100">
             <input
+              id="cost"
+              v-model="payload.cost"
               type="number"
               class="form"
-              id="cost"
               placeholder="NGN 0.00"
-              v-model="payload.cost"
             />
           </div>
         </div>
@@ -82,8 +82,8 @@
           </label>
           <div id="product" class="w-100">
             <el-select
-              v-model="vendorIds"
               id="vendor"
+              v-model="vendorIds"
               placeholder="—Select — "
               multiple
               disabled
@@ -129,14 +129,6 @@ export default {
     },
   },
 
-  computed: {
-    ...mapGetters("authentication", ["user"]),
-
-    isItem() {
-      return this.product?.type === "item";
-    },
-  },
-
   data: () => ({
     categories,
     loading: false,
@@ -151,11 +143,19 @@ export default {
       `products/${this.product?.id}/product/${this.product?.CampaignId}`
     );
 
-    if (response.status == "success") {
+    if (response.status === "success") {
       this.payload = response.data;
       this.vendorIds = this.payload?.ProductVendors?.map((vendor) => vendor.id);
     }
     console.log("SINGLE PRD:::", response);
+  },
+
+  computed: {
+    ...mapGetters("authentication", ["user"]),
+
+    isItem() {
+      return this.product?.type === "item";
+    },
   },
 
   mounted() {
@@ -177,7 +177,7 @@ export default {
           }
         );
 
-        if (response.status == "success") {
+        if (response.status === "success") {
           this.$bvModal.hide("edit-product");
           this.$toast.success(response.message);
           this.$emit("product-updated");

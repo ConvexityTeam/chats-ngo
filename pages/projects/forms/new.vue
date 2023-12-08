@@ -38,8 +38,8 @@ let screenLoading;
 
 export default {
   name: "NewForm",
-  layout: "dashboard",
   components: { FormBuilder, PreviewForm, CampaignFormSuccess },
+  layout: "dashboard",
 
   data: () => ({
     payload: {},
@@ -77,7 +77,7 @@ export default {
           { ...payload }
         );
 
-        if (response.status == "success") {
+        if (response.status === "success") {
           this.$bvModal.show("campaign-form");
           this.title = response.data?.title;
 
@@ -89,8 +89,7 @@ export default {
           }
         }
         console.log("response:::", response);
-      } catch (err) {
-        this.$toast.error(err?.response?.data?.message);
+      } catch (_err) {
       } finally {
         screenLoading.close();
       }

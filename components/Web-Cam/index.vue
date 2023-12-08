@@ -28,15 +28,15 @@
       <!-- Camera Region -->
       <div class="d-flex justify-content-center mt-3 pt-2">
         <div
+          v-if="isCameraOpen"
           class="cam-holder"
           :class="{ taken: isPhotoTaken }"
-          v-if="isCameraOpen"
         >
           <!-- Shutter -->
           <div
+            v-if="!isPhotoTaken"
             class="camera-shutter"
             :class="{ flash: isShotPhoto }"
-            v-if="!isPhotoTaken"
           >
             <audio
               v-if="isShotPhoto"
@@ -64,7 +64,7 @@
           ></canvas>
 
           <!-- Image -->
-          <div class="image-border" v-if="isPhotoTaken">
+          <div v-if="isPhotoTaken" class="image-border">
             <img :src="image" alt="Image" />
           </div>
         </div>
@@ -73,7 +73,7 @@
       <!-- Buttons -->
       <div>
         <!-- Take Photo Btn -->
-        <div class="m-4 p-1" v-if="!isPhotoTaken">
+        <div v-if="!isPhotoTaken" class="m-4 p-1">
           <Button
             :has-icon="false"
             text="Capture image"
@@ -85,8 +85,8 @@
 
         <!-- Re-capture Buttons -->
         <div
-          class="d-flex justify-content-center my-4 py-1"
           v-if="isPhotoTaken"
+          class="d-flex justify-content-center my-4 py-1"
         >
           <!-- Recapture -->
           <div>
@@ -115,12 +115,12 @@
 </template>
 
 <script>
-import VueCropper from "vue-cropperjs";
+// import VueCropper from "vue-cropperjs";
 import "cropperjs/dist/cropper.css";
 
 export default {
-  components: { VueCropper },
-  name: "chats-cam",
+  name: "ChatsCam",
+  // components: { VueCropper },
 
   data: () => ({
     isCameraOpen: true,
@@ -149,17 +149,19 @@ export default {
         .getUserMedia(constraints)
 
         .then((stream) => {
-          this.isLoading = false;
           this.$refs.camera.srcObject = stream;
           this.streamList.push(stream);
         })
 
-        .catch((error) => {
-          this.isLoading = false;
+        .catch((_error) => {
           this.cameraError = true;
           this.$toast.error(
             "An error occurred! Failed to start camera, please allow permision to access camera. If you are browsing through social media built in browsers, you would need to open the page in Sarafi (iPhone)/ Chrome (Android) "
           );
+        })
+
+        .finally(() => {
+          this.isLoading = false;
         });
     },
 
@@ -170,7 +172,6 @@ export default {
         });
       });
     },
-
     takePhoto() {
       if (!this.isPhotoTaken) {
         this.isShotPhoto = true;

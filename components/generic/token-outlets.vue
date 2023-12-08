@@ -1,10 +1,10 @@
 <template>
   <div class="d-flex justify-content-between">
-    <div v-for="token in tokens" :key="token.id" class="w-23  mt-1 mb-3">
+    <div v-for="token in tokens" :key="token.id" class="w-23 mt-1 mb-3">
       <div
-        class="d-flex  token-holder align-items-center "
-        @click="handleToken(token)"
+        class="d-flex token-holder align-items-center"
         :class="{ active: activeToken.id == token.id }"
+        @click="handleToken(token)"
       >
         <img :src="token.img" :alt="token.tradeName" />
         <div class="ml-2">
@@ -24,39 +24,39 @@ export default {
         token: "Tether",
         tradeName: "USDT",
         img: require("~/assets/img/tokens/tether.svg"),
-        id: 1
+        id: 1,
       },
 
       {
         token: "Bitcoin",
         tradeName: "BTC",
         img: require("~/assets/img/tokens/btc.svg"),
-        id: 2
+        id: 2,
       },
 
       {
         token: "XRP",
         tradeName: "XRP",
         img: require("~/assets/img/tokens/xrp.svg"),
-        id: 3
+        id: 3,
       },
 
       {
         token: "Bantu",
         tradeName: "XDN",
         img: require("~/assets/img/tokens/bantu.svg"),
-        id: 4
-      }
+        id: 4,
+      },
     ],
-    activeToken: {}
+    activeToken: {},
   }),
 
   methods: {
     handleToken(token) {
       this.$emit("handleToken", token);
       this.activeToken = token;
-    }
-  }
+    },
+  },
 };
 </script>
 

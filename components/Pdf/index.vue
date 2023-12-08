@@ -2,6 +2,7 @@
   <div>
     <client-only>
       <vue-html2pdf
+        ref="qr_code"
         :show-layout="false"
         :float-layout="true"
         :enable-download="true"
@@ -13,7 +14,6 @@
         pdf-format="a4"
         pdf-orientation="landscape"
         :pdf-content-width="screenWidth"
-        ref="qr_code"
         @progress="onProgress($event)"
       >
         <section slot="pdf-content">
@@ -32,27 +32,19 @@ import VueHtml2pdf from "vue-html2pdf";
 let screenLoading;
 
 export default {
-  name: "pdf-generator",
+  name: "PdfGenerator",
   components: { VueHtml2pdf },
 
   props: {
     triggerDownload: {
       type: Boolean,
-      default: false
+      default: false,
     },
 
     campaignDetails: {
       type: Array,
-      default: () => []
-    }
-  },
-
-  watch: {
-    triggerDownload: function(value) {
-      if (value) {
-        this.downloadPdf();
-      }
-    }
+      default: () => [],
+    },
   },
 
   computed: {
@@ -61,10 +53,16 @@ export default {
     },
 
     campaign() {
-      if (!!this.campaignDetails.length) {
-        return this.campaignDetails[0]?.Campaign?.title ?? "";
+      return this.campaignDetails[0]?.Campaign?.title ?? "";
+    },
+  },
+
+  watch: {
+    triggerDownload: function (value) {
+      if (value) {
+        this.downloadPdf();
       }
-    }
+    },
   },
 
   methods: {
@@ -87,9 +85,9 @@ export default {
       screenLoading = this.$loading({
         lock: true,
         spinner: "el-icon-loading",
-        background: "#0000009b"
+        background: "#0000009b",
       });
-    }
-  }
+    },
+  },
 };
 </script>

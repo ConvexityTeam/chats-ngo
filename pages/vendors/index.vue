@@ -7,14 +7,18 @@
         <div class="card__holder p-3">
           <div class="d-flex">
             <img src="~/assets/img/vectors/shop.svg" alt="shop" />
-            <div class="ml-3">
-              <p class="text">Vendors</p>
-              <h4 class="funds">
-                {{ allVendors.length || 0 }}
-              </h4>
+
+            <div v-if="$fetchState.pending" class="ml-3 w-50">
+              <Skeleton class="mb-2" />
+              <Skeleton />
             </div>
 
-            <!-- <button class="viewall d-flex ">kk</button> -->
+            <div v-else class="ml-3">
+              <p class="text">Vendors</p>
+              <h4 class="funds">
+                {{ totalVendors || 0 }}
+              </h4>
+            </div>
           </div>
         </div>
       </div>
@@ -22,42 +26,52 @@
       <!-- Daily transactions here -->
       <div class="col-lg-3">
         <div class="card__holder d-flex p-3">
-          <div>
-            <img
-              src="~/assets/img/vectors/daily-transactions.svg"
-              alt="deposit"
-            />
-          </div>
-          <div class="ml-3">
-            <p class="text">Transactions</p>
-            <h4 class="funds">
-              {{ transactions_count || 0 }}
-            </h4>
+          <img
+            src="~/assets/img/vectors/daily-transactions.svg"
+            alt="deposit"
+          />
+
+          <div v-if="$fetchState.pending" class="ml-3 w-50">
+            <Skeleton class="mb-2" />
+            <Skeleton />
           </div>
 
-          <div class="ml-auto d-flex align-items-end">
-            <button
-              type="button"
-              @click="$router.push('/vendors/transactions')"
-              class="d-flex viewall align-items-center"
-            >
-              <img src="~/assets/img/vectors/eye.svg" alt="see" />
-              <span class="ml-2">View </span>
-            </button>
-          </div>
+          <template v-else>
+            <div class="ml-3">
+              <p class="text">Transactions</p>
+              <h4 class="funds">
+                {{ transactionsCount || 0 }}
+              </h4>
+            </div>
+
+            <div class="ml-auto d-flex align-items-end">
+              <button
+                type="button"
+                class="d-flex viewall align-items-center"
+                @click="$router.push('/vendors/transactions')"
+              >
+                <img src="~/assets/img/vectors/eye.svg" alt="see" />
+                <span class="ml-2">View </span>
+              </button>
+            </div>
+          </template>
         </div>
       </div>
 
       <!--  Transaction value here -->
       <div class="col-lg-3">
         <div class="card__holder d-flex p-3">
-          <div>
-            <TotalBalance />
+          <IconsTotalBalance />
+
+          <div v-if="$fetchState.pending" class="ml-3 w-50">
+            <Skeleton class="mb-2" />
+            <Skeleton />
           </div>
-          <div class="ml-3">
+
+          <div v-else class="ml-3">
             <p class="text">Transaction value</p>
             <h4 class="funds">
-              {{ summary.transactions_value || 0 | formatCurrency }}
+              {{ totalProductValue || 0 | formatCurrency }}
             </h4>
           </div>
         </div>
@@ -66,13 +80,17 @@
       <!-- Products sold -->
       <div class="col-lg-3">
         <div class="card__holder d-flex p-3">
-          <div>
-            <img src="~/assets/img/vectors/products.svg" alt="product" />
+          <img src="~/assets/img/vectors/products.svg" alt="product" />
+
+          <div v-if="$fetchState.pending" class="ml-3 w-50">
+            <Skeleton class="mb-2" />
+            <Skeleton />
           </div>
-          <div class="ml-3">
+
+          <div v-else class="ml-3">
             <p class="text">Products sold</p>
             <h4 class="funds">
-              {{ summary.products_count || 0 }}
+              {{ totalProductsSold || 0 }}
             </h4>
           </div>
         </div>
@@ -80,98 +98,63 @@
     </div>
 
     <div class="mt-2">
-      <AllVendors
-        :allVendors="allVendors"
-        @handleReload="getallVendors(orgId)"
-      />
+      <TablesVendorsAll @updateVendors="updateVendors" />
     </div>
   </div>
 </template>
 
 <script>
-import AllVendors from "~/components/tables/vendors/all-vendors";
-import TotalBalance from "~/components/icons/total-balance.vue";
-import { mapGetters, mapActions } from "vuex";
-let screenLoading;
+import { mapGetters } from "vuex";
 
 export default {
-  layout: "dashboard",
   name: "Vendors",
 
-  components: {
-    TotalBalance,
-    AllVendors,
-  },
+  layout: "dashboard",
 
   data: () => ({
+    loading: false,
     orgId: "",
-    count: "",
     summary: {},
-    transactions_count: "",
-    vendors: [],
+    transactionsCount: "",
+    totalProductValue: "",
+    totalProductsSold: "",
+    totalVendors: 0,
   }),
+
+  async fetch() {
+    try {
+      const orgId = this.user?.AssociatedOrganisations[0]?.OrganisationId;
+
+      const [summaryResponse, totalProductResponse] = await Promise.all([
+        this.$axios.get(`organisations/${orgId}/vendors/summary`),
+        this.$axios.get(`orders/total-sold-value/${orgId}`),
+      ]);
+
+      if (summaryResponse.status === "success") {
+        const summaryData = summaryResponse.data;
+        this.summary = summaryData?.today_stat;
+        this.transactionsCount = summaryData?.Transactions.length;
+      }
+
+      if (totalProductResponse.status === "success") {
+        this.loading = false;
+        const totalProductData = totalProductResponse.data;
+        this.totalProductsSold = totalProductData?.total_product_sold;
+        this.totalProductValue = totalProductData?.total_product_value;
+      }
+    } catch (err) {
+      this.loading = false;
+      console.error(err);
+    }
+  },
 
   computed: {
     ...mapGetters("authentication", ["user"]),
-    ...mapGetters("vendors", ["allVendors"]),
-  },
-
-  mounted() {
-    this.orgId = this.user?.AssociatedOrganisations[0]?.OrganisationId;
-    this.getallVendors(this.user?.AssociatedOrganisations[0]?.OrganisationId);
-    this.getSummary();
-    this.getTotalProductSoldAndValue();
   },
 
   methods: {
-    ...mapActions("vendors", ["getallVendors"]),
-    async getSummary() {
-      try {
-        this.openScreen();
-
-        const response = await this.$axios.get(
-          `organisations/${this.orgId}/vendors/summary`
-        );
-
-        console.log("Vendor Summary", response);
-
-        if (response.status == "success") {
-          const { data } = response;
-
-          this.summary = data?.today_stat;
-          this.count = data?.vendors_count;
-          this.transactions_count = data?.Transactions.length;
-        }
-      } catch (err) {
-      } finally {
-        screenLoading.close();
-      }
-    },
-
-    async getTotalProductSoldAndValue() {
-      try {
-        this.loading = true;
-        const response = await this.$axios.get(
-          `orders/total-sold-value/${this.orgId}`
-        );
-        if (response.status == "success") {
-          this.loading = false;
-          this.totalProductsSold = response.data?.total_product_sold;
-          this.totalProductValue = response.data?.total_product_value;
-        }
-        console.log("TOTAL PRODUCTS SOLD AND VALUE::", response);
-      } catch (err) {
-        this.loading = false;
-        console.log(err);
-      }
-    },
-
-    openScreen() {
-      screenLoading = this.$loading({
-        lock: true,
-        spinner: "el-icon-loading",
-        background: "#0000009b",
-      });
+    updateVendors(total) {
+      this.totalVendors = total;
     },
   },
 };

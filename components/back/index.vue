@@ -1,7 +1,7 @@
 <template>
   <button
     type="button"
-    class=" d-flex align-items-center"
+    class="d-flex align-items-center"
     @click="$emit('click')"
   >
     <svg
@@ -27,13 +27,13 @@ export default {
   props: {
     text: {
       type: String,
-      default: ""
+      default: "",
     },
     customStyles: {
       type: String,
-      default: ""
-    }
-  }
+      default: "",
+    },
+  },
 };
 </script>
 

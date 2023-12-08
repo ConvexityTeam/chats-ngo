@@ -4,7 +4,11 @@
       <div class="text-center position-relative pt-2">
         <h3 class="header font-bold primary-blue">Image Viewer</h3>
         <!--Close button here -->
-        <button type="button" class="close-btn position-absolute pb-3 top-50" @click="closeModal">
+        <button
+          type="button"
+          class="close-btn position-absolute pb-3 top-50"
+          @click="closeModal"
+        >
           <close />
         </button>
       </div>
@@ -19,26 +23,25 @@
 <script>
 import close from "~/components/icons/close";
 export default {
-    name: "ViewImage",
+  name: "ViewImage",
 
-    components: {
-      close
-    },
+  components: {
+    close,
+  },
 
-    props: {
-        img: {
-            type: String,
-            required: true,
-        },
+  props: {
+    img: {
+      type: String,
+      required: true,
     },
+  },
 
-    methods: {
-        closeModal() {
-            this.$bvModal.hide("view-image");
-        },
+  methods: {
+    closeModal() {
+      this.$bvModal.hide("view-image");
     },
+  },
 };
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>

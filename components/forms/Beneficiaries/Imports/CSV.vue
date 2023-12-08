@@ -1,6 +1,6 @@
 <template>
   <div class="mx-3">
-    <section class="mt-4 py-3 mt-1 loading_details" v-if="csvFile">
+    <section v-if="csvFile" class="mt-4 py-3 mt-1 loading_details">
       <span class="loading_details--icon">
         <IconsFile />
       </span>
@@ -58,9 +58,9 @@
 
     <div class="action-info">
       <a
+        ref="noreferrer"
         href="https://chats-public-folder.s3.us-east-2.amazonaws.com/CHATS-Template.xlsx"
         target="_blank"
-        ref="noreferrer"
       >
         <button class="csv-template">
           <IconsCsvDownload />
@@ -199,7 +199,7 @@ export default {
       this.selectedFile.total = total;
       this.selectedFile.percent = percent;
 
-      if (percent == 100) {
+      if (percent === 100) {
         this.importViaCSV();
       }
     },
@@ -219,7 +219,7 @@ export default {
           formData
         );
 
-        if (response.status == "success") {
+        if (response.status === "success") {
           this.$emit("imported", "csv");
           this.$toast.success(response.message);
         }
@@ -229,22 +229,24 @@ export default {
         screenLoading.close();
       }
     },
-    async importViaCSVurl() {
-      try {
-        this.openScreen();
-        this.loading = true;
-        const response = await this.$axios.post(`beneficiaries/kobotoolbox`);
-      } catch (error) {
-        console.log("error:::", error);
-      } finally {
-        screenLoading.close();
-        this.loading = false;
-      }
-    },
+    // async importViaCSVurl() {
+    //   try {
+    //     this.openScreen();
+    //     this.loading = true;
+    //     const response = await this.$axios.post(`beneficiaries/kobotoolbox`);
+    //   } catch (error) {
+    //     console.log("error:::", error);
+    //   } finally {
+    //     screenLoading.close();
+    //     this.loading = false;
+    //   }
+    // },
+
     handleChange(event) {
       this.csvFile = event;
       this.selectedFile.name = event.name;
     },
+
     openScreen() {
       screenLoading = this.$loading({
         lock: true,

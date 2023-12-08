@@ -1,4 +1,4 @@
-FROM node:16 as builder
+FROM node:18 as builder
 
 WORKDIR /frontend
 
@@ -19,7 +19,7 @@ RUN rm -rf node_modules && \
   --non-interactive \
   --production=true
 
-FROM node:16
+FROM node:18
 
 WORKDIR /frontend
 

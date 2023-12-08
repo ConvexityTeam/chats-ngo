@@ -2,19 +2,18 @@
   <div class="main py-4 transparent container">
     <div>
       <!-- Drawer Here -->
-      <drawer @close="closeDrawer" :visibleSync="drawer">
+      <drawer :visibleSync="drawer" @close="closeDrawer">
         <FormsMarketCreateProposal @close="closeDrawer" @modalClosed="$fetch" />
       </drawer>
     </div>
 
-    <FullScreenLoader
-      v-if="$fetchState.pending"
-      :loading="$fetchState.pending"
-    />
+    <SkeletonCardSkeleton v-if="$fetchState.pending" />
 
     <template v-else-if="proposals.length">
       <FormsMarketProposals
         :proposals="resultQuery"
+        :proposalsPageNum="proposalsPageNum"
+        :proposalsTotalItems="proposalsTotalItems"
         @open="drawer = true"
         @searchInput="(value) => (searchQuery = value)"
       />
@@ -75,25 +74,29 @@
 import { mapGetters } from "vuex";
 
 export default {
-  layout: "dashboard",
   name: "MarketPlace",
-
-  async fetch() {
-    this.id = this.user?.AssociatedOrganisations[0]?.OrganisationId;
-    const { data } = await this.$axios.get(
-      `organisation/${this.id}/proposal-requests`
-    );
-
-    if (data) {
-      this.proposals = data;
-    }
-  },
+  layout: "dashboard",
+  transition: "fade-up",
 
   data: () => ({
     drawer: false,
     proposals: [],
     searchQuery: "",
+
+    proposalsPageNum: 1,
+    proposalsTotalItems: 0,
   }),
+
+  async fetch() {
+    this.id = this.user?.AssociatedOrganisations[0]?.OrganisationId;
+    const response = await this.$axios.get(
+      `organisation/${this.id}/proposal-requests?page=${this.proposalsPageNum}&size=10`
+    );
+
+    if (response.data) this.proposals = response.data;
+    this.proposalsPageNum = response?.currentPage;
+    this.proposalsTotalItems = response?.totalItems;
+  },
 
   computed: {
     ...mapGetters("authentication", ["user"]),
@@ -117,6 +120,14 @@ export default {
   methods: {
     closeDrawer() {
       this.drawer = false;
+    },
+    updateCampaignPage(action) {
+      this.proposalsPageNum =
+        action === "prev"
+          ? this.proposalsPageNum - 1
+          : this.proposalsPageNum + 1;
+
+      this.$fetch();
     },
   },
 };

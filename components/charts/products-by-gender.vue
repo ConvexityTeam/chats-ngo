@@ -116,7 +116,7 @@ export default {
 
         console.log("RESPONSEHEREoooo:::", response);
 
-        if (response.status == "success") {
+        if (response.status === "success") {
           const data = response?.data;
           this.femaleData = this.abstractData(data?.female);
           this.maleData = this.abstractData(data?.male);
@@ -124,9 +124,7 @@ export default {
         }
 
         console.log("GET PRODUCT BY GENDER RESPONSE", response);
-      } catch (err) {
-        console.log("GETFEMALEERR::", { err });
-        this.$toast.error(err.response?.data?.message);
+      } catch (_err) {
       } finally {
         this.loading = false;
       }

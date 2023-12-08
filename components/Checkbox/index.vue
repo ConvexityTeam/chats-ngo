@@ -1,15 +1,15 @@
 <template>
   <label :style="{ height: height }" :class="{ readonly }">
     <input
-      type="checkbox"
-      ref="checkbox"
       :id="id"
+      ref="checkbox"
+      type="checkbox"
       class="focus:outline-none"
       :checked="checked"
       :value="value"
       :disabled="disabled"
-      @change="$emit('input', $event.target.checked)"
       :readonly="readonly"
+      @change="$emit('input', $event.target.checked)"
     />
 
     <span :class="{ disabled }"></span>
@@ -17,7 +17,7 @@
 </template>
 <script>
 export default {
-  name: "c-checkbox",
+  name: "CCheckbox",
   props: {
     id: {
       type: String,

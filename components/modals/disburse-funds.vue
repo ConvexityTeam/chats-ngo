@@ -47,16 +47,23 @@
 import { mapGetters } from "vuex";
 import close from "~/components/icons/close";
 import approved from "~/components/icons/approvedIcon";
-import rejected from "~/components/icons/rejectedIcon";
 
 let screenLoading;
 
 export default {
   name: "DisburseFund",
-  components: {
-    close,
-    approved,
-    rejected,
+  components: { close, approved },
+
+  props: {
+    task: {
+      type: Object,
+      required: true,
+    },
+
+    campaignId: {
+      type: Number,
+      required: true,
+    },
   },
 
   data() {
@@ -64,17 +71,6 @@ export default {
       loading: false,
       orgId: null,
     };
-  },
-
-  props: {
-    task: {
-      type: Object,
-      required: true,
-    },
-    campaignId: {
-      type: Number,
-      required: true,
-    },
   },
 
   computed: {
@@ -99,7 +95,7 @@ export default {
           }
         );
 
-        if (response.status == "success") {
+        if (response.status === "success") {
           this.$toast.success(response.message);
           setTimeout(() => {
             this.closeModal();
@@ -125,6 +121,14 @@ export default {
         background: "#0000009b",
       });
     },
+  },
+
+  openScreen() {
+    screenLoading = this.$loading({
+      lock: true,
+      spinner: "el-icon-loading",
+      background: "#0000009b",
+    });
   },
 };
 </script>

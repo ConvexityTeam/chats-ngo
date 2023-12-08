@@ -53,7 +53,7 @@ const formatCurrency = (value, store) => {
   const { currencyCode, rate, usdBase } = currencyData || {};
 
   if (value && (currencyCode === "NGN" || !currencyCode)) {
-    let val = (value / 1).toFixed(2).replace(".", ".");
+    const val = (value / 1).toFixed(2).replace(".", ".");
     return `${displaySymbol}${val
       .toString()
       .replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`;
@@ -70,7 +70,7 @@ const formatCurrency = (value, store) => {
 
 const formatCount = (value) => {
   if (value) {
-    let val = (value / 1).toFixed().replace(".", ".");
+    const val = (value / 1).toFixed().replace(".", ".");
     return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   }
   return 0;

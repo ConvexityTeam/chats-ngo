@@ -22,15 +22,15 @@
               <div class="form-group">
                 <label for="name">First Name</label>
                 <input
+                  id="name"
+                  v-model="payload.first_name"
                   type="text"
                   class="form-controls"
                   :class="{
                     error: $v.payload.first_name.$error,
                   }"
                   name="name"
-                  id="name"
                   placeholder="first name"
-                  v-model="payload.first_name"
                   @blur="$v.payload.first_name.$touch()"
                 />
               </div>
@@ -40,15 +40,15 @@
               <div class="form-group">
                 <label for="name">Last Name</label>
                 <input
+                  id="name"
+                  v-model="payload.last_name"
                   type="text"
                   class="form-controls"
                   :class="{
                     error: $v.payload.last_name.$error,
                   }"
                   name="name"
-                  id="name"
                   placeholder="last name"
-                  v-model="payload.last_name"
                   @blur="$v.payload.last_name.$touch()"
                 />
               </div>
@@ -61,15 +61,15 @@
               <div class="form-group">
                 <label for="email">Email</label>
                 <input
+                  id="email"
+                  v-model="payload.email"
                   type="email"
                   class="form-controls"
                   :class="{
                     error: $v.payload.email.$error,
                   }"
                   name="email"
-                  id="email"
                   placeholder="example@gmail.com"
-                  v-model="payload.email"
                   @blur="$v.payload.email.$touch()"
                 />
               </div>
@@ -80,13 +80,13 @@
               <div>
                 <vue-tel-input
                   id="vendor"
+                  v-model="payload.phone"
                   mode="international"
                   class="form-controls"
                   :class="{
                     error: $v.payload.phone.$error,
                   }"
                   :inputOptions="options"
-                  v-model="payload.phone"
                 ></vue-tel-input>
               </div>
             </div>
@@ -100,10 +100,10 @@
                 <el-select
                   id="dropdown"
                   v-model="payload.role"
-                  @blur="$v.payload.role.$touch()"
                   :class="{ error: $v.payload.role.$error }"
                   filterable
                   placeholder="Role"
+                  @blur="$v.payload.role.$touch()"
                 >
                   <el-option
                     v-for="(role, i) in roles"
@@ -141,10 +141,7 @@ import close from "~/components/icons/close";
 import allRoles from "~/plugins/roles";
 
 export default {
-  components: {
-    close,
-    allRoles,
-  },
+  components: { close },
 
   data: () => ({
     options: { placeholder: "(759) 012-3985" },
@@ -211,28 +208,19 @@ export default {
         );
         console.log("response:::", response);
 
-        if (response.status == "success") {
-          this.loading = false;
+        if (response.status === "success") {
           this.$emit("reload");
           this.closeModal();
           this.$toast.success(response.message);
         }
 
+        this.$emit("addSubadmin", this.payload);
+
         console.log("ADD SUBADMIN RESPONSE", response);
-      } catch (err) {
-        console.log("ADDSUBADMINERR::", { err });
-        this.$toast.error(err.response.data.message);
+      } catch (_err) {
+      } finally {
         this.loading = false;
       }
-      this.$emit("addSubadmin", this.payload);
-    },
-
-    openScreen() {
-      screenLoading = this.$loading({
-        lock: true,
-        spinner: "el-icon-loading",
-        background: "#0000009b",
-      });
     },
 
     closeModal() {

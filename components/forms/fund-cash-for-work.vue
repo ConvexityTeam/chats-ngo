@@ -68,7 +68,7 @@ export default {
     share() {
       const result = this.c4w?.budget / this.c4w?.beneficiaries_count || 0;
 
-      if (result == Infinity) {
+      if (result === Infinity) {
         return 0;
       }
       return result;

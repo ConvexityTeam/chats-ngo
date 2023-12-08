@@ -5,21 +5,21 @@
     </div>
 
     <bar-chart
-      v-else-if="requireData"
+      v-else
       :data="barChartData"
       :options="barChartOptions"
       :height="300"
     />
 
-    <h3 v-else class="no-record-dashboard text-center no-record">
+    <!-- <h3 v-else class="no-record-dashboard text-center no-record">
       NO RECORD FOUND
-    </h3>
+    </h3> -->
   </section>
 </template>
 
 <script>
-import barChart from "~/plugins/charts/barchart";
 import { mapGetters } from "vuex";
+import barChart from "~/plugins/charts/barchart";
 export default {
   components: {
     barChart,
@@ -127,7 +127,7 @@ export default {
 
         console.log("Product Age BY Group:::", response);
 
-        if (response.status == "success") {
+        if (response.status === "success") {
           const data = response.data;
           const colors = [
             "#134611",
@@ -150,12 +150,9 @@ export default {
           console.log("mapData", mapData);
         }
 
-        this.loading = false;
-
         console.log("PRODUCT GET AGE RESPONSE", response);
-      } catch (err) {
-        console.log("GETAGEERERR::", { err });
-        this.$toast.error(err?.response?.data?.message);
+      } catch (_err) {
+      } finally {
         this.loading = false;
       }
     },

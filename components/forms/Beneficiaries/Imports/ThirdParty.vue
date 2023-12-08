@@ -71,6 +71,7 @@ import LinkIcon from "~/components/icons/Link";
 let screenLoading;
 
 export default {
+  components: { LinkIcon },
   props: {
     orgId: {
       type: [Number, String],
@@ -86,8 +87,6 @@ export default {
       campaignId: "",
     },
   }),
-
-  components: { LinkIcon },
 
   methods: {
     async importThirdParty() {

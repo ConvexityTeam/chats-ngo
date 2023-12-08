@@ -10,23 +10,31 @@
               src="~/assets/img/vectors/group-beneficiaries.svg"
               alt="beneficiaries"
             />
-            <div class="ml-3">
-              <p class="text">Beneficiaries</p>
-              <h4 class="funds">
-                {{ beneficiaries.length || 0 }}
-              </h4>
+
+            <div v-if="$fetchState.pending" class="ml-3 w-50">
+              <Skeleton class="mb-2" />
+              <Skeleton />
             </div>
-            <div class="ml-auto d-flex align-items-end">
-              <button
-                type="button"
-                @click="$router.push('/beneficiaries/all-beneficiaries')"
-                class="d-flex viewall align-items-center"
-              >
-                <img src="~/assets/img/vectors/eye.svg" alt="see" />
-                <span class="ml-2 pt-1">View </span>
-              </button>
-            </div>
-            <!-- <button class="viewall d-flex ">kk</button> -->
+
+            <template v-else>
+              <div class="ml-3">
+                <p class="text">Beneficiaries</p>
+                <h4 class="funds">
+                  {{ beneficiaries.length || 0 }}
+                </h4>
+              </div>
+
+              <div class="ml-auto d-flex align-items-end">
+                <button
+                  type="button"
+                  class="d-flex viewall align-items-center"
+                  @click="$router.push('/beneficiaries/all-beneficiaries')"
+                >
+                  <img src="~/assets/img/vectors/eye.svg" alt="see" />
+                  <span class="ml-2">View </span>
+                </button>
+              </div>
+            </template>
           </div>
         </div>
       </div>
@@ -37,7 +45,13 @@
           <div>
             <img src="~/assets/img/vectors/deposit.svg" alt="deposit" />
           </div>
-          <div class="ml-3">
+
+          <div v-if="$fetchState.pending" class="ml-3 w-50">
+            <Skeleton class="mb-2" />
+            <Skeleton />
+          </div>
+
+          <div v-else class="ml-3">
             <p class="text">Amount Recieved</p>
             <h4 class="funds" :title="amountReceived">
               {{ $truncate(amountReceived) }}
@@ -49,10 +63,14 @@
       <!--  Amount Disbursed here -->
       <div class="col-lg-3">
         <div class="card__holder d-flex p-3">
-          <div>
-            <Disbursed />
+          <IconsDisbursed />
+
+          <div v-if="$fetchState.pending" class="ml-3 w-50">
+            <Skeleton class="mb-2" />
+            <Skeleton />
           </div>
-          <div class="ml-3">
+
+          <div v-else class="ml-3">
             <p class="text">Amount Disbursed</p>
             <h4 class="funds" :title="amountDisbursed">
               {{ $truncate(amountDisbursed) }}
@@ -64,10 +82,14 @@
       <!-- Total Balance -->
       <div class="col-lg-3">
         <div class="card__holder d-flex p-3">
-          <div>
-            <TotalBalance />
+          <IconsTotalBalance />
+
+          <div v-if="$fetchState.pending" class="ml-3 w-50">
+            <Skeleton class="mb-2" />
+            <Skeleton />
           </div>
-          <div class="ml-3">
+
+          <div v-else class="ml-3">
             <p class="text">Total Balance</p>
             <h4 class="funds" :title="totalBalance">
               {{ $truncate(totalBalance) }}
@@ -82,21 +104,21 @@
       <!-- Beneficiary By Gender  Cards here -->
       <div class="col-lg-4 pb-3">
         <div class="cards__holder px-3 pt-3">
-          <BeneficiaryGender />
+          <ChartsBeneficiaryGender />
         </div>
       </div>
 
       <!-- Beneficiary Age group  Cards here -->
       <div class="col-lg-4 pb-3">
         <div class="cards__holder px-3 pt-3">
-          <BeneficiaryAge />
+          <ChartsBeneficiaryAge />
         </div>
       </div>
 
       <!-- Vendor Transaction By Beneficiary  Cards here -->
       <div class="col-lg-4 pb-3">
         <div class="cards__holder px-3 pt-3">
-          <BeneficiaryPerVendor />
+          <ChartsBeneficiaryPerVendor />
         </div>
       </div>
     </div>
@@ -106,45 +128,37 @@
       <!-- Beneficiary Marital card here -->
       <div class="col-lg-4 pb-3">
         <div class="cards__holder px-3 pt-3">
-          <BeneficiaryMarital />
+          <ChartsBeneficiaryMarital />
         </div>
       </div>
 
       <!-- Beneficiary By Location card here -->
       <div class="col-lg-4 pb-3">
         <div class="cards__holder px-3 pt-3">
-          <BeneficiaryLocation />
+          <ChartsBeneficiaryLocation />
         </div>
       </div>
 
       <!-- Beneficiary Balances card here -->
       <div class="col-lg-4 pb-3">
         <div class="cards__holder px-3 pt-3">
-          <BeneficiaryBalances />
+          <ChartsBeneficiaryBalances />
         </div>
       </div>
     </div>
 
     <!-- Beneficiary transaction here -->
-    <BeneficiaryTransaction />
+    <TablesBeneficiariesTransaction />
   </div>
 </template>
 
 <script>
 import { mapGetters } from "vuex";
-import BeneficiaryAge from "~/components/charts/beneficiary-age";
-import BeneficiaryBalances from "~/components/charts/beneficiary-balances";
-import BeneficiaryGender from "~/components/charts/beneficiary-gender";
-import BeneficiaryLocation from "~/components/charts/beneficiary-location";
-import BeneficiaryMarital from "~/components/charts/beneficiary-marital";
-import BeneficiaryPerVendor from "~/components/charts/beneficiary-per-vendor";
-import Disbursed from "~/components/icons/disbursed.vue";
-import BeneficiaryTransaction from "~/components/tables/beneficiary-transaction";
-import TotalBalance from "~/components/icons/total-balance";
-
 export default {
   name: "Beneficiaries",
   layout: "dashboard",
+  transition: "fade-up",
+
   data() {
     return {
       loading: false,
@@ -153,29 +167,12 @@ export default {
     };
   },
 
-  components: {
-    BeneficiaryAge,
-    BeneficiaryGender,
-    BeneficiaryPerVendor,
-    BeneficiaryBalances,
-    BeneficiaryLocation,
-    BeneficiaryMarital,
-    BeneficiaryTransaction,
-    Disbursed,
-    TotalBalance,
-  },
-
   async fetch() {
     const campaignDetails = await this.$axios.get(
       `/organisations/campaigns/transaction`
     );
 
     this.campaignDetails = campaignDetails?.data;
-  },
-
-  mounted() {
-    this.id = this.user.AssociatedOrganisations[0].OrganisationId;
-    this.$store.dispatch("beneficiaries/getallBeneficiaries", this.id);
   },
 
   computed: {
@@ -200,6 +197,11 @@ export default {
         this.campaignDetails.balance
       )}`;
     },
+  },
+
+  mounted() {
+    this.id = this.user.AssociatedOrganisations[0].OrganisationId;
+    this.$store.dispatch("beneficiaries/getallBeneficiaries", this.id);
   },
 };
 </script>

@@ -6,13 +6,13 @@
         <label for="name">Task name</label>
         <input
           id="name"
+          v-model="payload.name"
           type="text"
           class="form-controls"
           :class="{
             error: $v.payload.name.$error,
           }"
           placeholder="Enter name of task"
-          v-model="payload.name"
           @blur="$v.payload.name.$touch()"
         />
       </div>
@@ -22,6 +22,7 @@
         <label for="description">Description</label>
         <textarea
           id="description"
+          v-model="payload.description"
           class="form-controls"
           placeholder="Short description"
           :class="{
@@ -30,7 +31,6 @@
           cols="30"
           rows="3"
           @blur="$v.payload.description.$touch()"
-          v-model="payload.description"
         ></textarea>
       </div>
 
@@ -42,11 +42,11 @@
             <label for="total-amount">Amount</label>
             <CurrencyInput
               id="total-amount"
+              v-model="payload.amount"
               placeholder="0.00"
               :customStyles="`height: 41px; border: 1px solid #7c8db5; background: white; padding: 0.75rem`"
               :error="$v.payload.amount.$error"
               @blur="$v.payload.amount.$touch()"
-              v-model="payload.amount"
             />
           </div>
         </div>
@@ -59,14 +59,14 @@
           <div class="">
             <label for="entries">Maximum entries</label>
             <input
+              id="entries"
+              v-model="payload.assignment_count"
               type="number"
               class="form-controls"
               :class="{
                 error: $v.payload.assignment_count.$error,
               }"
-              id="entries"
               placeholder="0"
-              v-model="payload.assignment_count"
               @blur="$v.payload.assignment_count.$touch()"
             />
           </div>
@@ -159,10 +159,12 @@
 <script>
 import { required, minValue, maxLength } from "vuelidate/lib/validators";
 import { mapGetters } from "vuex";
-import DatePicker from "vue2-datepicker";
-import "vue2-datepicker/index.css";
+// import DatePicker from "vue2-datepicker";
+// import "vue2-datepicker/index.css";
 
 export default {
+  // components: { DatePicker },
+
   props: {
     campaign: {
       type: Object,
@@ -201,8 +203,6 @@ export default {
     },
   },
 
-  components: { DatePicker },
-
   computed: {
     ...mapGetters("authentication", ["user", "getCampaign"]),
   },
@@ -229,7 +229,7 @@ export default {
       try {
         this.$v.payload.$touch();
 
-        if (this.$v.payload.$error === true) {
+        if (this.$v.payload.$error) {
           return;
         }
 
@@ -259,19 +259,16 @@ export default {
           [this.payload]
         );
 
-        if (response.status == "success") {
+        if (response.status === "success") {
           this.closeModal();
           this.$emit("reload");
           this.$toast.success(response.message);
         }
 
-        this.loading = false;
-
         console.log("TASK RESP:::", response);
-      } catch (err) {
+      } catch (_err) {
+      } finally {
         this.loading = false;
-        this.$toast.error(err?.response?.message);
-        console.log(err);
       }
     },
   },

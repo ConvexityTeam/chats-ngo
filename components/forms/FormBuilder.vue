@@ -5,11 +5,11 @@
       <label for="title" class="primary-blue font-medium">Form Title</label>
       <div>
         <input
+          id="title"
+          v-model="payload.title"
           type="text"
           class="form-controls px-3"
           placeholder="Enter form title"
-          id="title"
-          v-model="payload.title"
         />
       </div>
     </div>
@@ -18,9 +18,9 @@
     <section class="mt-4">
       <!-- Cards Here -->
       <div
-        class="d-flex position-relative mb-4 pb-1"
         v-for="(question, i) in payload.questions"
         :key="i"
+        class="d-flex position-relative mb-4 pb-1"
       >
         <div class="question-config p-4">
           <p class="primary-blue font-bold">Question Configuration</p>
@@ -42,7 +42,7 @@
           </div>
 
           <!-- Value -->
-          <div class="mt-3" v-if="question.type == 'short'">
+          <div v-if="question.type == 'short'" class="mt-3">
             <div class="d-flex">
               <label
                 class="font-medium primary-blue"
@@ -58,9 +58,9 @@
 
             <CurrencyInput
               id="value"
+              v-model="question.value"
               :customStyles="customStyles"
               :placeholder="`${$currency}0.00`"
-              v-model="question.value"
             />
           </div>
 
@@ -85,10 +85,10 @@
             <div>
               <input
                 id="question_1"
+                v-model="question.question.title"
                 type="text"
                 class="form-controls px-3"
                 :placeholder="`Question ${i + 1}`"
-                v-model="question.question.title"
               />
             </div>
 
@@ -99,11 +99,12 @@
             >
               <!-- Option region -->
               <div
-                class="mt-3 d-flex align-items-center"
                 v-for="(option, index) in question.question.options"
                 :key="index"
+                class="mt-3 d-flex align-items-center"
               >
                 <input
+                  v-model="question.question.options[index].option"
                   type="text"
                   class="form-controls line px-2"
                   :class="{
@@ -113,7 +114,6 @@
                       ].$error,
                   }"
                   :placeholder="`Option ${index + 1}`"
-                  v-model="question.question.options[index].option"
                   @blur="
                     $v.payload.questions.$each[i].question.options.$each[
                       index
@@ -129,9 +129,9 @@
                   <div class="ml-2 reward-holder">
                     <CurrencyInput
                       id="value"
+                      v-model="option.reward"
                       :customStyles="rewardStyles"
                       :placeholder="`${$currency}0.00`"
-                      v-model="option.reward"
                       :disabled="!question.question.options[index].option"
                     />
                   </div>
@@ -178,8 +178,8 @@
         text="Preview"
         fontSize="1rem"
         custom-styles="height: 50px; border-radius: 8px; font-weight: 600; padding: 0 1.25rem !important"
-        @click="previewForm"
         :disabled="disabled"
+        @click="previewForm"
       />
 
       <div class="ml-3">
@@ -333,9 +333,9 @@ export default {
 
   methods: {
     handleLabel(label) {
-      return label == "multiple"
+      return label === "multiple"
         ? "Multiple Choice"
-        : label == "optional"
+        : label === "optional"
         ? "Optional"
         : "Short Answer";
     },
@@ -394,7 +394,7 @@ export default {
       Object.values(this.$v.payload.questions.$each.$iter).forEach((item) => {
         // check if any of the options is empty
         const type = item.$model.type;
-        if (type == "multiple" || type == "optional") {
+        if (type === "multiple" || type === "optional") {
           const isEmpty = Object.values(item.question.options.$each.$iter).some(
             (option) => {
               return option.$error;
@@ -408,8 +408,7 @@ export default {
       });
 
       if (hasEmptyOption) {
-        this.$toast.error("Please fill all the options");
-        return;
+        return this.$toast.error("Please fill all the options");
       }
 
       localStorage.setItem("campaignForm", JSON.stringify(this.payload));

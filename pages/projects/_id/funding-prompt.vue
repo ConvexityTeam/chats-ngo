@@ -45,9 +45,5 @@ export default {
       default: () => {},
     },
   },
-
-  computed: {
-    text() {},
-  },
 };
 </script>

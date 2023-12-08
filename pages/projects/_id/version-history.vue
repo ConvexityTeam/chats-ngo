@@ -10,9 +10,9 @@
 
         <button
           type="button"
-          @click="$router.go(-1)"
           class="close-btn position-absolute"
           aria-label="Close"
+          @click="$router.go(-1)"
         >
           <svg
             width="18"
@@ -51,7 +51,7 @@
                   <span class="mr-3 date">
                     {{ event.updatedAt | shortDate }}
                   </span>
-                  <span class="status" v-if="event.currentCampaign"
+                  <span v-if="event.currentCampaign" class="status"
                     >Current version</span
                   >
                 </div>
@@ -96,7 +96,7 @@
                 </div>
               </el-timeline-item>
 
-              <el-timeline-item color="#fff" v-if="history.length > 3">
+              <el-timeline-item v-if="history.length > 3" color="#fff">
                 <p
                   class="see-more d-flex align-items-center"
                   @click="showMore = !showMore"
@@ -114,7 +114,7 @@
       </section>
     </section>
 
-    <section class="empty" v-else>
+    <section v-else class="empty">
       <img src="~/assets/img/svg/megaphone.svg" alt="megaphonep" />
       <p class="pt-4">Oops... No project history yet.</p>
 
@@ -122,19 +122,17 @@
         class="mt-3"
         :has-icon="false"
         text="Back to Project"
-        @click="$router.go(-1)"
         custom-styles="height: 42px"
+        @click="$router.go(-1)"
       />
     </section>
   </div>
 </template>
 
 <script>
-import close from "~/components/icons/close";
 import { mapGetters } from "vuex";
 
 export default {
-  components: { close },
   data: () => ({
     loading: false,
     showMore: false,
@@ -167,13 +165,12 @@ export default {
           `organisations/${campaignId}/campaign-history/${OrganisationId}`
         );
 
-        if (response.status == "success") {
+        if (response.status === "success") {
           const { data } = response;
           this.campaign = data;
           this.history = data.history.reverse();
         }
-      } catch (err) {
-        this.$toast.error(err?.response?.data?.message);
+      } catch (_err) {
       } finally {
         this.loading = false;
       }
