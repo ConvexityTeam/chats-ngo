@@ -4,23 +4,28 @@
       <FormsSettingsNewSubadmin @reload="getMembers" />
       <!-- Transactions Table here -->
       <div class="holder">
-        <div class="child-holder">
-          <table class="table table-borderless">
-            <thead class="primary-blue">
-              <tr>
-                <th>
-                  <p class="primary-blue font-bold">Team Members</p>
-                  <div class="ml-auto">
-                    <Button
-                      text="Add Sub-admin"
-                      custom-styles="height:50px"
-                      v-b-modal.new-subadmin
-                    />
-                  </div>
-                </th>
-              </tr>
-            </thead>
+        <div class="d-flex align-items-center table-title">
+          <span class="primary-blue font-bold text-md">Team Members</span>
 
+          <div class="ml-auto">
+            <Button
+              v-b-modal.new-subadmin
+              text="Add Sub-admin"
+              custom-styles="height:50px"
+            />
+          </div>
+        </div>
+
+        <div v-if="loading" class="px-4">
+          <Skeleton
+            :count="6"
+            class="mb-5"
+            styles="height: 52px; margin-bottom: 10px"
+          />
+        </div>
+
+        <template v-else-if="members.length">
+          <table class="table table-borderless">
             <tbody class="text-left primary-blue">
               <tr class="d-flex sub-heading font-medium pr-3">
                 <td class="col-2">First Name</td>
@@ -31,9 +36,9 @@
                 <!-- <td class="col-1 action">Action</td> -->
               </tr>
               <tr
-                class="d-flex table-body pr-2"
                 v-for="(member, i) in members"
                 :key="i"
+                class="d-flex table-body pr-2"
               >
                 <td class="col-2">
                   {{ member.User.first_name || "-" }}
@@ -52,13 +57,19 @@
                 <td class="col-2">
                   {{ member.User.phone || "-" }}
                 </td>
-                <!-- <td class="col-1 text-right">
-                  <button type="button" class="more-btn"><dot /></button>
-                </td> -->
               </tr>
             </tbody>
           </table>
-        </div>
+
+          <!-- pagination component  -->
+          <pagination
+            :currentPageNum="teamMembersPageNum"
+            :totalNumOfItems="teamMembersTotalItems"
+            @updatePage="updateTeamMembers"
+          />
+        </template>
+
+        <h3 v-else class="text-center no-record">NO RECORD FOUND</h3>
       </div>
     </div>
   </div>
@@ -68,7 +79,10 @@ import { mapGetters } from "vuex";
 
 export default {
   data: () => ({
+    loading: false,
     members: [],
+    teamMembersPageNum: 1,
+    teamMembersTotalItems: 0,
   }),
 
   computed: {
@@ -80,19 +94,33 @@ export default {
   },
 
   methods: {
+    updateTeamMembers(action) {
+      this.teamMembersPageNum =
+        action === "prev"
+          ? this.teamMembersPageNum - 1
+          : this.teamMembersPageNum + 1;
+
+      this.getMembers();
+    },
     async getMembers() {
       try {
+        this.loading = true;
+
         const { OrganisationId } = this.user?.AssociatedOrganisations[0];
         const response = await this.$axios.get(
-          `ngos/${OrganisationId}/members`
+          `ngos/${OrganisationId}/members?page=${this.teamMembersPageNum}&size=10`
         );
 
-        if (response.status == "success") {
+        if (response.status === "success") {
           this.members = response.data.reverse();
         }
         console.log("MOUNTED MEMBERS", this.members);
-      } catch (err) {
-        this.$toast.error(err.response?.data?.message);
+
+        this.teamMembersPageNum = response?.currentPage;
+        this.teamMembersTotalItems = response?.totalItems;
+      } catch (_err) {
+      } finally {
+        this.loading = false;
       }
     },
   },
@@ -111,15 +139,6 @@ export default {
   width: 100%;
   height: auto;
   padding: 30px;
-}
-
-.child-holder {
-  background: #ffffff;
-  box-shadow: 0px 4px 30px rgba(201, 201, 211, 0.2);
-  border-radius: 10px;
-  width: 100%;
-  height: auto;
-  padding: 10px 0;
 }
 
 .table thead tr th {

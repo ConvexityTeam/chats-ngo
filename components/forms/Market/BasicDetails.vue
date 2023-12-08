@@ -4,8 +4,8 @@
       <label for="product">Project</label>
       <div id="product" class="w-100">
         <el-select
-          v-model="setCampaign"
           id="product"
+          v-model="setCampaign"
           filterable
           :loading="$fetchState.pending"
           loading-text="Loading..."
@@ -89,35 +89,33 @@
 
 <script>
 import { mapGetters } from "vuex";
+import { formatStates } from "~/utils/helpers";
+
 export default {
   name: "SelectProject",
+
+  data: () => ({
+    formatStates,
+    campaigns: [],
+    setCampaign: "",
+  }),
 
   async fetch() {
     const id = this.user?.AssociatedOrganisations[0]?.OrganisationId;
     const { data } = await this.$axios.get(
-      `/organisations/${id}/campaigns/all`
+      `/organisations/${id}/campaigns/all?type=campaign&page=${1}&size=10`
     );
 
     this.campaigns = data;
   },
 
-  data: () => ({
-    campaigns: [],
-    setCampaign: "",
-  }),
-
   computed: {
     ...mapGetters("authentication", ["user"]),
 
     activeCampaign() {
-      return this.campaigns.find((campaign) => campaign.id == this.setCampaign);
-    },
-  },
-
-  methods: {
-    formatStates(states) {
-      if (states && states.length)
-        return states.map((item) => item.trim()).join(", ");
+      return this.campaigns.find(
+        (campaign) => parseInt(campaign.id) === parseInt(this.setCampaign)
+      );
     },
   },
 };

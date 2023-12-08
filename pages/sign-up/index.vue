@@ -18,24 +18,24 @@
           <!-- Tabs Here -->
           <section v-if="type">
             <el-tabs
+              id="registration"
               v-model="type"
               stretch
-              id="registration"
               @tab-click="handleClick"
             >
               <el-tab-pane label="Individual" name="individual">
                 <FormsSignupIndividual
                   v-if="type == 'individual'"
-                  @registerUser="registerUser"
                   :loading="loading"
+                  @registerUser="registerUser"
                 />
               </el-tab-pane>
 
               <el-tab-pane label="NGOs" name="ngo">
                 <FormsSignupNgo
                   v-if="type == 'ngo'"
-                  @registerUser="registerUser"
                   :loading="loading"
+                  @registerUser="registerUser"
                 />
               </el-tab-pane>
             </el-tabs>
@@ -93,12 +93,11 @@
 </template>
 
 <script>
-import { mapActions } from "vuex";
 import appConfig from "~/appConfig";
 
 export default {
-  layout: "default",
   name: "Signup",
+  layout: "default",
 
   data: () => ({
     loading: false,
@@ -124,8 +123,6 @@ export default {
   },
 
   methods: {
-    ...mapActions("authentication", ["commitToken", "commitUser"]),
-
     async registerUser(payload) {
       try {
         this.loading = true;
@@ -138,14 +135,13 @@ export default {
 
         console.log("Register response", response);
 
-        if (response.status == "success") {
+        if (response.status === "success") {
           this.updateRoute();
           localStorage.setItem("userEmail", payload.email);
         }
       } catch (err) {
         const { message } = err?.response?.data;
-        this.$toast.error(message);
-        if (message == "Email Already Exists, Recover Your Account") {
+        if (message === "Email Already Exists, Recover Your Account") {
           this.$router.push("/");
         }
       } finally {
@@ -168,12 +164,11 @@ export default {
           }
         );
 
-        if (response.status == "success") {
+        if (response.status === "success") {
           this.$toast.success("Email sent successfully");
           this.updateRoute();
         }
-      } catch (err) {
-        this.$toast.error(err.response?.data?.message);
+      } catch (_err) {
       } finally {
         this.loading = false;
       }
@@ -187,7 +182,7 @@ export default {
     handleClick(tab) {
       const { index } = tab;
 
-      if (index == 0) {
+      if (index === 0) {
         this.type = "individual";
       } else {
         this.type = "ngo";

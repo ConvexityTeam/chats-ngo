@@ -13,19 +13,19 @@
         </button>
       </div>
 
-      <form @submit.prevent="sendAmount" class="mt-4 px-3">
+      <form class="mt-4 px-3" @submit.prevent="sendAmount">
         <!-- Name field  here -->
         <div class="form-group">
           <label for="amount">Amount to fund</label>
           <input
+            id="amount"
+            v-model="amount"
             type="number"
             class="form-controls"
             :class="{
               error: $v.amount.$error,
             }"
-            id="amount"
             placeholder="0.00"
-            v-model="amount"
             @blur="$v.amount.$touch()"
           />
         </div>
@@ -46,9 +46,11 @@
 import { required } from "vuelidate/lib/validators";
 import close from "~/components/icons/close";
 export default {
+  components: { close },
   props: {
     fundAmount: {
-      type: Number,
+      type: [Number, String],
+      default: "",
     },
   },
 
@@ -69,8 +71,6 @@ export default {
       this.amount = value;
     },
   },
-
-  components: { close },
 
   methods: {
     closeModal() {

@@ -1,5 +1,5 @@
-export default function ({ store, redirect }) {
-  const session = !!store.getters["authentication/token"];
+export default function ({ redirect }) {
+  const session = !!sessionStorage.getItem("userToken");
 
   if (!session) {
     return redirect("/");

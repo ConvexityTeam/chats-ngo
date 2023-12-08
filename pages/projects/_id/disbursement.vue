@@ -4,7 +4,7 @@
     <div>
       <!-- Fund Campaign modal -->
       <Modal id="fund-campaign" title="Fund Project">
-        <FundCampaign
+        <FormsDisburseFunds
           :campaign="details"
           :tokenType="tokenType"
           :orgId="orgId"
@@ -18,7 +18,7 @@
         title="Wallet funded"
         @closeModal="handleRoute"
       >
-        <FundCampaignSuccess @close="handleRoute" />
+        <FormsFundCampaignSuccess @close="handleRoute" />
       </Modal>
     </div>
     <div class="m-auto w-45">
@@ -37,9 +37,9 @@
       <!-- Disbursement methods here -->
       <div class="mt-4 pt-2">
         <div
-          class="card-holder mb-3 px-4"
           v-for="(method, i) in methods"
           :key="i"
+          class="card-holder mb-3 px-4"
         >
           <div class="d-flex align-items-center h-100">
             <div class="d-flex align-items-center">
@@ -61,7 +61,7 @@
 
             <!-- Radio Here -->
             <div class="ml-auto mt-3">
-              <Radio v-model="tokenType" :id="method.tag" :value="method.tag" />
+              <Radio :id="method.tag" v-model="tokenType" :value="method.tag" />
             </div>
           </div>
         </div>
@@ -90,9 +90,9 @@
 
       <!-- View Text here -->
       <div
+        v-if="displayManageTokens"
         class="mt-5 pt-5 d-flex pointer"
         @click="handleTokens"
-        v-if="displayManageTokens"
       >
         <p class="poppins primary text-sm font-medium tokens">
           View / manage SMS token & QR codes
@@ -123,12 +123,12 @@
     <!-- Close Icon here -->
     <div>
       <svg
-        @click="goBack"
         width="18"
         height="18"
         viewBox="0 0 18 18"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
+        @click="goBack"
       >
         <path
           d="M17.7059 1.70757C18.0966 1.3173 18.0971 0.684134 17.7068 0.293355C17.3165 -0.0974241 16.6834 -0.0978376 16.2926 0.292432L17.7059 1.70757ZM0.719136 15.8455C0.328357 16.2358 0.327944 16.869 0.718213 17.2598C1.10848 17.6505 1.74165 17.6509 2.13243 17.2607L0.719136 15.8455ZM16.2926 0.292432L0.719136 15.8455L2.13243 17.2607L17.7059 1.70757L16.2926 0.292432Z"
@@ -145,14 +145,11 @@
 
 <script>
 import { mapGetters } from "vuex";
-import FundCampaign from "~/components/forms/fund-campaign";
-import FundCampaignSuccess from "~/components/forms/FundCampaignSuccess";
 let screenLoading;
 
 export default {
-  middleware: "authenticated",
   name: "Disbursement",
-  components: { FundCampaign, FundCampaignSuccess },
+  middleware: "authenticated",
 
   data: () => ({
     tokenType: "",
@@ -204,7 +201,7 @@ export default {
           `/organisations/${this.orgId}/campaigns/${this.$route.params.id}`
         );
 
-        if (response.status == "success") {
+        if (response.status === "success") {
           this.details = response.data;
           this.location = JSON.parse(response.data?.location?.country);
         }

@@ -1,7 +1,7 @@
 <template>
   <button
     type="button"
-    class=" d-flex align-items-center"
+    class="d-flex align-items-center"
     @click="$emit('click')"
   >
     <svg
@@ -17,7 +17,7 @@
       />
     </svg>
 
-    <span class=" pt-1">{{ text }}</span>
+    <span class="pt-1">{{ text }}</span>
   </button>
 </template>
 
@@ -26,9 +26,9 @@ export default {
   props: {
     text: {
       type: String,
-      default: ""
-    }
-  }
+      default: "",
+    },
+  },
 };
 </script>
 <style scoped>

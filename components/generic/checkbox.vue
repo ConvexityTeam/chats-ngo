@@ -11,15 +11,15 @@
 </template>
 <script>
 export default {
-  name: "c-checkbox",
+  name: "CCheckbox",
 
   props: {
     id: {
       type: String,
       default: "",
-      required: true
-    }
-  }
+      required: true,
+    },
+  },
 };
 </script>
 <style scoped>

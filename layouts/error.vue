@@ -6,7 +6,7 @@
     </div>
 
     <!-- Text here -->
-    <div class="mt-2 text-center ">
+    <div class="mt-2 text-center">
       <h1>Oops... page not found.</h1>
       <p class="pt-2 m-auto">
         The page you’re looking for might have been removed, temporarily
@@ -36,14 +36,14 @@ export default {
   computed: {
     customStyle() {
       return "border-radius: 5px; height: 3.25rem;";
-    }
+    },
   },
 
   methods: {
     goHome() {
       window.history.back();
-    }
-  }
+    },
+  },
 };
 </script>
 

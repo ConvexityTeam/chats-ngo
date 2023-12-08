@@ -1,6 +1,6 @@
 <template>
-  <div class="container">
-    <b-tabs content-class="mt-1" id="profile-tab" nav-class nav-wrapper-class>
+  <div class="main container transparent">
+    <b-tabs id="profile-tab" content-class="mt-1" nav-class nav-wrapper-class>
       <!-- Profile tab here -->
       <b-tab title="Profile" active class="nav-links">
         <FormsSettingsProfileSettings class="mt-3 mb-5" />
@@ -23,6 +23,7 @@
 export default {
   name: "Settings",
   layout: "dashboard",
+  transition: "fade-up",
 };
 </script>
 
@@ -41,5 +42,10 @@ export default {
 
 #profile-tab__BV_tab_controls_ {
   padding: 0px 5px;
+}
+
+.main {
+  height: calc(100vh - 72px);
+  overflow-y: scroll;
 }
 </style>

@@ -1,0 +1,79 @@
+.el-notification {
+  width: 400px;
+  max-width: 450px;
+  padding: 16px 56px 20px 24px;
+  border-radius: 8px 0px 0px 8px;
+  box-shadow: -4px 8px 25px 0px rgba(150, 150, 166, 0.21);
+
+  .el-notification__closeBtn {
+    &::before {
+      content: url("../img/svg/alert-close.svg");
+    }
+  }
+
+  .el-notification__group {
+    margin-left: 1.25rem;
+  }
+
+  &.success {
+    background: #eefcf6;
+
+    .el-icon-success {
+      color: #35c78a;
+    }
+
+    .el-notification__title {
+      color: #35c78a;
+      font-weight: 700;
+    }
+
+    .el-notification__content {
+      color: #646a86;
+      font-weight: 500;
+    }
+  }
+
+  &.error {
+    background: #fcefee;
+
+    .el-icon-error {
+      color: #e42c66;
+
+      &::before {
+        content: url("../img/svg/alert-error.svg");
+      }
+    }
+
+    .el-notification__title {
+      color: #e42c66;
+      font-weight: 700;
+    }
+
+    .el-notification__content {
+      color: #646a86;
+      font-weight: 500;
+    }
+  }
+
+  &.info {
+    background: #e2f1fd;
+
+    .el-icon-info {
+      color: #2f80ed;
+
+      &::before {
+        content: url("../img/svg/alert-info.svg");
+      }
+    }
+
+    .el-notification__title {
+      color: #2f80ed;
+      font-weight: 700;
+    }
+
+    .el-notification__content {
+      color: #646a86;
+      font-weight: 500;
+    }
+  }
+}

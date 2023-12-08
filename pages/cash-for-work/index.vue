@@ -6,7 +6,7 @@
     </Modal>
 
     <Modal id="new-task" title="new task">
-      <new-task :campaign="campaign" @reload="fetchAllCampaigns" />
+      <new-task :campaign="activeCampaign" @reload="fetchAllCampaigns" />
     </Modal>
 
     <Modal id="fund-cash-for-work" title="fund cash for work">
@@ -24,10 +24,10 @@
             <!-- Search Box here -->
             <div class="position-relative">
               <input
+                v-model="searchQuery"
                 type="text"
                 class="form-controls search"
                 placeholder="Search projects..."
-                v-model="searchQuery"
               />
               <img
                 src="~/assets/img/vectors/search.svg"
@@ -50,13 +50,13 @@
 
     <!-- cards here -->
     <div class="row mt-4 pt-2">
-      <div v-if="loading" class="text-center"></div>
+      <SkeletonCardSkeleton v-if="loading" />
 
       <template v-else-if="resultQuery.length">
         <div
-          class="col-lg-4 mb-4"
           v-for="campaign in resultQuery"
           :key="campaign.id"
+          class="col-lg-4 mb-4"
         >
           <div class="card__holder">
             <div class="p-4">
@@ -160,6 +160,14 @@
             </div>
           </div>
         </div>
+
+        <div class="pagination-wrapper">
+          <pagination
+            :currentPageNum="projectPageNum"
+            :totalNumOfItems="projectTotalItems"
+            @updatePage="updateAllCashForWork"
+          />
+        </div>
       </template>
 
       <h3 v-else class="text-center no-record m-auto">NO RECORD FOUND</h3>
@@ -168,26 +176,30 @@
 </template>
 
 <script>
-import fundCashForWork from "~/components/forms/fund-cash-for-work.vue";
+import { mapGetters, mapActions } from "vuex";
+import FundCashForWork from "~/components/forms/fund-cash-for-work.vue";
 import newCash from "~/components/forms/new-cash-for-work.vue";
 import newTask from "~/components/forms/new-task";
-import { mapGetters, mapActions } from "vuex";
 let screenLoading;
 
 export default {
+  components: { newCash, FundCashForWork, newTask },
   layout: "dashboard",
-  components: { newCash, fundCashForWork, newTask },
+  transition: "fade-up",
+
   data() {
     return {
+      id: "",
       count: 0,
       loading: false,
-      id: "",
-      campaign: {},
+      activeCampaign: {},
       campaigns: [],
       SelectedC4w: {},
       searchQuery: "",
       statuses: ["active", "completed"],
       selected: null,
+      projectPageNum: 1,
+      projectTotalItems: 0,
     };
   },
 
@@ -233,8 +245,8 @@ export default {
           }
         );
 
-        if (response.status == "success") {
-          if (source != "funding") {
+        if (response.status === "success") {
+          if (source !== "funding") {
             this.$toast.success(response.message);
           }
           this.fetchAllCampaigns();
@@ -246,21 +258,32 @@ export default {
       }
     },
 
+    updateAllCashForWork(action) {
+      this.projectPageNum =
+        action === "prev" ? this.projectPageNum - 1 : this.projectPageNum + 1;
+
+      this.fetchAllCampaigns();
+    },
+
     async fetchAllCampaigns() {
       try {
-        this.openScreen();
+        this.loading = true;
         const response = await this.$axios.get(
-          `/organisations/${+this.id}/campaigns/all?type=cash-for-work`
+          `/organisations/${+this.id}/campaigns/all?type=cash-for-work&page=${
+            this.projectPageNum
+          }&size=10`
         );
 
-        if (response.status == "success") {
+        if (response.status === "success") {
           this.campaigns = response.data.reverse();
-          console.log("ALL CAMPAIGNS", response.data);
         }
+
+        this.projectPageNum = response?.currentPage;
+        this.projectTotalItems = response?.totalItems;
       } catch (err) {
         console.log({ error: err });
       } finally {
-        screenLoading.close();
+        this.loading = false;
       }
     },
 
@@ -272,24 +295,22 @@ export default {
           `organisations/${this.id}/campaigns/${this.SelectedC4w.id}/fund-campaign`
         );
 
-        if (response.status == "success") {
+        if (response.status === "success") {
           this.$toast.success(response.message);
 
-          if (this.SelectedC4w.status == "pending") {
+          if (this.SelectedC4w.status === "pending") {
             await this.activateCampaign("funding");
           }
           this.fetchAllCampaigns();
         }
-      } catch (err) {
-        this.$toast.error(err.message);
-        console.log({ error: err });
+      } catch (_err) {
       } finally {
         screenLoading.close();
       }
     },
 
     handleNewTask(campaign) {
-      this.campaign = campaign;
+      this.activeCampaign = campaign;
       this.$bvModal.show("new-task");
     },
 
@@ -344,5 +365,12 @@ export default {
   background: #ffffff;
   box-shadow: 0px 4px 30px rgba(174, 174, 192, 0.2);
   border-radius: 10px;
+}
+.pagination-wrapper {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin-top: 1rem;
+  width: 100%;
 }
 </style>

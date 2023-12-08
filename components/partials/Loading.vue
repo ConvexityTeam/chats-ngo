@@ -1,32 +1,34 @@
 <template>
-  <div class="overlay">
-
+  <div class="progress-bar_">
+    <div class="progress_"></div>
   </div>
 </template>
 
-<script>
-export default {
-  mounted() {
-    this.$nextTick(() => {
-      this.$nuxt.$loading.start();
-    });
-  },
-  destroyed() {
-    setTimeout(() => this.$nuxt.$loading.finish(), 100);
-  }
-};
-</script>
-
-<style>
-.overlay {
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
+<style lang="scss">
+.progress-bar_ {
   position: fixed;
-  background: rgba(0, 0, 0, 0.1);
-  opacity: 0.1;
-  z-index: 2;
-}
+  z-index: 10000;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background-color: #17ce89;
+  border-radius: 4px;
 
+  .progress_ {
+    height: 100%;
+    background-color: #fff;
+    border-radius: 4px;
+    animation: progressAnimation 3s linear infinite;
+  }
+
+  @keyframes progressAnimation {
+    0% {
+      width: 0;
+    }
+    100% {
+      width: 100%;
+    }
+  }
+}
 </style>

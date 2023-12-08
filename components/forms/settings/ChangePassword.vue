@@ -15,13 +15,13 @@
           ><label for="state">Old Password</label></span
         >
         <input
+          id="password"
+          v-model="payload.old_password"
           :type="showpassword ? 'text' : 'password'"
           class="form-controls px-5"
           placeholder="Enter old password"
           autocomplete="current-password"
           :class="{ error: $v.payload.old_password.$error }"
-          id="password"
-          v-model="payload.old_password"
           @focus="passActive = true"
           @blur="$v.payload.old_password.$touch()"
         />
@@ -46,13 +46,13 @@
           ><label for="password">New Password</label></span
         >
         <input
+          id="new_password"
+          v-model="payload.new_password"
           :type="showpassword2 ? 'text' : 'password'"
           class="form-controls px-5"
           placeholder="Enter new password"
           autocomplete="new-password"
           :class="{ error: $v.payload.new_password.$error }"
-          id="new_password"
-          v-model="payload.new_password"
           @focus="passActive2 = true"
           @blur="$v.payload.new_password.$touch()"
         />
@@ -91,13 +91,13 @@
           ><label for="state">Confirm New Password</label></span
         >
         <input
+          id="confirm_password"
+          v-model="payload.confirm_newpassword"
           :type="showpassword3 ? 'text' : 'password'"
           class="form-controls px-5"
           placeholder="Re-Enter new password"
           autocomplete="new-password"
           :class="{ error: $v.payload.confirm_newpassword.$error }"
-          id="confirm_password"
-          v-model="payload.confirm_newpassword"
           @focus="passActive3 = true"
           @blur="$v.payload.confirm_newpassword.$touch()"
         />
@@ -165,6 +165,7 @@ export default {
         containsLowercase: (value) => /[a-z]/.test(value),
         containsNumber: (value) => /[0-9]/.test(value),
         containsSpecial: (value) =>
+          // eslint-disable-next-line no-useless-escape
           /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(value),
       },
       confirm_newpassword: {
@@ -189,14 +190,12 @@ export default {
         delete this.payload?.confirm_newpassword;
         const response = await this.$axios.put("/users/password", this.payload);
 
-        if (response.status == "success") {
+        if (response.status === "success") {
           this.$toast.success(response.message);
         }
 
         console.log("Reset response", response);
-      } catch (err) {
-        console.log("RESET PASSWORD::", err);
-        this.$toast.error(err.response?.data?.message);
+      } catch (_err) {
       } finally {
         this.loading = false;
       }

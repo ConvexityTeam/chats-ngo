@@ -1,17 +1,26 @@
 <template>
   <!-- Table here -->
   <div class="table-holder mt-4">
-    <div v-if="data.length" class="flex align-items-center table-title">
+    <div class="flex align-items-center table-title">
       <h4>SMS Token</h4>
       <div class="ml-auto"></div>
     </div>
-    <table v-if="data.length" class="table table-borderless">
+
+    <div v-if="loading" class="px-4">
+      <Skeleton
+        :count="6"
+        class="mb-5"
+        styles="height: 52px; margin-bottom: 10px"
+      />
+    </div>
+
+    <table v-else-if="data.length" class="table table-borderless">
       <thead>
         <tr>
           <th scope="col">
             <Checkbox
-              @input="handleSelectAll"
               :checked="selected.length === data.length"
+              @input="handleSelectAll"
             />
           </th>
           <th scope="col">Beneficiary</th>
@@ -34,9 +43,9 @@
         >
           <td>
             <Checkbox
-              @input="handleCheckbox"
               :value="token.beneficiaryId"
               :checked="selected.includes(token.beneficiaryId)"
+              @input="handleCheckbox"
             />
           </td>
           <td class="wrap">
@@ -79,19 +88,14 @@
                 custom-styles=" border-radius: 5px !important;
                   height:33px; border: 1px solid #17ce89 !important; font-size:
                   0.875rem !important; padding:0px 15px !important"
-                @click="$emit('resendToken', token.beneficiaryId)"
                 :disabled="selected.length === data.length"
+                @click="$emit('resendToken', token.beneficiaryId)"
               />
             </div>
           </td>
         </tr>
       </tbody>
     </table>
-
-    <!-- Loader Here -->
-    <div v-else-if="loading" class="py-5">
-      <div class="text-center loader"></div>
-    </div>
 
     <!-- No Data Here -->
     <h3 v-else class="text-center no-record">NO RECORD FOUND</h3>

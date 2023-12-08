@@ -15,7 +15,7 @@
           <span class="navbar-toggler-icon"></span>
         </button>
 
-        <div class="collapse navbar-collapse" id="navbarNavDropdown">
+        <div id="navbarNavDropdown" class="collapse navbar-collapse">
           <ul class="components navbar-nav flex-column pt-lg-3 w-100">
             <li class="mt-2">
               <nuxt-link

@@ -24,12 +24,13 @@
               <label for="email">Email</label>
               <input
                 id="email"
-                type="email"
-                class="form-controls"
-                placeholder="example@gmail.com"
-                @focus="emailActive = true"
-                :class="{ form__input__error: $v.payload.email.$error }"
                 v-model="payload.email"
+                type="email"
+                placeholder="example@gmail.com"
+                class="form-controls notranslate"
+                :class="{ form__input__error: $v.payload.email.$error }"
+                autocomplete="email"
+                @focus="emailActive = true"
                 @blur="$v.payload.email.$touch()"
               />
               <div class="position-absolute icon-left">
@@ -42,12 +43,12 @@
               <label for="password">Password</label>
               <input
                 id="password"
+                v-model="payload.password"
                 :type="showpassword ? 'text' : 'password'"
-                class="form-controls"
+                class="form-controls notranslate"
                 :class="{ form__input__error: $v.payload.password.$error }"
                 autocomplete="current-password"
                 placeholder="Enter password"
-                v-model="payload.password"
                 @focus="passActive = true"
                 @blur="$v.payload.password.$touch()"
               />
@@ -159,7 +160,9 @@ export default {
 
         if (response.status === "success") {
           const { user, token } = response.data;
-          localStorage.setItem("userToken", token);
+
+          // needs to be updated
+          this.commitToken(token);
 
           // check for 2fa here
           if (user.is_tfa_enabled) {
@@ -169,9 +172,7 @@ export default {
 
           this.grantUserAccess(response.data);
         }
-      } catch (err) {
-        console.log("ERRR::::", { err });
-        this.$toast.error(err?.response?.data?.message);
+      } catch (_err) {
       } finally {
         this.loading = false;
         localStorage.removeItem("protectedLastRoute");
@@ -209,11 +210,10 @@ export default {
         });
 
         console.log("OTPRESPONE:::", response);
-        if (response.status == "success") {
+        if (response.status === "success") {
           this.grantUserAccess(response.data);
         }
-      } catch (err) {
-        this.$toast.error(err?.response?.data?.message);
+      } catch (_err) {
       } finally {
         this.loading = false;
       }

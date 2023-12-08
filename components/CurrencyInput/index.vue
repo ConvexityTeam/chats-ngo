@@ -1,17 +1,17 @@
 <template>
   <div>
     <input
+      :id="id"
+      :ref="id"
       class="form-controls"
       type="text"
       :class="{ error: error }"
       :placeholder="placeholder"
       :style="customStyles"
-      :ref="id"
-      :id="id"
       :disabled="disabled"
+      v-bind="$attrs"
       @input="handleInput($event.target.value)"
       @keypress="isNumber($event)"
-      v-bind="$attrs"
       v-on="inputListeners"
     />
   </div>
@@ -19,7 +19,7 @@
 
 <script>
 export default {
-  name: "Currency-input",
+  name: "CurrencyInput",
   inheritAttrs: false,
 
   model: {
@@ -53,10 +53,6 @@ export default {
 
   data: () => ({ mounted: false }),
 
-  mounted: function () {
-    this.mounted = true;
-  },
-
   computed: {
     inputListeners() {
       const vm = this;
@@ -66,6 +62,10 @@ export default {
         },
       });
     },
+  },
+
+  mounted: function () {
+    this.mounted = true;
   },
 
   methods: {

@@ -3,7 +3,7 @@
     <!-- Modal here -->
 
     <Modal id="add-vendor" size="lg" title="Add Vendor">
-      <add-vendor @reload="$emit('reload')" />
+      <FormsAddVendor @reload="$emit('reload')" />
     </Modal>
 
     <div class="row mt-4 pt-1">
@@ -13,10 +13,10 @@
             <!-- Search Box here -->
             <div class="position-relative">
               <input
+                v-model="searchQuery"
                 type="text"
                 class="form-controls search"
                 placeholder=" Search transactions..."
-                v-model="searchQuery"
               />
               <img
                 src="~/assets/img/vectors/search.svg"
@@ -55,31 +55,40 @@
         <div class="ml-auto"></div>
       </div>
 
-      <table class="table table-borderless" v-if="resultQuery.length">
-        <thead>
-          <tr>
-            <th scope="col">Reference ID</th>
-            <th scope="col">Amount</th>
-            <th scope="col">Vendor</th>
-            <th scope="col">Beneficiary</th>
-            <th scope="col">Date</th>
-            <!-- <th scope="col">Actions</th> -->
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="(transaction, index) in resultQuery" :key="index">
-            <td>{{ transaction.reference }}</td>
-            <td>{{ transaction.amount | formatCurrency }}</td>
-            <td>
-              {{ getVendorName(transaction.Venfor) }}
-            </td>
-            <td>
-              {{ getBeneficiaryName(transaction.Beneficiary) }}
-            </td>
-            <td>{{ transaction.createdAt | shortDate }}</td>
-          </tr>
-        </tbody>
-      </table>
+      <template v-if="resultQuery.length">
+        <table class="table table-borderless">
+          <thead>
+            <tr>
+              <th scope="col">Reference ID</th>
+              <th scope="col">Amount</th>
+              <th scope="col">Vendor</th>
+              <th scope="col">Beneficiary</th>
+              <th scope="col">Date</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr v-for="(transaction, index) in resultQuery" :key="index">
+              <td>{{ transaction.reference }}</td>
+              <td>{{ transaction.amount | formatCurrency }}</td>
+              <td>
+                {{ getVendorName(transaction.Vendor) }}
+              </td>
+              <td>
+                {{ getBeneficiaryName(transaction.Beneficiary) }}
+              </td>
+              <td>{{ transaction.createdAt | shortDate }}</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <!-- pagination component  -->
+        <pagination
+          :currentPageNum="transactionPageNum"
+          :totalNumOfItems="totalTransactions"
+          @updatePage="updateVendorTransactions"
+        />
+      </template>
 
       <h3 v-else class="text-center no-record">NO RECORD FOUND</h3>
       <FullScreenLoader :loading="$fetchState.pending" />
@@ -89,28 +98,28 @@
 
 <script>
 import moment from "moment";
-import addVendor from "~/components/forms/add-vendor.vue";
 import { mapGetters } from "vuex";
 
 export default {
   name: "VendorTransaction",
-  components: {
-    addVendor,
-  },
 
   data: () => ({
     searchQuery: "",
     loading: false,
     transactions: [],
+    transactionPageNum: 1,
+    totalTransactions: 0,
   }),
 
   async fetch() {
     const id = this.user?.AssociatedOrganisations[0]?.OrganisationId;
     const response = await this.$axios.get(
-      `organisations/${id}/vendors/transactions`
+      `organisations/${id}/vendors/transactions?page=${this.transactionPageNum}&size=10`
     );
 
     this.transactions = response.data;
+    this.transactionPageNum = response?.currentPage || 1;
+    this.totalTransactions = response?.totalItems || response.data.length;
   },
 
   computed: {
@@ -144,8 +153,17 @@ export default {
   },
 
   methods: {
-    getVendorName(Vendor) {
-      return Vendor ? `${Vendor.first_name} ${Vendor.last_name}` : "-";
+    getVendorName(vendor) {
+      return vendor ? `${vendor.first_name} ${vendor.last_name}` : "-";
+    },
+
+    updateVendorTransactions(action) {
+      this.transactionPageNum =
+        action === "prev"
+          ? this.transactionPageNum - 1
+          : this.transactionPageNum + 1;
+
+      this.$fetch();
     },
 
     getBeneficiaryName(Beneficiary) {

@@ -10,7 +10,7 @@
         </div>
 
         <div style="flex-grow: 1">
-          <div class="container py-4" v-if="!user.is_verified_all">
+          <div v-if="!user.is_verified_all" class="container py-4">
             <GenericBanner isKyc>
               <div class="d-flex holder">
                 <template v-if="!user.is_verified">
@@ -44,13 +44,17 @@
 
 <script>
 import { mapGetters } from "vuex";
-import appConfig from "~/appConfig";
 import IdleJs from "idle-js";
+import appConfig from "~/appConfig";
 let protectedLastRoute;
 
 export default {
   name: "DashboardLayout",
   middleware: "authenticated",
+
+  computed: {
+    ...mapGetters("authentication", ["user"]),
+  },
 
   watch: {
     $route(to, from) {
@@ -58,26 +62,30 @@ export default {
     },
   },
 
-  computed: {
-    ...mapGetters("authentication", ["user"]),
+  mounted() {
+    this.handleIdleness();
   },
 
-  mounted() {
-    let idle = new IdleJs({
-      idle: appConfig.env === "staging" ? 900000 : 180000, // idle time in ms,
-      events: ["mousemove", "keydown", "mousedown", "touchstart"], // events that will trigger the idle resetter
+  methods: {
+    handleIdleness() {
+      if (appConfig.APP_ENVIRONMENT === "staging") return;
 
-      onIdle: () => {
-        localStorage.setItem("protectedLastRoute", protectedLastRoute);
-        this.$store.dispatch("authentication/logout");
-        this.$router.push("/");
-      },
+      const idle = new IdleJs({
+        idle: 180000, // idle time in ms,
+        events: ["mousemove", "keydown", "mousedown", "touchstart"], // events that will trigger the idle resetter
 
-      keepTracking: true, // set it to false if you want to be notified only on the first idleness change
-      startAtIdle: false, // set it to true if you want to start in the idle state
-    });
+        onIdle: () => {
+          localStorage.setItem("protectedLastRoute", protectedLastRoute);
+          this.$store.dispatch("authentication/logout");
+          this.$router.push("/");
+        },
 
-    idle.start();
+        keepTracking: true, // set it to false if you want to be notified only on the first idleness change
+        startAtIdle: false, // set it to true if you want to start in the idle state
+      });
+
+      idle.start();
+    },
   },
 };
 </script>

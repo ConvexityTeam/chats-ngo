@@ -97,8 +97,9 @@
         </div>
 
         <div
+          v-for="(product, i) in products"
+          :key="i"
           class="product_container"
-          v-for="product in activeProposal?.proposalOwner?.proposal_products"
         >
           <div class="product_row">
             <span class="key">Product:</span>
@@ -145,6 +146,12 @@ export default {
     },
   },
 
+  computed: {
+    products() {
+      return this.activeProposal?.proposalOwner?.proposal_products ?? [];
+    },
+  },
+
   methods: {
     async acceptProposal() {
       try {
@@ -158,7 +165,7 @@ export default {
           }
         );
 
-        if (response.status == "success") {
+        if (response.status === "success") {
           this.$toast.success(response.message);
           this.$emit("vendorApproved");
         }

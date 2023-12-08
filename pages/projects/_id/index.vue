@@ -1,187 +1,146 @@
 <template>
   <div class="pb-5">
+    <PartialsLoading v-if="isFunding" />
+
     <!-- Modals Here -->
     <section>
+      <!-- Drawer Here -->
+      <drawer :visibleSync="drawer" @close="closeDrawer">
+        <!-- cash based campaign -->
+        <FormsAddCashBasedProduct
+          v-if="details?.type === 'campaign'"
+          @close="closeDrawer"
+        />
+        <!-- item based campaign -->
+        <FormsAddItemBasedProduct v-else @close="closeDrawer" />
+      </drawer>
+
       <!-- Public Funding -->
       <Modal id="funding" title="Fund through Crypto">
         <funding />
       </Modal>
 
-      <!-- Approve Benefactors -->
-      <Modal id="approve-benefactors" title="Approve Benefactors">
-        <ApproveBenefactorsVue
-          :benefactors="
-            isSingleRequest ? [selectedBenefactor] : selectedBenefactors
-          "
-          @approveBenefactors="approveBenefactors"
-        />
-      </Modal>
-
-      <!-- Reject Benefactors -->
-      <Modal id="reject-benefactors" title="Reject Benefactors">
-        <RejectBenefactorsVue
-          :benefactors="
-            isSingleRequest ? [selectedBenefactor] : selectedBenefactors
-          "
-          @rejectBenefactors="rejectBenefactors"
-        />
-      </Modal>
-
-      <!-- Benefactor Details -->
-      <Modal id="benefactor-details" title="Beneficiary Preview">
-        <BenefactorDetailsVue :benefactor="selectedBenefactor" />
-      </Modal>
-
-      <!-- Benefactor Questions and Answers -->
-      <Modal id="benefactor-q-and-a" title="">
-        <BenefactorQAndAVue
-          @handleAction="handleAction"
-          :questionsAndAnswers="selectedBenefactor?.User?.Answers"
-        />
-      </Modal>
-
       <!-- Funding Prompt  -->
       <Modal
         id="funding-prompt"
-        :title="details.type == 'item' ? 'Create Items' : 'Fund Project'"
+        :title="details?.type === 'item' ? 'Create Items' : 'Fund Project'"
       >
-        <FundingPrompt @handleFunding="fundCampaign" :details="details" />
+        <FormsFundProject
+          :details="details"
+          @done="$bvModal.show('funding-progress')"
+        />
       </Modal>
 
-      <!-- Select Beneficiary import option -->
+      <!-- Funding Progress  -->
       <Modal
-        id="select-import-beneficiaries-destination"
-        title="Select Import Destination"
+        id="funding-progress"
+        :buttonModified="true"
+        @closeModal="checkFundStatus"
       >
-        <SelectBeneficiaryImportDestination
-          @selectImportOption="selectImportOption"
-        />
+        <FormsFundingProgress @done="checkFundStatus" />
       </Modal>
-
-      <!-- Import Existing Beneficiaries -->
-      <Modal id="import-existing-beneficiaries" title="Import Beneficiaries">
-        <FormsBeneficiariesImportsExisting
-          :orgId="orgId"
-          @imported="updateList"
-        />
-      </Modal>
-
-      <!-- Import CSV Beneficiaries -->
-      <Modal id="import-csv-beneficiaries" title="Import Beneficiaries">
-        <FormsBeneficiariesImportsCSV :orgId="orgId" @imported="updateList" />
-      </Modal>
-
-      <!-- Import third party Beneficiaries -->
-      <Modal id="import-third-party-beneficiaries" title="Import Beneficiaries">
-        <FormsBeneficiariesImportsThirdParty
-          :orgId="orgId"
-          @imported="updateList"
-        />
-      </Modal>
-
-      <!-- Drawer Here -->
-      <drawer @close="closeDrawer" :visibleSync="drawer">
-        <!-- cash based campaign -->
-        <AddCashBasedProduct
-          @close="closeDrawer"
-          v-if="details?.type == 'campaign'"
-        />
-        <!-- item based campaign -->
-        <AddItemBasedProduct @close="closeDrawer" v-else />
-      </drawer>
     </section>
 
-    <div v-if="loading"></div>
+    <div class="main container transparent pt-4 mt-2 pb-5">
+      <template v-if="loading">
+        <div class="row container py-4">
+          <Skeleton class="w-25" styles="height: 50px" />
+          <div class="ml-auto d-flex align-items-center">
+            <Skeleton
+              variant="button"
+              class="mx-3"
+              styles="height: 50px; width: 118px"
+            />
+            <Skeleton variant="button" styles="height: 50px; width: 118px" />
+          </div>
+        </div>
+      </template>
 
-    <div class="main container transparent pt-4 mt-2 pb-5" v-else>
-      <!-- Back Button -->
-      <back text="Go Back" @click="$router.go(-1)" />
-
-      <!-- search - button region here -->
-      <div class="row py-4 mt-2">
-        <div class="col-lg-4">
-          <div class="row">
-            <div class="col-lg-10">
-              <!-- Search Box here -->
-              <div class="position-relative">
-                <input
-                  type="text"
-                  class="form-controls search"
-                  placeholder="Search beneficiaries..."
-                  v-model="searchQuery"
-                />
-                <img
-                  src="~/assets/img/vectors/search.svg"
-                  class="search-icon position-absolute"
-                  alt="search"
-                />
+      <template v-else>
+        <back text="Go Back" @click="$router.go(-1)" />
+        <!-- search - button region here -->
+        <div class="row py-4 mt-2">
+          <div class="col-lg-4">
+            <div class="row">
+              <div class="col-lg-10">
+                <!-- Search Box here -->
+                <div class="position-relative">
+                  <input
+                    v-model="searchQuery"
+                    type="text"
+                    class="form-controls search"
+                    placeholder="Search beneficiaries..."
+                  />
+                  <img
+                    src="~/assets/img/vectors/search.svg"
+                    class="search-icon position-absolute"
+                    alt="search"
+                  />
+                </div>
               </div>
             </div>
           </div>
-        </div>
 
-        <!-- Buttons here -->
-        <div class="d-flex align-items-center ml-auto mx-3">
-          <div class="mr-4 align-self-center pt-2">
-            <h2
-              class="primary poppins text-sm font-medium pointer"
-              @click="
-                $router.push({
-                  path: `/projects/${$route.params.id}/manage-tokens`,
-                  query: { method: 'sms' },
-                })
-              "
-            >
-              View / manage SMS token & QR codes
-            </h2>
-          </div>
+          <!-- Buttons here -->
+          <div class="d-flex align-items-center ml-auto mx-3">
+            <div class="mr-4 align-self-center pt-2">
+              <h2
+                class="primary poppins text-sm font-medium pointer underline"
+                @click="
+                  $router.push({
+                    path: `/projects/${$route.params.id}/manage-tokens`,
+                    query: { method: 'sms' },
+                  })
+                "
+              >
+                View / manage SMS token & QR codes
+              </h2>
+            </div>
 
-          <div class="mr-4">
-            <!-- display button if campaign is cash based -->
-            <div v-if="details?.status === 'pending' || !details.is_funded">
+            <div class="mr-4">
+              <!-- display button if campaign is cash based -->
+              <!--  -->
+              <div v-if="details?.status === 'pending' || !details.is_funded">
+                <Button
+                  text="Fund Project"
+                  :has-icon="false"
+                  custom-styles="height:50px"
+                  @click="$bvModal.show('funding-prompt')"
+                />
+              </div>
+
               <Button
-                text="Fund Project"
+                v-else
+                :text="
+                  details.type === 'item'
+                    ? 'Distribute Items'
+                    : 'Disburse Funds'
+                "
                 :has-icon="false"
-                custom-styles="height:50px"
-                @click="$bvModal.show('funding-prompt')"
+                custom-styles="height:50px; background:#53A6EB"
                 :disabled="
-                  details?.status === 'pending' ||
-                  !approvedBeneficiaries.length ||
-                  details.is_processing
+                  statuses.includes(details?.status) ||
+                  !approvedBeneficiaries.length
+                "
+                @click="
+                  $router.push(`/projects/${$route.params.id}/disbursement`)
                 "
               />
             </div>
 
-            <Button
-              v-else
-              :text="
-                details.type == 'item' ? 'Distribute Items' : 'Disburse Funds'
-              "
-              :has-icon="false"
-              custom-styles="height:50px"
-              @click="
-                $router.push(`/projects/${$route.params.id}/disbursement`)
-              "
-              :disabled="
-                statuses.includes(details?.status) ||
-                !approvedBeneficiaries.length
-              "
-            />
-          </div>
+            <!-- add products or items btn -->
+            <div>
+              <Button
+                :text="details.type === 'item' ? 'Add items' : 'Add Products'"
+                custom-styles="height:50px; border: 1px solid #17ce89 !important; font-weight: 600!important;"
+                :has-border="true"
+                :is-green="true"
+                :disabled="details?.status === 'ended'"
+                @click="drawer = true"
+              />
+            </div>
 
-          <!-- add products or items btn -->
-          <div>
-            <Button
-              :text="details.type == 'item' ? 'Add items' : 'Add Products'"
-              custom-styles="height:50px; border: 1px solid #17ce89 !important; font-weight: 600!important;"
-              :has-border="true"
-              :is-green="true"
-              @click="drawer = true"
-              :disabled="details.is_funded || details?.status == 'ended'"
-            />
-          </div>
-
-          <!-- <div class="ml-3">
+            <!-- <div class="ml-3">
             <Button
               text="Public Funding"
               :has-icon="false"
@@ -190,15 +149,16 @@
               :disabled="true"
             />
           </div> -->
+          </div>
         </div>
-      </div>
+      </template>
 
       <!-- Banner Here -->
       <section>
         <banner v-if="details?.status === 'paused'">
           <PauseCampaign
-            @resumeCampaign="resumeCampaign = true"
             :date="details.updatedAt"
+            @resumeCampaign="resumeCampaign = true"
           />
         </banner>
 
@@ -209,279 +169,31 @@
 
       <!-- Campaign-Privacy Here -->
       <div
-        v-if="details?.type == 'campaign'"
-        :class="{ hidden: details?.status == 'paused' }"
+        v-if="details?.type === 'campaign' || details?.type === 'item'"
+        :class="{ hidden: details?.status === 'paused' }"
       >
         <GenericPrivacyHolder :details="details" />
       </div>
 
       <div class="row mt-3">
         <div class="col-lg-8">
-          <!-- Campaign beneficiaries here -->
+          <!-- Project beneficiaries here -->
           <div>
-            <div class="table-holder mt-2">
-              <div class="d-flex align-items-center table-title">
-                <h4>Project beneficiaries</h4>
-                <div class="ml-auto"></div>
-              </div>
-
-              <!-- tabs here -->
-              <div class="mb-3 d-flex">
-                <b-tabs content-class="mt-1" v-model="tabIndex">
-                  <!-- Approved beneficiaries here -->
-                  <b-tab title="Approved" active title-link-class="beneficiary">
-                  </b-tab>
-
-                  <!-- Pending beneficiaries  here -->
-                  <b-tab title="Pending" title-link-class="beneficiary">
-                  </b-tab>
-
-                  <!-- Rejected beneficiaries  here -->
-                  <b-tab title="Rejected" title-link-class="beneficiary">
-                  </b-tab>
-                </b-tabs>
-
-                <!-- Approve Button here -->
-                <div class="d-flex align-items-center ml-auto mr-5">
-                  <div
-                    v-if="selectedBenefactors.length >= 1 && tabIndex === 1"
-                    class="d-flex align-items-center ml-auto mr-3"
-                  >
-                    <!-- Accept selected benefactor  button here -->
-                    <div class="ml-3">
-                      <Button
-                        text="Approve"
-                        :has-icon="false"
-                        :has-border="true"
-                        custom-styles="border: 1px solid #17CE89 !important; border-radius: 5px !important; font-size: 0.875rem !important; height: 33px !important"
-                        @click="handleMultipleBenefactorsModal('approve')"
-                      />
-                    </div>
-
-                    <!-- Reject selected benefactor  button here -->
-                    <div class="ml-3">
-                      <Button
-                        text="Reject"
-                        :has-icon="false"
-                        :has-border="true"
-                        custom-styles="border: 1px solid #E42C66 !important; color: #E42C66 !important; border-radius: 5px !important; font-size: 0.875rem !important; height: 33px !important"
-                        @click="handleMultipleBenefactorsModal('reject')"
-                      />
-                    </div>
-                  </div>
-
-                  <!-- Import Button Here -->
-                  <div
-                    class="ml-4"
-                    v-if="
-                      selectedBenefactors.length < 1 ||
-                      (selectedBenefactors.length >= 1 && tabIndex !== 1)
-                    "
-                  >
-                    <Button
-                      text="Import beneficiaries"
-                      :has-icon="true"
-                      :is-import="true"
-                      :has-border="true"
-                      custom-styles="border: 1px solid #17CE89 !important; border-radius: 5px !important; font-size: 0.875rem !important; height: 33px !important; padding: 0 10px !important"
-                      @click="
-                        $bvModal.show('select-import-beneficiaries-destination')
-                      "
-                    />
-                  </div>
-                </div>
-              </div>
-
-              <div v-if="query.length">
-                <!-- Table Here -->
-                <div>
-                  <table class="table table-borderless">
-                    <thead>
-                      <tr>
-                        <th scope="col" v-if="tabIndex === 1">
-                          <checkbox
-                            @input="handleSelectAll"
-                            :checked="
-                              selectedBenefactors.length === query.length
-                            "
-                          />
-                        </th>
-                        <th scope="col">Beneficiary</th>
-                        <th scope="col">Phone Number</th>
-                        <th scope="col">
-                          {{ tabIndex == 0 ? "Email Address" : "Origination" }}
-                        </th>
-                        <th scope="col">
-                          {{ tabIndex == 0 || 2 ? "" : "Actions" }}
-                        </th>
-                      </tr>
-                    </thead>
-
-                    <tbody>
-                      <tr
-                        v-for="(benefactor, i) in query"
-                        :key="i"
-                        class="table-row pointer"
-                      >
-                        <td v-if="tabIndex === 1">
-                          <checkbox
-                            @input="handleCheckbox(benefactor.UserId)"
-                            :value="benefactor.UserId"
-                            :checked="
-                              selectedBenefactorsId.includes(benefactor.UserId)
-                            "
-                          />
-                        </td>
-                        <td
-                          @click="
-                            tabIndex === 1
-                              ? getBenefactorDetails(benefactor)
-                              : null
-                          "
-                        >
-                          {{
-                            benefactor && benefactor.User
-                              ? benefactor.User.first_name +
-                                " " +
-                                benefactor.User.last_name
-                              : ""
-                          }}
-                        </td>
-
-                        <td
-                          @click="
-                            tabIndex === 1
-                              ? getBenefactorDetails(benefactor)
-                              : null
-                          "
-                        >
-                          {{
-                            benefactor &&
-                            benefactor.User &&
-                            benefactor.User.phone
-                          }}
-                        </td>
-                        <td
-                          @click="
-                            tabIndex === 1
-                              ? getBenefactorDetails(benefactor)
-                              : null
-                          "
-                        >
-                          <span v-if="tabIndex == 0">
-                            {{
-                              benefactor &&
-                              benefactor.User &&
-                              benefactor.User.email
-                            }}
-                          </span>
-                          <span v-else>
-                            {{ benefactor.source || "-" | capitalize }}
-                          </span>
-                        </td>
-
-                        <td>
-                          <div v-if="tabIndex == 0">
-                            <Button
-                              text="View"
-                              :has-icon="false"
-                              :has-border="true"
-                              custom-styles="border: 1px solid #17CE89 !important; border-radius: 5px !important; font-size: 0.875rem !important; height: 33px !important"
-                              @click="
-                                $router.push(
-                                  `/beneficiaries/${benefactor.UserId}`
-                                )
-                              "
-                            />
-                          </div>
-
-                          <!-- Add accept benefactor button here to accept a single benefactor -->
-                          <div
-                            v-if="
-                              tabIndex == 1 && selectedBenefactors.length < 1
-                            "
-                          >
-                            <div
-                              v-if="
-                                benefactor.User?.Answers[0]?.questions?.length <
-                                1
-                              "
-                            >
-                              <!-- action dropdown here -->
-                              <el-dropdown>
-                                <el-button type="primary"> Action </el-button>
-
-                                <el-dropdown-menu slot="dropdown">
-                                  <el-dropdown-item>
-                                    <div
-                                      class="text-primary action"
-                                      @click="
-                                        handleSingleBenefactorModal(
-                                          'approve',
-                                          benefactor
-                                        )
-                                      "
-                                    >
-                                      Approve
-                                    </div>
-                                  </el-dropdown-item>
-
-                                  <el-dropdown-item>
-                                    <div
-                                      class="action"
-                                      @click="
-                                        handleSingleBenefactorModal(
-                                          'reject',
-                                          benefactor
-                                        )
-                                      "
-                                    >
-                                      Reject
-                                    </div>
-                                  </el-dropdown-item>
-                                </el-dropdown-menu>
-                              </el-dropdown>
-                            </div>
-
-                            <!-- view for button here -->
-                            <Button
-                              v-if="
-                                benefactor.User?.Answers[0]?.questions
-                                  ?.length >= 1
-                              "
-                              text="View Form"
-                              :has-icon="false"
-                              :has-border="true"
-                              custom-styles="border: 1px solid #17CE89 !important; border-radius: 5px !important; font-size: 0.875rem !important; height: 33px !important"
-                              @click="displayBenefactorsQandA(benefactor)"
-                            />
-                          </div>
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-
-                <!-- pagination here -->
-                <!-- show pgination if number of pages is greater than 1 -->
-                <div v-if="totalNumOfPages > 1">
-                  <pagination
-                    :currentPageNum="currentPageNum"
-                    :numOfItemsPerPage="numOfItemsPerPage"
-                    :totalNumOfItems="totalNumOfItems"
-                    @updatePage="updatePage"
-                  />
-                </div>
-              </div>
-
-              <div v-else-if="loading" class="text-center"></div>
-              <h3 v-else class="text-center no-record">NO RECORD FOUND</h3>
-            </div>
+            <TablesCampaignsProjectBeneficiaries
+              :query="query"
+              :loading="loading"
+              :beneficiaryPageNum="beneficiaryPageNum"
+              :beneficiaryTotalItems="beneficiaryTotalItems"
+              @updateTabIndex="(value) => (tabIndex = value)"
+              @updateBeneficiaryState="updateBeneficiaryState"
+              @getCampaignBeneficiaries="getCampaignBeneficiaries"
+              @updateBeneficiaries="updateBeneficiaries"
+            />
           </div>
 
           <!-- complaints here -->
           <div class="mt-4 pt-2">
-            <beneficiary-complaints
+            <TablesCampaignsBeneficiaryComplaints
               :campaignId="$router.history.current.params.id"
               :campaignName="details.title"
             />
@@ -499,23 +211,24 @@
 
         <!-- Campaign details here -->
         <div class="col-lg-4">
-          <campaign-details
+          <TablesCampaignsDetails
+            :loading="loading"
             :details="details"
             :count="approvedBeneficiaries.length"
             :location="location"
             :user="user"
-            @reload="getDetails"
             :resumeCampaign="resumeCampaign"
+            @reload="getDetails"
           />
 
           <!-- Campaign Vendors here -->
           <div class="mt-4">
-            <campaign-vendors :user="user" :remount="remount" />
+            <TablesCampaignsVendors :user="user" :remount="remount" />
           </div>
 
           <!-- Campaign Products here -->
           <div class="mt-4">
-            <campaign-products :user="user" :remount="remount" />
+            <TablesCampaignsProducts :user="user" :remount="remount" />
           </div>
         </div>
       </div>
@@ -525,42 +238,32 @@
 
 <script>
 import { mapGetters } from "vuex";
-import SelectBeneficiaryImportDestination from "~/components/forms/SelectBeneficiaryImportDestination";
-import beneficiaryComplaints from "~/components/tables/campaigns/beneficiary-complaints";
-import campaignDetails from "~/components/tables/campaigns/campaign-details";
+
 import banner from "~/components/generic/banner";
-import funding from "~/components/forms/funding";
-import AddCashBasedProduct from "~/components/forms/AddCashBasedProduct";
-import AddItemBasedProduct from "~/components/forms/AddItemBasedProduct";
-import campaignVendors from "~/components/tables/campaigns/campaign-vendors";
-import campaignProducts from "~/components/tables/campaigns/campaign-products";
-import FundingPrompt from "./funding-prompt";
-import ApproveBenefactorsVue from "~/components/forms/approve-benefactors";
-import RejectBenefactorsVue from "~/components/forms/reject-benefactors";
-import BenefactorDetailsVue from "~/components/forms/campaigns/benefactor-details";
-import BenefactorQAndAVue from "~/components/forms/campaigns/benefactor-q-and-a";
+
 import PauseCampaign from "~/components/generic/PauseCampaign";
-import ProcessingFunding from "~/components/generic/ProcessingFunding";
 
 let screenLoading;
 
 export default {
-  layout: "dashboard",
   name: "CampaignDetails",
+  components: { banner, PauseCampaign },
+
+  layout: "dashboard",
+
   data: () => ({
-    tabIndex: 1,
+    tabIndex: 0,
+    isFunding: false,
+    isImporting: false,
     loading: false,
     orgId: "",
     campaignId: "",
     searchQuery: "",
+
     checkedNames: [],
     SelectedCampaign: {},
     complaints: [],
     beneficiaries: [],
-    selectedBenefactors: [],
-    selectedBenefactorsId: [],
-    selectedBenefactor: {},
-    isSingleRequest: false,
     details: {},
     location: "",
     resumeCampaign: false,
@@ -568,62 +271,43 @@ export default {
     drawer: false,
     remount: false,
     statuses: ["pending", "completed", "ongoing"],
-    currentPageNum: 1,
-    numOfItemsPerPage: 5,
-    totalNumOfItems: 65,
-  }),
 
-  components: {
-    beneficiaryComplaints,
-    campaignDetails,
-    banner,
-    funding,
-    campaignVendors,
-    campaignProducts,
-    FundingPrompt,
-    ApproveBenefactorsVue,
-    RejectBenefactorsVue,
-    BenefactorDetailsVue,
-    BenefactorQAndAVue,
-    PauseCampaign,
-    ProcessingFunding,
-    AddCashBasedProduct,
-    AddItemBasedProduct,
-    SelectBeneficiaryImportDestination,
-  },
+    rejectedBeneficiaries: [],
+    rejectedBeneficiariesPageNum: 1,
+    rejectedBeneficiariesTotalItems: 0,
+
+    approvedBeneficiaries: [],
+    approvedBeneficiariesPageNum: 1,
+    approvedBeneficiariesTotalItems: 0,
+
+    pendingBeneficiaries: [],
+    pendingBeneficiariesPageNum: 1,
+    pendingBeneficiariesTotalItems: 0,
+  }),
 
   computed: {
     ...mapGetters("authentication", ["user"]),
 
-    totalNumOfPages: function () {
-      const remainder = this.totalNumOfItems % this.numOfItemsPerPage;
-      const numOfPages = Math.floor(
-        (this.totalNumOfItems - remainder) / this.numOfItemsPerPage
-      );
+    beneficiaryPageNum() {
+      const validPageNum =
+        this.tabIndex === 0
+          ? this.approvedBeneficiariesPageNum
+          : this.tabIndex === 1
+          ? this.pendingBeneficiariesPageNum
+          : this.rejectedBeneficiariesPageNum;
 
-      //
-      if (remainder < 1) return numOfPages;
-      if (remainder >= 1) return numOfPages + 1;
+      return validPageNum;
     },
 
-    approvedBeneficiaries() {
-      return (
-        this.beneficiaries.filter((benefactor) => benefactor.approved) || []
-      );
-    },
+    beneficiaryTotalItems() {
+      const validTotalItems =
+        this.tabIndex === 0
+          ? this.approvedBeneficiariesTotalItems
+          : this.tabIndex === 1
+          ? this.pendingBeneficiariesTotalItems
+          : this.rejectedBeneficiariesTotalItems;
 
-    rejectedBeneficiaries() {
-      return (
-        this.beneficiaries.filter((benefactor) => benefactor.rejected) || []
-      );
-    },
-
-    pendingBeneficiaries() {
-      return (
-        this.beneficiaries.filter(
-          (benefactor) => !benefactor.rejected && !benefactor.approved
-        ) || []
-      );
+      return validTotalItems;
     },
 
     query() {
@@ -652,83 +336,105 @@ export default {
   mounted() {
     this.orgId = this.user?.AssociatedOrganisations[0]?.OrganisationId;
     this.campaignId = this.$route.params.id;
+
     this.getDetails();
     this.getCampaignBeneficiaries();
   },
 
   methods: {
-    // select beneficiary import destination
-    selectImportOption(importType) {
-      this.$bvModal.hide("select-import-beneficiaries-destination");
-      if (!importType) return;
-      return this.$bvModal.show(`import-${importType}-beneficiaries`);
+    updateBeneficiaryState() {
+      this.getCampaignBeneficiaries();
+      this.resetView();
+      this.getDetails();
     },
+    async checkFundStatus() {
+      try {
+        this.isFunding = true;
 
-    // displays benefactors details
-    getBenefactorDetails(benefactor) {
-      this.selectedBenefactor = benefactor;
-      setTimeout(() => {
-        this.$bvModal.show(`benefactor-details`);
-      }, 300);
-    },
-
-    // displays benefactor questions and answers modal
-    displayBenefactorsQandA(benefactor) {
-      this.selectedBenefactor = benefactor;
-
-      setTimeout(() => {
-        this.$bvModal.show(`benefactor-q-and-a`);
-      }, 300);
-    },
-
-    //  Benefactor Questions and Answers action buttons
-    handleAction(action) {
-      this.handleSingleBenefactorModal(action, this.selectedBenefactor);
-    },
-
-    handleCheckbox(value) {
-      const index = this.selectedBenefactorsId.indexOf(value);
-
-      if (index > -1) {
-        this.selectedBenefactorsId.splice(index, 1);
-
-        const updatedBenefactors = [];
-        this.selectedBenefactors.forEach((selectedBenefactor) => {
-          if (selectedBenefactor.UserId !== value) {
-            updatedBenefactors.push(selectedBenefactor);
-          }
-        });
-
-        this.selectedBenefactors = updatedBenefactors;
-      } else {
-        this.selectedBenefactorsId.push(value);
-
-        const isBenefactorInSelectedBenefactors = this.selectedBenefactors.find(
-          (selectedBenefactor) => value === selectedBenefactor.UserId
+        const response = await this.$axios.get(
+          `organisations/${this.orgId}/campaigns/${this.campaignId}/fund-status`
         );
 
-        if (!isBenefactorInSelectedBenefactors) {
-          this.query.forEach((item) => {
-            if (value === item.UserId) this.selectedBenefactors.push(item);
-          });
+        console.log("FUNDSTATUS::", response);
+
+        if (response.data.fund_status === "success") {
+          this.getDetails();
+
+          const { title, budget } = this.details;
+          const campaignText = `with ${this.$root.$options.filters.formatCurrency(
+            budget
+          )}`;
+
+          return this.$toast.success(
+            `The "${title}" project has been successfully funded ${
+              this.details.type === "campaign" ? campaignText : ""
+            }`,
+            "Project Funded Successfully"
+          );
+        } else {
+          await new Promise((resolve) => setTimeout(resolve, 5000)); // Wait for 5 seconds
+          await this.checkFundStatus(); // Recursive call
         }
+      } catch (error) {
+      } finally {
+        this.isFunding = false;
       }
     },
 
-    handleSelectAll() {
-      if (
-        this.query.length === this.selectedBenefactors.length ||
-        this.query.length === this.selectedBenefactorsId.length
-      ) {
-        this.selectedBenefactors = [];
-        this.selectedBenefactorsId = [];
-      } else {
-        this.selectedBenefactors = this.query.map(
-          (selectedBenefactor) => selectedBenefactor
+    async getDetails() {
+      try {
+        this.loading = true;
+
+        const response = await this.$axios.get(
+          `/organisations/${this.orgId}/campaigns/${this.campaignId}`
         );
-        this.selectedBenefactorsId = this.query.map(
-          (selectedBenefactor) => selectedBenefactor.UserId
+
+        if (response.status === "success") {
+          this.details = response.data;
+          this.location = JSON.parse(response.data?.location?.country);
+        }
+      } catch (err) {
+      } finally {
+        this.loading = false;
+      }
+    },
+
+    async getCampaignBeneficiaries() {
+      try {
+        this.loading = true;
+
+        const approved = await this.$axios.get(
+          `/organisation/${this.orgId}/campaigns/${this.campaignId}/beneficiaries?page=${this.approvedBeneficiariesPageNum}&size=10&approved=true`
         );
+        const rejected = await this.$axios.get(
+          `/organisation/${this.orgId}/campaigns/${this.campaignId}/beneficiaries?page=${this.rejectedBeneficiariesPageNum}&size=10&rejected=true`
+        );
+        const pending = await this.$axios.get(
+          `/organisation/${this.orgId}/campaigns/${this.campaignId}/beneficiaries?page=${this.pendingBeneficiariesPageNum}&size=10&approved=false&rejected=false`
+        );
+
+        if (approved.status === "success")
+          this.approvedBeneficiaries = approved.data;
+        if (rejected.status === "success")
+          this.rejectedBeneficiaries = rejected.data;
+        if (pending.status === "success")
+          this.pendingBeneficiaries = pending.data;
+
+        console.log("approved beneficiaries:::", approved);
+        console.log("rejected beneficiaries:::", rejected);
+        console.log("pending beneficiaries:::", pending);
+
+        this.rejectedBeneficiariesPageNum = rejected?.currentPage || 1;
+        this.rejectedBeneficiariesTotalItems = rejected?.totalItems;
+
+        this.approvedBeneficiariesPageNum = approved?.currentPage || 1;
+        this.approvedBeneficiariesTotalItems = approved?.totalItems;
+
+        this.pendingBeneficiariesPageNum = pending?.currentPage || 1;
+        this.pendingBeneficiariesTotalItems = pending?.totalItems;
+      } catch (err) {
+      } finally {
+        this.loading = false;
       }
     },
 
@@ -740,7 +446,7 @@ export default {
           `organisations/${this.orgId}/campaigns/${this.details?.id}/fund-campaign`
         );
 
-        if (response.status == "success") {
+        if (response.status === "success") {
           this.$toast.success(response.message);
           this.$bvModal.hide("funding-prompt");
           await this.getDetails();
@@ -753,134 +459,30 @@ export default {
       }
     },
 
-    async getDetails() {
-      try {
-        this.openScreen();
-        this.loading = true;
-
-        const response = await this.$axios.get(
-          `/organisations/${this.orgId}/campaigns/${this.campaignId}`
-        );
-
-        if (response.status == "success") {
-          screenLoading.close();
-          this.details = response.data;
-          this.location = JSON.parse(response.data?.location?.country);
-        }
-      } catch (err) {
-      } finally {
-        screenLoading.close();
-        this.loading = false;
-      }
-    },
-
-    async getCampaignBeneficiaries() {
-      try {
-        this.openScreen();
-        const response = await this.$axios.get(
-          `/organisation/${this.orgId}/campaigns/${this.campaignId}/beneficiaries`
-        );
-
-        if (response.status == "success") {
-          screenLoading.close();
-          this.beneficiaries = response.data;
-        }
-      } catch (err) {
-        screenLoading.close();
-      }
-    },
-
-    handleSingleBenefactorModal(action, benefactor) {
-      this.isSingleRequest = true;
-      this.selectedBenefactor = benefactor;
-
-      console.log(this.selectedBenefactor);
-
-      setTimeout(() => {
-        this.$bvModal.show(`${action}-benefactors`);
-      }, 300);
-
-      this.selectedBenefactors = [];
-      this.selectedBenefactorsId = [];
-    },
-
-    handleMultipleBenefactorsModal(action) {
-      this.isSingleRequest = false;
-
-      setTimeout(() => {
-        this.$bvModal.show(`${action}-benefactors`);
-      }, 300);
-    },
-
     resetView() {
       this.selectedBenefactors = [];
       this.selectedBenefactorsId = [];
       this.tabIndex = 0;
     },
 
-    async approveBenefactors() {
-      let benefactorsId = [];
-
-      benefactorsId = this.isSingleRequest
-        ? [this.selectedBenefactor?.UserId]
-        : this.selectedBenefactorsId;
-
-      try {
-        this.openScreen();
-        const response = await this.$axios.put(
-          `organisation/${this.orgId}/campaigns/${this.$route.params.id}/beneficiaries/approve`,
-          { ids: benefactorsId }
-        );
-
-        if (response.status == "success") {
-          this.getCampaignBeneficiaries();
-          this.$toast.success(response.message);
-          this.resetView();
-          this.getDetails();
-        }
-      } catch (err) {
-      } finally {
-        screenLoading.close();
+    updateBeneficiaries(action) {
+      if (this.tabIndex === 0) {
+        this.approvedBeneficiariesPageNum =
+          action === "prev"
+            ? this.approvedBeneficiariesPageNum - 1
+            : this.approvedBeneficiariesPageNum + 1;
+      } else if (this.tabIndex === 1) {
+        this.pendingBeneficiariesPageNum =
+          action === "prev"
+            ? this.pendingBeneficiariesPageNum - 1
+            : this.pendingBeneficiariesPageNum + 1;
+      } else {
+        this.rejectedBeneficiariesPageNum =
+          action === "prev"
+            ? this.rejectedBeneficiariesPageNum - 1
+            : this.rejectedBeneficiariesPageNum + 1;
       }
-    },
 
-    async rejectBenefactors() {
-      let benefactorsId = [];
-
-      benefactorsId = this.isSingleRequest
-        ? [this.selectedBenefactor?.UserId]
-        : this.selectedBenefactorsId;
-
-      try {
-        this.openScreen();
-        const response = await this.$axios.put(
-          `/organisation/${this.orgId}/campaigns/${this.campaignId}/beneficiaries`,
-          {
-            beneficiary_id: this.activeBenefactor?.UserId,
-            approved: false,
-            rejected: true,
-          }
-        );
-
-        if (response.status == "success") {
-          this.getCampaignBeneficiaries();
-          this.$toast.success(response.message);
-          this.resetView();
-        }
-      } catch (err) {
-      } finally {
-        screenLoading.close();
-      }
-    },
-
-    updatePage(action) {
-      this.currentPageNum =
-        action === "prev" ? this.currentPageNum - 1 : this.currentPageNum + 1;
-    },
-
-    updateList(importType) {
-      this.$bvModal.hide(`import-${importType}-beneficiaries`);
-      this.tabIndex = 1;
       this.getCampaignBeneficiaries();
     },
 
@@ -918,16 +520,6 @@ export default {
 .el-dropdown-link {
   cursor: pointer;
   color: #409eff;
-}
-
-tr.table-row:nth-child(even) {
-  background: #fafafc;
-}
-tr.table-row:nth-child(even):hover {
-  background: #fafafc70;
-}
-tr.table-row:nth-child(odd) {
-  background: #ffffff70;
 }
 
 .hidden {

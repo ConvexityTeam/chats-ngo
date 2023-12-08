@@ -1,12 +1,20 @@
 <template>
   <section class="table-holder mt-5">
-    <template v-if="resultQuery.length">
-      <div class="flex align-items-center table-title">
-        <h4>Forms</h4>
-        <div class="ml-auto"></div>
-      </div>
+    <div class="flex align-items-center table-title">
+      <h4>Forms</h4>
+      <div class="ml-auto"></div>
+    </div>
 
-      <table class="table table-borderless" v-if="resultQuery.length">
+    <div v-if="loading" class="px-4">
+      <Skeleton
+        :count="6"
+        class="mb-5"
+        styles="height: 52px; margin-bottom: 10px"
+      />
+    </div>
+
+    <template v-else-if="resultQuery.length">
+      <table class="table table-borderless">
         <thead>
           <tr>
             <th scope="col">Form Name</th>
@@ -21,7 +29,7 @@
             style="cursor: pointer"
             :class="{ selected: i % 2 == 0 }"
           >
-            <td class="form-title">{{ form.title }}</td>
+            <td class="form-title notranslate">{{ form.title }}</td>
 
             <td>
               {{ form.createdAt | shortDate }}
@@ -70,8 +78,8 @@
     <!-- Modal Here -->
     <Modal id="delete-campaign-form" title="Delete Form">
       <DeleteCampaignForm
-        :form="activeForm"
         :id="id"
+        :form="activeForm"
         :isLoading="isLoading"
         @reload="$emit('reload')"
         @deleteForm="deleteForm"
@@ -157,8 +165,7 @@ export default {
         console.log("response", response);
 
         console.log("delete form");
-      } catch (err) {
-        this.$toast.error(err?.response?.data?.message);
+      } catch (_err) {
       } finally {
         this.isLoading = false;
       }

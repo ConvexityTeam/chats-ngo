@@ -3,7 +3,7 @@
     <div class="mb-4">
       <label for="product"> Product / Service </label>
       <div id="product" class="w-100">
-        <el-select v-model="payload.type" id="product" placeholder="—Select — ">
+        <el-select id="product" v-model="payload.type" placeholder="—Select — ">
           <el-option
             v-for="item in productTypes"
             :key="item"
@@ -19,8 +19,8 @@
       <label for="product">Category type</label>
       <div id="product" class="w-100">
         <el-select
-          v-model="payload.category_id"
           id="product"
+          v-model="payload.category_id"
           placeholder="—Select — "
         >
           <el-option
@@ -40,11 +40,11 @@
         <div class="w-100">
           <input
             id="name"
+            v-model="payload.tag"
             type="text"
             class="form"
             :class="{ error: $v.payload.type.$error }"
             :placeholder="`Enter ${payload.type} name`"
-            v-model="payload.tag"
             @blur="$v.payload.tag.$touch()"
           />
         </div>
@@ -54,14 +54,14 @@
         <label> Unit Cost of Item </label>
         <div class="w-100">
           <input
+            id="unit_cost"
+            v-model="payload.cost"
+            v-disable-wheel
             type="number"
             class="form"
-            id="unit_cost"
             placeholder="NGN 0.00"
             :class="{ error: $v.payload.cost.$error }"
-            v-model="payload.cost"
             @blur="$v.payload.cost.$touch()"
-            v-disable-wheel
           />
         </div>
       </div>
@@ -70,14 +70,14 @@
         <label> Quantity </label>
         <div class="w-100">
           <input
+            id="quantity"
+            v-model="payload.quantity"
+            v-disable-wheel
             type="number"
             class="form"
-            id="quantity"
             placeholder="0"
             :class="{ error: $v.payload.quantity.$error }"
-            v-model="payload.quantity"
             @blur="$v.payload.quantity.$touch()"
-            v-disable-wheel
           />
         </div>
       </div>
@@ -126,23 +126,6 @@ export default {
     },
   },
 
-  watch: {
-    isEdit(value) {
-      if (value) {
-        this.payload = this.activeProduct;
-      }
-    },
-  },
-
-  async fetch() {
-    this.id = this.user?.AssociatedOrganisations[0]?.OrganisationId;
-    const { data } = await this.$axios.get(
-      `/organisation/category-type/${this.id}`
-    );
-
-    this.categoryTypes = data;
-  },
-
   data: () => ({
     productTypes: ["product", "service"],
     categoryTypes: [],
@@ -155,14 +138,13 @@ export default {
     },
   }),
 
-  validations: {
-    payload: {
-      type: { required },
-      tag: { required },
-      cost: { required, greaterThanZero },
-      quantity: { required, greaterThanZero },
-      category_id: { required },
-    },
+  async fetch() {
+    this.id = this.user?.AssociatedOrganisations[0]?.OrganisationId;
+    const { data } = await this.$axios.get(
+      `/organisation/category-type/${this.id}`
+    );
+
+    this.categoryTypes = data;
   },
 
   computed: {
@@ -183,18 +165,37 @@ export default {
     },
   },
 
+  watch: {
+    isEdit(value) {
+      if (value) {
+        this.payload = this.activeProduct;
+      }
+    },
+  },
+
+  validations: {
+    payload: {
+      type: { required },
+      tag: { required },
+      cost: { required, greaterThanZero },
+      quantity: { required, greaterThanZero },
+      category_id: { required },
+    },
+  },
+
   methods: {
     createProduct() {
       this.$emit("addProduct", this.payload);
 
-      (this.payload = {
+      this.payload = {
         type: "",
         tag: "",
         cost: "",
         quantity: "",
         category_id: "",
-      }),
-        this.$v.payload.$reset();
+      };
+
+      this.$v.payload.$reset();
     },
   },
 };

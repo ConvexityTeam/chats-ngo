@@ -2,19 +2,19 @@
   <div>
     <!-- tabs here -->
     <div class="my-2 px-3">
-      <div class="d-flex align-items-center tab-holder py-2 ">
+      <div class="d-flex align-items-center tab-holder py-2">
         <div
-          class="option-holder mx-1 "
-          @click="activeTab = 1"
+          class="option-holder mx-1"
           :class="{ active: activeTab == 1 }"
+          @click="activeTab = 1"
         >
           <span>Fund with Fiat</span>
         </div>
 
         <div
-          class="ml-auto option-holder   mx-1"
-          @click="activeTab = 2"
+          class="ml-auto option-holder mx-1"
           :class="{ active: activeTab == 2 }"
+          @click="activeTab = 2"
         >
           <span>Fund with Crypto</span>
         </div>
@@ -39,19 +39,19 @@
 
       <div>
         <!-- copy address here -->
-        <div class=" position-relative mt-3">
+        <div class="position-relative mt-3">
           <label for="address" class="poppins">Copy Address</label>
           <!-- icon here -->
-          <div class="position-absolute token-holder" v-if="token.img">
+          <div v-if="token.img" class="position-absolute token-holder">
             <img :src="token.img" height="24" width="24" :alt="token.token" />
           </div>
           <input
-            type="text"
             id="ddress"
+            ref="address"
+            type="text"
             disabled
             value="TAFLGx4m18ubcAk3XVio98FNRy9N3cQZ3z"
             class="form-controls px-5"
-            ref="address"
           />
           <!-- copy-region here -->
           <div class="position-absolute copy-holder">
@@ -71,28 +71,27 @@
     </div>
 
     <div v-if="activeTab == 1">
-      <fund-amount text="Confirm amount" />
+      <FormsFundAmount text="Confirm amount" />
     </div>
   </div>
 </template>
 
 <script>
 import tokenOutlets from "~/components/generic/token-outlets.vue";
-import fundAmount from "~/components/forms/fund-amount.vue";
 
 export default {
-  components: { tokenOutlets, fundAmount },
+  components: { tokenOutlets },
 
   data: () => ({
     token: {},
-    activeTab: 2
+    activeTab: 2,
   }),
 
   methods: {
     handleToken(token) {
       this.token = token;
-    }
-  }
+    },
+  },
 };
 </script>
 

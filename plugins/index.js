@@ -9,7 +9,7 @@ import vGoogleTranslate from "v-google-translate";
 
 /* This is r=to encrypt Data as referenced in Axios file */
 // Vue.use(VueCryptojs);
-Vue.component("downloadCsv", JsonCSV);
+Vue.component("DownloadCsv", JsonCSV);
 Vue.use(Vuelidate);
 Vue.use(vGoogleTranslate);
 Vue.use(VueTelInput, {

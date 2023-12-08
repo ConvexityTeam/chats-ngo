@@ -1,5 +1,5 @@
 <template>
-  <div class="main" v-if="isVerified">
+  <div v-if="isVerified" class="main">
     <div class="text-center">
       <!-- Logo here -->
       <div class="logo-div pt-5">
@@ -37,7 +37,7 @@
 
 <script>
 export default {
-  name: "verifyEmail",
+  name: "VerifyEmail",
 
   data: () => ({
     isVerified: false,
@@ -60,8 +60,7 @@ export default {
           // nu ==> new user
           this.$router.push({ path: "/", query: { nu: true } });
         }, 3000);
-      } catch (err) {
-        this.$toast.error(err.response?.data?.message);
+      } catch (_err) {
       } finally {
         this.loading = false;
       }

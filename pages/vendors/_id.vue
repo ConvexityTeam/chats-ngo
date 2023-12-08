@@ -12,10 +12,14 @@
             <!-- Total amount Received here -->
             <div class="col-lg-4">
               <div class="card__holder d-flex p-3">
-                <div>
-                  <img src="~/assets/img/vectors/deposit.svg" alt="deposit" />
+                <img src="~/assets/img/vectors/deposit.svg" alt="deposit" />
+
+                <div v-if="loading" class="ml-3 w-50">
+                  <Skeleton class="mb-2" />
+                  <Skeleton />
                 </div>
-                <div class="ml-3">
+
+                <div v-else class="ml-3">
                   <p class="text">Total Recieved</p>
                   <h4 class="funds" :title="totalReceived">
                     {{ $truncate(totalReceived) }}
@@ -27,10 +31,14 @@
             <!--  Amount Disbursed here -->
             <div class="col-lg-4">
               <div class="card__holder d-flex p-3">
-                <div>
-                  <img src="~/assets/img/vectors/spent.svg" alt="spent" />
+                <img src="~/assets/img/vectors/spent.svg" alt="spent" />
+
+                <div v-if="loading" class="ml-3 w-50">
+                  <Skeleton class="mb-2" />
+                  <Skeleton />
                 </div>
-                <div class="ml-3">
+
+                <div v-else class="ml-3">
                   <p class="text">Total Spent</p>
                   <h4 class="funds" :title="totalSpent">
                     {{ $truncate(totalSpent) }}
@@ -42,10 +50,14 @@
             <!-- Total Balance -->
             <div class="col-lg-4">
               <div class="card__holder d-flex p-3">
-                <div>
-                  <total-balance />
+                <IconsTotalBalance />
+
+                <div v-if="loading" class="ml-3 w-50">
+                  <Skeleton class="mb-2" />
+                  <Skeleton />
                 </div>
-                <div class="ml-3">
+
+                <div v-else class="ml-3">
                   <p class="text">Total Remaining</p>
                   <h4 class="funds" :title="totalRemaining">
                     {{ $truncate(totalRemaining) }}
@@ -57,16 +69,21 @@
 
           <!-- Campaigns here -->
           <div class="mt-3">
-            <VendorProducts
+            <TablesVendorsProducts
+              :loading="loading"
               :products="products"
               :name="`${vendor.first_name} ${vendor.last_name}`"
+              :productsPageNum="productsPageNum"
+              :productsTotalItems="productsTotalItems"
+              @updatePage="updateProductsPage"
             />
           </div>
         </div>
 
         <!-- Personal details here -->
         <div class="col-lg-4">
-          <VendorDetails :user="vendor" />
+          <SkeletonSingleCard v-if="loading" />
+          <TablesVendorsDetails v-else :user="vendor" />
         </div>
       </div>
     </div>
@@ -75,34 +92,21 @@
 
 <script>
 import { mapGetters } from "vuex";
-import TotalBalance from "~/components/icons/total-balance";
-import Disbursed from "~/components/icons/disbursed";
-import VendorDetails from "~/components/tables/vendors/VendorDetails";
-import VendorProducts from "~/components/tables/vendors/VendorProducts";
-
-let screenLoading;
 
 export default {
   name: "VendorInfo",
-  layout: "dashboard",
 
-  components: {
-    Disbursed,
-    TotalBalance,
-    VendorDetails,
-    VendorProducts,
-  },
+  layout: "dashboard",
 
   data: () => ({
     id: "",
+    loading: false,
     vendor: {},
     products: [],
-  }),
 
-  mounted() {
-    this.id = this.user?.AssociatedOrganisations[0]?.OrganisationId;
-    this.getDetails();
-  },
+    productsPageNum: 1,
+    productsTotalItems: 0,
+  }),
 
   computed: {
     ...mapGetters("authentication", ["user"]),
@@ -121,37 +125,41 @@ export default {
 
     totalRemaining() {
       const balance = this.vendor.total_received - this.vendor.total_spent;
-
       return `${this.$root.$options.filters.formatCurrency(balance)}`;
     },
   },
 
+  mounted() {
+    this.id = this.user?.AssociatedOrganisations[0]?.OrganisationId;
+    this.getDetails();
+  },
+
   methods: {
-    async getDetails() {
-      try {
-        this.openScreen();
-        const response = await this.$axios.get(
-          `organisations/${this.id}/vendors/${this.$route.params.id}`
-        );
+    updateProductsPage(action) {
+      this.productsPageNum =
+        action === "prev" ? this.productsPageNum - 1 : this.productsPageNum + 1;
 
-        console.log("VENDOR DETAIl::", response);
-
-        if (response.status == "success") {
-          this.vendor = response.data;
-          this.products = response.data.Store?.Products.reverse();
-        }
-      } catch (err) {
-      } finally {
-        screenLoading.close();
-      }
+      this.getDetails();
     },
 
-    openScreen() {
-      screenLoading = this.$loading({
-        lock: true,
-        spinner: "el-icon-loading",
-        background: "#0000009b",
-      });
+    async getDetails() {
+      try {
+        this.loading = true;
+        const response = await this.$axios.get(
+          `organisations/${this.id}/vendors/${this.$route.params.id}?page=${this.productsPageNum}&size=10`
+        );
+
+        if (response.status === "success") {
+          this.vendor = response.data;
+          this.products = response.data.products.data.reverse();
+        }
+
+        this.productsPageNum = response.data.products?.currentPage;
+        this.productsTotalItems = response.data.products?.totalItems;
+      } catch (err) {
+      } finally {
+        this.loading = false;
+      }
     },
   },
 };

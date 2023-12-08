@@ -3,7 +3,7 @@
     <!-- Modas Here -->
     <section>
       <Modal id="invite-donor" title="Invite donor to project">
-        <InviteDonorVue @sendInvite="sendInvite" :loading="loading" />
+        <InviteDonorVue :loading="loading" @sendInvite="sendInvite" />
       </Modal>
     </section>
 
@@ -17,13 +17,11 @@
           @click="$copy(copiableLink)"
         />
 
-        <span class="primary-blue text-truncate ml-2">
-          Project link:
+        <span class="project-link text-truncate ml-2">
+          <span class="primary-blue"> Project link: </span>
 
-          <span>
-            <span @click="$copy(copiableLink)" class="copy-link">
-              {{ copiableLink }}
-            </span>
+          <span class="copy-link" @click="$copy(copiableLink)">
+            {{ copiableLink }}
           </span>
         </span>
       </div>
@@ -35,15 +33,17 @@
         <div
           class="d-flex align-items-center justify-content-center flex-fill action_1 h-100 px-1"
         >
-          <span class="mr-2"> Make public </span>
+          <span class="mr-2 primary-blue font-medium poppins">
+            Make public
+          </span>
 
           <span class="d-flex align-items-center h-100">
             <toggle
-              class="mb-n1"
               v-model="isCampaignPublic"
-              @input="toggle"
+              class="mb-n1"
               :disabled="details?.status == 'completed'"
               :title="details?.status == 'completed' && 'Project completed'"
+              @input="toggle"
             />
           </span>
         </div>
@@ -82,10 +82,11 @@ export default {
 
   computed: {
     campaignLink() {
-      return this.isCampaignPublic
-        ? `${appConfig.DONOR_APP_URL}/projects/public`
-        : `${appConfig.DONOR_APP_URL}/projects`;
+      return `${appConfig.DONOR_APP_URL}/projects${
+        this.isCampaignPublic ? "/public" : ""
+      }`;
     },
+
     copiableLink() {
       return `${this.campaignLink}/${this.details?.id}`;
     },
@@ -107,9 +108,9 @@ export default {
 
         this.$toast.success(response.message);
         this.isCampaignPublic = value;
-        return screenLoading.close();
-      } catch (err) {
-        this.$toast.error(err.message);
+      } catch (_err) {
+        this.isCampaignPublic = !value;
+      } finally {
         screenLoading.close();
       }
     },
@@ -126,17 +127,17 @@ export default {
         );
 
         this.$toast.success(response.message);
-        return this.$bvModal.hide("invite-donor");
-      } catch (err) {
-        this.$toast.error(err?.message);
+        this.$bvModal.hide("invite-donor");
+      } catch (_err) {
       } finally {
         this.loading = false;
       }
     },
     openModal(modalId) {
-      if (this.details?.status == "completed") return;
+      if (this.details?.status === "completed") return;
       this.$bvModal.show(modalId);
     },
+
     openScreen() {
       screenLoading = this.$loading({
         lock: true,
@@ -160,10 +161,6 @@ img {
   cursor: pointer;
 }
 
-.primary-blue {
-  font-weight: 500;
-}
-
 a {
   text-decoration: none;
 }
@@ -182,8 +179,16 @@ a {
   color: #17ce89;
   cursor: pointer;
 }
+
+.project-link {
+  font-weight: bold;
+  font-style: italic;
+  color: #2f80ed;
+}
 .copy-link {
-  color: #2f80ed !important;
+  font-style: normal;
+  font-weight: normal;
+
   cursor: copy;
 }
 

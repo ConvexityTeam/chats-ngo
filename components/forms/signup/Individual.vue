@@ -1,17 +1,17 @@
 <template>
-  <form @submit.prevent="registerUser" class="mt-3">
+  <form class="mt-3" @submit.prevent="registerUser">
     <!-- First Name name here -->
     <div class="form-group">
       <label for="first_name">First name</label>
       <input
+        id="first_name"
+        v-model="payload.first_name"
         type="text"
         class="form-controls less-padded"
         placeholder="First name"
         :class="{
           form__input__error: $v.payload.first_name.$error,
         }"
-        id="first_name"
-        v-model="payload.first_name"
         @blur="$v.payload.first_name.$touch()"
       />
     </div>
@@ -20,14 +20,14 @@
     <div class="form-group">
       <label for="last_name">Last name</label>
       <input
+        id="last_name"
+        v-model="payload.last_name"
         type="text"
         class="form-controls less-padded"
         placeholder="Last name"
         :class="{
           form__input__error: $v.payload.last_name.$error,
         }"
-        id="last_name"
-        v-model="payload.last_name"
         @blur="$v.payload.last_name.$touch()"
       />
     </div>
@@ -36,12 +36,12 @@
     <div class="form-group">
       <label for="email">Email</label>
       <input
+        id="email"
+        v-model="payload.email"
         type="email"
         class="form-controls"
         placeholder="example@gmail.com"
         :class="{ form__input__error: $v.payload.email.$error }"
-        id="email"
-        v-model="payload.email"
         @focus="emailActive = true"
         @blur="$v.payload.email.$touch()"
       />
@@ -54,12 +54,12 @@
     <div class="form-group last">
       <label for="password">Password</label>
       <input
+        id="password"
+        v-model="payload.password"
         :type="showpassword ? 'text' : 'password'"
         class="form-controls"
         placeholder="Enter password"
         :class="{ form__input__error: $v.payload.password.$error }"
-        id="password"
-        v-model="payload.password"
         @focus="passActive = true"
         @blur="$v.payload.password.$touch()"
       />
@@ -142,6 +142,7 @@ export default {
         containsLowercase: (value) => /[a-z]/.test(value),
         containsNumber: (value) => /[0-9]/.test(value),
         containsSpecial: (value) =>
+          // eslint-disable-next-line no-useless-escape
           /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(value),
       },
     },

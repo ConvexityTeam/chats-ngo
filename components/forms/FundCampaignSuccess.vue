@@ -86,7 +86,7 @@ export default {
     closeModal() {
       this.$bvModal.hide("fund-campaign-success");
       this.$emit("close");
-    }
-  }
+    },
+  },
 };
 </script>

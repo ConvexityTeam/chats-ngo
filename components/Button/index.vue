@@ -2,10 +2,10 @@
   <button
     :type="type"
     class="d-flex align-items-center px-3"
-    @click="$emit('click')"
     :class="{ border: hasBorder, isGray: isGray }"
     :style="customStyles"
     :disabled="disabled"
+    @click="$emit('click')"
   >
     <i v-if="hasIcon && !loading">
       <img v-if="hasEye" src="~/assets/img/vectors/eye.svg" alt="eye" />
@@ -43,7 +43,7 @@
 
 <script>
 export default {
-  name: "create-button",
+  name: "CreateButton",
   props: {
     text: {
       type: String,

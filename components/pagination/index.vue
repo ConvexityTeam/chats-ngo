@@ -1,122 +1,117 @@
 <template>
-  <div class="d-flex justify-content-end align-items-center px-4 pt-2 pb-4">
-    <span class="text"> Showing </span>
+  <div v-if="totalNumOfItems > numOfItemsPerPage">
+    <div class="d-flex justify-content-end align-items-center p-3">
+      <span class="text"> Showing </span>
 
-    <span
-      class="text"
-      :class="
-        currentPageNum === totalNumOfPages && remainder === 1 ? 'd-none' : ''
-      "
-    >
-      {{ Math.floor((currentPageNum - 1) * numOfItemsPerPage) + 1 }}
-    </span>
+      <span class="text" :class="{ 'd-none': isOneRemainder }">
+        {{ Math.floor((currentPageNum - 1) * numOfItemsPerPage) + 1 }}
+      </span>
 
-    <span
-      class="text"
-      :class="
-        currentPageNum === totalNumOfPages && remainder === 1 ? 'd-none' : ''
-      "
-    >
-      -
-    </span>
+      <span class="text" :class="{ 'd-none': isOneRemainder }"> - </span>
 
-    <span class="text">
-      <span v-if="currentPageNum === totalNumOfPages">
-        <!--  -->
-        <span v-if="remainder === 0">
+      <span class="text">
+        <span v-if="currentPageNum === totalNumOfPages">
+          <span v-if="!remainder">
+            {{
+              Math.floor((currentPageNum + 1) * numOfItemsPerPage) -
+              numOfItemsPerPage
+            }}
+          </span>
+
+          <span v-else>
+            {{
+              Math.floor((currentPageNum - 1) * numOfItemsPerPage) + remainder
+            }}
+          </span>
+        </span>
+
+        <span v-else>
           {{
             Math.floor((currentPageNum + 1) * numOfItemsPerPage) -
             numOfItemsPerPage
           }}
         </span>
-
-        <!--  -->
-        <span v-if="remainder > 0">
-          {{ Math.floor((currentPageNum - 1) * numOfItemsPerPage) + remainder }}
-        </span>
       </span>
 
-      <span v-if="currentPageNum !== totalNumOfPages">
-        {{
-          Math.floor((currentPageNum + 1) * numOfItemsPerPage) -
-          numOfItemsPerPage
-        }}
+      <span class="text"> of {{ totalNumOfItems }} </span>
+      <span
+        class="mx-2 p-1 icon"
+        :class="{ disabled: isPrevButtonDisabled }"
+        title="Previous Page"
+        @click="clickHandler('prev')"
+      >
+        <!-- <LeftArrowVue /> -->
+        <IconsLeftArrow />
       </span>
-    </span>
 
-    <span class="text"> of </span>
-
-    <span class="text"> {{ totalNumOfItems }} </span>
-
-    <!-- action buttons  -->
-    <!-- previous button -->
-    <span
-      class="mx-2 p-1 icon"
-      :class="btnToDisable === 'prev' && 'disabled'"
-      title="Previous Page"
-      @click="btnToDisable !== 'prev' ? clickHandler('prev') : null"
-    >
-      <LeftArrowVue />
-    </span>
-
-    <!-- next button -->
-    <span
-      class="mx-2 p-1 icon"
-      :class="btnToDisable === 'next' && 'disabled'"
-      title="Next Page"
-      @click="btnToDisable !== 'next' ? clickHandler('next') : null"
-    >
-      <RightArrowVue />
-    </span>
+      <span
+        class="mx-2 p-1 icon"
+        :class="{ disabled: isNextButtonDisabled }"
+        title="Next Page"
+        @click="clickHandler('next')"
+      >
+        <!-- <RightArrowVue /> -->
+        <IconsRightArrow />
+      </span>
+    </div>
   </div>
 </template>
 
 <script>
-import RightArrowVue from "~/components/icons/right-arrow.vue";
-import LeftArrowVue from "~/components/icons/left-arrow.vue";
-
 export default {
-  components: {
-    RightArrowVue,
-    LeftArrowVue,
-  },
   props: {
     numOfItemsPerPage: {
       type: Number,
       default: 10,
     },
+
     currentPageNum: {
       type: Number,
       default: 1,
       required: true,
     },
+
     totalNumOfItems: {
       type: Number,
       default: 0,
       required: true,
     },
   },
-  data: () => ({}),
+
   computed: {
-    remainder: function () {
+    remainder() {
       return this.totalNumOfItems % this.numOfItemsPerPage;
     },
-    totalNumOfPages: function () {
-      const numOfPages = Math.floor(
-        (this.totalNumOfItems - this.remainder) / this.numOfItemsPerPage
-      );
 
-      if (this.remainder < 1) return numOfPages;
-      if (this.remainder >= 1) return numOfPages + 1;
+    isOneRemainder() {
+      return (
+        this.currentPageNum === this.totalNumOfPages && this.remainder === 1
+      );
     },
-    btnToDisable: function () {
-      if (this.currentPageNum <= 1) return "prev";
-      if (this.currentPageNum === this.totalNumOfPages) return "next";
+
+    totalNumOfPages() {
+      return Math.ceil(this.totalNumOfItems / this.numOfItemsPerPage);
+    },
+
+    isPrevButtonDisabled() {
+      return this.currentPageNum <= 1;
+    },
+
+    isNextButtonDisabled() {
+      return (
+        this.currentPageNum >= this.totalNumOfPages ||
+        this.totalNumOfItems <= this.numOfItemsPerPage
+      );
     },
   },
+
   methods: {
     clickHandler(action) {
-      this.$emit("updatePage", action);
+      if (action === "prev" && !this.isPrevButtonDisabled) {
+        this.$emit("updatePage", action);
+      } else if (action === "next" && !this.isNextButtonDisabled) {
+        this.$emit("updatePage", action);
+      }
     },
   },
 };

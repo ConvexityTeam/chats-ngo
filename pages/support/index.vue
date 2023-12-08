@@ -5,10 +5,10 @@
       <div class="row">
         <div class="form-group col">
           <input
+            id="name"
             type="text"
             class="form-controls"
             name="name"
-            id="name"
             placeholder="First Name"
             :value="user.first_name"
             disabled
@@ -16,10 +16,10 @@
         </div>
         <div class="form-group col">
           <input
+            id="name"
             type="text"
             class="form-controls"
             name="name"
-            id="name"
             placeholder="Last Name"
             :value="user.last_name"
             disabled
@@ -31,10 +31,10 @@
       <div class="row">
         <div class="form-group col">
           <input
+            id="email"
             type="email"
             class="form-controls"
             name="email"
-            id="email"
             placeholder="Email Address"
             :value="user.email"
             disabled
@@ -57,15 +57,15 @@
       <!-- Subject -->
       <div class="form-group">
         <input
+          id="subject"
+          v-model="payload.subject"
           type="text"
           class="form-controls"
           name="subject"
-          id="subject"
           placeholder="Subject"
           :class="{
             error: $v.payload.subject.$error,
           }"
-          v-model="payload.subject"
           @blur="$v.payload.subject.$touch()"
         />
       </div>
@@ -73,13 +73,13 @@
       <!-- description -->
       <div class="form-group">
         <textarea
+          v-model="payload.description"
           :class="{
             form__input__error: $v.payload.description.$error,
           }"
-          v-model="payload.description"
-          @blur="$v.payload.description.$touch()"
           rows="30"
           placeholder="Enter something..."
+          @blur="$v.payload.description.$touch()"
         ></textarea>
       </div>
 
@@ -104,6 +104,7 @@ import { mapGetters } from "vuex";
 export default {
   name: "Support",
   layout: "dashboard",
+  transition: "fade-up",
 
   data: () => ({
     loading: false,
@@ -149,13 +150,11 @@ export default {
           data
         );
 
-        if (response.status == "success") {
+        if (response.status === "success") {
           this.$toast.success(response.message);
           this.resetPayload();
         }
-      } catch (error) {
-        console.log(error);
-        this.$toast.error(error?.response?.data?.message);
+      } catch (_err) {
       } finally {
         this.loading = false;
       }

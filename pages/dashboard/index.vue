@@ -1,13 +1,19 @@
 <template>
   <div class="main container transparent pb-5">
     <!-- Top cards here -->
+
     <div class="row pt-4">
       <!-- Wallet balance here -->
       <div class="col-lg-3">
         <div class="card__holder d-flex p-3">
-          <ItemDistributed />
+          <IconsItemDistributed />
 
-          <div class="ml-3">
+          <div v-if="$fetchState.pending" class="ml-3 w-50">
+            <Skeleton class="mb-2" />
+            <Skeleton />
+          </div>
+
+          <div v-else class="ml-3">
             <p class="text">Items Distributed</p>
 
             <h4 class="funds">
@@ -23,7 +29,13 @@
           <div>
             <img src="~/assets/img/vectors/deposit.svg" alt="deposit" />
           </div>
-          <div class="ml-3">
+
+          <div v-if="$fetchState.pending" class="ml-3 w-50">
+            <Skeleton class="mb-2" />
+            <Skeleton />
+          </div>
+
+          <div v-else class="ml-3">
             <p class="text">Project Budget</p>
             <h4 class="funds" :title="campaignBudget">
               {{ $truncate(campaignBudget) }}
@@ -35,9 +47,14 @@
       <!--  Amount Disbursed here -->
       <div class="col-lg-3">
         <div class="card__holder d-flex p-3">
-          <Disbursed />
+          <IconsDisbursed />
 
-          <div class="ml-3">
+          <div v-if="$fetchState.pending" class="ml-3 w-50">
+            <Skeleton class="mb-2" />
+            <Skeleton />
+          </div>
+
+          <div v-else class="ml-3">
             <p class="text">Amount Disbursed</p>
             <h4 class="funds" :title="amountDisbursed">
               {{ $truncate(amountDisbursed) }}
@@ -49,9 +66,14 @@
       <!-- Total Balance -->
       <div class="col-lg-3">
         <div class="card__holder d-flex p-3">
-          <TotalBalance />
+          <IconsTotalBalance />
 
-          <div class="ml-3">
+          <div v-if="$fetchState.pending" class="ml-3 w-50">
+            <Skeleton class="mb-2" />
+            <Skeleton />
+          </div>
+
+          <div v-else class="ml-3">
             <p class="text">Project Balance</p>
             <h4 class="funds" :title="campaignBalance">
               {{ $truncate(campaignBalance) }}
@@ -80,8 +102,12 @@
                 <p class="beneficiaries">Beneficiaries</p>
               </div>
             </div>
+
             <h4 class="beneficiaries-count m-3">
-              {{ beneficiaries.length || 0 | formatNumber }}
+              <Skeleton v-if="$fetchState.pending" styles="width: 20%" />
+              <span v-else>
+                {{ beneficiaries.length || 0 | formatNumber }}</span
+              >
             </h4>
           </div>
 
@@ -95,7 +121,8 @@
               </div>
             </div>
             <h4 class="beneficiaries-count m-3">
-              {{ vendors.length || 0 | formatNumber }}
+              <Skeleton v-if="$fetchState.pending" styles="width: 20%" />
+              <span v-else> {{ vendors.length || 0 | formatNumber }}</span>
             </h4>
           </div>
         </div>
@@ -104,14 +131,14 @@
       <!-- Beneficiary Age group  Cards here -->
       <div class="col-lg-4 pb-3">
         <div class="cards__holder px-3 pt-3">
-          <BeneficiaryAge />
+          <ChartsBeneficiaryAge />
         </div>
       </div>
 
       <!-- Beneficiary By Gender  Cards here -->
       <div class="col-lg-4 pb-3">
         <div class="cards__holder px-3 pt-3">
-          <BeneficiaryGender />
+          <ChartsBeneficiaryGender />
         </div>
       </div>
     </div>
@@ -121,21 +148,21 @@
       <!-- Beneficiary By Location card here -->
       <div class="col-lg-4 pb-3">
         <div class="cards__holder px-3 pt-3">
-          <BeneficiaryLocation />
+          <ChartsBeneficiaryLocation />
         </div>
       </div>
 
       <!-- Vendor Transaction By Beneficiary  Cards here -->
       <div class="col-lg-4 pb-3">
         <div class="cards__holder px-3 pt-3">
-          <BeneficiaryVendor />
+          <ChartsBeneficiaryBalances />
         </div>
       </div>
 
       <!-- Beneficiary Balances card here -->
       <div class="col-lg-4 pb-3">
         <div class="cards__holder px-3 pt-3">
-          <BeneficiaryBalances />
+          <ChartsBeneficiaryVendor />
         </div>
       </div>
     </div>
@@ -200,9 +227,9 @@
 
             <div v-else-if="vendors.length">
               <div
-                class="d-flex"
                 v-for="vendor in displayedVendors"
                 :key="vendor.id"
+                class="d-flex"
               >
                 <div>
                   <span class="vendor-name">
@@ -217,14 +244,14 @@
             </div>
 
             <div
-              class="d-flex h-100 align-items-end"
               v-if="displayedVendors.length"
+              class="d-flex h-100 align-items-end"
             >
               <div>
                 <button
                   type="button"
-                  @click="$router.push('/vendors')"
                   class="d-flex viewall align-items-center"
+                  @click="$router.push('/vendors')"
                 >
                   <img
                     src="~/assets/img/vectors/eye.svg"
@@ -244,33 +271,14 @@
 
 <script>
 import { mapGetters } from "vuex";
-import BeneficiaryAge from "~/components/charts/beneficiary-age";
-import BeneficiaryBalances from "~/components/charts/beneficiary-balances";
-import BeneficiaryGender from "~/components/charts/beneficiary-gender";
-import BeneficiaryLocation from "~/components/charts/beneficiary-location";
-import BeneficiaryVendor from "~/components/charts/beneficiary-vendor";
-import Disbursed from "~/components/icons/disbursed";
-import TotalBalance from "~/components/icons/total-balance";
-import ItemDistributed from "~/components/icons/item-distributed";
 
 export default {
   name: "Dashboard",
   layout: "dashboard",
-
-  components: {
-    BeneficiaryAge,
-    BeneficiaryGender,
-    BeneficiaryVendor,
-    BeneficiaryBalances,
-    BeneficiaryLocation,
-    ItemDistributed,
-    TotalBalance,
-    Disbursed,
-  },
+  transition: "fade-up",
 
   data() {
     return {
-      loading: false,
       beneficiaries: [],
       vendors: [],
       // wallet: {},
@@ -278,41 +286,8 @@ export default {
       metricsData: {},
     };
   },
-
-  computed: {
-    ...mapGetters("authentication", ["user"]),
-
-    displayedVendors() {
-      return this.vendors.slice(0, 5);
-    },
-
-    campaignBudget() {
-      return `${this.$root.$options.filters.formatCurrency(
-        this.campaignDetails.campaign_budget
-      )}`;
-    },
-
-    amountDisbursed() {
-      return `${this.$root.$options.filters.formatCurrency(
-        this.campaignDetails.amount_disbursed
-      )}`;
-    },
-
-    campaignBalance() {
-      return `${this.$root.$options.filters.formatCurrency(
-        this.campaignDetails.balance
-      )}`;
-    },
-
-    isMetricData() {
-      // check if the properties of the object have values
-      return Object.values(this.metricsData).every((x) => x != null);
-    },
-  },
-
   async fetch() {
     const id = parseInt(this.user?.AssociatedOrganisations[0]?.OrganisationId);
-
     const beneficiaries = await this.$axios.get(
       `/organisation/${id}/beneficiaries`
     );
@@ -321,11 +296,35 @@ export default {
       `/organisations/campaigns/transaction`
     );
     const metricsData = await this.$axios.get(`/organisations/matrics`);
-
     this.beneficiaries = beneficiaries.data;
     this.vendors = vendors?.data;
     this.campaignDetails = campaignDetails?.data;
     this.metricsData = metricsData?.data;
+  },
+  computed: {
+    ...mapGetters("authentication", ["user"]),
+    displayedVendors() {
+      return this.vendors.slice(0, 5);
+    },
+    campaignBudget() {
+      return `${this.$root.$options.filters.formatCurrency(
+        this.campaignDetails.campaign_budget
+      )}`;
+    },
+    amountDisbursed() {
+      return `${this.$root.$options.filters.formatCurrency(
+        this.campaignDetails.amount_disbursed
+      )}`;
+    },
+    campaignBalance() {
+      return `${this.$root.$options.filters.formatCurrency(
+        this.campaignDetails.balance
+      )}`;
+    },
+    isMetricData() {
+      // check if the properties of the object have values
+      return Object.values(this.metricsData).every((x) => x != null);
+    },
   },
 };
 </script>
@@ -360,6 +359,7 @@ export default {
 }
 
 .stats-holder {
+  min-width: max-content;
   background: #f5f6f8;
   border-radius: 30px;
   height: 36px;

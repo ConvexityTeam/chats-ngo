@@ -41,13 +41,14 @@ export default {
     // ],
   },
 
-  css: ["~/assets/css/main", "~/assets/css/fonts.css"],
+  css: ["~/assets/styles/main", "~/assets/styles/fonts.css"],
 
   plugins: [
     "~/plugins/global.js",
     "~/plugins/index.js",
     "~/plugins/axios.js",
     "~/plugins/injections.js",
+    "~/plugins/error-handler.js",
     "~/plugins/element-ui",
     // "~/plugins/freshdesk.js",
     { src: "~/plugins/vuex-persist", ssr: false },
@@ -60,11 +61,13 @@ export default {
   modules: [
     "bootstrap-vue/nuxt",
     "@nuxtjs/axios",
-    "@nuxtjs/toast",
+    // "@nuxtjs/toast",
     "@nuxtjs/dotenv",
     "@nuxtjs/i18n",
     "@nuxtjs/recaptcha",
   ],
+
+  buildModules: ["@nuxtjs/eslint-module"],
 
   recaptcha: {
     hideBadge: true,
@@ -78,11 +81,6 @@ export default {
     https: true,
     progress: false,
     retry: { retries: 2 },
-  },
-
-  toast: {
-    position: "top-right",
-    duration: 3500,
   },
 
   build: {

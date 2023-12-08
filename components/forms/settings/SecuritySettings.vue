@@ -2,7 +2,7 @@
   <div class="row">
     <div class="col-lg-8">
       <!-- Modals Here -->
-      <template>
+      <section>
         <!-- Google TwoFa -->
         <Modal
           id="addGoogleTwoFa"
@@ -11,9 +11,9 @@
           @closeModal="setTwofaMethod"
         >
           <FormsSettingsAddGoogleTwofa
-            @enableTwoFa="enableTwoFa"
             :payload="payload"
             :loading="loading"
+            @enableTwoFa="enableTwoFa"
           />
         </Modal>
 
@@ -24,10 +24,10 @@
           @closeModal="setTwofaMethod"
         >
           <FormsSettingsAddEmailTwofa
-            @enableTwoFa="enableTwoFa"
-            @resendCode="(tfa_method) => handleSetup(null, tfa_method)"
             :user="user"
             :loading="loading"
+            @enableTwoFa="enableTwoFa"
+            @resendCode="(tfa_method) => handleSetup(null, tfa_method)"
           />
         </Modal>
 
@@ -38,23 +38,23 @@
           @closeModal="setTwofaMethod"
         >
           <FormsSettingsAddSmsTwofa
-            @enableTwoFa="enableTwoFa"
-            @resendCode="(tfa_method) => handleSetup(null, tfa_method)"
             :user="user"
             :loading="loading"
+            @enableTwoFa="enableTwoFa"
+            @resendCode="(tfa_method) => handleSetup(null, tfa_method)"
           />
         </Modal>
-      </template>
+      </section>
 
       <div class="form-holder">
         <!-- Button togglers here -->
         <div class="d-flex mb-3 w-full ctn-mgt-btn font-medium">
           <div class="mgt-btn-container">
             <button
-              @click="step = 1"
               type="button"
               class="mgt-btn one"
               :class="{ active: step == 1 }"
+              @click="step = 1"
             >
               Password
             </button>
@@ -62,10 +62,10 @@
 
           <div title="Not available" class="mgt-btn-container">
             <button
-              @click="step = 2"
               type="button"
               class="mgt-btn two"
               :class="{ active: step == 2 }"
+              @click="step = 2"
             >
               2-Factor Authentication
             </button>
@@ -105,8 +105,8 @@
 
               <!-- Connected Status -->
               <section
-                class="mt-3 p-3 bound-holder"
                 v-if="user.tfa_method == 'qrCode'"
+                class="mt-3 p-3 bound-holder"
               >
                 <IconsCheck />
 
@@ -140,8 +140,8 @@
 
               <!-- Connected Status -->
               <section
-                class="mt-3 p-3 bound-holder"
                 v-if="user.tfa_method == 'email'"
+                class="mt-3 p-3 bound-holder"
               >
                 <IconsCheck />
 
@@ -184,8 +184,8 @@
 
               <!-- Connected Status -->
               <section
-                class="mt-3 p-3 bound-holder"
                 v-if="user.tfa_method == 'sms'"
+                class="mt-3 p-3 bound-holder"
               >
                 <IconsCheck />
 
@@ -255,12 +255,11 @@ export default {
           tfa_method,
         });
 
-        if (response.status == "success") {
+        if (response.status === "success") {
           this.payload = response?.data;
           this.$bvModal.show(modalName);
         }
-      } catch (err) {
-        this.$toast.error(err.response?.data?.message);
+      } catch (_err) {
       } finally {
         this.isLoading = false;
         this.setTwofaMethod();
@@ -275,7 +274,7 @@ export default {
         });
         console.log("enableTwoFaresponse:::", response);
 
-        if (response.status == "success") {
+        if (response.status === "success") {
           this.$toast.success(response.message);
           this.$bvModal.hide(modalName);
 
@@ -284,8 +283,7 @@ export default {
           this.commitUser(user);
           this.setTwofaMethod();
         }
-      } catch (err) {
-        this.$toast.error(err.response.data.message);
+      } catch (_err) {
       } finally {
         this.loading = false;
       }

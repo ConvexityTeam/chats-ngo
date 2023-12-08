@@ -44,23 +44,21 @@
           <div class="form-group">
             <label for="amount">Amount to fund</label>
             <input
+              id="amount"
+              v-model="amount"
               type="number"
               class="form-controls"
               :class="{
-                error: $v.amount.$error
+                error: $v.amount.$error,
               }"
-              id="amount"
               placeholder="Enter an Amount"
-              v-model="amount"
               @blur="$v.amount.$touch()"
             />
           </div>
 
           <div class="d-flex pt-2">
             <div class="ml-auto">
-              <button class="create-campaign px-4 py-2">
-                Fund Wallet
-              </button>
+              <button class="create-campaign px-4 py-2">Fund Wallet</button>
             </div>
           </div>
         </form>
@@ -73,13 +71,13 @@ import { required } from "vuelidate/lib/validators";
 export default {
   data() {
     return {
-      amount: ""
+      amount: "",
     };
   },
   validations: {
     amount: {
-      required
-    }
+      required,
+    },
   },
   methods: {
     closeModal() {
@@ -92,9 +90,9 @@ export default {
         return;
       }
       this.$emit("fundAccount", this.amount);
-            this.closeModal();
-    }
-  }
+      this.closeModal();
+    },
+  },
 };
 </script>
 
@@ -131,7 +129,6 @@ label {
 .form-controls {
   border: 1px solid #999999;
 }
-
 
 .create-campaign {
   background: var(--primary-color);

@@ -10,10 +10,10 @@
     <section class="mt-3">
       <div class="position-relative">
         <input
+          v-model="searchQuery"
           type="text"
           class="form-controls search"
           placeholder="Search projects..."
-          v-model="searchQuery"
         />
         <img
           src="~/assets/img/vectors/search.svg"
@@ -30,27 +30,29 @@
     >
       <template v-if="resultQuery.length">
         <div
-          class="d-flex pb-2 mb-1"
           v-for="campaign in resultQuery"
           :key="campaign.id"
+          class="d-flex pb-2 mb-1"
         >
-          <!-- campaign Here -->
-          <p class="font-medium primary-blue">
-            {{ `${campaign.title} (${campaign.Beneficiaries.length})` }}
-          </p>
+          <template v-if="campaign.Beneficiaries.length">
+            <!-- campaign Here -->
+            <p class="font-medium primary-blue">
+              {{ `${campaign.title} (${campaign.Beneficiaries.length})` }}
+            </p>
 
-          <!-- Button Here -->
-          <div class="ml-auto">
-            <Button
-              text="Import"
-              :has-icon="true"
-              :is-import="true"
-              :has-border="true"
-              custom-styles="border: 1px solid #17CE89 !important; border-radius: 5px !important; font-size: 0.875rem !important; height: 33px !important; padding: 0 10px !important"
-              :disabled="loading || !campaign.Beneficiaries.length"
-              @click="handleImport(campaign.id)"
-            />
-          </div>
+            <!-- Button Here -->
+            <div class="ml-auto">
+              <Button
+                text="Import"
+                :has-icon="true"
+                :is-import="true"
+                :has-border="true"
+                custom-styles="border: 1px solid #17CE89 !important; border-radius: 5px !important; font-size: 0.875rem !important; height: 33px !important; padding: 0 10px !important"
+                :disabled="loading || !campaign.Beneficiaries.length"
+                @click="handleImport(campaign.id)"
+              />
+            </div>
+          </template>
         </div>
       </template>
 
@@ -77,6 +79,20 @@ export default {
     campaigns: [],
   }),
 
+  async fetch() {
+    // TODO: this needs to be updated to carter for fetching all Campaigns Scenario; either that or we rework the import flow
+    const response = await this.$axios.get(
+      `/organisations/${+this
+        .orgId}/campaigns/all?type=campaign&page=${1}&size=10`
+    );
+
+    if (response.status === "success") {
+      this.campaigns = response.data.filter(
+        (campaign) => parseInt(campaign.id) !== parseInt(this.$route.params.id)
+      );
+    }
+  },
+
   computed: {
     resultQuery() {
       if (this.searchQuery) {
@@ -90,18 +106,6 @@ export default {
         return this.campaigns;
       }
     },
-  },
-
-  async fetch() {
-    const response = await this.$axios.get(
-      `/organisations/${+this.orgId}/campaigns/all?type=campaign`
-    );
-
-    if (response.status == "success") {
-      this.campaigns = response.data.filter(
-        (campaign) => campaign.id != this.$route.params.id
-      );
-    }
   },
 
   methods: {
@@ -118,9 +122,8 @@ export default {
 
         console.log("Import Response:::", response);
 
-        if (response.status == "success") {
+        if (response.status === "success") {
           this.$emit("imported", "existing");
-          this.$toast.success(response.message);
         }
       } catch (error) {
         console.log(error);

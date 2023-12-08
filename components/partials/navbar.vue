@@ -67,6 +67,7 @@
 <script>
 import { mapGetters } from "vuex";
 import GoogleTranslate from "../GoogleTranslate.vue";
+
 export default {
   components: { GoogleTranslate },
   data: () => ({
@@ -74,6 +75,7 @@ export default {
     isNotification: false,
     drawer: false,
   }),
+
   computed: {
     ...mapGetters("authentication", ["user"]),
     logo() {
@@ -82,55 +84,41 @@ export default {
       );
     },
   },
+
   watch: {
     $route() {
-      if (this.$router.history.current.name.includes("vendors")) {
+      this.updateTitle();
+    },
+  },
+
+  mounted() {
+    this.updateTitle();
+  },
+
+  methods: {
+    updateTitle() {
+      const routeName = this.$route.name;
+      const params = this.$route.params;
+
+      if (routeName.includes("vendors")) {
         this.title = "Vendors";
-      } else if (this.$router.history.current.name.includes("beneficiaries")) {
+      } else if (routeName.includes("beneficiaries")) {
         this.title = "Beneficiaries";
-      } else if (this.$router.history.current.name.includes("projects")) {
+      } else if (routeName.includes("projects")) {
         this.title = "Projects";
-      } else if (
-        this.$router.history.current.name.includes("cash") &&
-        !this.$router.history.current.params.id
-      ) {
-        this.title = "Cash for work";
-      } else if (
-        this.$router.history.current.params.id &&
-        this.$router.history.current.name.includes("cash")
-      ) {
-        this.title = "Cash for work - Tasks";
-      } else if (this.$router.history.current.name.includes("market")) {
+      } else if (routeName.includes("cash")) {
+        if (params.id) {
+          this.title = "Cash for work - Tasks";
+        } else {
+          this.title = "Cash for work";
+        }
+      } else if (routeName.includes("market")) {
         this.title = "Marketplace";
       } else {
-        this.title = this.$router.history.current.name;
+        this.title = routeName;
       }
     },
   },
-  mounted() {
-    if (this.$router.history.current.name.includes("vendors")) {
-      this.title = "Vendors";
-    } else if (this.$router.history.current.name.includes("beneficiaries")) {
-      this.title = "Beneficiaries";
-    } else if (this.$router.history.current.name.includes("projects")) {
-      this.title = "Projects";
-    } else if (
-      this.$router.history.current.name.includes("cash") &&
-      !this.$router.history.current.params.id
-    ) {
-      this.title = "Cash for work";
-    } else if (
-      this.$router.history.current.params.id &&
-      this.$router.history.current.name.includes("cash")
-    ) {
-      this.title = "Cash for work - Tasks";
-    } else if (this.$router.history.current.name.includes("market")) {
-      this.title = "Marketplace";
-    } else {
-      this.title = this.$router.history.current.name;
-    }
-  },
-  components: { GoogleTranslate },
 };
 </script>
 

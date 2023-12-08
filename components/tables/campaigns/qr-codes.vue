@@ -1,16 +1,20 @@
 <template>
   <div>
-    <div class="mt-4" style="overflow: auto" v-if="data.length">
+    <div v-if="loading" class="m-4">
+      <SkeletonQrSkeleton />
+    </div>
+
+    <div v-else-if="data.length" class="mt-4 transparent main-holder">
       <div
-        class="row"
         v-infinite-scroll="load"
+        class="row"
         :infinite-scroll-disabled="disabled"
         :infinite-scroll-immediate="false"
       >
         <div
-          class="col-lg-4"
           v-for="(token, i) in data.slice(0, count)"
           :key="i"
+          class="col-lg-4"
         >
           <div class="card-holder p-4">
             <div class="row">
@@ -88,16 +92,11 @@
 
       <!-- Loading State -->
       <p
-        class="text-center primary mt-3 mb-4 poppins font-medium"
         v-if="isLoading"
+        class="text-center primary mt-3 mb-4 poppins font-medium"
       >
         Load more...
       </p>
-    </div>
-
-    <!-- Loader Here -->
-    <div v-else-if="loading" class="py-5">
-      <div class="text-center loader my-5"></div>
     </div>
 
     <!-- No Data Here -->
@@ -106,34 +105,30 @@
 </template>
 
 <script>
-import QrcodeVue from "qrcode.vue";
+// import QrcodeVue from "qrcode.vue";
 
 export default {
-  name: "Qr-codes",
-  components: { QrcodeVue },
+  name: "QrCodes",
 
+  // components: { QrcodeVue },
   props: {
     triggerDownload: {
       type: Boolean,
       default: false,
     },
-
     data: {
       type: Array,
       default: () => [],
     },
-
     loading: {
       type: Boolean,
       default: false,
     },
   },
-
   data: () => ({
     count: 6,
     isLoading: false,
   }),
-
   computed: {
     noMore() {
       return this.count >= this.data.length;
@@ -142,7 +137,6 @@ export default {
       return this.isLoading || this.noMore;
     },
   },
-
   methods: {
     load() {
       this.isLoading = true;
@@ -156,11 +150,15 @@ export default {
 </script>
 
 <style scoped>
+.main-holder {
+  max-height: calc(100vh - 300px);
+  overflow: auto;
+}
 .card-holder {
   background: #ffffff;
   border: 1px solid #e1e7ec;
   border-radius: 8px;
-  height: 193px;
+  min-height: 193px;
   margin-bottom: 2rem;
 }
 

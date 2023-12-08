@@ -1,10 +1,10 @@
 <template>
   <div>
-    <div v-if="loading">
+    <!-- <div v-if="loading">
       <FullScreenLoader :loading="loading" />
-    </div>
+    </div> -->
 
-    <div class="main container transparent pb-5" v-else>
+    <div class="main container transparent pb-5">
       <div class="pt-4 mt-2">
         <back text="Go Back" @click="$router.go(-1)" />
       </div>
@@ -16,10 +16,14 @@
             <!-- Total amount Received here -->
             <div class="col-lg-4">
               <div class="card__holder d-flex p-3">
-                <div>
-                  <img src="~/assets/img/vectors/deposit.svg" alt="deposit" />
+                <img src="~/assets/img/vectors/deposit.svg" alt="deposit" />
+
+                <div v-if="loading" class="ml-3 w-50">
+                  <Skeleton class="mb-2" />
+                  <Skeleton />
                 </div>
-                <div class="ml-3">
+
+                <div v-else class="ml-3">
                   <p class="text">Total Recieved</p>
                   <h4 class="funds" :title="totalReceived">
                     {{ $truncate(totalReceived) }}
@@ -31,10 +35,14 @@
             <!--  Amount Disbursed here -->
             <div class="col-lg-4">
               <div class="card__holder d-flex p-3">
-                <div>
-                  <img src="~/assets/img/vectors/spent.svg" alt="spent" />
+                <img src="~/assets/img/vectors/spent.svg" alt="spent" />
+
+                <div v-if="loading" class="ml-3 w-50">
+                  <Skeleton class="mb-2" />
+                  <Skeleton />
                 </div>
-                <div class="ml-3">
+
+                <div v-else class="ml-3">
                   <p class="text">Total Spent</p>
                   <h4 class="funds" :title="totalSpent">
                     {{ $truncate(totalSpent) }}
@@ -46,10 +54,14 @@
             <!-- Total Balance -->
             <div class="col-lg-4">
               <div class="card__holder d-flex p-3">
-                <div>
-                  <total-balance />
+                <IconsTotalBalance />
+
+                <div v-if="loading" class="ml-3 w-50">
+                  <Skeleton class="mb-2" />
+                  <Skeleton />
                 </div>
-                <div class="ml-3">
+
+                <div v-else class="ml-3">
                   <p class="text">Total Remaining</p>
                   <h4 class="funds" :title="totalRemaining">
                     {{ $truncate(totalRemaining) }}
@@ -60,17 +72,16 @@
           </div>
 
           <!-- Campaigns - Group Members here -->
-
           <section>
             <div class="row mt-5">
               <div class="col-lg-8">
                 <!-- Search Box here -->
                 <div class="position-relative w-75">
                   <input
+                    v-model="searchQuery"
                     type="text"
                     class="form-controls search"
                     :placeholder="`Search ${section}...`"
-                    v-model="searchQuery"
                   />
                   <img
                     src="~/assets/img/vectors/search.svg"
@@ -86,10 +97,10 @@
             </div>
 
             <!-- Tabs Here -->
-            <div class="mt-4" v-if="members.length">
+            <div v-if="members.length" class="mt-4">
               <b-tabs
-                content-class="mt-1"
                 id="profile-tab"
+                content-class="mt-1"
                 nav-class
                 nav-wrapper-class
               >
@@ -100,7 +111,14 @@
                   @click="section = 'campaigns'"
                 >
                   <div class="mt-4">
-                    <BeneficiaryCampaign :campaigns="campaignsQuery" />
+                    <BeneficiaryCampaign
+                      :campaigns="campaignsQuery"
+                      :beneficiaryCampaignPageNum="beneficiaryCampaignPageNum"
+                      :beneficiaryCampaignTotalItems="
+                        beneficiaryCampaignTotalItems
+                      "
+                      @updatePage="updateBeneficiaryCampaigns"
+                    />
                   </div>
                 </b-tab>
 
@@ -111,9 +129,13 @@
                   @click="section = 'beneficiaries'"
                 >
                   <div class="mt-4">
-                    <BeneficiaryMembers
-                      :beneficiaries="beneficiariesQuery"
+                    <TablesBeneficiariesMembers
+                      :loading="loading"
                       :phone="userDetails.phone"
+                      :beneficiaries="beneficiariesQuery"
+                      :beneficiaryMemberPageNum="beneficiaryMemberPageNum"
+                      :beneficiaryMemberTotalItems="beneficiaryMemberTotalItems"
+                      @updatePage="updateBeneficiaryMembers"
                     />
                   </div>
                 </b-tab>
@@ -121,14 +143,21 @@
             </div>
 
             <div v-else>
-              <BeneficiaryCampaign :campaigns="campaignsQuery" />
+              <TablesBeneficiariesCampaign
+                :loading="loading"
+                :campaigns="campaignsQuery"
+                :beneficiaryCampaignPageNum="beneficiaryCampaignPageNum"
+                :beneficiaryCampaignTotalItems="beneficiaryCampaignTotalItems"
+                @updatePage="updateBeneficiaryCampaigns"
+              />
             </div>
           </section>
         </div>
 
         <!-- Personal details here -->
         <div class="col-lg-4">
-          <BeneficiaryDetails :user="userDetails" />
+          <SkeletonSingleCard v-if="loading" />
+          <TablesBeneficiariesDetails v-else :user="userDetails" />
         </div>
       </div>
     </div>
@@ -138,33 +167,26 @@
 <script>
 import { mapGetters } from "vuex";
 import moment from "moment";
-import TotalBalance from "~/components/icons/total-balance";
-import Disbursed from "~/components/icons/disbursed";
-import BeneficiaryDetails from "~/components/tables/beneficiaries/beneficiary-details";
-import BeneficiaryCampaign from "~/components/tables/beneficiaries/beneficiary-campaign";
-import BeneficiaryMembers from "~/components/tables/beneficiaries/BeneficiaryMembers";
 
 export default {
   name: "BeneficiaryInfo",
+
   layout: "dashboard",
-  components: {
-    Disbursed,
-    TotalBalance,
-    BeneficiaryDetails,
-    BeneficiaryCampaign,
-    BeneficiaryMembers,
-  },
 
   data: () => ({
     loading: false,
+    walletData: {},
     userDetails: {},
+    campaigns: [],
     section: "campaigns",
     searchQuery: "",
-  }),
 
-  mounted() {
-    this.getDetails();
-  },
+    beneficiaryMemberPageNum: 1,
+    beneficiaryMemberTotalItems: 0,
+
+    beneficiaryCampaignPageNum: 1,
+    beneficiaryCampaignTotalItems: 0,
+  }),
 
   computed: {
     ...mapGetters("authentication", ["user"]),
@@ -175,19 +197,19 @@ export default {
 
     totalReceived() {
       return `${this.$root.$options.filters.formatCurrency(
-        this.userDetails?.total_wallet_received
+        this.walletData?.total_wallet_received
       )}`;
     },
 
     totalSpent() {
       return `${this.$root.$options.filters.formatCurrency(
-        this.userDetails?.total_wallet_spent
+        this.walletData?.total_wallet_spent
       )}`;
     },
 
     totalRemaining() {
       return `${this.$root.$options.filters.formatCurrency(
-        this.userDetails?.total_wallet_balance
+        this.walletData?.total_wallet_balance
       )}`;
     },
 
@@ -196,20 +218,16 @@ export default {
     },
 
     campaignsQuery() {
-      const { Campaigns } = this.userDetails;
-
       if (this.searchQuery) {
-        return Campaigns.filter((campaign) =>
+        return this.campaigns.filter((campaign) =>
           campaign.title.toLowerCase().includes(this.searchQuery.toLowerCase())
         );
       }
-      return Campaigns;
+      return this.campaigns;
     },
 
     computedData() {
-      if (this.section === "campaigns") {
-        return this.computedCampaigns;
-      }
+      if (this.section === "campaigns") return this.computedCampaigns;
       return this.computedBeneficiaries;
     },
 
@@ -223,8 +241,7 @@ export default {
     },
 
     computedCampaigns() {
-      const campaigns = this.userDetails?.Campaigns || [];
-      return campaigns.map((campaign) => {
+      return this.campaigns.map((campaign) => {
         return {
           Name: campaign.title,
           Budget: campaign.budget,
@@ -246,22 +263,41 @@ export default {
     },
   },
 
+  mounted() {
+    this.getDetails();
+  },
+
   methods: {
+    updateBeneficiaryCampaigns(action) {
+      this.beneficiaryCampaignPageNum =
+        action === "prev"
+          ? this.beneficiaryCampaignPageNum - 1
+          : this.beneficiaryCampaignPageNum + 1;
+
+      this.getDetails();
+    },
+
     async getDetails() {
       try {
         this.loading = true;
         const { OrganisationId } = this.user?.AssociatedOrganisations[0];
 
         const response = await this.$axios.get(
-          `/organisation/${OrganisationId}/beneficiaries/${this.$route.params.id}`
+          `/organisation/${OrganisationId}/beneficiaries/${this.$route.params.id}?page=${this.beneficiaryCampaignPageNum}&size=10`
         );
-        console.log(" BEN DETAILS::", response);
 
-        if (response.status == "success") {
-          this.userDetails = response.data;
+        if (response.status === "success") {
+          this.userDetails = response.data?.user;
+          this.walletData = response.data?.response;
+          this.campaigns = response.data?.response?.data;
         }
+
+        console.log("response", response);
+
+        this.beneficiaryCampaignPageNum = response.data.response?.currentPage;
+        this.beneficiaryCampaignTotalItems = response.data.response?.totalItems;
       } catch (err) {
-        console.log(err);
+        console.log("err", err);
       } finally {
         this.loading = false;
       }

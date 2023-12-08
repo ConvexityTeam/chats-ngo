@@ -2,14 +2,14 @@
   <div>
     <!-- <b-button @click="drawer = true">Toggle Sidebar</b-button> -->
     <b-sidebar
-      @hidden="$emit('hidden')"
+      id="sidebar-right"
       v-model="isVisible"
       aria-controls="sidebar-right"
       :aria-expanded="isVisible"
-      id="sidebar-right"
       title="Sidebar"
       right
       width="80%"
+      @hidden="$emit('hidden')"
     >
       <div class="px-3 py-2">
         <p>

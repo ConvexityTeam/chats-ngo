@@ -4,12 +4,12 @@
     <div class="form-group">
       <label for="email">Email Address</label>
       <input
+        id="email"
+        v-model="email"
         type="email"
         class="form-controls"
         placeholder="example@gmail.com"
         :class="{ form__input__error: $v.email.$error }"
-        id="email"
-        v-model="email"
         @focus="emailActive = true"
         @blur="$v.email.$touch()"
       />

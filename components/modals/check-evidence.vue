@@ -27,10 +27,10 @@
             <div class="form-group">
               <label for="name">Task Name</label>
               <input
+                id="task-name"
                 type="text"
                 class="form-controls"
                 name="taskName"
-                id="task-name"
                 placeholder="Task Name"
                 :value="task.task_name"
                 readonly
@@ -42,9 +42,9 @@
             <div class="form-group">
               <label for="name">Activity Description</label>
               <textarea
+                id="taskDescription"
                 type="text"
                 name="task-description"
-                id="taskDescription"
                 :value="task.comment"
                 placeholder="Task Description"
                 readonly
@@ -108,7 +108,7 @@
 import { mapGetters } from "vuex";
 import close from "~/components/icons/close";
 import Rejected from "~/components/modals/rejected.vue";
-import DisburseFunds from "~/components/modals/rejected.vue";
+import DisburseFunds from "~/components/modals/disburse-funds.vue";
 import ViewImage from "~/components/modals/view-image.vue";
 
 let screenLoading;
@@ -162,7 +162,7 @@ export default {
         const response = await this.$axios.post(
           `cash-for-work/task/reject-submission/${this.task.id}`
         );
-        if (response.status == "success") {
+        if (response.status === "success") {
           this.$bvModal.hide("check-evidence");
           this.$bvModal.show("rejected");
         }

@@ -6,13 +6,13 @@
         <label for="name">Project name</label>
         <input
           id="name"
+          v-model="payload.title"
           type="text"
           class="form-controls"
           :class="{
             error: $v.payload.title.$error,
           }"
           placeholder="Enter name of project"
-          v-model="payload.title"
           @blur="$v.payload.title.$touch()"
         />
       </div>
@@ -22,6 +22,7 @@
         <label for="description">Description</label>
         <textarea
           id="description"
+          v-model="payload.description"
           class="form-controls"
           placeholder="Short description"
           :class="{
@@ -30,7 +31,6 @@
           cols="30"
           rows="3"
           @blur="$v.payload.description.$touch()"
-          v-model="payload.description"
         ></textarea>
       </div>
 
@@ -42,11 +42,11 @@
             <label for="total-amount">Budget</label>
             <CurrencyInput
               id="total-amount"
+              v-model="payload.budget"
               placeholder="0.00"
               :customStyles="`height: 41px; border: 1px solid #7c8db5; background: white; padding: 0.75rem`"
               :error="$v.payload.budget.$error"
               @blur="$v.payload.budget.$touch()"
-              v-model="payload.budget"
             />
           </div>
         </div>
@@ -66,8 +66,8 @@
               format="DD-MM-YYYY"
               placeholder="DD-MM-YYYY"
               valueType="format"
-              @blur="$v.payload.start_date.$touch()"
               :disabled-date="(present) => present <= new Date()"
+              @blur="$v.payload.start_date.$touch()"
             ></date-picker>
           </div>
         </div>
@@ -85,8 +85,8 @@
               format="DD-MM-YYYY"
               placeholder="DD-MM-YYYY"
               valueType="format"
-              @blur="$v.payload.end_date.$touch()"
               :disabled-date="(present) => present <= new Date()"
+              @blur="$v.payload.end_date.$touch()"
             ></date-picker>
           </div>
         </div>
@@ -101,8 +101,8 @@
           :class="{ error: $v.payload.location.country.$error }"
         >
           <el-select
-            v-model="payload.location.country"
             id="country"
+            v-model="payload.location.country"
             filterable
             placeholder="—Select — "
           >
@@ -126,8 +126,8 @@
           :class="{ error: $v.payload.location.state.$error }"
         >
           <el-select
-            v-model="payload.location.state"
             id="state"
+            v-model="payload.location.state"
             filterable
             multiple
             placeholder="—Select — "
@@ -281,16 +281,13 @@ export default {
           }
         );
 
-        if (response.status == "success") {
+        if (response.status === "success") {
           this.$emit("reload");
           this.closeModal();
           this.$toast.success(response.message);
         }
         console.log("C4W:::", response);
-      } catch (err) {
-        console.log({ err });
-
-        this.$toast.error(err?.response?.data?.message);
+      } catch (_err) {
       } finally {
         this.loading = false;
       }

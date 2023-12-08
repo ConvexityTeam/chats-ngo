@@ -42,14 +42,16 @@
           <div class="d-flex proposal-divider mb-3">
             <p class="proposal-captions">Budget:</p>
             <div class="ml-auto">
-              <p class="proposal-answers">{{ details?.budget }}</p>
+              <p class="proposal-answers">
+                {{ details?.budget | formatCurrency }}
+              </p>
             </div>
           </div>
 
           <div class="d-flex proposal-divider mb-3">
             <p class="proposal-captions">Location:</p>
             <div class="ml-auto">
-              <p class="proposal-answers">">{{ details?.location?.country }}</p>
+              <p class="proposal-answers">{{ details?.location?.country }}</p>
             </div>
           </div>
 
@@ -94,7 +96,7 @@ export default {
     },
 
     totalRequests: {
-      type: String | Number,
+      type: [String, Number],
       default: "",
     },
   },

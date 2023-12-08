@@ -14,10 +14,10 @@
             <!-- Search Box here -->
             <div class="position-relative">
               <input
+                v-model="searchQuery"
                 type="text"
                 class="form-controls search"
                 placeholder="Search by beneficiary..."
-                v-model="searchQuery"
               />
               <img
                 src="~/assets/img/vectors/search.svg"
@@ -32,7 +32,7 @@
       <!-- Buuttons Here -->
       <div class="ml-auto">
         <!-- SMS Buttons here -->
-        <div class="d-flex" v-if="tokenType === 'sms'">
+        <div v-if="tokenType === 'sms'" class="d-flex">
           <Button
             :has-border="true"
             :has-icon="false"
@@ -81,8 +81,8 @@
     <!-- Tab Here -->
     <div class="mt-4 pt-2">
       <b-tabs
-        content-class="mt-1"
         id="token-tab"
+        content-class="mt-1"
         nav-class
         nav-wrapper-class
         lazy
@@ -117,8 +117,8 @@
           <!-- Pdf downloader here -->
           <Pdf
             :triggerDownload="triggerDownload"
-            @download-complete="triggerDownload = false"
             :campaignDetails="qrCodes"
+            @download-complete="triggerDownload = false"
           >
             <CompleteQrCodes :data="qrCodes" />
           </Pdf>
@@ -129,16 +129,16 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
 import SmsTokens from "~/components/tables/campaigns/sms-tokens.vue";
 import QrCodes from "~/components/tables/campaigns/qr-codes.vue";
 import CompleteQrCodes from "~/components/tables/campaigns/complete-qr-codes.vue";
-import { mapGetters } from "vuex";
 let screenLoading;
 
 export default {
-  name: "Manage-tokens",
-  middleware: "authenticated",
+  name: "ManageTokens",
   components: { SmsTokens, QrCodes, CompleteQrCodes },
+  middleware: "authenticated",
 
   data: () => ({
     loading: false,
@@ -204,16 +204,14 @@ export default {
         console.log("smsTokens:::", smsTokens);
         console.log("qrCodes:::", qrCodes);
 
-        if (smsTokens.status == "success") {
+        if (smsTokens.status === "success") {
           this.smsTokens = smsTokens?.data;
         }
 
-        if (qrCodes.status == "success") {
+        if (qrCodes.status === "success") {
           this.qrCodes = qrCodes?.data;
         }
-      } catch (err) {
-        console.log(err);
-        this.$toast.error(err?.response?.data?.message);
+      } catch (_err) {
       } finally {
         this.loading = false;
       }
@@ -229,7 +227,7 @@ export default {
         );
         console.log("REsponse:::", response);
 
-        if (response.status == "success") {
+        if (response.status === "success") {
           this.isCleared = true;
           this.$toast.success(
             `SMS token sent to ${this.selectedTokens.length} ${
@@ -238,16 +236,14 @@ export default {
           );
           this.selectedTokens = [];
         }
+      } catch (_err) {
+      } finally {
         screenLoading.close();
-      } catch (err) {
-        screenLoading.close();
-        console.log(err);
-        this.$toast.error(err?.response?.data?.message);
       }
     },
     handleSingleToken(id) {
       if (this.selectedTokens.includes(id)) {
-        this.selectedTokens = this.selectedTokens.filter((v) => v != id);
+        this.selectedTokens = this.selectedTokens.filter((v) => v !== id);
       } else {
         this.selectedTokens.push(id);
         this.resendToken();

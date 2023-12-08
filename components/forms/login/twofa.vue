@@ -35,8 +35,10 @@ export default {
   components: { PincodeInput },
 
   props: {
-    loading: Boolean,
-    default: false,
+    loading: {
+      type: Boolean,
+      default: false,
+    },
   },
 
   data: () => ({

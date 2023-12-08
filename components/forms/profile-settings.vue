@@ -16,10 +16,10 @@
             <div class="mgt-btn-container">
               <transition name="slide">
                 <button
-                  @click="step = 1"
                   type="button"
                   class="mgt-btn one"
                   :class="{ active: step === 1 }"
+                  @click="step = 1"
                 >
                   Organisation Profile
                 </button>
@@ -28,10 +28,10 @@
 
             <div class="mgt-btn-container">
               <button
-                @click="step = 2"
                 type="button"
                 class="mgt-btn two"
                 :class="{ active: step === 2 }"
+                @click="step = 2"
               >
                 User Profile
               </button>
@@ -49,13 +49,13 @@
                   <el-select
                     id="dropdown"
                     v-model="payload.organisation_profile.country"
-                    @blur="$v.payload.organisation_profile.country.$touch()"
                     filterable
                     placeholder="United States"
                     class="country"
                     :class="{
                       error: $v.payload.organisation_profile.country.$error,
                     }"
+                    @blur="$v.payload.organisation_profile.country.$touch()"
                   >
                     <el-option
                       v-for="(country, i) in countries"
@@ -76,13 +76,13 @@
                   <el-select
                     id="dropdown"
                     v-model="payload.organisation_profile.state"
-                    @blur="$v.payload.organisation_profile.state.$touch()"
                     filterable
                     placeholder="State"
                     class="country"
                     :class="{
                       error: $v.payload.organisation_profile.state.$error,
                     }"
+                    @blur="$v.payload.organisation_profile.state.$touch()"
                   >
                     <el-option
                       v-for="(state, i) in states"
@@ -102,14 +102,14 @@
               <div class="col-lg-6 mb-4">
                 <label for="address">Address</label>
                 <input
-                  type="text"
                   id="address"
+                  v-model="payload.organisation_profile.address"
+                  type="text"
                   placeholder="Address"
                   class="form-controls px-3"
                   :class="{
                     error: $v.payload.organisation_profile.address.$error,
                   }"
-                  v-model="payload.organisation_profile.address"
                   @blur="$v.payload.organisation_profile.address.$touch()"
                 />
               </div>
@@ -118,16 +118,16 @@
               <div class="col-lg-6 mb-4">
                 <label id="year_founded" for="year">Year Founded</label>
                 <input
-                  type="number"
-                  @wheel="$event.target.blur()"
                   id="year_founded"
+                  v-model="payload.organisation_profile.year_of_inception"
+                  type="number"
                   class="form-controls px-3"
                   :class="{
                     error:
                       $v.payload.organisation_profile.year_of_inception.$error,
                   }"
                   placeholder="YYYY"
-                  v-model="payload.organisation_profile.year_of_inception"
+                  @wheel="$event.target.blur()"
                   @blur="
                     $v.payload.organisation_profile.year_of_inception.$touch()
                   "
@@ -141,14 +141,14 @@
               <div class="col-lg-6 mb-4">
                 <label for="address">Website</label>
                 <input
-                  type="url"
                   id="website"
+                  v-model="payload.organisation_profile.website_url"
+                  type="url"
                   placeholder="Website"
                   class="form-controls px-3"
                   :class="{
                     error: $v.payload.organisation_profile.website_url.$error,
                   }"
-                  v-model="payload.organisation_profile.website_url"
                   @blur="$v.payload.organisation_profile.website_url.$touch()"
                 />
               </div>
@@ -157,8 +157,8 @@
               <div class="col-lg-6 mb-4">
                 <label for="address">Registration ID</label>
                 <input
-                  type="url"
                   id="registration_id"
+                  type="url"
                   placeholder="CHATS115009"
                   class="form-controls px-3"
                   :value="registrationId"
@@ -172,6 +172,7 @@
               <label for="about">About </label>
               <textarea
                 id="about"
+                v-model="payload.organisation_profile.about"
                 placeholder="Short bio here..."
                 class="form-controls p-3"
                 cols="30"
@@ -179,7 +180,6 @@
                 :class="{
                   error: $v.payload.organisation_profile.about.$error,
                 }"
-                v-model="payload.organisation_profile.about"
                 @blur="$v.payload.organisation_profile.about.$touch()"
               ></textarea>
             </div>
@@ -233,10 +233,10 @@
                 <label for="phone">Phone Number</label>
                 <vue-tel-input
                   id="phone"
+                  v-model="payload.user_profile.phone"
                   mode="international"
                   class="form-controls phone"
                   :inputOptions="options"
-                  v-model="payload.user_profile.phone"
                 ></vue-tel-input>
               </div>
             </div>
@@ -247,9 +247,9 @@
               <div class="col-lg-6 mb-4">
                 <label for="country">Default currency</label>
                 <el-select
-                  autocomplete="new-password"
                   id="dropdown"
                   v-model="payload.user_profile.currency"
+                  autocomplete="new-password"
                   filterable
                   placeholder="Currency Code"
                 >
@@ -267,11 +267,11 @@
               <div class="col-lg-6 mb-4">
                 <label for="state">Address</label>
                 <input
+                  id="address"
+                  v-model="payload.user_profile.address"
                   type="text"
                   class="form-controls px-3"
-                  id="address"
                   placeholder="Address"
-                  v-model="payload.user_profile.address"
                 />
               </div>
             </div>
@@ -283,14 +283,14 @@
                 <div class="col-lg-6 mb-4">
                   <label for="first_name">First Name</label>
                   <input
-                    type="text"
                     id="first_name"
+                    v-model="payload.user_profile.first_name"
+                    type="text"
                     placeholder="Juliana"
                     class="form-controls px-3"
                     :class="{
                       error: $v.payload.user_profile.first_name.$error,
                     }"
-                    v-model="payload.user_profile.first_name"
                     @blur="$v.payload.user_profile.first_name.$touch()"
                   />
                 </div>
@@ -299,14 +299,14 @@
                 <div class="col-lg-6 mb-4">
                   <label for="last_name">Last Name</label>
                   <input
-                    type="text"
                     id="last_name"
+                    v-model="payload.user_profile.last_name"
+                    type="text"
                     placeholder="Orji"
                     class="form-controls px-3"
                     :class="{
                       error: $v.payload.user_profile.last_name.$error,
                     }"
-                    v-model="payload.user_profile.last_name"
                     @blur="$v.payload.user_profile.last_name.$touch()"
                   />
                 </div>
@@ -365,11 +365,11 @@
                 <div class="col-lg-6 mb-4">
                   <label for="state">Date of Birth</label>
                   <date-picker
+                    id="dob"
                     v-model="payload.user_profile.dob"
                     input-class=""
                     format="DD-MM-YYYY"
                     placeholder="DD-MM-YYYY"
-                    id="dob"
                     :disabled-date="(present) => present >= new Date()"
                   ></date-picker>
                 </div>
@@ -382,26 +382,26 @@
                 <div class="col-lg-6 mb-4">
                   <label for="state">National Identity Number</label>
                   <input
+                    id="address"
+                    v-model="payload.user_profile.nin"
                     type="number"
                     class="form-controls px-3"
-                    id="address"
                     placeholder="Enter NIN"
-                    v-model="payload.user_profile.nin"
-                    @blur="$v.payload.user_profile.nin.$touch()"
                     :class="{
                       error: $v.payload.user_profile.nin.$error,
                     }"
+                    @blur="$v.payload.user_profile.nin.$touch()"
                   />
                 </div>
 
                 <div class="col-lg-6 align-self-center mb-4 mt-lg-4">
                   <button
                     class="pointer verify-btn poppins"
-                    @click="verifyIdentity"
                     :disabled="
                       !payload.user_profile.nin ||
                       payload.user_profile.nin.length < 11
                     "
+                    @click="verifyIdentity"
                   >
                     Verify NIN
                   </button>
@@ -414,21 +414,21 @@
               </div>
 
               <!-- NIN verified Data -->
-              <div class="row" v-if="isIdentityVerified">
+              <div v-if="isIdentityVerified" class="row">
                 <!-- First Name  -->
                 <div class="col-lg-6 mb-4">
                   <label for="first_name">First Name</label>
                   <input
-                    type="text"
                     id="first_name"
+                    v-model="payload.user_profile.first_name"
+                    type="text"
                     placeholder="Juliana"
                     class="form-controls px-3"
                     :class="{
                       error: $v.payload.user_profile.first_name.$error,
                     }"
-                    v-model="payload.user_profile.first_name"
-                    @blur="$v.payload.user_profile.first_name.$touch()"
                     disabled
+                    @blur="$v.payload.user_profile.first_name.$touch()"
                   />
                 </div>
 
@@ -436,16 +436,16 @@
                 <div class="col-lg-6 mb-4">
                   <label for="last_name">Last Name</label>
                   <input
-                    type="text"
                     id="last_name"
+                    v-model="payload.user_profile.last_name"
+                    type="text"
                     placeholder="Orji"
                     class="form-controls px-3"
                     :class="{
                       error: $v.payload.user_profile.last_name.$error,
                     }"
-                    v-model="payload.user_profile.last_name"
-                    @blur="$v.payload.user_profile.last_name.$touch()"
                     disabled
+                    @blur="$v.payload.user_profile.last_name.$touch()"
                   />
                 </div>
               </div>
@@ -464,7 +464,7 @@
                 />
               </div>
 
-              <div class="save-btn" v-else>
+              <div v-else class="save-btn">
                 <Button
                   type="submit"
                   fontSize="1rem"
@@ -510,11 +510,11 @@
               </button>
 
               <input
+                ref="fileInput"
                 type="file"
                 accept="image/png, .pdf"
-                @change="handlePhotoUpdate"
-                ref="fileInput"
                 style="display: none"
+                @change="handlePhotoUpdate"
               />
             </label>
           </div>
@@ -554,11 +554,11 @@
 </template>
 
 <script lang="js">
-import { required, email, maxLength, numeric } from "vuelidate/lib/validators";
-import Camera from "~/components/icons/camera";
+import { required, maxLength, numeric } from "vuelidate/lib/validators";
 import DatePicker from "vue2-datepicker";
-import countriesRegions from "~/plugins/countries-regions";
 import { mapGetters, mapActions } from "vuex";
+import Camera from "~/components/icons/camera";
+import countriesRegions from "~/plugins/countries-regions";
 
 let screenLoading;
 
@@ -566,11 +566,7 @@ let screenLoading;
 
 export default {
   name: "ProfileSettings",
-  components: {
-    Camera,
-    DatePicker,
-    email,
-  },
+  components: { Camera, DatePicker,},
 
   data: () => ({
     options: { placeholder: "Phone number" },
@@ -661,7 +657,7 @@ export default {
     displayExtras() {
       return (
         !this.payload.user_profile.country ||
-        this.payload.user_profile.country == "NG"
+        this.payload.user_profile.country === "NG"
       );
     },
 
@@ -685,14 +681,14 @@ export default {
 
   methods: {
     ...mapActions("authentication", ["commitUserUpdate"]),
-    // async fetchOrganisationProfile() { 
+    // async fetchOrganisationProfile() {
 //       try {
-//         this.loading = true;  
+//         this.loading = true;
 //         const response = await this.$axios.get(
 //           `/organisations/${this.organisation_id}/profile`,
 //           this.payload.organisation_profile
 //         );
- 
+
 //         const organisationDetails = response.data?.Organisations[0]
 //  this.payload.organisation_profile = organisationDetails
 //  console.log(organisationDetails)
@@ -702,13 +698,13 @@ export default {
 //         //   this.$toast.success(response.message);
 //         //   this.commitUserUpdate(response.data);
 //         // }
-//       } catch (err) { 
+//       } catch (err) {
 //         // this.$toast.error(err?.response?.data?.message);
 //         this.loading = false;
 //       } finally {
 //         this.loading = false;
 
-//       } 
+//       }
     //       try {
     //         this.loading = true;
     //         const response = await this.$axios.get(
@@ -731,7 +727,7 @@ export default {
     //       } finally {
     //         this.loading = false;
 
-    //       } 
+    //       }
     // },
     async updateOrganisationProfile() {
       try {
@@ -753,18 +749,15 @@ export default {
           this.payload.organisation_profile
         );
 
-        if (response.status == "success") {
-          this.loading = false;
+        if (response.status === "success") {
           this.$toast.success(response.message);
           this.commitUserUpdate(response.data);
         }
-      } catch (err) {
-        console.log("UPDATEORGPROFILEERR::", { err });
-        this.$toast.error(err?.response?.data?.message);
+      } catch (err) {}
+      finally{
         this.loading = false;
       }
     },
-
     async updateUserProfile() {
       try {
         this.loading = true;
@@ -782,19 +775,17 @@ export default {
         );
         console.log("USER RESPONSE:::", response);
 
-        if (response.status == "success") {
-          this.loading = false;
+        if (response.status === "success") {
           this.$toast.success(response.message);
         }
 
         console.log("UPDATE PROFILE RESPONSE", response);
-      } catch (err) {
-        console.log("UPDATEUSERPROFILEERR::", { err });
-        this.$toast.error(err?.response?.data?.message);
+      } catch (_err) {
+      }finally{
         this.loading = false;
+
       }
     },
-
     async verifyIdentity() {
       try {
         this.$v.payload.user_profile.nin.$touch();
@@ -808,9 +799,7 @@ export default {
         const response = await this.$axios.post(
           "https://api.myidentitypay.com/api/v1/biometrics/merchant/data/verification/nin_wo_face",
 
-          {
-            number: nin,
-          }
+          { number: nin,}
         );
 
         if (response.status && response.nin_data) {
@@ -823,14 +812,11 @@ export default {
         } else {
           this.$toast.error(response?.message);
         }
-
-        screenLoading.close();
-
         console.log("VERIFY IDENTITY RESPONSE::", response);
       } catch (err) {
+      }
+      finally{
         screenLoading.close();
-        console.log("VERIFYIDENTITYERR::", { err });
-        this.$toast.error(err?.response?.data?.message);
       }
     },
 
@@ -844,7 +830,6 @@ export default {
       this.objectAliaser(this.payload.organisation_profile, organisation);
       this.objectAliaser(this.payload.user_profile, this.user);
     },
-
     objectAliaser(oldObj, newObj) {
       return Object.keys(oldObj).forEach((item) => {
         oldObj[item] = newObj?.[item];
@@ -861,7 +846,6 @@ export default {
       this.payload.logo = image;
       this.updatephoto();
     },
-
     async updatephoto() {
       try {
         this.loading = true;
@@ -874,14 +858,13 @@ export default {
           formData
         );
 
-        if (response.status == "success") {
-          this.loading = false;
+        if (response.status === "success") {
+
           this.$toast.success(response.message);
           this.commitUserUpdate(response.data);
         }
-      } catch (err) {
-        console.log("UPDATEPROFILEERR::", { err });
-        this.$toast.error(err?.response?.data?.message);
+      } catch (_err) {
+      }finally{
         this.loading = false;
       }
     },

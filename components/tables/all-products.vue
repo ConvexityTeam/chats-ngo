@@ -7,10 +7,10 @@
             <!-- Search Box here -->
             <div class="position-relative">
               <input
+                v-model="searchQuery"
                 type="text"
                 class="form-controls search"
                 placeholder=" Search products..."
-                v-model="searchQuery"
               />
               <img
                 src="~/assets/img/vectors/search.svg"
@@ -29,7 +29,7 @@
         <h4>All products</h4>
         <div class="ml-auto"></div>
       </div>
-      <table class="table table-borderless" v-if="resultQuery.length">
+      <table v-if="resultQuery.length" class="table table-borderless">
         <thead>
           <tr>
             <th scope="col">Category List</th>
@@ -102,14 +102,14 @@ export default {
           `/vendors/products/all/${this.id}`
         );
 
-        if (response.status == "success") {
-          this.loading = false;
+        if (response.status === "success") {
           this.products = response.data;
         }
         console.log("ALL PRODUCT TABLE:::", response.data);
       } catch (err) {
-        this.loading = false;
         console.log(err);
+      } finally {
+        this.loading = false;
       }
     },
   },

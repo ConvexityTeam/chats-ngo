@@ -19,15 +19,15 @@
           <div class="form-group">
             <label for="name">Name</label>
             <input
+              id="name"
+              v-model="payload.title"
               type="text"
               class="form-controls"
               :class="{
                 error: $v.payload.title.$error,
               }"
               name="name"
-              id="name"
               placeholder="Name of the project"
-              v-model="payload.title"
               @blur="$v.payload.title.$touch()"
             />
           </div>
@@ -36,16 +36,16 @@
           <div class="form-group">
             <label for="description">Description</label>
             <textarea
+              id="description"
+              v-model="payload.description"
               class="form-controls"
               :class="{
                 error: $v.payload.description.$error,
               }"
               name="description"
-              id="description"
               cols="30"
               rows="2"
               @blur="$v.payload.description.$touch()"
-              v-model="payload.description"
             ></textarea>
           </div>
 
@@ -55,17 +55,17 @@
               <div class="form-group">
                 <label for="total-amount">Budget</label>
                 <input
+                  id="total-amount"
+                  ref="budget"
+                  v-model="payload.budget"
                   type="number"
                   class="form-controls"
                   :class="{
                     error: $v.payload.budget.$error,
                   }"
                   name="total-amount"
-                  id="total-amount"
                   placeholder="Amount from NGO wallet"
-                  v-model="payload.budget"
                   @blur="$v.payload.budget.$touch()"
-                  ref="budget"
                 />
               </div>
             </div>
@@ -107,14 +107,14 @@
               <div class="form-group">
                 <label for="location">Location</label>
                 <input
+                  id="location"
+                  v-model="payload.location"
                   type="text"
                   class="form-controls"
                   :class="{
                     error: $v.payload.location.$error,
                   }"
                   name="location"
-                  id="location"
-                  v-model="payload.location"
                   @blur="$v.payload.location.$touch()"
                 />
               </div>
@@ -157,6 +157,7 @@ import "vue2-datepicker/index.css";
 import close from "~/components/icons/close";
 
 export default {
+  components: { DatePicker, close },
   data() {
     return {
       loading: false,
@@ -196,7 +197,6 @@ export default {
       },
     },
   },
-  components: { DatePicker, close },
 
   computed: {
     ...mapGetters("authentication", ["user"]),
@@ -228,21 +228,16 @@ export default {
           this.payload
         );
 
-        if (response.status == "success") {
+        if (response.status === "success") {
           this.$emit("reload");
           this.closeModal();
           this.$toast.success(response.message);
-        } else {
-          this.$toast.error(response.message);
         }
 
         console.log("campaignResponse:::", response);
-
+      } catch (_err) {
+      } finally {
         this.loading = false;
-      } catch (err) {
-        console.log(err);
-        this.loading = false;
-        this.$toast.error(err.response.data.message);
       }
     },
   },

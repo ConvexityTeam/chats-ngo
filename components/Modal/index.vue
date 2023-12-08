@@ -1,6 +1,6 @@
 <template>
   <div>
-    <b-modal :size="size" :id="id" hide-header hide-footer :centered="centered">
+    <b-modal :id="id" :size="size" hide-header hide-footer :centered="centered">
       <div class="text-center position-relative pt-3">
         <h3 class="header font-bold primary-blue">{{ title | capitalize }}</h3>
         <!--Close button here -->
@@ -26,6 +26,8 @@
 import close from "~/components/icons/close";
 export default {
   name: "Modal",
+
+  components: { close },
   props: {
     id: {
       type: String,
@@ -36,7 +38,6 @@ export default {
     title: {
       type: String,
       default: "",
-      required: true,
     },
 
     size: {
@@ -54,8 +55,6 @@ export default {
       default: false,
     },
   },
-
-  components: { close },
 
   methods: {
     closeModal() {

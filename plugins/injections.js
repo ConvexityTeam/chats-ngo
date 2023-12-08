@@ -1,3 +1,4 @@
+import { Notification } from "element-ui";
 export default ({ app, store }, inject) => {
   const onRouteChange = () => {
     const { user } = store.state?.authentication || {};
@@ -17,16 +18,15 @@ export default ({ app, store }, inject) => {
     next();
   });
 
-  /*copy to clipboard */
+  /* copy to clipboard */
   const copy = (value) => {
     if (value.length) {
       navigator.clipboard.writeText(value);
       app.$toast.success("Copied to clipboard");
     }
-    return;
   };
 
-  /*Truncate  text  Here*/
+  /* Truncate  text  Here */
   const truncate = (value, length = 13) => {
     if (value) {
       if (value.length > length) {
@@ -34,9 +34,39 @@ export default ({ app, store }, inject) => {
       }
       return value;
     }
-    return;
+  };
+
+  /* Notification  System  Here */
+  const notify = {
+    success(message, title) {
+      Notification({
+        title: title || "Success",
+        message,
+        type: "success",
+        customClass: "success",
+      });
+    },
+
+    error(message, title) {
+      Notification({
+        title: title || "Error",
+        message,
+        type: "error",
+        customClass: "error",
+      });
+    },
+
+    info(message, title) {
+      Notification({
+        title: title || "Info",
+        message,
+        type: "info",
+        customClass: "info",
+      });
+    },
   };
 
   inject("copy", copy);
   inject("truncate", truncate);
+  inject("toast", notify);
 };

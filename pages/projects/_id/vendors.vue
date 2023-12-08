@@ -10,10 +10,10 @@
             <!-- Search Box here -->
             <div class="position-relative">
               <input
+                v-model="searchQuery"
                 type="text"
                 class="form-controls search"
                 placeholder="Search vendors..."
-                v-model="searchQuery"
               />
               <img
                 src="~/assets/img/vectors/search.svg"
@@ -34,7 +34,7 @@
       </div>
 
       <div v-if="$fetchState.pending" class="text-center loader mb-5"></div>
-      <table class="table table-borderless" v-else-if="resultQuery.length">
+      <table v-else-if="resultQuery.length" class="table table-borderless">
         <thead>
           <tr>
             <th scope="col">
@@ -63,7 +63,7 @@
                 loading="lazy"
               />
 
-              <span class="mx-3 pt-1">
+              <span class="mx-3 pt-1 notranslate">
                 {{
                   vendor && vendor.Vendor
                     ? vendor.Vendor.first_name + " " + vendor.Vendor.last_name
@@ -73,7 +73,7 @@
             </td>
             <!-- <td>{{ vendor.VendorId }}</td> -->
             <td>{{ vendor && vendor.Vendor ? vendor.Vendor.phone : "" }}</td>
-            <td class="truncate">
+            <td class="truncate notranslate">
               {{ vendor && vendor.Vendor ? vendor.Vendor.email : "" }}
             </td>
             <td>{{ vendor.createdAt | shortDate }}</td>
@@ -119,6 +119,15 @@ export default {
     };
   },
 
+  async fetch() {
+    const id = this.user?.AssociatedOrganisations[0]?.OrganisationId;
+    const response = await this.$axios.get(
+      `/organisations/${id}/campaigns/${this.$route.params.id}/vendors`
+    );
+
+    this.vendors = response.data;
+  },
+
   computed: {
     ...mapGetters("authentication", ["user"]),
     resultQuery() {
@@ -138,15 +147,6 @@ export default {
         return this.vendors;
       }
     },
-  },
-
-  async fetch() {
-    const id = this.user?.AssociatedOrganisations[0]?.OrganisationId;
-    const response = await this.$axios.get(
-      `/organisations/${id}/campaigns/${this.$route.params.id}/vendors`
-    );
-
-    this.vendors = response.data;
   },
 };
 </script>

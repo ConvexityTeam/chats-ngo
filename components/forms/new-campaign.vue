@@ -31,13 +31,13 @@
         <label for="name">Project name</label>
         <input
           id="name"
+          v-model="payload.title"
           type="text"
           class="form-controls"
           :class="{
             error: $v.payload.title.$error,
           }"
           placeholder="Enter name of project"
-          v-model="payload.title"
           @blur="$v.payload.title.$touch()"
         />
       </div>
@@ -47,6 +47,7 @@
         <label for="description">Description</label>
         <textarea
           id="description"
+          v-model="payload.description"
           class="form-controls"
           placeholder="Short description"
           :class="{
@@ -55,7 +56,6 @@
           cols="30"
           rows="3"
           @blur="$v.payload.description.$touch()"
-          v-model="payload.description"
         ></textarea>
       </div>
 
@@ -65,16 +65,17 @@
         <template v-if="activeCampaignForm === 'cash'">
           <CurrencyInput
             :id="computedId"
+            v-model="payload.budget"
             :placeholder="`${$currency}0.00`"
             :customStyles="`height: 41px; border: 1px solid #7c8db5; background: white; padding: 0.75rem`"
             :error="$v.payload.budget.$error"
-            v-model="payload.budget"
           />
         </template>
 
         <template v-else>
           <input
             :id="computedId"
+            v-model="payload.minting_limit"
             type="number"
             class="form-controls"
             min="1"
@@ -83,20 +84,19 @@
             }"
             placeholder="0"
             @blur="$v.payload.minting_limit.$touch()"
-            v-model="payload.minting_limit"
           />
         </template>
       </div>
 
       <!--Unit Cost of Item  here -->
-      <div class="form-group" v-if="activeCampaignForm === 'items'">
+      <div v-if="activeCampaignForm === 'items'" class="form-group">
         <label for="unit_cost">Unit cost of Item</label>
 
         <CurrencyInput
           id="unit_cost"
+          v-model="payload.unit_cost"
           :placeholder="`${$currency}0.00`"
           :customStyles="`height: 41px; border: 1px solid #7c8db5; background: white; padding: 0.75rem`"
-          v-model="payload.unit_cost"
         />
       </div>
 
@@ -114,8 +114,8 @@
               format="DD-MM-YYYY"
               placeholder="DD-MM-YYYY"
               valueType="format"
-              @blur="$v.payload.start_date.$touch()"
               :disabled-date="(present) => present <= new Date()"
+              @blur="$v.payload.start_date.$touch()"
             ></date-picker>
           </div>
         </div>
@@ -133,8 +133,8 @@
               format="DD-MM-YYYY"
               placeholder="DD-MM-YYYY"
               valueType="format"
-              @blur="$v.payload.end_date.$touch()"
               :disabled-date="(present) => present <= new Date()"
+              @blur="$v.payload.end_date.$touch()"
             ></date-picker>
           </div>
         </div>
@@ -149,10 +149,11 @@
           :class="{ error: $v.payload.location.country.$error }"
         >
           <el-select
-            v-model="payload.location.country"
             id="country"
+            v-model="payload.location.country"
             filterable
             placeholder="—Select — "
+            autocomplete="new-username"
           >
             <el-option
               v-for="(country, i) in countries"
@@ -174,11 +175,12 @@
           :class="{ error: $v.payload.location.state.$error }"
         >
           <el-select
-            v-model="payload.location.state"
             id="state"
+            v-model="payload.location.state"
             filterable
             multiple
             placeholder="—Select — "
+            autocomplete="new-username"
           >
             <el-option
               v-for="(state, i) in states"
@@ -200,8 +202,10 @@
         <label for="campaign-form">Project form</label>
         <div id="product" class="w-100">
           <el-select
-            v-model="payload.formId"
             id="campaign-form"
+            v-model="payload.formId"
+            filterable
+            clearable
             placeholder="—Select — "
           >
             <el-option
@@ -220,8 +224,8 @@
         <div class="">
           <checkbox
             id="geofence"
-            @input="checkValue"
             :disabled="!payload.title.length"
+            @input="checkValue"
           />
         </div>
 
@@ -230,7 +234,7 @@
         </div>
       </div>
 
-      <div :class="isGeofence ? 'd-block' : 'd-none'" id="map_canvas"></div>
+      <div id="map_canvas" :class="isGeofence ? 'd-block' : 'd-none'"></div>
 
       <!-- button area here -->
       <div class="d-flex pb-2 pt-3">
@@ -269,17 +273,21 @@ import {
 import { mapGetters } from "vuex";
 import DatePicker from "vue2-datepicker";
 import "vue2-datepicker/index.css";
-import MapSideBar from "./map-sidebar";
+// import MapSideBar from "./map-sidebar";
 import countriesRegions from "~/plugins/countries-regions";
 
-let geocoder;
+// let geocoder;
 
 export default {
-  components: { DatePicker, MapSideBar },
+  components: {
+    DatePicker,
+    //  MapSideBar
+  },
 
   props: {
     selectedCampaign: {
       type: String,
+      default: "",
     },
   },
 
@@ -392,7 +400,7 @@ export default {
       this.activeCampaignForm = section;
       this.$v.payload.$reset();
       for (const prop of Object.getOwnPropertyNames(this.payload)) {
-        if (prop == "location") {
+        if (prop === "location") {
           this.payload[prop] = {
             country: "",
             state: [],
@@ -421,14 +429,12 @@ export default {
           }
         );
 
-        if (response.status == "success") {
+        if (response.status === "success") {
           this.$emit("reload");
           this.closeModal();
           this.$toast.success(response.message);
         }
-      } catch (err) {
-        console.log({ err });
-        this.$toast.error(err?.response?.data?.message);
+      } catch (_err) {
       } finally {
         this.loading = false;
       }
@@ -436,7 +442,7 @@ export default {
 
     // TODO:Try emiting fetch all campaigns method from parent and calling here
     runMap() {
-      let google = window?.google;
+      const google = window?.google;
       const mapComponent = document.getElementById("map_canvas");
 
       if (!mapComponent || !google) return;
@@ -446,9 +452,9 @@ export default {
         mapTypeId: google.maps.MapTypeId.ROADMAP,
       });
 
-      let all_overlays = [];
+      const all_overlays = [];
       let selectedShape;
-      let drawingManager = new google.maps.drawing.DrawingManager({
+      const drawingManager = new google.maps.drawing.DrawingManager({
         drawingMode: google.maps.drawing.OverlayType.POLYGON,
         drawingControl: true,
         drawingControlOptions: {
@@ -488,7 +494,7 @@ export default {
 
       const CenterControl = (controlDiv, map) => {
         // Set CSS for the control border.
-        let controlUI = document.createElement("div");
+        const controlUI = document.createElement("div");
         controlUI.style.backgroundColor = "#17CE89";
         controlUI.style.border = "none";
         controlUI.style.borderRadius = "10px";
@@ -500,7 +506,7 @@ export default {
         controlDiv.appendChild(controlUI);
 
         // Set CSS for the control interior.
-        let controlText = document.createElement("div");
+        const controlText = document.createElement("div");
         controlText.style.color = "#fff";
         controlText.style.fontWeight = 500;
         controlText.style.fontSize = "1rem";
@@ -533,7 +539,7 @@ export default {
 
           // event.getPath().getLength();
           google.maps.event.addListener(event.getPath(), "insert_at", () => {
-            let len = event.getPath().getLength();
+            const len = event.getPath().getLength();
             for (let i = 0; i < len; i++) {
               const coordinates = vertices.getAt(i).toUrlValue(6);
               // push into array
@@ -545,7 +551,7 @@ export default {
           });
 
           google.maps.event.addListener(event.getPath(), "set_at", () => {
-            let len = event.getPath().getLength();
+            const len = event.getPath().getLength();
             for (let i = 0; i < len; i++) {
               const coordinates = vertices.getAt(i).toUrlValue(6);
               // reassign into array
@@ -565,9 +571,9 @@ export default {
           all_overlays.push(event);
           if (event.type !== google.maps.drawing.OverlayType.MARKER) {
             drawingManager.setDrawingMode(null);
-            //Write code to select the newly selected object.
+            // Write code to select the newly selected object.
 
-            let newShape = event.overlay;
+            const newShape = event.overlay;
             newShape.type = event.type;
             google.maps.event.addListener(newShape, "click", function () {
               setSelection(newShape);
@@ -580,8 +586,9 @@ export default {
         }
       );
 
-      let centerControlDiv = document.createElement("div");
-      let centerControl = new CenterControl(centerControlDiv, map);
+      const centerControlDiv = document.createElement("div");
+      // eslint-disable-next-line no-unused-vars
+      const centerControl = new CenterControl(centerControlDiv, map);
 
       centerControlDiv.index = 1;
       map.controls[google.maps.ControlPosition.BOTTOM_CENTER].push(
